@@ -4,6 +4,8 @@ import { auth } from '@/lib/auth';
 import { createPrayer, ModerationError } from '@/services/prayer.service';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { headers } from 'next/headers';
 
 const submitPrayerSchema = z.object({
   content: z.string().min(10, 'Please write at least 10 characters').max(1000),
@@ -28,6 +30,14 @@ export async function submitPrayerAction(
 
   if (!parsed.success) {
     return { success: false, error: parsed.error.errors[0].message };
+  }
+
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') ?? 'unknown';
+  const identifier = session?.user?.id ?? ip;
+  const rateCheck = await checkRateLimit('submit', identifier);
+  if (!rateCheck.allowed) {
+    return { success: false, error: 'Too many requests. Please wait before submitting again.' };
   }
 
   try {

@@ -118,6 +118,13 @@ export const reports = pgTable('reports', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const rateLimits = pgTable('rate_limits', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  key: text('key').notNull(),
+  count: integer('count').default(1).notNull(),
+  windowStart: timestamp('window_start').defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Prayer = typeof prayers.$inferSelect;
 export type PrayerInteraction = typeof prayerInteractions.$inferSelect;
