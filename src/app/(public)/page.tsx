@@ -41,8 +41,8 @@ export default async function HomePage() {
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg">Add a Prayer Request</Button>
+            <DialogTrigger render={<Button size="lg" />}>
+              Add a Prayer Request
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
@@ -52,9 +52,7 @@ export default async function HomePage() {
             </DialogContent>
           </Dialog>
 
-          <Button size="lg" variant="outline" asChild>
-            <Link href="/pray">Pray for Someone</Link>
-          </Button>
+          <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
         </div>
       </section>
 
@@ -83,9 +81,7 @@ export default async function HomePage() {
       {/* Praise Wall CTA */}
       <section className="pb-20 px-4 text-center">
         <p className="text-muted-foreground mb-3">See what God has been doing</p>
-        <Button variant="ghost" asChild>
-          <Link href="/praise-wall">View the Praise Wall →</Link>
-        </Button>
+        <Button variant="ghost" render={<Link href="/praise-wall" />}>View the Praise Wall →</Button>
       </section>
     </main>
   );

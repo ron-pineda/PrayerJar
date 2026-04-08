@@ -35,18 +35,18 @@ export default async function PraiseWallPage({
         <Button
           variant={!activeCategory ? 'default' : 'outline'}
           size="sm"
-          asChild
+          render={<Link href="/praise-wall" />}
         >
-          <Link href="/praise-wall">All</Link>
+          All
         </Button>
         {PRAYER_CATEGORIES.map((cat) => (
           <Button
             key={cat.value}
             variant={activeCategory === cat.value ? 'default' : 'outline'}
             size="sm"
-            asChild
+            render={<Link href={`/praise-wall?category=${cat.value}`} />}
           >
-            <Link href={`/praise-wall?category=${cat.value}`}>{cat.label}</Link>
+            {cat.label}
           </Button>
         ))}
       </div>
@@ -57,9 +57,7 @@ export default async function PraiseWallPage({
           <p className="text-muted-foreground mb-6">
             Be the first to share when God answers your prayer!
           </p>
-          <Button asChild>
-            <Link href="/">Submit a Prayer Request</Link>
-          </Button>
+          <Button render={<Link href="/" />}>Submit a Prayer Request</Button>
         </div>
       ) : (
         <div className="grid gap-4">

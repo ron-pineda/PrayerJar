@@ -39,12 +39,8 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
       </Card>
 
       <div className="flex flex-col gap-3">
-        <Button asChild size="lg">
-          <Link href="/pray/any">I Prayed — Pray for Another</Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/">Visit Prayer Jar</Link>
-        </Button>
+        <Button size="lg" render={<Link href="/pray/any" />}>I Prayed — Pray for Another</Button>
+        <Button variant="outline" render={<Link href="/" />}>Visit Prayer Jar</Button>
       </div>
     </main>
   );

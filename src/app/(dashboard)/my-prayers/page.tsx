@@ -28,9 +28,7 @@ export default async function MyPrayersPage() {
             Manage your prayer requests and share testimonies.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/">+ New Request</Link>
-        </Button>
+        <Button render={<Link href="/" />}>+ New Request</Button>
       </div>
 
       {prayers.length === 0 ? (
@@ -39,9 +37,7 @@ export default async function MyPrayersPage() {
           <p className="text-muted-foreground mb-6">
             Share what&apos;s on your heart — the community is here to pray.
           </p>
-          <Button asChild>
-            <Link href="/">Submit a Prayer Request</Link>
-          </Button>
+          <Button render={<Link href="/" />}>Submit a Prayer Request</Button>
         </div>
       ) : (
         <div className="space-y-10">

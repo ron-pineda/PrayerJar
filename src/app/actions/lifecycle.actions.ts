@@ -30,7 +30,7 @@ export async function markAnsweredAction(formData: FormData): Promise<LifecycleR
   });
 
   if (!parsed.success) {
-    return { success: false, error: parsed.error.errors[0].message };
+    return { success: false, error: parsed.error.issues[0].message };
   }
 
   const updated = await markPrayerAnswered(
@@ -57,7 +57,7 @@ export async function renewPrayerAction(formData: FormData): Promise<LifecycleRe
   const parsed = renewSchema.safeParse({ prayerId: formData.get('prayerId') });
 
   if (!parsed.success) {
-    return { success: false, error: parsed.error.errors[0].message };
+    return { success: false, error: parsed.error.issues[0].message };
   }
 
   const updated = await renewPrayer(parsed.data.prayerId, session.user.id);

@@ -5,18 +5,22 @@ import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const prefsSchema = z.object({
   emailPreference: z.enum(['off', 'realtime', 'daily', 'weekly']),
 });
 
-export async function updateEmailPreferenceAction(formData: FormData) {
+export async function updateEmailPreferenceAction(formData: FormData): Promise<void> {
   const session = await auth();
-  if (!session?.user?.id) return { success: false, error: 'Not signed in' };
+  if (!session?.user?.id) {
+    redirect('/sign-in');
+    return;
+  }
 
   const parsed = prefsSchema.safeParse({ emailPreference: formData.get('emailPreference') });
-  if (!parsed.success) return { success: false, error: 'Invalid preference' };
+  if (!parsed.success) return;
 
   await db
     .update(users)
@@ -24,5 +28,4 @@ export async function updateEmailPreferenceAction(formData: FormData) {
     .where(eq(users.id, session.user.id));
 
   revalidatePath('/settings');
-  return { success: true };
 }

@@ -27,27 +27,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Link>
 
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/pray">Pray</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/praise-wall">Praise Wall</Link>
-              </Button>
+              <Button variant="ghost" size="sm" render={<Link href="/pray" />}>Pray</Button>
+              <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Praise Wall</Button>
 
               {session ? (
                 <>
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/my-prayers">My Prayers</Link>
-                  </Button>
+                  <Button variant="ghost" size="sm" render={<Link href="/my-prayers" />}>My Prayers</Button>
                   <NotificationBell />
                   <form action={async () => { 'use server'; await signOut(); }}>
                     <Button variant="ghost" size="sm" type="submit">Sign Out</Button>
                   </form>
                 </>
               ) : (
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/sign-in">Sign In</Link>
-                </Button>
+                <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>Sign In</Button>
               )}
             </div>
           </nav>

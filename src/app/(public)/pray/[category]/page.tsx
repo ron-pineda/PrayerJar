@@ -53,7 +53,7 @@ export default function PrayByCategoryPage({
     );
   }
 
-  if (prayer === 'empty') {
+  if (prayer === 'empty' || prayer === null) {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
         <p className="text-lg font-medium">No prayer requests found in this category.</p>
