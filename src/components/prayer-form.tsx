@@ -1,0 +1,77 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { submitPrayerAction } from '@/app/actions/prayer.actions';
+import { CrisisResources } from './crisis-resources';
+
+export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  const [showCrisis, setShowCrisis] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isUrgent, setIsUrgent] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setError('');
+
+    const formData = new FormData(e.currentTarget);
+    formData.set('isAnonymous', String(isAnonymous));
+    formData.set('isUrgent', String(isUrgent));
+
+    const result = await submitPrayerAction(formData);
+    setPending(false);
+
+    if (result.success) {
+      onSuccess?.(result.prayerId);
+      (e.target as HTMLFormElement).reset();
+    } else if (result.selfHarm) {
+      setShowCrisis(true);
+    } else {
+      setError(result.error);
+    }
+  }
+
+  return (
+    <>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="content">Your prayer request</Label>
+          <Textarea
+            id="content"
+            name="content"
+            placeholder="Share what&apos;s on your heart..."
+            rows={5}
+            required
+            minLength={10}
+            maxLength={1000}
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Switch id="anonymous" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
+            <Label htmlFor="anonymous">Keep me anonymous</Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch id="urgent" checked={isUrgent} onCheckedChange={setIsUrgent} />
+            <Label htmlFor="urgent">Urgent</Label>
+          </div>
+        </div>
+
+        {error && <p className="text-sm text-destructive">{error}</p>}
+
+        <Button type="submit" disabled={pending} className="w-full">
+          {pending ? 'Submitting...' : 'Add to the Prayer Jar'}
+        </Button>
+      </form>
+
+      <CrisisResources open={showCrisis} onClose={() => setShowCrisis(false)} />
+    </>
+  );
+}
