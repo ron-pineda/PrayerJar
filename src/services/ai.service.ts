@@ -31,6 +31,7 @@ Return:
 
 Prayer: "${content}"`,
   });
+  if (!output) throw new Error('AI categorization returned no output');
   return output;
 }
 
@@ -50,5 +51,6 @@ Set selfHarm: true if the content suggests the person may be in crisis or consid
 
 Content: "${content}"`,
   });
+  if (!output) throw new Error('AI moderation returned no output');
   return { selfHarm: false, ...output };
 }
