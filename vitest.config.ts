@@ -12,6 +12,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // next-auth beta imports 'next/server' without .js extension; map it for Vitest
+      'next/server': path.resolve(__dirname, './node_modules/next/server.js'),
     },
   },
 });
