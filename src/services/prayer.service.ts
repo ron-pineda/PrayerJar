@@ -90,7 +90,7 @@ export async function markPrayerAnswered(id: string, authorId: string, testimony
     .set({ status: 'answered', testimony: testimony ?? null })
     .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
     .returning();
-  return updated;
+  return updated ?? null;
 }
 
 export async function renewPrayer(id: string, authorId: string) {
@@ -99,7 +99,7 @@ export async function renewPrayer(id: string, authorId: string) {
     .set({ expiresAt: addDays(new Date(), 30) })
     .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
     .returning();
-  return updated;
+  return updated ?? null;
 }
 
 export async function expireOverduePrayers() {
