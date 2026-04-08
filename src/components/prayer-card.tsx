@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { markAnsweredAction, renewPrayerAction } from '@/app/actions/lifecycle.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
+import { Share2 } from 'lucide-react';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -101,6 +102,16 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
               disabled={pending}
             >
               {pending ? 'Renewing...' : 'Renew (30 days)'}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/p/${prayer.id}`);
+              }}
+            >
+              <Share2 className="h-4 w-4 mr-1" />
+              Share Link
             </Button>
           </div>
         )}
