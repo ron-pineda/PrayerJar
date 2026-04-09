@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { LightsSky } from '@/components/lights-sky';
 import { PraiseCard } from '@/components/praise-card';
@@ -26,19 +26,20 @@ export function LightsReleasedClient({
   const [period, setPeriod] = useState<Period>('month');
   const [prayers, setPrayers] = useState(initialPrayers);
   const [loading, setLoading] = useState(false);
+  const initialCategoryRef = useRef(category);
 
   useEffect(() => {
-    // Skip fetch on mount — we already have initialPrayers for 'month'
-    if (period === 'month') {
+    // Reuse initial server-fetched data only when both period and category are unchanged
+    if (period === 'month' && category === initialCategoryRef.current) {
       setPrayers(initialPrayers);
       return;
     }
 
     setLoading(true);
-    getFilteredPraisesAction(period, category).then((result) => {
-      setPrayers(result);
-      setLoading(false);
-    });
+    getFilteredPraisesAction(period, category)
+      .then((result) => { setPrayers(result); })
+      .catch(() => {/* ignore — loading will be cleared by finally */})
+      .finally(() => { setLoading(false); });
   }, [period, category, initialPrayers]);
 
   return (

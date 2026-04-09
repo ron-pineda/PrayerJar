@@ -63,7 +63,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Praise Wall CTA */}
+      {/* Lights Released CTA */}
       <section className="pb-20 px-4 text-center">
         <p className="text-muted-foreground mb-3">See what God has been doing</p>
         <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released →</Button>
