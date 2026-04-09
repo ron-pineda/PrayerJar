@@ -11,3 +11,9 @@ describe('schema', () => {
     expect(reports).toBeDefined();
   });
 });
+
+describe('prayers schema', () => {
+  it('has imageUrl column', () => {
+    expect(prayers.imageUrl).toBeDefined();
+  });
+});

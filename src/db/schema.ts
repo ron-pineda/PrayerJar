@@ -77,6 +77,7 @@ export const prayers = pgTable('prayers', {
   suggestedVerse: text('suggested_verse'),
   status: prayerStatusEnum('status').default('active').notNull(),
   testimony: text('testimony'),
+  imageUrl: text('image_url'),
   prayerCount: integer('prayer_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
