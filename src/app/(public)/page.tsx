@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PrayerDialog } from '@/components/prayer-dialog';
+import { OnboardingOverlay } from '@/components/onboarding-overlay';
 import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { eq, and, gt, sql } from 'drizzle-orm';
@@ -28,6 +29,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen">
+      <OnboardingOverlay />
       {/* Hero */}
       <section className="py-20 px-4 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold tracking-tight mb-4">
