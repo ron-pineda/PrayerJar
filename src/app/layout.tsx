@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" render={<Link href="/pray" />}>Pray</Button>
-              <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Praise Wall</Button>
+              <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Lights Released</Button>
               <ThemeToggle />
 
               {session ? (

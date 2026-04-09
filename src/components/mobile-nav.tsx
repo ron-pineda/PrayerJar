@@ -46,7 +46,7 @@ export function MobileNav() {
           }`}
         >
           <Star className="h-5 w-5" />
-          <span>Praise</span>
+          <span>Lights</span>
         </Link>
 
         <Link
