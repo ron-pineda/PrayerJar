@@ -93,6 +93,7 @@ export async function markPrayerAnswered(id: string, authorId: string, testimony
       status: 'answered',
       testimony: testimony ?? null,
       imageUrl: imageUrl ?? undefined,
+      answeredAt: new Date(),
     })
     .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
     .returning();

@@ -81,6 +81,7 @@ export const prayers = pgTable('prayers', {
   prayerCount: integer('prayer_count').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
+  answeredAt: timestamp('answered_at'),
 });
 
 export const prayerInteractions = pgTable('prayer_interactions', {
