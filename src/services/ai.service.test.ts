@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('ai', () => ({
+  gateway: vi.fn(() => 'mocked-model'),
   generateText: vi.fn(),
   Output: {
     object: vi.fn((opts) => opts),
@@ -35,7 +36,7 @@ describe('moderateContent', () => {
 
   it('returns safe: true for clean content', async () => {
     vi.mocked(generateText).mockResolvedValue({
-      output: { safe: true },
+      output: { safe: true, selfHarm: false },
     } as any);
 
     const result = await moderateContent('Please pray for my family');
