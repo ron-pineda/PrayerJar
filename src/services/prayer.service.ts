@@ -86,10 +86,14 @@ export async function getPrayersByAuthor(authorId: string) {
     .orderBy(prayers.createdAt);
 }
 
-export async function markPrayerAnswered(id: string, authorId: string, testimony?: string) {
+export async function markPrayerAnswered(id: string, authorId: string, testimony?: string, imageUrl?: string) {
   const [updated] = await db
     .update(prayers)
-    .set({ status: 'answered', testimony: testimony ?? null })
+    .set({
+      status: 'answered',
+      testimony: testimony ?? null,
+      imageUrl: imageUrl ?? undefined,
+    })
     .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
     .returning();
   return updated ?? null;

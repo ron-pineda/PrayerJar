@@ -9,6 +9,7 @@ import { markAnsweredAction, renewPrayerAction } from '@/app/actions/lifecycle.a
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
+import { PhotoUpload } from './photo-upload';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -30,16 +31,20 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [localStatus, setLocalStatus] = useState<Prayer['status']>(prayer.status);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   async function handleMarkAnswered(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
     setError('');
-    const result = await markAnsweredAction(new FormData(e.currentTarget));
+    const formData = new FormData(e.currentTarget);
+    if (imageUrl) formData.set('imageUrl', imageUrl);
+    const result = await markAnsweredAction(formData);
     setPending(false);
     if (result.success) {
       setLocalStatus('answered');
       setShowTestimony(false);
+      setImageUrl(null);
     } else {
       setError(result.error);
     }
@@ -125,6 +130,7 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
               rows={3}
               maxLength={2000}
             />
+            <PhotoUpload url={imageUrl} onUpload={setImageUrl} onRemove={() => setImageUrl(null)} variant="warm" />
             <div className="flex gap-2">
               <Button type="submit" size="sm" disabled={pending}>
                 {pending ? 'Saving...' : 'Confirm Answered'}

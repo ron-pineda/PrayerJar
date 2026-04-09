@@ -8,6 +8,7 @@ import { z } from 'zod';
 const answeredSchema = z.object({
   prayerId: z.string().uuid(),
   testimony: z.string().max(2000).optional(),
+  imageUrl: z.string().url().nullable().optional(),
 });
 
 const renewSchema = z.object({
@@ -27,6 +28,7 @@ export async function markAnsweredAction(formData: FormData): Promise<LifecycleR
   const parsed = answeredSchema.safeParse({
     prayerId: formData.get('prayerId'),
     testimony: formData.get('testimony') || undefined,
+    imageUrl: formData.get('imageUrl') || null,
   });
 
   if (!parsed.success) {
@@ -36,7 +38,8 @@ export async function markAnsweredAction(formData: FormData): Promise<LifecycleR
   const updated = await markPrayerAnswered(
     parsed.data.prayerId,
     session.user.id,
-    parsed.data.testimony
+    parsed.data.testimony,
+    parsed.data.imageUrl ?? undefined
   );
 
   if (!updated) {
