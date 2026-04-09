@@ -98,7 +98,9 @@ export function GuidedPrayer({
           <p className="text-sm text-muted-foreground italic">
             Take a moment to pause and bring this before God.
           </p>
-          <p className="text-sm font-medium">✝️ {prayer.suggestedVerse}</p>
+          <p className="text-sm font-medium">
+            <span className="animate-candle">🕯</span> {prayer.suggestedVerse}
+          </p>
 
           <div className="flex items-center justify-center gap-2 pt-4">
             <Switch id="anon" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
@@ -107,7 +109,7 @@ export function GuidedPrayer({
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <Button onClick={handlePrayed} disabled={pending} size="lg" className="mt-4">
+          <Button onClick={handlePrayed} disabled={pending} size="lg" className="mt-4 active:animate-pray-ripple">
             {pending ? 'Recording...' : 'I Prayed for This 🙏'}
           </Button>
         </div>

@@ -60,9 +60,11 @@ export default async function PraiseWallPage({
           <Button render={<Link href="/" />}>Submit a Prayer Request</Button>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-4 sm:grid-cols-2 scroll-reveal-stagger">
           {prayers.map((prayer) => (
-            <PraiseCard key={prayer.id} prayer={prayer} />
+            <div key={prayer.id} className="animate-fade-slide-up" style={{ opacity: 0 }}>
+              <PraiseCard prayer={prayer} />
+            </div>
           ))}
         </div>
       )}
