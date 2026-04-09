@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getPrayerById } from '@/services/prayer.service';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -5,6 +6,33 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
+import { ShareButtons } from '@/components/share-buttons';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const prayer = await getPrayerById(id);
+  if (!prayer) return { title: 'Prayer Not Found' };
+
+  const ogUrl = prayer.status === 'answered'
+    ? `/api/og/testimony/${id}`
+    : `/api/og/prayer/${id}`;
+
+  return {
+    title: 'A Prayer Request | Prayer Jar',
+    description: prayer.content.slice(0, 155),
+    openGraph: {
+      title: 'A Prayer Request | Prayer Jar',
+      description: prayer.content.slice(0, 155),
+      images: [{ url: ogUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'A Prayer Request | Prayer Jar',
+      description: prayer.content.slice(0, 155),
+      images: [ogUrl],
+    },
+  };
+}
 
 export default async function SharedPrayerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -45,6 +73,12 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
           )}
         </CardContent>
       </Card>
+
+      <ShareButtons
+        url={`/p/${prayer.id}`}
+        text={prayer.isAnonymous ? 'Someone needs your prayer' : 'Please pray for this request'}
+        variant="bar"
+      />
 
       <div className="flex flex-col gap-3">
         <Button size="lg" render={<Link href="/pray/any" />}>I Prayed — Pray for Another</Button>

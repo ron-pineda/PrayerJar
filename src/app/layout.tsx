@@ -14,6 +14,16 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Prayer Jar',
   description: 'A global prayer jar — share your heart, intercede for others.',
+  openGraph: {
+    title: 'Prayer Jar',
+    description: 'A global prayer jar — share your heart, intercede for others.',
+    siteName: 'Prayer Jar',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Prayer Jar',
+    description: 'A global prayer jar — share your heart, intercede for others.',
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

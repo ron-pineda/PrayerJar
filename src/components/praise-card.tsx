@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
+import { ShareButtons } from '@/components/share-buttons';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -51,6 +52,10 @@ export function PraiseCard({ prayer }: { prayer: Prayer }) {
         <p className="text-xs text-muted-foreground">
           Prayed for {prayer.prayerCount} {prayer.prayerCount === 1 ? 'time' : 'times'}
         </p>
+        <ShareButtons
+          url={`/p/${prayer.id}`}
+          text={prayer.testimony ? `Answered prayer: ${prayer.testimony.slice(0, 80)}` : 'An answered prayer!'}
+        />
       </CardContent>
     </Card>
   );

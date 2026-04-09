@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { prayForRequestAction } from '@/app/actions/interaction.actions';
 import type { Prayer } from '@/db/schema';
+import { ShareButtons } from '@/components/share-buttons';
 
 type Stage = 'reading' | 'prayed' | 'message' | 'done';
 
@@ -56,6 +57,11 @@ export function GuidedPrayer({
       <div className="text-center space-y-4 py-8">
         <p className="text-lg font-medium">Thank you for praying! 🙏</p>
         <p className="text-muted-foreground">Your encouragement has been delivered.</p>
+        <ShareButtons
+          url={`/p/${prayer.id}`}
+          text="I just prayed for someone on Prayer Jar. Will you join me?"
+          variant="bar"
+        />
         <Button onClick={onPrayForAnother}>Pray for Another</Button>
       </div>
     );
