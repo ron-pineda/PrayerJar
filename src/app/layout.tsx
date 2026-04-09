@@ -6,6 +6,8 @@ import { auth } from '@/lib/auth';
 import { NotificationBell } from '@/components/notification-bell';
 import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,8 +20,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await auth();
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+        <ThemeProvider>
         <header className="border-b">
           <nav className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-lg">
@@ -29,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" render={<Link href="/pray" />}>Pray</Button>
               <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Praise Wall</Button>
+              <ThemeToggle />
 
               {session ? (
                 <>
@@ -45,6 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </nav>
         </header>
         {children}
+        </ThemeProvider>
       </body>
     </html>
   );
