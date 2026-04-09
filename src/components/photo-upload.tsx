@@ -48,7 +48,7 @@ export function PhotoUpload({ onUpload, onRemove, url, variant = 'neutral' }: Ph
 
       const { url: blobUrl } = await res.json();
       onUpload(blobUrl);
-
+      if (inputRef.current) inputRef.current.value = '';
       URL.revokeObjectURL(previewUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
