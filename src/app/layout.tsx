@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={inter.className}>
         <header className="border-b">
           <nav className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
