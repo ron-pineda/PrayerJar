@@ -131,6 +131,64 @@ All animations already respect `prefers-reduced-motion` via the existing media q
 
 ---
 
+## Feature 3: Daily Rotating Bible Verse
+
+### Placement
+- **Homepage:** Below the jar and above the CTA buttons
+- **Lights Released page:** Below the sky/lights section and above the time filter + cards
+
+### Behavior
+- One verse shown at a time, selected by day of year (`dayOfYear % verses.length`)
+- Same verse all day; changes at midnight
+- Computed server-side (no client state needed) — just pass the verse as a prop
+
+### Implementation
+**New file:** `src/lib/daily-verse.ts`
+- Exports a curated array of ~30 encouraging Bible verses (text + reference)
+- Exports `getDailyVerse(): { text: string; reference: string }` — picks by `dayOfYear % verses.length`
+
+**Verse list** (hardcoded, curated):
+```
+"For I know the plans I have for you..." — Jeremiah 29:11
+"I can do all things through Christ who strengthens me." — Philippians 4:13
+"The Lord is my shepherd; I shall not want." — Psalm 23:1
+"Cast all your anxiety on him because he cares for you." — 1 Peter 5:7
+"Be still and know that I am God." — Psalm 46:10
+"Trust in the Lord with all your heart..." — Proverbs 3:5-6
+"The Lord is close to the brokenhearted..." — Psalm 34:18
+"Come to me, all you who are weary and burdened..." — Matthew 11:28
+"Do not be anxious about anything..." — Philippians 4:6-7
+"He heals the brokenhearted and binds up their wounds." — Psalm 147:3
+"The Lord will fight for you; you need only to be still." — Exodus 14:14
+"Even though I walk through the darkest valley, I will fear no evil..." — Psalm 23:4
+"Ask and it will be given to you..." — Matthew 7:7
+"For nothing will be impossible with God." — Luke 1:37
+"God is our refuge and strength, an ever-present help in trouble." — Psalm 46:1
+"The prayer of a righteous person is powerful and effective." — James 5:16
+"Do not fear, for I am with you..." — Isaiah 41:10
+"And we know that in all things God works for the good of those who love him." — Romans 8:28
+"Let us therefore come boldly to the throne of grace..." — Hebrews 4:16
+"Before they call I will answer; while they are still speaking I will hear." — Isaiah 65:24
+"The Lord your God is with you, the Mighty Warrior who saves." — Zephaniah 3:17
+"He gives strength to the weary and increases the power of the weak." — Isaiah 40:29
+"Delight yourself in the Lord, and he will give you the desires of your heart." — Psalm 37:4
+"With God all things are possible." — Matthew 19:26
+"For the Lord your God is gracious and compassionate." — 2 Chronicles 30:9
+"Peace I leave with you; my peace I give you." — John 14:27
+"The Lord bless you and keep you..." — Numbers 6:24-26
+"I lift up my eyes to the mountains — where does my help come from?" — Psalm 121:1-2
+"Yet those who wait for the Lord will gain new strength..." — Isaiah 40:31
+"This is the day the Lord has made; let us rejoice and be glad in it." — Psalm 118:24
+```
+
+### Display
+- Italic verse text, muted foreground color
+- Reference in amber, smaller font
+- Subtle separator line above/below
+- No animation — static, calm
+
+---
+
 ## Future: Country Filter
 
 Country filtering on the Lights Released page is deferred. When added, it will require capturing country on prayer submission (IP geolocation or user-selected dropdown). Adds a second filter dimension alongside the time filter.
