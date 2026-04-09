@@ -16,7 +16,7 @@ const LIGHT_SLOTS = [
 ];
 
 const FLOAT_ANIMS = ['light-float-a', 'light-float-b', 'light-float-c'];
-const SIZES = [6, 7, 8, 9, 10, 11, 12, 13];
+const SIZES = [10, 12, 14, 16, 18, 20, 22, 24];
 
 function lightStyle(index: number, slot: { left: number; bottom: number }): React.CSSProperties {
   const floatAnim = FLOAT_ANIMS[index % FLOAT_ANIMS.length];
@@ -33,7 +33,7 @@ function lightStyle(index: number, slot: { left: number; bottom: number }): Reac
     height: size,
     borderRadius: '50%',
     background: 'radial-gradient(circle at 35% 35%, rgba(255,220,120,1), rgba(212,168,67,0.6) 50%, transparent 70%)',
-    boxShadow: '0 0 8px 2px rgba(212,168,67,0.5), 0 0 20px 4px rgba(212,168,67,0.2)',
+    boxShadow: '0 0 12px 4px rgba(212,168,67,0.5), 0 0 30px 8px rgba(212,168,67,0.2)',
     animation: `${floatAnim} ${floatDur}s ease-in-out infinite ${delay}s, light-pulse ${pulseDur}s ease-in-out infinite ${delay * 0.7}s`,
   };
 }
@@ -46,11 +46,11 @@ export function PrayerJar({ count }: { count: number }) {
       {/* Neck */}
       <div
         style={{
-          width: 80,
-          height: 22,
+          width: 'min(200px, 52vw)',
+          height: 55,
           border: '2.5px solid rgba(212,168,67,0.5)',
           borderBottom: 'none',
-          borderRadius: '8px 8px 0 0',
+          borderRadius: '12px 12px 0 0',
           background: 'rgba(255,255,255,0.02)',
         }}
       />
@@ -58,11 +58,11 @@ export function PrayerJar({ count }: { count: number }) {
       <div
         style={{
           position: 'relative',
-          width: 140,
-          height: 180,
+          width: 'min(350px, 90vw)',
+          height: 'min(450px, 115vw)',
           border: '2.5px solid rgba(212,168,67,0.5)',
           borderTop: 'none',
-          borderRadius: '0 0 40px 40px',
+          borderRadius: '0 0 80px 80px',
           background: 'rgba(10,10,20,0.8)',
           overflow: 'hidden',
         }}
@@ -71,24 +71,24 @@ export function PrayerJar({ count }: { count: number }) {
         <div
           style={{
             position: 'absolute',
-            top: 16,
-            left: 14,
-            width: 16,
-            height: 60,
+            top: 24,
+            left: 22,
+            width: 28,
+            height: 110,
             background: 'rgba(255,255,255,0.05)',
-            borderRadius: 8,
+            borderRadius: 14,
             transform: 'rotate(-8deg)',
           }}
         />
         <div
           style={{
             position: 'absolute',
-            top: 10,
-            right: 20,
-            width: 8,
-            height: 30,
+            top: 16,
+            right: 36,
+            width: 14,
+            height: 55,
             background: 'rgba(255,255,255,0.03)',
-            borderRadius: 4,
+            borderRadius: 7,
             transform: 'rotate(5deg)',
           }}
         />

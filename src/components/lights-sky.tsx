@@ -23,7 +23,7 @@ const STAR_POSITIONS = [
 ];
 
 const FLOAT_ANIMS = ['light-float-a', 'light-float-b', 'light-float-c'];
-const SIZES = [7, 8, 9, 10, 11, 12, 13];
+const SIZES = [10, 12, 14, 16, 18, 20, 22];
 
 function skyLightStyle(index: number, slot: { top: number; left: number }): React.CSSProperties {
   const floatAnim = FLOAT_ANIMS[index % FLOAT_ANIMS.length];
@@ -53,7 +53,7 @@ export function LightsSky({ count }: { count: number }) {
       className="relative overflow-hidden rounded-xl mb-8"
       style={{
         background: 'linear-gradient(180deg, #04040a 0%, #080814 50%, #0c0c1a 100%)',
-        minHeight: 200,
+        minHeight: 500,
       }}
       aria-hidden="true"
     >
