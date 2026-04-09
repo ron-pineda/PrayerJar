@@ -74,7 +74,7 @@ export function ShareButtons({ url, text, variant = 'inline' }: ShareButtonsProp
 
   if (variant === 'bar') {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center gap-2">
         <span className="text-xs text-muted-foreground mr-1">Share</span>
         {buttons}
       </div>
