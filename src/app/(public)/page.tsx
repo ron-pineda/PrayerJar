@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PrayerDialog } from '@/components/prayer-dialog';
 import { OnboardingOverlay } from '@/components/onboarding-overlay';
+import { PrayerJar } from '@/components/prayer-jar';
+import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { eq, and, gt, sql } from 'drizzle-orm';
@@ -26,6 +27,7 @@ async function getStats() {
 
 export default async function HomePage() {
   const stats = await getStats();
+  const verse = getDailyVerse();
 
   return (
     <main className="min-h-screen">
@@ -40,39 +42,31 @@ export default async function HomePage() {
           Every prayer matters. Every name is known by God.
         </p>
 
+        <div className="flex justify-center mb-6">
+          <PrayerJar count={stats.active} />
+        </div>
+
+        <p className="text-2xl font-bold text-primary mb-1">{stats.active}</p>
+        <p className="text-sm text-muted-foreground mb-6">prayers in the jar</p>
+
+        {/* Daily verse */}
+        <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
+          <p className="text-sm italic text-muted-foreground leading-relaxed">
+            &ldquo;{verse.text}&rdquo;
+          </p>
+          <p className="text-xs text-primary mt-2">{verse.reference}</p>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <PrayerDialog />
-
           <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="pb-16 px-4">
-        <div className="max-w-md mx-auto grid grid-cols-2 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-3xl font-bold text-center">{stats.active}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center text-sm text-muted-foreground">
-              Active prayer requests
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-3xl font-bold text-center">{stats.answered}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center text-sm text-muted-foreground">
-              Prayers answered
-            </CardContent>
-          </Card>
         </div>
       </section>
 
       {/* Praise Wall CTA */}
       <section className="pb-20 px-4 text-center">
         <p className="text-muted-foreground mb-3">See what God has been doing</p>
-        <Button variant="ghost" render={<Link href="/praise-wall" />}>View the Praise Wall →</Button>
+        <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released →</Button>
       </section>
     </main>
   );
