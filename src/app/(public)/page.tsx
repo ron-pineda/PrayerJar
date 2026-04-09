@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PrayerForm } from '@/components/prayer-form';
+import { PrayerDialog } from '@/components/prayer-dialog';
 import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { eq, and, gt, sql } from 'drizzle-orm';
@@ -40,17 +39,7 @@ export default async function HomePage() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Dialog>
-            <DialogTrigger render={<Button size="lg" />}>
-              Add a Prayer Request
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Share your prayer request</DialogTitle>
-              </DialogHeader>
-              <PrayerForm />
-            </DialogContent>
-          </Dialog>
+          <PrayerDialog />
 
           <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
         </div>

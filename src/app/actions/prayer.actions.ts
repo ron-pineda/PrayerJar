@@ -53,6 +53,6 @@ export async function submitPrayerAction(
       return { success: false, error: 'Your request is being reviewed before it goes live.' };
     }
     console.error('[submitPrayerAction]', err);
-    return { success: false, error: err instanceof Error ? err.message : 'Something went wrong. Please try again.' };
+    return { success: false, error: 'Something went wrong. Please try again.' };
   }
 }
