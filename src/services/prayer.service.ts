@@ -127,3 +127,28 @@ export async function getAnsweredPrayers(category?: CategoryValue) {
     .where(and(...conditions))
     .orderBy(prayers.createdAt);
 }
+
+export async function getAnsweredPrayersFiltered(
+  period: 'week' | 'month' | 'all',
+  category?: CategoryValue,
+) {
+  const conditions = [eq(prayers.status, 'answered')];
+  if (category) conditions.push(eq(prayers.category, category));
+
+  if (period === 'week') {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    conditions.push(gt(prayers.answeredAt, weekAgo));
+  } else if (period === 'month') {
+    const monthAgo = new Date();
+    monthAgo.setDate(monthAgo.getDate() - 30);
+    conditions.push(gt(prayers.answeredAt, monthAgo));
+  }
+  // 'all' — no date filter
+
+  return db
+    .select()
+    .from(prayers)
+    .where(and(...conditions))
+    .orderBy(prayers.createdAt);
+}
