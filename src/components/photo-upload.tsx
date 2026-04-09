@@ -27,18 +27,16 @@ export function PhotoUpload({ onUpload, onRemove, url, variant = 'neutral' }: Ph
 
     setError('');
     setUploading(true);
+    let previewUrl: string | null = null;
 
     try {
-      // Show preview immediately
-      const previewUrl = URL.createObjectURL(file);
+      previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
 
-      // Compress
       const compressed = await compressImage(file);
 
-      // Upload to server
       const formData = new FormData();
-      formData.set('file', compressed, `photo.webp`);
+      formData.set('file', compressed, 'photo.webp');
 
       const res = await fetch('/api/upload', { method: 'POST', body: formData });
       if (!res.ok) {
@@ -49,8 +47,11 @@ export function PhotoUpload({ onUpload, onRemove, url, variant = 'neutral' }: Ph
       const { url: blobUrl } = await res.json();
       onUpload(blobUrl);
       if (inputRef.current) inputRef.current.value = '';
+
       URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
     } catch (err) {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
       setError(err instanceof Error ? err.message : 'Upload failed');
       setPreview(null);
     } finally {

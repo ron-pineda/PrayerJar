@@ -30,7 +30,20 @@ export function useScrollReveal<T extends HTMLElement>() {
       observer.observe(child);
     });
 
-    return () => observer.disconnect();
+    // Fallback: if intersection never fires, make children visible after 3 seconds
+    const fallbackTimer = setTimeout(() => {
+      Array.from(el.children).forEach((child) => {
+        const htmlChild = child as HTMLElement;
+        if (htmlChild.style.opacity === '0') {
+          htmlChild.style.opacity = '';
+        }
+      });
+    }, 3000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   return ref;
