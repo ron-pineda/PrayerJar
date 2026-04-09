@@ -1,11 +1,12 @@
-import { getAnsweredPrayers } from '@/services/prayer.service';
-import { PraiseCard } from '@/components/praise-card';
+import { getAnsweredPrayersFiltered } from '@/services/prayer.service';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
+import { getDailyVerse } from '@/lib/daily-verse';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { LightsReleasedClient } from '@/components/lights-released-client';
 import type { CategoryValue } from '@/db/schema';
 
-export const metadata = { title: 'Praise Wall | The Prayer Jar' };
+export const metadata = { title: 'Lights Released | The Prayer Jar' };
 
 export default async function PraiseWallPage({
   searchParams,
@@ -19,19 +20,29 @@ export default async function PraiseWallPage({
       ? (category as CategoryValue)
       : undefined;
 
-  const prayers = await getAnsweredPrayers(activeCategory);
+  // Default period is 'month'
+  const prayers = await getAnsweredPrayersFiltered('month', activeCategory);
+  const verse = getDailyVerse();
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Praise Wall</h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Lights Released ✨</h1>
         <p className="text-muted-foreground">
-          Celebrating answered prayers and testimonies from our community.
+          Every light was once a prayer. God answered.
         </p>
       </div>
 
+      {/* Daily verse */}
+      <div className="border-t border-b py-4 mb-8 max-w-md mx-auto text-center">
+        <p className="text-sm italic text-muted-foreground leading-relaxed">
+          &ldquo;{verse.text}&rdquo;
+        </p>
+        <p className="text-xs text-primary mt-2">{verse.reference}</p>
+      </div>
+
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-6">
         <Button
           variant={!activeCategory ? 'default' : 'outline'}
           size="sm"
@@ -51,23 +62,7 @@ export default async function PraiseWallPage({
         ))}
       </div>
 
-      {prayers.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-lg font-medium mb-2">No answered prayers yet in this category.</p>
-          <p className="text-muted-foreground mb-6">
-            Be the first to share when God answers your prayer!
-          </p>
-          <Button render={<Link href="/" />}>Submit a Prayer Request</Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 scroll-reveal-stagger">
-          {prayers.map((prayer) => (
-            <div key={prayer.id} className="animate-fade-slide-up" style={{ opacity: 0 }}>
-              <PraiseCard prayer={prayer} />
-            </div>
-          ))}
-        </div>
-      )}
+      <LightsReleasedClient initialPrayers={prayers} category={activeCategory} />
     </main>
   );
 }
