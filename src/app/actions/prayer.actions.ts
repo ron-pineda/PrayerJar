@@ -52,6 +52,7 @@ export async function submitPrayerAction(
       if (err.selfHarm) return { success: false, error: 'selfHarm', selfHarm: true };
       return { success: false, error: 'Your request is being reviewed before it goes live.' };
     }
-    return { success: false, error: 'Something went wrong. Please try again.' };
+    console.error('[submitPrayerAction]', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Something went wrong. Please try again.' };
   }
 }
