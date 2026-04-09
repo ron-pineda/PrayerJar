@@ -1,7 +1,7 @@
-import { generateText, Output } from 'ai';
+import { generateText, Output, gateway } from 'ai';
 import { z } from 'zod';
 
-const MODEL = 'anthropic/claude-haiku-4.5';
+const MODEL = gateway('anthropic/claude-haiku-4.5');
 
 const categorizationSchema = z.object({
   category: z.enum([
