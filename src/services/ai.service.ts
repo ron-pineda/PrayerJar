@@ -54,3 +54,35 @@ Content: "${content}"`,
   if (!output) throw new Error('AI moderation returned no output');
   return output;
 }
+
+export async function moderateImage(imageUrl: string): Promise<{
+  safe: boolean;
+  reason?: string;
+}> {
+  const { output } = await generateText({
+    model: MODEL,
+    output: Output.object({
+      schema: z.object({
+        safe: z.boolean(),
+        reason: z.string().optional(),
+      }),
+    }),
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: 'Review this image for a Christian prayer website. Mark as unsafe only if it contains: nudity, graphic violence, hate symbols, explicit content, or spam/advertisements. Most prayer-related photos (people, nature, hospitals, churches) are safe.',
+          },
+          {
+            type: 'image',
+            image: imageUrl,
+          },
+        ],
+      },
+    ],
+  });
+  if (!output) throw new Error('AI image moderation returned no output');
+  return output;
+}

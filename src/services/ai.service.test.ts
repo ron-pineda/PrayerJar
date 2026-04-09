@@ -9,7 +9,7 @@ vi.mock('ai', () => ({
 }));
 
 import { generateText } from 'ai';
-import { categorizePrayer, moderateContent } from './ai.service';
+import { categorizePrayer, moderateContent, moderateImage } from './ai.service';
 
 describe('categorizePrayer', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -52,5 +52,18 @@ describe('moderateContent', () => {
     const result = await moderateContent('BUY CHEAP FOLLOWERS NOW!!!');
     expect(result.safe).toBe(false);
     expect(result.reason).toBe('spam');
+  });
+});
+
+describe('moderateImage', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('returns safe: true for appropriate images', async () => {
+    vi.mocked(generateText).mockResolvedValue({
+      output: { safe: true },
+    } as any);
+
+    const result = await moderateImage('https://example.com/photo.webp');
+    expect(result.safe).toBe(true);
   });
 });
