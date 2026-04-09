@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { submitPrayerAction } from '@/app/actions/prayer.actions';
 import { CrisisResources } from './crisis-resources';
+import { PhotoUpload } from './photo-upload';
 
 export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) {
   const [pending, setPending] = useState(false);
@@ -14,6 +15,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
   const [showCrisis, setShowCrisis] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,6 +25,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
     const formData = new FormData(e.currentTarget);
     formData.set('isAnonymous', String(isAnonymous));
     formData.set('isUrgent', String(isUrgent));
+    if (imageUrl) formData.set('imageUrl', imageUrl);
 
     const result = await submitPrayerAction(formData);
     setPending(false);
@@ -30,6 +33,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
     if (result.success) {
       onSuccess?.(result.prayerId);
       (e.target as HTMLFormElement).reset();
+      setImageUrl(null);
     } else if (result.selfHarm) {
       setShowCrisis(true);
     } else {
@@ -52,6 +56,12 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
             maxLength={1000}
           />
         </div>
+
+        <PhotoUpload
+          url={imageUrl}
+          onUpload={setImageUrl}
+          onRemove={() => setImageUrl(null)}
+        />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

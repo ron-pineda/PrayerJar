@@ -11,6 +11,7 @@ const submitPrayerSchema = z.object({
   content: z.string().min(10, 'Please write at least 10 characters').max(1000),
   isAnonymous: z.boolean(),
   isUrgent: z.boolean(),
+  imageUrl: z.string().url().nullable().optional(),
 });
 
 export type SubmitPrayerResult =
@@ -26,6 +27,7 @@ export async function submitPrayerAction(
     content: formData.get('content'),
     isAnonymous: formData.get('isAnonymous') === 'true',
     isUrgent: formData.get('isUrgent') === 'true',
+    imageUrl: formData.get('imageUrl') || null,
   });
 
   if (!parsed.success) {
@@ -44,6 +46,7 @@ export async function submitPrayerAction(
     const prayer = await createPrayer({
       ...parsed.data,
       authorId: session?.user?.id ?? null,
+      imageUrl: parsed.data.imageUrl ?? null,
     });
     revalidatePath('/');
     return { success: true, prayerId: prayer.id };
