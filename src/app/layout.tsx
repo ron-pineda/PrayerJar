@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { MobileNav } from '@/components/mobile-nav';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -58,7 +59,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </nav>
         </header>
-        {children}
+        <div className="pb-16 md:pb-0">
+          {children}
+        </div>
+        <MobileNav />
         </ThemeProvider>
       </body>
     </html>
