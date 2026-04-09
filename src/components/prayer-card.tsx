@@ -81,6 +81,15 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
       <CardContent className="space-y-3">
         <p className="text-sm leading-relaxed">{prayer.content}</p>
 
+        {prayer.imageUrl && (
+          <img
+            src={prayer.imageUrl}
+            alt="Prayer photo"
+            className="w-full h-48 object-cover rounded-lg"
+            loading="lazy"
+          />
+        )}
+
         {prayer.suggestedVerse && (
           <p className="text-xs text-muted-foreground italic">✝️ {prayer.suggestedVerse}</p>
         )}
@@ -151,6 +160,14 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
           <div className="border-l-4 border-amber-400 pl-3">
             <p className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-1">Testimony</p>
             <p className="text-sm">{prayer.testimony}</p>
+            {prayer.imageUrl && (
+              <img
+                src={prayer.imageUrl}
+                alt="Testimony photo"
+                className="w-full h-48 object-cover rounded-lg mt-2"
+                loading="lazy"
+              />
+            )}
           </div>
         )}
       </CardContent>

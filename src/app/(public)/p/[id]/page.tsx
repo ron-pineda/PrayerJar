@@ -35,6 +35,14 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
           {prayer.suggestedVerse && (
             <p className="mt-4 text-sm text-muted-foreground italic">✝️ {prayer.suggestedVerse}</p>
           )}
+          {prayer.imageUrl && (
+            <img
+              src={prayer.imageUrl}
+              alt="Prayer photo"
+              className="w-full h-48 object-cover rounded-lg mt-4"
+              loading="lazy"
+            />
+          )}
         </CardContent>
       </Card>
 

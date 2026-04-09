@@ -39,6 +39,15 @@ export function PraiseCard({ prayer }: { prayer: Prayer }) {
           <p className="text-sm">{prayer.content}</p>
         )}
 
+        {prayer.imageUrl && (
+          <img
+            src={prayer.imageUrl}
+            alt="Testimony photo"
+            className="w-full h-48 object-cover rounded-lg"
+            loading="lazy"
+          />
+        )}
+
         <p className="text-xs text-muted-foreground">
           Prayed for {prayer.prayerCount} {prayer.prayerCount === 1 ? 'time' : 'times'}
         </p>

@@ -75,6 +75,14 @@ export function GuidedPrayer({
               Urgent
             </span>
           )}
+          {prayer.imageUrl && (
+            <img
+              src={prayer.imageUrl}
+              alt="Prayer photo"
+              className="w-full h-48 object-cover rounded-lg mt-4"
+              loading="lazy"
+            />
+          )}
         </CardContent>
       </Card>
 
