@@ -51,6 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {session ? (
                 <>
                   <Button variant="ghost" size="sm" render={<Link href="/my-prayers" />}>My Prayers</Button>
+                  <Button variant="ghost" size="sm" render={<Link href="/saved-churches" />}>Saved Churches</Button>
                   <NotificationBell />
                   <form action={async () => { 'use server'; await signOut(); }}>
                     <Button variant="ghost" size="sm" type="submit">Sign Out</Button>
