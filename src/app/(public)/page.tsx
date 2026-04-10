@@ -46,8 +46,17 @@ export default async function HomePage() {
           <PrayerJar count={stats.active} />
         </div>
 
-        <p className="text-2xl font-bold text-primary mb-1">{stats.active}</p>
-        <p className="text-sm text-muted-foreground mb-6">prayers in the jar</p>
+        <div className="flex justify-center gap-8 mb-6">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-primary">{stats.active}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">prayers waiting</p>
+          </div>
+          <div className="w-px bg-border" />
+          <div className="text-center">
+            <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{stats.answered}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">lights released ✨</p>
+          </div>
+        </div>
 
         {/* Daily verse */}
         <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
@@ -63,12 +72,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Lights Released CTA */}
+      {/* Secondary CTAs */}
       <section className="pb-20 px-4 text-center">
-        <p className="text-muted-foreground mb-3">See what God has been doing</p>
-        <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released →</Button>
-        <div className="mt-3">
-          <Button variant="ghost" render={<Link href="/know-jesus" />}>Know Jesus →</Button>
+        <div className="border-t max-w-xs mx-auto mb-8" />
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button variant="ghost" render={<Link href="/praise-wall" />}>✨ View Lights Released</Button>
+          <Button variant="ghost" render={<Link href="/find-a-church" />}>⛪ Find a Church</Button>
+          <Button variant="ghost" render={<Link href="/know-jesus" />}>✝️ Know Jesus</Button>
         </div>
       </section>
     </main>
