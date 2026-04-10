@@ -55,7 +55,7 @@ export function ChurchMap({
 
       churches.forEach((church, i) => {
         const isVerified = church.claim?.verified === true;
-        const isEnriched = church.recommendations.length > 0;
+        const isEnriched = church.claim !== null || church.recommendations.length > 0;
         const color = isVerified ? "#10b981" : isEnriched ? "#0d9488" : "#64748b";
 
         const icon = L.divIcon({
