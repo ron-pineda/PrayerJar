@@ -40,7 +40,10 @@ export default async function ChurchDetailPage({
             <p className="text-slate-400 text-sm mt-1">{church.address}</p>
             <div className="flex gap-2 flex-wrap mt-3">
               {isVerified && (
-                <span className="bg-emerald-950 text-emerald-400 text-[11px] px-2 py-1 rounded border border-emerald-900">
+                <span
+                  title="This church has been claimed by a verified leader and recommended by the community."
+                  className="bg-emerald-950 text-emerald-400 text-[11px] px-2 py-1 rounded border border-emerald-900 cursor-help"
+                >
                   ✓ Community Verified
                 </span>
               )}

@@ -78,7 +78,10 @@ export function ChurchCard({
       {isEnriched && (
         <div className="flex gap-1.5 flex-wrap mt-2 mb-2">
           {isVerified && (
-            <span className="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-900">
+            <span
+              title="This church has been claimed by a verified leader and recommended by the community."
+              className="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-900 cursor-help"
+            >
               ✓ Community Verified
             </span>
           )}
