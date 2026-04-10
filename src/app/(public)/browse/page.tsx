@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = { title: "Browse Prayers | The Prayer Jar" };
 
+export const dynamic = 'force-dynamic';
+
 export default async function BrowsePage({
   searchParams,
 }: {
@@ -46,7 +48,7 @@ export default async function BrowsePage({
         {results.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-4">
-              {q ? `No prayers found for "${q}".` : "No prayers found with these filters."}
+              {q ? `No prayers found for "${q.slice(0, 100)}".` : "No prayers found with these filters."}
             </p>
             <Button variant="outline" render={<Link href="/browse" />}>Clear filters</Button>
           </div>

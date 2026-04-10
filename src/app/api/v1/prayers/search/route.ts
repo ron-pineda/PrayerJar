@@ -7,8 +7,8 @@ export async function GET(request: NextRequest) {
   const q = searchParams.get('q') ?? undefined;
   const category = (searchParams.get('category') ?? 'any') as CategoryValue | 'any';
   const urgent = searchParams.get('urgent') === '1';
-  const limit = Math.min(Number(searchParams.get('limit') ?? 20), 50);
-  const offset = Number(searchParams.get('offset') ?? 0);
+  const limit = Math.min(Number(searchParams.get('limit') ?? 20) || 20, 50);
+  const offset = Math.max(0, Number(searchParams.get('offset') ?? 0) || 0);
 
   try {
     const results = await searchPrayers({ query: q, category, urgentOnly: urgent, limit, offset });
