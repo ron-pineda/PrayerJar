@@ -1,6 +1,6 @@
 import {
   pgTable, pgEnum, uuid, text, boolean, integer,
-  timestamp, date, primaryKey,
+  timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
 
@@ -135,6 +135,71 @@ export const salvationDecisions = pgTable('salvation_decisions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// --- Church Finder ---
+
+export const savedChurches = pgTable(
+  "saved_churches",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    googlePlaceId: text("google_place_id").notNull(),
+    name: text("name").notNull(),
+    address: text("address").notNull(),
+    savedAt: timestamp("saved_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("saved_churches_user_place_idx").on(t.userId, t.googlePlaceId)]
+);
+
+export const churchClaims = pgTable("church_claims", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  googlePlaceId: text("google_place_id").notNull().unique(),
+  claimedByUserId: uuid("claimed_by_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  churchEmail: text("church_email").notNull(),
+  denomination: text("denomination"),
+  worshipStyle: text("worship_style"),
+  serviceTimes: jsonb("service_times").$type<
+    { day: string; time: string; label: string }[]
+  >(),
+  website: text("website"),
+  description: text("description"),
+  verified: boolean("verified").notNull().default(false),
+  verifyToken: text("verify_token"),
+  verifyTokenExpiresAt: timestamp("verify_token_expires_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const churchRecommendations = pgTable(
+  "church_recommendations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    googlePlaceId: text("google_place_id").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    denomination: text("denomination"),
+    worshipStyle: text("worship_style"),
+    note: text("note").notNull(),
+    newcomerFriendly: boolean("newcomer_friendly").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("church_recommendations_user_place_idx").on(t.userId, t.googlePlaceId)]
+);
+
+export const churchSearchCache = pgTable("church_search_cache", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  lat: doublePrecision("lat").notNull(),
+  lng: doublePrecision("lng").notNull(),
+  radiusMiles: integer("radius_miles").notNull(),
+  results: jsonb("results").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Prayer = typeof prayers.$inferSelect;
 export type PrayerInteraction = typeof prayerInteractions.$inferSelect;
@@ -142,5 +207,8 @@ export type Notification = typeof notifications.$inferSelect;
 export type Badge = typeof badges.$inferSelect;
 export type Report = typeof reports.$inferSelect;
 export type SalvationDecision = typeof salvationDecisions.$inferSelect;
+export type SavedChurch = typeof savedChurches.$inferSelect;
+export type ChurchClaim = typeof churchClaims.$inferSelect;
+export type ChurchRecommendation = typeof churchRecommendations.$inferSelect;
 export type CategoryValue = typeof categoryEnum.enumValues[number];
 export type BadgeType = typeof badgeTypeEnum.enumValues[number];
