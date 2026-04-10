@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
         <ThemeProvider>
         <header className="border-b">
           <nav className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </nav>
         </header>
-        <div className="pb-16 md:pb-0">
+        <div className="flex-1 pb-16 md:pb-0">
           {children}
         </div>
         <MobileNav />

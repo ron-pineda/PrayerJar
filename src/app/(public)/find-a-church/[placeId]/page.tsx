@@ -100,7 +100,7 @@ export default async function ChurchDetailPage({
               </span>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {church.claim.serviceTimes.map((s, i) => (
               <div key={i} className="bg-slate-800 rounded-lg p-3 text-center">
                 <p className="text-slate-500 text-[10px] uppercase tracking-wider">{s.day}</p>
