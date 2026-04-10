@@ -13,6 +13,11 @@ const WINDOWS: Record<string, { limit: number; windowMs: number }> = {
   church_claim_verify: { limit: 10, windowMs: 60 * 60 * 1000 },
 };
 
+// Global daily cap for Google Places API calls to stay within free tier.
+// 150 searches/day × $0.037/search ≈ $5.55/day max → well within $200/month credit.
+const GLOBAL_DAILY_SEARCH_LIMIT = 150;
+const GLOBAL_SEARCH_KEY = 'church_search:global';
+
 export async function checkRateLimit(
   action: keyof typeof WINDOWS,
   identifier: string
@@ -42,4 +47,28 @@ export async function checkRateLimit(
     .where(sql`id = ${row.id}`);
 
   return { allowed: true, remaining: limit - row.count - 1 };
+}
+
+export async function checkGlobalChurchSearchLimit(): Promise<boolean> {
+  const windowStart = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const [row] = await db
+    .select()
+    .from(rateLimits)
+    .where(sql`key = ${GLOBAL_SEARCH_KEY} AND window_start > ${windowStart}`)
+    .limit(1);
+
+  if (!row) {
+    await db.insert(rateLimits).values({ key: GLOBAL_SEARCH_KEY }).onConflictDoNothing();
+    return true;
+  }
+
+  if (row.count >= GLOBAL_DAILY_SEARCH_LIMIT) return false;
+
+  await db
+    .update(rateLimits)
+    .set({ count: sql`count + 1` })
+    .where(sql`id = ${row.id}`);
+
+  return true;
 }

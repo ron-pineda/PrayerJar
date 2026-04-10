@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { searchChurches } from "@/services/church.service";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, checkGlobalChurchSearchLimit } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
@@ -20,7 +20,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "radius must be 5, 10, 25, or 50" }, { status: 400 });
   }
 
-  const session = await auth();
-  const results = await searchChurches({ lat, lng, radiusMiles, userId: session?.user?.id ?? null });
-  return NextResponse.json(results);
+  const globalAllowed = await checkGlobalChurchSearchLimit();
+  if (!globalAllowed) {
+    console.warn("[church_search] Global daily limit reached");
+    return NextResponse.json({ error: "Search unavailable — daily limit reached. Try again tomorrow." }, { status: 429 });
+  }
+
+  try {
+    const session = await auth();
+    const results = await searchChurches({ lat, lng, radiusMiles, userId: session?.user?.id ?? null });
+    return NextResponse.json(results);
+  } catch (err) {
+    console.error("[church_search] searchChurches failed:", err);
+    return NextResponse.json({ error: "Search failed. Please try again." }, { status: 500 });
+  }
 }
