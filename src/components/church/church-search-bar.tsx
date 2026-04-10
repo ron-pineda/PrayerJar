@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MapPin, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export type SearchParams = {
   lat: number;
@@ -41,7 +42,7 @@ export function ChurchSearchBar({
     if (!address.trim()) return;
     const res = await fetch(`/api/v1/churches/geocode?address=${encodeURIComponent(address)}`);
     if (!res.ok) {
-      alert("We couldn't find that location. Try a zip code or a more specific address.");
+      toast.error("Couldn't find that location. Please try a different address.");
       return;
     }
     const { lat, lng, formattedAddress } = await res.json();

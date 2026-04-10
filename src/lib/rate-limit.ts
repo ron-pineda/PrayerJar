@@ -7,6 +7,10 @@ const WINDOWS: Record<string, { limit: number; windowMs: number }> = {
   pray: { limit: 20, windowMs: 60 * 60 * 1000 },
   message: { limit: 10, windowMs: 60 * 60 * 1000 },
   salvation: { limit: 3, windowMs: 24 * 60 * 60 * 1000 },
+  church_search: { limit: 30, windowMs: 60 * 60 * 1000 },
+  church_geocode: { limit: 20, windowMs: 60 * 60 * 1000 },
+  church_claim: { limit: 3, windowMs: 60 * 60 * 1000 },
+  church_claim_verify: { limit: 10, windowMs: 60 * 60 * 1000 },
 };
 
 export async function checkRateLimit(

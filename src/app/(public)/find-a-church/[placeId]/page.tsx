@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { getChurchDetail } from "@/services/church.service";
 import { RecommendForm } from "@/components/church/recommend-form";
 import { ClaimForm } from "@/components/church/claim-form";
-import { Heart, ExternalLink, MapPin, Share2 } from "lucide-react";
+import { SaveChurchButton } from "@/components/church/save-church-button";
+import { ExternalLink, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default async function ChurchDetailPage({
@@ -61,9 +62,12 @@ export default async function ChurchDetailPage({
             </div>
           </div>
           <div className="flex gap-3 ml-4">
-            <button aria-label="Save church" className="text-slate-400 hover:text-rose-400">
-              <Heart className={`h-5 w-5 ${church.savedByUser ? "fill-rose-500 text-rose-500" : ""}`} />
-            </button>
+            <SaveChurchButton
+              placeId={church.placeId}
+              name={church.name}
+              address={church.address}
+              initialSaved={church.savedByUser}
+            />
             <button aria-label="Share church" className="text-slate-400 hover:text-slate-300">
               <Share2 className="h-5 w-5" />
             </button>
@@ -152,7 +156,7 @@ export default async function ChurchDetailPage({
               <div key={rec.id} className="bg-slate-800 rounded-xl p-4 border-l-[3px] border-l-emerald-500">
                 <p className="text-slate-300 text-sm italic leading-relaxed">"{rec.note}"</p>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-slate-500 text-xs">— {rec.userId.slice(0, 8)}</span>
+                  <span className="text-slate-500 text-xs">— Community Member</span>
                   <span className="text-slate-500 text-xs">{new Date(rec.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>

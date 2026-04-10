@@ -7,6 +7,11 @@ export async function GET(
   { params }: { params: Promise<{ placeId: string }> }
 ) {
   const { placeId } = await params;
+
+  if (!/^[\w\-]+$/.test(placeId)) {
+    return NextResponse.json({ error: "Invalid place ID" }, { status: 400 });
+  }
+
   const session = await auth();
   const detail = await getChurchDetail(placeId, session?.user?.id ?? null);
   if (!detail) return NextResponse.json({ error: "Not found" }, { status: 404 });

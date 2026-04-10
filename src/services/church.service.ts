@@ -328,7 +328,7 @@ export async function initiateClaim({
     })
     .onConflictDoUpdate({
       target: churchClaims.googlePlaceId,
-      set: { claimedByUserId: userId, churchEmail, verified: false, verifyToken: token, verifyTokenExpiresAt: expiresAt },
+      set: { claimedByUserId: userId, churchEmail, verified: false, verifyToken: token, verifyTokenExpiresAt: expiresAt, updatedAt: new Date() },
     });
 
   const verifyUrl = `${process.env.NEXTAUTH_URL}/api/v1/churches/${googlePlaceId}/claim/verify?token=${token}`;
