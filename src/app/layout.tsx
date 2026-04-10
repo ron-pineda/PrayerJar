@@ -66,6 +66,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           {children}
         </div>
         <MobileNav />
+        <footer className="border-t mt-auto py-6 px-4">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+            <span>© {new Date().getFullYear()} The Prayer Jar</span>
+            <div className="flex gap-4">
+              <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+              <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+            </div>
+          </div>
+        </footer>
         </ThemeProvider>
       </body>
     </html>
