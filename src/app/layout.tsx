@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { NotificationBell } from '@/components/notification-bell';
 import { Button } from '@/components/ui/button';
-import { signOut } from '@/lib/auth';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { MobileNav } from '@/components/mobile-nav';
+import { UserMenu } from '@/components/user-menu';
+import { SignOutButton } from '@/components/sign-out-button';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -50,13 +51,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
               {session ? (
                 <>
-                  <Button variant="ghost" size="sm" render={<Link href="/my-prayers" />}>My Prayers</Button>
-                  <Button variant="ghost" size="sm" render={<Link href="/saved-churches" />}>Saved Churches</Button>
-                  <Button variant="ghost" size="sm" render={<Link href="/profile" />}>Profile</Button>
                   <NotificationBell />
-                  <form action={async () => { 'use server'; await signOut(); }}>
-                    <Button variant="ghost" size="sm" type="submit">Sign Out</Button>
-                  </form>
+                  <UserMenu
+                    userName={session.user?.name}
+                    signOutSlot={<SignOutButton />}
+                  />
                 </>
               ) : (
                 <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>Sign In</Button>
