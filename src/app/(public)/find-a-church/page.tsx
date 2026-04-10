@@ -1,20 +1,167 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+// src/app/(public)/find-a-church/page.tsx
+"use client";
 
-export const metadata = { title: 'Find a Church | The Prayer Jar' };
+import { useState, lazy, Suspense } from "react";
+import { useSession } from "next-auth/react";
+import { ChurchSearchBar, type SearchParams } from "@/components/church/church-search-bar";
+import { ChurchCard } from "@/components/church/church-card";
+import { useRouter } from "next/navigation";
+import type { ChurchResult } from "@/services/church.service";
+
+const ChurchMap = lazy(() =>
+  import("@/components/church/church-map").then((m) => ({ default: m.ChurchMap }))
+);
+
+type SortOption = "distance" | "verified";
 
 export default function FindAChurchPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [results, setResults] = useState<ChurchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [searchCoords, setSearchCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [searchAddress, setSearchAddress] = useState("");
+  const [highlightedPlaceId, setHighlightedPlaceId] = useState<string | null>(null);
+  const [sort, setSort] = useState<SortOption>("distance");
+  const [activeTab, setActiveTab] = useState<"list" | "map">("list");
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 12;
+
+  async function handleSearch({ lat, lng, radiusMiles, formattedAddress }: SearchParams) {
+    setLoading(true);
+    setSearchCoords({ lat, lng });
+    setSearchAddress(formattedAddress);
+    const res = await fetch(`/api/v1/churches/search?lat=${lat}&lng=${lng}&radius=${radiusMiles}`);
+    const data: ChurchResult[] = await res.json();
+    setResults(data);
+    setSearched(true);
+    setLoading(false);
+  }
+
+  const sorted = [...results].sort((a, b) => {
+    if (sort === "verified") {
+      const aScore = (a.claim?.verified ? 2 : 0) + (a.recommendations.length > 0 ? 1 : 0);
+      const bScore = (b.claim?.verified ? 2 : 0) + (b.recommendations.length > 0 ? 1 : 0);
+      if (bScore !== aScore) return bScore - aScore;
+    }
+    return a.distanceMiles - b.distanceMiles;
+  });
+
+  const paginated = sorted.slice(0, (page + 1) * PAGE_SIZE);
+
   return (
-    <main className="max-w-2xl mx-auto px-4 py-20 text-center">
-      <h1 className="text-3xl font-bold tracking-tight mb-4">Find a Church Near You</h1>
-      <p className="text-muted-foreground mb-8 text-lg">
-        We&rsquo;re building this feature. Check back soon!
-      </p>
-      <p className="text-sm text-muted-foreground mb-8">
-        In the meantime, you can search for &ldquo;Bible-based churches near me&rdquo; on Google
-        Maps or ask someone in your community.
-      </p>
-      <Button render={<Link href="/" />}>Back to the Prayer Jar</Button>
-    </main>
+    <div className="flex flex-col h-screen bg-slate-900">
+      <ChurchSearchBar
+        onSearch={handleSearch}
+        loading={loading}
+        compact={searched}
+        currentAddress={searchAddress}
+      />
+
+      {/* Sort + count bar */}
+      {searched && (
+        <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+          <span>{results.length} churches found</span>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortOption)}
+            className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-300"
+          >
+            <option value="distance">Sort: Distance</option>
+            <option value="verified">Sort: Community Verified First</option>
+          </select>
+        </div>
+      )}
+
+      {/* Mobile tab toggle */}
+      {searched && (
+        <div className="flex border-b border-slate-800 md:hidden">
+          {(["list", "map"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2.5 text-sm capitalize ${
+                activeTab === tab
+                  ? "text-blue-400 border-b-2 border-blue-400"
+                  : "text-slate-500"
+              }`}
+            >
+              {tab === "list" ? `List (${results.length})` : "Map"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Results area */}
+      {!searched ? (
+        <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
+          Search for churches above to get started.
+        </div>
+      ) : (
+        <div className="flex-1 flex overflow-hidden">
+          {/* Card list */}
+          <div
+            className={`w-full md:w-[45%] overflow-y-auto p-3 space-y-2 ${
+              activeTab === "map" ? "hidden md:block" : ""
+            }`}
+          >
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-slate-800 rounded-xl h-28 animate-pulse" />
+              ))
+            ) : sorted.length === 0 ? (
+              <div className="text-center py-12 text-slate-400 text-sm">
+                <p className="mb-3">No churches found in this area.</p>
+                <button
+                  onClick={() => handleSearch({ lat: searchCoords!.lat, lng: searchCoords!.lng, radiusMiles: 50, formattedAddress: searchAddress })}
+                  className="text-blue-400 hover:underline"
+                >
+                  Try expanding to 50 miles
+                </button>
+              </div>
+            ) : (
+              <>
+                {paginated.map((church) => (
+                  <ChurchCard
+                    key={church.placeId}
+                    church={church}
+                    isHighlighted={highlightedPlaceId === church.placeId}
+                    onHover={setHighlightedPlaceId}
+                    onCardClick={(id) => router.push(`/find-a-church/${id}`)}
+                    isLoggedIn={!!session?.user}
+                  />
+                ))}
+                {paginated.length < sorted.length && (
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    className="w-full py-3 text-sm text-blue-400 hover:text-blue-300 border border-slate-700 rounded-xl"
+                  >
+                    Show more ({sorted.length - paginated.length} remaining)
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Map */}
+          <div
+            className={`flex-1 md:block ${activeTab === "list" ? "hidden md:block" : ""}`}
+          >
+            {searchCoords && (
+              <Suspense fallback={<div className="h-full bg-slate-800 animate-pulse" />}>
+                <ChurchMap
+                  churches={sorted}
+                  userLat={searchCoords.lat}
+                  userLng={searchCoords.lng}
+                  highlightedPlaceId={highlightedPlaceId}
+                  onPinHover={setHighlightedPlaceId}
+                />
+              </Suspense>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
