@@ -3,6 +3,7 @@ import { render } from '@react-email/components';
 import PrayerNotificationEmail from '@/emails/prayer-notification';
 import EncouragementEmail from '@/emails/encouragement-message';
 import BadgeEarnedEmail from '@/emails/badge-earned';
+import { ChurchClaimVerifyEmail } from '@/emails/church-claim-verify';
 import { db } from '@/db';
 import { prayerInteractions, prayers, users, type BadgeType } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -90,10 +91,16 @@ export async function sendBadgeEmail(email: string, badgeType: BadgeType) {
   });
 }
 
-// Stub — full implementation in Task 6
 export async function sendClaimVerificationEmail(
-  _churchEmail: string,
-  _params: { claimerName: string; role: string; verifyUrl: string }
-): Promise<void> {
-  // TODO: implement in Task 6
+  email: string,
+  { claimerName, role, verifyUrl }: { claimerName: string; role: string; verifyUrl: string }
+) {
+  const html = await render(ChurchClaimVerifyEmail({ claimerName, role, verifyUrl }));
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "Verify your church listing on The Prayer Jar",
+    html,
+  });
 }
