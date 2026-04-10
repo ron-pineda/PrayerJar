@@ -1,7 +1,7 @@
 // src/app/(public)/find-a-church/page.tsx
 "use client";
 
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { ChurchSearchBar, type SearchParams } from "@/components/church/church-search-bar";
 import { ChurchCard } from "@/components/church/church-card";
@@ -19,6 +19,7 @@ export default function FindAChurchPage() {
   const router = useRouter();
   const [results, setResults] = useState<ChurchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
   const [searchCoords, setSearchCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [searchAddress, setSearchAddress] = useState("");
@@ -30,23 +31,34 @@ export default function FindAChurchPage() {
 
   async function handleSearch({ lat, lng, radiusMiles, formattedAddress }: SearchParams) {
     setLoading(true);
+    setError(null);
     setSearchCoords({ lat, lng });
     setSearchAddress(formattedAddress);
-    const res = await fetch(`/api/v1/churches/search?lat=${lat}&lng=${lng}&radius=${radiusMiles}`);
-    const data: ChurchResult[] = await res.json();
-    setResults(data);
-    setSearched(true);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/v1/churches/search?lat=${lat}&lng=${lng}&radius=${radiusMiles}`);
+      if (!res.ok) throw new Error(`Search failed (${res.status})`);
+      const data: ChurchResult[] = await res.json();
+      setResults(data);
+      setSearched(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const sorted = [...results].sort((a, b) => {
-    if (sort === "verified") {
-      const aScore = (a.claim?.verified ? 2 : 0) + (a.recommendations.length > 0 ? 1 : 0);
-      const bScore = (b.claim?.verified ? 2 : 0) + (b.recommendations.length > 0 ? 1 : 0);
-      if (bScore !== aScore) return bScore - aScore;
-    }
-    return a.distanceMiles - b.distanceMiles;
-  });
+  const sorted = useMemo(
+    () =>
+      [...results].sort((a, b) => {
+        if (sort === "verified") {
+          const aScore = (a.claim?.verified ? 2 : 0) + (a.recommendations.length > 0 ? 1 : 0);
+          const bScore = (b.claim?.verified ? 2 : 0) + (b.recommendations.length > 0 ? 1 : 0);
+          if (bScore !== aScore) return bScore - aScore;
+        }
+        return a.distanceMiles - b.distanceMiles;
+      }),
+    [results, sort]
+  );
 
   const paginated = sorted.slice(0, (page + 1) * PAGE_SIZE);
 
@@ -90,6 +102,13 @@ export default function FindAChurchPage() {
               {tab === "list" ? `List (${results.length})` : "Map"}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Error message */}
+      {error && (
+        <div className="px-4 py-3 text-sm text-red-400 bg-red-950/30 border border-red-900 rounded-lg mx-4 mt-2">
+          {error}
         </div>
       )}
 
