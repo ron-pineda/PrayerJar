@@ -128,6 +128,40 @@ export async function getAnsweredPrayers(category?: CategoryValue) {
     .orderBy(prayers.createdAt);
 }
 
+export async function searchPrayers(opts: {
+  query?: string;
+  category?: CategoryValue | 'any';
+  urgentOnly?: boolean;
+  limit?: number;
+  offset?: number;
+}) {
+  const { query, category, urgentOnly, limit = 20, offset = 0 } = opts;
+  const now = new Date();
+
+  const conditions = [
+    eq(prayers.status, 'active'),
+    gt(prayers.expiresAt, now),
+  ];
+
+  if (category && category !== 'any') {
+    conditions.push(eq(prayers.category, category as CategoryValue));
+  }
+  if (urgentOnly) {
+    conditions.push(eq(prayers.isUrgent, true));
+  }
+  if (query && query.trim().length > 0) {
+    conditions.push(sql`content ILIKE ${'%' + query.trim() + '%'}`);
+  }
+
+  return db
+    .select()
+    .from(prayers)
+    .where(and(...conditions))
+    .orderBy(prayers.createdAt)
+    .limit(limit)
+    .offset(offset);
+}
+
 export async function getAnsweredPrayersFiltered(
   period: 'week' | 'month' | 'all',
   category?: CategoryValue,

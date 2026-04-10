@@ -1,4 +1,6 @@
 import { CategoryPicker } from '@/components/category-picker';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export const metadata = { title: 'Pray for Someone | The Prayer Jar' };
 
@@ -17,6 +19,12 @@ export default async function PrayPage({
         Choose a category — we&apos;ll bring you a prayer request to intercede for.
       </p>
       <CategoryPicker urgentOnly={urgentOnly} />
+      <div className="mt-8 text-center">
+        <p className="text-sm text-muted-foreground mb-2">Want to browse all requests?</p>
+        <Button variant="ghost" size="sm" render={<Link href="/browse" />}>
+          Browse Prayer Requests →
+        </Button>
+      </div>
     </main>
   );
 }
