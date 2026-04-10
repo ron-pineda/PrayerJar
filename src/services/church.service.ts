@@ -121,6 +121,7 @@ async function fetchGooglePlaces(
       body: JSON.stringify({
         includedTypes: ["church"],
         maxResultCount: 20,
+        rankPreference: "DISTANCE",
         locationRestriction: {
           circle: {
             center: { latitude: lat, longitude: lng },
