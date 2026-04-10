@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -10,29 +11,41 @@ import {
 interface RecommendFormProps {
   placeId: string;
   existingDenomination?: string | null;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export function RecommendForm({ placeId, existingDenomination, onSuccess }: RecommendFormProps) {
+  const router = useRouter();
   const [worshipStyle, setWorshipStyle] = useState("");
   const [denomination, setDenomination] = useState(existingDenomination ?? "");
   const [note, setNote] = useState("");
   const [newcomerFriendly, setNewcomerFriendly] = useState<boolean | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitted" | "under_review">("idle");
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit() {
     if (!note.trim() || newcomerFriendly === null) return;
     setSubmitting(true);
-    const res = await fetch(`/api/v1/churches/${placeId}/recommend`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ denomination, worshipStyle, note, newcomerFriendly }),
-    });
-    const data = await res.json();
-    setStatus(data.status === "under_review" ? "under_review" : "submitted");
-    setSubmitting(false);
-    if (data.submitted) onSuccess();
+    setError(null);
+    try {
+      const res = await fetch(`/api/v1/churches/${placeId}/recommend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ denomination, worshipStyle, note, newcomerFriendly }),
+      });
+      if (!res.ok) throw new Error("Failed to submit");
+      const data = await res.json();
+      setStatus(data.status === "under_review" ? "under_review" : "submitted");
+      if (data.submitted) {
+        onSuccess?.();
+        router.refresh();
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (status === "submitted") {
@@ -45,7 +58,7 @@ export function RecommendForm({ placeId, existingDenomination, onSuccess }: Reco
 
   return (
     <div className="space-y-3">
-      <Select value={worshipStyle} onValueChange={(v) => setWorshipStyle(v ?? "")}>
+      <Select aria-label="Worship style" value={worshipStyle} onValueChange={(v) => setWorshipStyle(v ?? "")}>
         <SelectTrigger className="bg-slate-900 border-slate-700 text-slate-300">
           <SelectValue placeholder="What's the worship style like?" />
         </SelectTrigger>
@@ -57,6 +70,7 @@ export function RecommendForm({ placeId, existingDenomination, onSuccess }: Reco
       </Select>
 
       <Textarea
+        aria-label="What do you love about this church?"
         value={note}
         onChange={(e) => setNote(e.target.value.slice(0, 200))}
         placeholder="What do you love about this church?"
@@ -71,6 +85,7 @@ export function RecommendForm({ placeId, existingDenomination, onSuccess }: Reco
           {([true, false] as const).map((v) => (
             <button
               key={String(v)}
+              aria-label={v ? "Yes, newcomer friendly" : "No, not newcomer friendly"}
               onClick={() => setNewcomerFriendly(v)}
               className={`px-4 py-1.5 rounded text-sm ${
                 newcomerFriendly === v
@@ -91,6 +106,7 @@ export function RecommendForm({ placeId, existingDenomination, onSuccess }: Reco
       >
         {submitting ? "Submitting..." : "Share Recommendation"}
       </Button>
+      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
     </div>
   );
 }

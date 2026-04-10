@@ -61,10 +61,10 @@ export default async function ChurchDetailPage({
             </div>
           </div>
           <div className="flex gap-3 ml-4">
-            <button className="text-slate-400 hover:text-rose-400">
+            <button aria-label="Save church" className="text-slate-400 hover:text-rose-400">
               <Heart className={`h-5 w-5 ${church.savedByUser ? "fill-rose-500 text-rose-500" : ""}`} />
             </button>
-            <button className="text-slate-400 hover:text-slate-300">
+            <button aria-label="Share church" className="text-slate-400 hover:text-slate-300">
               <Share2 className="h-5 w-5" />
             </button>
           </div>
@@ -166,7 +166,6 @@ export default async function ChurchDetailPage({
             <RecommendForm
               placeId={church.placeId}
               existingDenomination={church.recommendations[0]?.denomination}
-              onSuccess={() => {}}
             />
           </div>
         ) : (
