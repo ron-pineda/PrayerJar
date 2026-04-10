@@ -328,3 +328,77 @@ describe("initiateClaim", () => {
     expect(emailService.sendClaimVerificationEmail).toHaveBeenCalledOnce();
   });
 });
+
+// ──────────────────────────────────────────────
+// verifyClaim
+// ──────────────────────────────────────────────
+import { verifyClaim } from "@/services/church.service";
+
+describe("verifyClaim", () => {
+  it("returns true and calls db.update when token is valid and unexpired", async () => {
+    const { db } = await import("@/db");
+
+    const mockSelect = vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([{ id: "claim-1" }]),
+      }),
+    });
+    (db as any).select = mockSelect;
+
+    const mockWhere = vi.fn().mockResolvedValue(undefined);
+    const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
+    const mockUpdate = vi.fn().mockReturnValue({ set: mockSet });
+    (db as any).update = mockUpdate;
+
+    const result = await verifyClaim("valid-token");
+
+    expect(result).toBe(true);
+    expect(mockUpdate).toHaveBeenCalledWith(churchClaims);
+  });
+
+  it("returns false and does NOT call db.update when token is expired or missing", async () => {
+    const { db } = await import("@/db");
+
+    const mockSelect = vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([]),
+      }),
+    });
+    (db as any).select = mockSelect;
+
+    const mockUpdate = vi.fn();
+    (db as any).update = mockUpdate;
+
+    const result = await verifyClaim("expired-token");
+
+    expect(result).toBe(false);
+    expect(mockUpdate).not.toHaveBeenCalled();
+  });
+});
+
+// ──────────────────────────────────────────────
+// getSavedChurches
+// ──────────────────────────────────────────────
+import { getSavedChurches } from "@/services/church.service";
+
+describe("getSavedChurches", () => {
+  it("returns db.select results for the given userId", async () => {
+    const { db } = await import("@/db");
+
+    const savedRows = [
+      { id: "1", userId: "user-1", googlePlaceId: "place-abc", name: "Grace Church", address: "1 Main St" },
+    ];
+
+    const mockSelect = vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue(savedRows),
+      }),
+    });
+    (db as any).select = mockSelect;
+
+    const result = await getSavedChurches("user-1");
+
+    expect(result).toEqual(savedRows);
+    expect(mockSelect).toHaveBeenCalled();
+  });
+});

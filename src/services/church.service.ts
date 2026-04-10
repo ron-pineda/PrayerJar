@@ -6,7 +6,7 @@ import {
   churchRecommendations,
   savedChurches,
 } from "@/db/schema";
-import { and, eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, isNotNull, sql } from "drizzle-orm";
 import { moderateContent } from "@/services/ai.service";
 import { sendClaimVerificationEmail } from "@/services/email.service";
 
@@ -339,7 +339,13 @@ export async function verifyClaim(token: string): Promise<boolean> {
   const claim = await db
     .select()
     .from(churchClaims)
-    .where(and(eq(churchClaims.verifyToken, token), gt(churchClaims.verifyTokenExpiresAt, new Date())));
+    .where(
+      and(
+        eq(churchClaims.verifyToken, token),
+        isNotNull(churchClaims.verifyTokenExpiresAt),
+        gt(churchClaims.verifyTokenExpiresAt, new Date())
+      )
+    );
 
   if (!claim.length) return false;
 
