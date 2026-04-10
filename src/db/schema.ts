@@ -140,7 +140,7 @@ export const salvationDecisions = pgTable('salvation_decisions', {
 export const savedChurches = pgTable(
   "saved_churches",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -153,7 +153,7 @@ export const savedChurches = pgTable(
 );
 
 export const churchClaims = pgTable("church_claims", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   googlePlaceId: text("google_place_id").notNull().unique(),
   claimedByUserId: uuid("claimed_by_user_id")
     .notNull()
@@ -176,7 +176,7 @@ export const churchClaims = pgTable("church_claims", {
 export const churchRecommendations = pgTable(
   "church_recommendations",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     googlePlaceId: text("google_place_id").notNull(),
     userId: uuid("user_id")
       .notNull()
@@ -191,7 +191,7 @@ export const churchRecommendations = pgTable(
 );
 
 export const churchSearchCache = pgTable("church_search_cache", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   lat: doublePrecision("lat").notNull(),
   lng: doublePrecision("lng").notNull(),
   radiusMiles: integer("radius_miles").notNull(),
@@ -210,5 +210,6 @@ export type SalvationDecision = typeof salvationDecisions.$inferSelect;
 export type SavedChurch = typeof savedChurches.$inferSelect;
 export type ChurchClaim = typeof churchClaims.$inferSelect;
 export type ChurchRecommendation = typeof churchRecommendations.$inferSelect;
+export type ChurchSearchCache = typeof churchSearchCache.$inferSelect;
 export type CategoryValue = typeof categoryEnum.enumValues[number];
 export type BadgeType = typeof badgeTypeEnum.enumValues[number];
