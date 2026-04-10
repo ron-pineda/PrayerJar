@@ -377,6 +377,51 @@ describe("verifyClaim", () => {
 });
 
 // ──────────────────────────────────────────────
+// getChurchDetail
+// ──────────────────────────────────────────────
+import { getChurchDetail } from "@/services/church.service";
+
+describe("getChurchDetail", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env.GOOGLE_PLACES_API_KEY = "test-key";
+  });
+
+  it("fetches place detail and returns a ChurchResult with the expected placeId", async () => {
+    const googlePlaceId = "place-detail-123";
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        id: googlePlaceId,
+        displayName: { text: "Faith Community Church" },
+        formattedAddress: "100 Faith Ave, Springfield, IL",
+        location: { latitude: 39.80, longitude: -89.67 },
+      }),
+    });
+
+    const { db } = await import("@/db");
+
+    // mergeWithCurationData does 3 db.select calls:
+    //   1st → churchClaims
+    //   2nd → churchRecommendations
+    //   3rd → savedChurches
+    (db as any).select = vi.fn().mockImplementation(() => ({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([]),
+      }),
+    }));
+
+    const result = await getChurchDetail(googlePlaceId, null);
+
+    expect(result).not.toBeNull();
+    expect(result!.placeId).toBe(googlePlaceId);
+    expect(mockFetch).toHaveBeenCalledOnce();
+    expect(mockFetch.mock.calls[0][0]).toContain(googlePlaceId);
+  });
+});
+
+// ──────────────────────────────────────────────
 // getSavedChurches
 // ──────────────────────────────────────────────
 import { getSavedChurches } from "@/services/church.service";

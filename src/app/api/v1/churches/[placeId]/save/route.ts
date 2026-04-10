@@ -11,6 +11,9 @@ export async function POST(
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { name, address } = await req.json();
+  if (!name || !address) {
+    return NextResponse.json({ error: "name and address are required" }, { status: 400 });
+  }
   await saveChurch({ userId: session.user.id, googlePlaceId: placeId, name, address });
   return NextResponse.json({ saved: true });
 }
