@@ -89,3 +89,11 @@ export async function sendBadgeEmail(email: string, badgeType: BadgeType) {
     html,
   });
 }
+
+// Stub — full implementation in Task 6
+export async function sendClaimVerificationEmail(
+  _churchEmail: string,
+  _params: { claimerName: string; role: string; verifyUrl: string }
+): Promise<void> {
+  // TODO: implement in Task 6
+}

@@ -5,10 +5,21 @@ const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 // Mock the db module — hoisted so it runs before imports
-vi.mock("@/db", () => ({ db: { select: vi.fn(), insert: vi.fn() } }));
+vi.mock("@/db", () => ({ db: { select: vi.fn(), insert: vi.fn(), delete: vi.fn(), update: vi.fn() } }));
+
+// Mock ai.service
+vi.mock("@/services/ai.service", () => ({
+  moderateContent: vi.fn().mockResolvedValue({ safe: true }),
+}));
+
+// Mock email.service
+vi.mock("@/services/email.service", () => ({
+  sendClaimVerificationEmail: vi.fn().mockResolvedValue(undefined),
+}));
 
 import { geocodeAddress, searchChurches } from "@/services/church.service";
 import type { GooglePlace } from "@/services/church.service";
+import { savedChurches, churchRecommendations, churchClaims } from "@/db/schema";
 
 // ──────────────────────────────────────────────
 // geocodeAddress
@@ -211,5 +222,109 @@ describe("searchChurches — cache miss", () => {
     expect(results[0].claim).toBeNull();
     expect(results[0].recommendations).toEqual([]);
     expect(results[0].savedByUser).toBe(false);
+  });
+});
+
+// ──────────────────────────────────────────────
+// saveChurch
+// ──────────────────────────────────────────────
+import { saveChurch, unsaveChurch } from "@/services/church.service";
+
+describe("saveChurch", () => {
+  it("inserts a saved_churches row", async () => {
+    const mockInsert = vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ onConflictDoNothing: vi.fn().mockResolvedValue(undefined) }) });
+    (await import("@/db")).db.insert = mockInsert;
+
+    await saveChurch({
+      userId: "user-1",
+      googlePlaceId: "place-abc",
+      name: "Grace Church",
+      address: "1 Main St",
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(savedChurches);
+  });
+});
+
+describe("unsaveChurch", () => {
+  it("deletes the saved_churches row", async () => {
+    const mockDelete = vi.fn().mockReturnValue({
+      where: vi.fn().mockResolvedValue(undefined),
+    });
+    (await import("@/db")).db.delete = mockDelete;
+
+    await unsaveChurch({ userId: "user-1", googlePlaceId: "place-abc" });
+
+    expect(mockDelete).toHaveBeenCalledWith(savedChurches);
+  });
+});
+
+// ──────────────────────────────────────────────
+// submitRecommendation
+// ──────────────────────────────────────────────
+import { submitRecommendation } from "@/services/church.service";
+
+describe("submitRecommendation", () => {
+  it("inserts recommendation when content is safe", async () => {
+    const mockInsert = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({
+        onConflictDoUpdate: vi.fn().mockResolvedValue(undefined)
+      })
+    });
+    (await import("@/db")).db.insert = mockInsert;
+
+    await submitRecommendation({
+      userId: "user-1",
+      googlePlaceId: "place-abc",
+      denomination: "Baptist",
+      worshipStyle: "Contemporary",
+      note: "Great church, very welcoming!",
+      newcomerFriendly: true,
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(churchRecommendations);
+  });
+
+  it("throws when content is flagged", async () => {
+    const moderation = await import("@/services/ai.service");
+    (moderation.moderateContent as any).mockResolvedValueOnce({ safe: false, reason: "spam" });
+
+    await expect(
+      submitRecommendation({
+        userId: "user-1",
+        googlePlaceId: "place-abc",
+        denomination: null,
+        worshipStyle: null,
+        note: "buy this product!!!",
+        newcomerFriendly: false,
+      })
+    ).rejects.toThrow("flagged");
+  });
+});
+
+// ──────────────────────────────────────────────
+// initiateClaim
+// ──────────────────────────────────────────────
+import { initiateClaim } from "@/services/church.service";
+
+describe("initiateClaim", () => {
+  it("inserts a pending claim and sends verification email", async () => {
+    const mockInsert = vi.fn().mockReturnValue({
+      values: vi.fn().mockReturnValue({ onConflictDoUpdate: vi.fn().mockResolvedValue(undefined) }),
+    });
+    (await import("@/db")).db.insert = mockInsert;
+
+    const emailService = await vi.importMock<typeof import("@/services/email.service")>("@/services/email.service");
+
+    await initiateClaim({
+      userId: "user-1",
+      googlePlaceId: "place-abc",
+      churchEmail: "pastor@gracechurch.org",
+      claimerName: "John Smith",
+      role: "Pastor",
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(churchClaims);
+    expect(emailService.sendClaimVerificationEmail).toHaveBeenCalledOnce();
   });
 });

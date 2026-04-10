@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { db } from "@/db";
 import {
   churchSearchCache,
@@ -6,6 +7,8 @@ import {
   savedChurches,
 } from "@/db/schema";
 import { and, eq, gt, sql } from "drizzle-orm";
+import { moderateContent } from "@/services/ai.service";
+import { sendClaimVerificationEmail } from "@/services/email.service";
 
 export type GooglePlace = {
   placeId: string;
@@ -224,4 +227,126 @@ async function mergeWithCurationData(
       newcomerFriendly: newcomerFriendlyCount >= 2,
     };
   });
+}
+
+// ──────────────────────────────────────────────
+// saveChurch / unsaveChurch / getSavedChurches
+// ──────────────────────────────────────────────
+
+export async function saveChurch({
+  userId,
+  googlePlaceId,
+  name,
+  address,
+}: {
+  userId: string;
+  googlePlaceId: string;
+  name: string;
+  address: string;
+}): Promise<void> {
+  await db.insert(savedChurches).values({ userId, googlePlaceId, name, address }).onConflictDoNothing();
+}
+
+export async function unsaveChurch({
+  userId,
+  googlePlaceId,
+}: {
+  userId: string;
+  googlePlaceId: string;
+}): Promise<void> {
+  await db
+    .delete(savedChurches)
+    .where(and(eq(savedChurches.userId, userId), eq(savedChurches.googlePlaceId, googlePlaceId)));
+}
+
+export async function getSavedChurches(
+  userId: string
+): Promise<(typeof savedChurches.$inferSelect)[]> {
+  return db.select().from(savedChurches).where(eq(savedChurches.userId, userId));
+}
+
+// ──────────────────────────────────────────────
+// submitRecommendation
+// ──────────────────────────────────────────────
+
+export async function submitRecommendation({
+  userId,
+  googlePlaceId,
+  denomination,
+  worshipStyle,
+  note,
+  newcomerFriendly,
+}: {
+  userId: string;
+  googlePlaceId: string;
+  denomination: string | null;
+  worshipStyle: string | null;
+  note: string;
+  newcomerFriendly: boolean;
+}): Promise<void> {
+  const result = await moderateContent(note);
+  if (!result.safe) throw new Error("flagged");
+
+  await db
+    .insert(churchRecommendations)
+    .values({ userId, googlePlaceId, denomination, worshipStyle, note, newcomerFriendly })
+    .onConflictDoUpdate({
+      target: [churchRecommendations.userId, churchRecommendations.googlePlaceId],
+      set: { denomination, worshipStyle, note, newcomerFriendly },
+    });
+}
+
+// ──────────────────────────────────────────────
+// initiateClaim / verifyClaim
+// ──────────────────────────────────────────────
+
+export async function initiateClaim({
+  userId,
+  googlePlaceId,
+  churchEmail,
+  claimerName,
+  role,
+}: {
+  userId: string;
+  googlePlaceId: string;
+  churchEmail: string;
+  claimerName: string;
+  role: string;
+}): Promise<void> {
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
+
+  await db
+    .insert(churchClaims)
+    .values({
+      googlePlaceId,
+      claimedByUserId: userId,
+      churchEmail,
+      verified: false,
+      verifyToken: token,
+      verifyTokenExpiresAt: expiresAt,
+    })
+    .onConflictDoUpdate({
+      target: churchClaims.googlePlaceId,
+      set: { claimedByUserId: userId, churchEmail, verified: false, verifyToken: token, verifyTokenExpiresAt: expiresAt },
+    });
+
+  const verifyUrl = `${process.env.NEXTAUTH_URL}/api/v1/churches/${googlePlaceId}/claim/verify?token=${token}`;
+  await sendClaimVerificationEmail(churchEmail, { claimerName, role, verifyUrl });
+}
+
+export async function verifyClaim(token: string): Promise<boolean> {
+  const claim = await db
+    .select()
+    .from(churchClaims)
+    .where(and(eq(churchClaims.verifyToken, token), gt(churchClaims.verifyTokenExpiresAt, new Date())));
+
+  if (!claim.length) return false;
+
+  await db
+    .update(churchClaims)
+    .set({ verified: true, verifyToken: null, verifyTokenExpiresAt: null, updatedAt: new Date() })
+    .where(eq(churchClaims.id, claim[0].id));
+
+  return true;
 }
