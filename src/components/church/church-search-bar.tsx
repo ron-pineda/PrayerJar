@@ -79,7 +79,7 @@ export function ChurchSearchBar({
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           className="flex-1 bg-slate-900 border-slate-600 text-slate-100 text-sm"
         />
-        <Select value={radius} onValueChange={setRadius}>
+        <Select value={radius} onValueChange={(v) => v !== null && setRadius(v)}>
           <SelectTrigger className="w-20 bg-slate-900 border-slate-600 text-slate-300 text-sm">
             <SelectValue />
           </SelectTrigger>
@@ -109,7 +109,7 @@ export function ChurchSearchBar({
             placeholder="Enter city, zip code, or address..."
             className="flex-1 bg-slate-900 border-slate-600 text-slate-100"
           />
-          <Select value={radius} onValueChange={setRadius}>
+          <Select value={radius} onValueChange={(v) => v !== null && setRadius(v)}>
             <SelectTrigger className="w-24 bg-slate-900 border-slate-600 text-slate-300">
               <SelectValue />
             </SelectTrigger>

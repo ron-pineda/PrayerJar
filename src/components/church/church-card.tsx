@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, ExternalLink, MapPin } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { ChurchResult } from "@/services/church.service";
 
@@ -40,7 +41,11 @@ export function ChurchCard({
         ? JSON.stringify({ name: church.name, address: church.address })
         : undefined,
     });
-    if (res.ok) setSaved(!saved);
+    if (res.ok) {
+      setSaved(!saved);
+    } else {
+      toast.error("Couldn't save this church. Please try again.");
+    }
     setSavePending(false);
   }
 

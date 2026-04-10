@@ -27,7 +27,14 @@ export function ChurchMap({
   useEffect(() => { onPinHoverRef.current = onPinHover; });
 
   useEffect(() => {
-    if (!mapRef.current || leafletMapRef.current) return;
+    if (!mapRef.current) return;
+
+    // Tear down existing map before re-initializing
+    if (leafletMapRef.current) {
+      leafletMapRef.current.remove();
+      leafletMapRef.current = null;
+      markersRef.current.clear();
+    }
 
     async function initMap() {
       const L = (await import("leaflet")).default;
@@ -78,7 +85,13 @@ export function ChurchMap({
     }
 
     initMap();
-  }, []);
+
+    return () => {
+      leafletMapRef.current?.remove();
+      leafletMapRef.current = null;
+      markersRef.current.clear();
+    };
+  }, [userLat, userLng, churches]);
 
   useEffect(() => {
     markersRef.current.forEach((marker, placeId) => {
