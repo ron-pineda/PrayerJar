@@ -60,9 +60,9 @@ export function MobileNav() {
         </Link>
 
         <Link
-          href="/my-prayers"
+          href="/profile"
           className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
-            pathname === '/my-prayers' ? 'text-primary' : 'text-muted-foreground'
+            pathname === '/profile' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
           <User className="h-5 w-5" />
