@@ -34,6 +34,7 @@ export async function geocodeAddress(
   address: string
 ): Promise<{ lat: number; lng: number; formattedAddress: string } | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
+  if (!key) throw new Error("GOOGLE_PLACES_API_KEY is not configured");
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${key}`;
   const res = await fetch(url);
   const data = await res.json();
@@ -102,6 +103,7 @@ async function fetchGooglePlaces(
   radiusMiles: number
 ): Promise<GooglePlace[]> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
+  if (!key) throw new Error("GOOGLE_PLACES_API_KEY is not configured");
   const radiusMeters = Math.round(radiusMiles * MILES_TO_METERS);
   const res = await fetch(
     "https://places.googleapis.com/v1/places:searchNearby",
@@ -109,7 +111,7 @@ async function fetchGooglePlaces(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Goog-Api-Key": key!,
+        "X-Goog-Api-Key": key,
         "X-Goog-FieldMask":
           "places.id,places.displayName,places.formattedAddress,places.location,places.nationalPhoneNumber,places.websiteUri,places.currentOpeningHours",
       },

@@ -126,3 +126,90 @@ describe("searchChurches — cache hit", () => {
     expect(results[0].newcomerFriendly).toBe(false);
   });
 });
+
+// ──────────────────────────────────────────────
+// searchChurches — cache miss
+// ──────────────────────────────────────────────
+describe("searchChurches — cache miss", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    process.env.GOOGLE_PLACES_API_KEY = "test-key";
+  });
+
+  it("calls Google Places API and writes result to cache when DB returns no cached results", async () => {
+    const googlePlace = {
+      id: "place456",
+      displayName: { text: "Hope Church" },
+      formattedAddress: "2 Church Ave, Springfield, IL",
+      location: { latitude: 39.79, longitude: -89.66 },
+      nationalPhoneNumber: undefined,
+      websiteUri: undefined,
+      currentOpeningHours: undefined,
+    };
+
+    // fetchGooglePlaces fetch response
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ places: [googlePlace] }),
+    });
+
+    const { db } = await import("@/db");
+
+    let selectCallCount = 0;
+    (db as any).select = vi.fn().mockImplementation(() => {
+      selectCallCount++;
+      const callIndex = selectCallCount;
+
+      const emptyChain = {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([]),
+        }),
+      };
+
+      if (callIndex === 1) {
+        // Cache miss — return empty array
+        return {
+          from: vi.fn().mockReturnValue({
+            where: vi.fn().mockResolvedValue([]),
+          }),
+        };
+      }
+
+      return emptyChain;
+    });
+
+    const mockInsertValues = vi.fn().mockResolvedValue([]);
+    (db as any).insert = vi.fn().mockReturnValue({ values: mockInsertValues });
+
+    const results = await searchChurches({
+      lat: 39.79,
+      lng: -89.66,
+      radiusMiles: 25,
+      userId: null,
+    });
+
+    // fetch was called with the Google Places URL
+    expect(mockFetch).toHaveBeenCalledOnce();
+    expect(mockFetch.mock.calls[0][0]).toBe(
+      "https://places.googleapis.com/v1/places:searchNearby"
+    );
+
+    // result was written to cache
+    expect((db as any).insert).toHaveBeenCalledOnce();
+    expect(mockInsertValues).toHaveBeenCalledOnce();
+    const insertedValues = mockInsertValues.mock.calls[0][0];
+    expect(insertedValues.lat).toBe(39.79);
+    expect(insertedValues.lng).toBe(-89.66);
+    expect(insertedValues.radiusMiles).toBe(25);
+    expect(insertedValues.results).toHaveLength(1);
+    expect(insertedValues.results[0].placeId).toBe("place456");
+
+    // returned result is shaped correctly
+    expect(results).toHaveLength(1);
+    expect(results[0].placeId).toBe("place456");
+    expect(results[0].name).toBe("Hope Church");
+    expect(results[0].claim).toBeNull();
+    expect(results[0].recommendations).toEqual([]);
+    expect(results[0].savedByUser).toBe(false);
+  });
+});
