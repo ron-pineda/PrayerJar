@@ -45,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Button variant="ghost" size="sm" render={<Link href="/pray" />}>Pray</Button>
               <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Lights Released</Button>
               <Button variant="ghost" size="sm" render={<Link href="/know-jesus" />}>Know Jesus</Button>
+              <Button variant="ghost" size="sm" render={<Link href="/find-a-church" />}>Find a Church</Button>
               <ThemeToggle />
 
               {session ? (

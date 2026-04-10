@@ -155,10 +155,23 @@ export function SalvationClient({
           <p className="text-sm text-muted-foreground mb-8">
             Heaven is celebrating right now. — Luke 15:7
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="lg" render={<Link href="/find-a-church" />}>
-              Find a Church Near Me
-            </Button>
+          {/* Find a Community — next step card */}
+          <div className="mt-10 mx-auto max-w-md">
+            <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-emerald-950/30 to-blue-950/30 p-6 text-center">
+              <h3 className="text-slate-100 text-lg font-semibold mt-3 mb-2">Find a Community</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-5">
+                One of the best next steps in your faith journey is finding a church where you
+                can grow, ask questions, and be encouraged. When you&rsquo;re ready:
+              </p>
+              <Button size="lg" render={<Link href="/find-a-church" />} className="bg-emerald-600 hover:bg-emerald-700 text-white px-8">
+                Find a Church Near You
+              </Button>
+              <p className="text-slate-600 text-xs mt-4">
+                No pressure — you can always find this in the menu.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4">
             <Button size="lg" variant="outline" render={<Link href="/" />}>
               Go to the Prayer Jar
             </Button>
