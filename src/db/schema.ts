@@ -127,11 +127,20 @@ export const rateLimits = pgTable('rate_limits', {
   windowStart: timestamp('window_start').defaultNow().notNull(),
 });
 
+export const salvationDecisions = pgTable('salvation_decisions', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').references(() => users.id),
+  name: text('name'),
+  country: text('country'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Prayer = typeof prayers.$inferSelect;
 export type PrayerInteraction = typeof prayerInteractions.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
 export type Badge = typeof badges.$inferSelect;
 export type Report = typeof reports.$inferSelect;
+export type SalvationDecision = typeof salvationDecisions.$inferSelect;
 export type CategoryValue = typeof categoryEnum.enumValues[number];
 export type BadgeType = typeof badgeTypeEnum.enumValues[number];
