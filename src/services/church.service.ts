@@ -335,6 +335,45 @@ export async function initiateClaim({
   await sendClaimVerificationEmail(churchEmail, { claimerName, role, verifyUrl });
 }
 
+// ──────────────────────────────────────────────
+// getChurchDetail
+// ──────────────────────────────────────────────
+
+export async function getChurchDetail(
+  googlePlaceId: string,
+  userId: string | null
+): Promise<ChurchResult | null> {
+  const key = process.env.GOOGLE_PLACES_API_KEY;
+  if (!key) throw new Error("GOOGLE_PLACES_API_KEY is not configured");
+  const res = await fetch(
+    `https://places.googleapis.com/v1/places/${googlePlaceId}`,
+    {
+      headers: {
+        "X-Goog-Api-Key": key,
+        "X-Goog-FieldMask":
+          "id,displayName,formattedAddress,location,nationalPhoneNumber,websiteUri,currentOpeningHours",
+      },
+    }
+  );
+  if (!res.ok) return null;
+  const p = await res.json();
+
+  const place: GooglePlace = {
+    placeId: p.id,
+    name: p.displayName?.text ?? "Unknown Church",
+    address: p.formattedAddress ?? "",
+    lat: p.location.latitude,
+    lng: p.location.longitude,
+    phone: p.nationalPhoneNumber,
+    website: p.websiteUri,
+    openNow: p.currentOpeningHours?.openNow,
+    distanceMiles: 0,
+  };
+
+  const merged = await mergeWithCurationData([place], userId);
+  return merged[0] ?? null;
+}
+
 export async function verifyClaim(token: string): Promise<boolean> {
   const claim = await db
     .select()
