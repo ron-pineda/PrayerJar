@@ -12,12 +12,12 @@ export async function GET(
     return NextResponse.json({ error: "Invalid place ID" }, { status: 400 });
   }
 
+  const token = req.nextUrl.searchParams.get("token");
+  if (!token) return NextResponse.json({ error: "token required" }, { status: 400 });
+
   const ip = req.headers.get("x-forwarded-for") ?? "unknown";
   const rl = await checkRateLimit("church_claim_verify", ip);
   if (!rl.allowed) return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
-
-  const token = req.nextUrl.searchParams.get("token");
-  if (!token) return NextResponse.json({ error: "token required" }, { status: 400 });
 
   const success = await verifyClaim(token);
   if (!success) {
