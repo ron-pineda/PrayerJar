@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
+
+export const metadata: Metadata = { title: 'My Badges | The Prayer Jar' };
 import { getBadgesForUser } from '@/services/badge.service';
 import { BadgeDisplay } from '@/components/badge-display';
 import { redirect } from 'next/navigation';

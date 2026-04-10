@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: 'Prayer Jar',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Prayer Jar',
     description: 'A global prayer jar — share your heart, intercede for others.',
   },

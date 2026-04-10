@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
+
+export const metadata: Metadata = { title: 'Notifications | The Prayer Jar' };
 import { getNotificationsForUser, markAllRead } from '@/services/notification.service';
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';

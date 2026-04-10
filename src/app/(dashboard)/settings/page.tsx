@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
+
+export const metadata: Metadata = { title: 'Settings | The Prayer Jar' };
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';

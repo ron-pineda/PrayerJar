@@ -1,4 +1,7 @@
+import type { Metadata } from 'next';
 import { auth } from '@/lib/auth';
+
+export const metadata: Metadata = { title: 'Prayer Journal | The Prayer Jar' };
 import { getInteractionsByUser } from '@/services/interaction.service';
 import { getPrayerById } from '@/services/prayer.service';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';

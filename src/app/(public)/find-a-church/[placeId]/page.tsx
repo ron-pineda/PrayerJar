@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getChurchDetail } from "@/services/church.service";
@@ -6,6 +7,18 @@ import { ClaimForm } from "@/components/church/claim-form";
 import { SaveChurchButton } from "@/components/church/save-church-button";
 import { ExternalLink, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ placeId: string }>;
+}): Promise<Metadata> {
+  const { placeId } = await params;
+  return {
+    title: 'Church Details | The Prayer Jar',
+    description: 'View service times, community recommendations, and directions for this church.',
+  };
+}
 
 export default async function ChurchDetailPage({
   params,
