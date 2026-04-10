@@ -67,6 +67,9 @@ export default async function HomePage() {
       <section className="pb-20 px-4 text-center">
         <p className="text-muted-foreground mb-3">See what God has been doing</p>
         <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released →</Button>
+        <div className="mt-3">
+          <Button variant="ghost" render={<Link href="/know-jesus" />}>Know Jesus →</Button>
+        </div>
       </section>
     </main>
   );
