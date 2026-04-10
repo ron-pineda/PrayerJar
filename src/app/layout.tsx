@@ -10,6 +10,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { MobileNav } from '@/components/mobile-nav';
 import { UserMenu } from '@/components/user-menu';
 import { SignOutButton } from '@/components/sign-out-button';
+import { SessionProvider } from '@/components/session-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
+        <SessionProvider>
         <ThemeProvider>
         <header className="border-b">
           <nav className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -79,6 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </footer>
         </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
