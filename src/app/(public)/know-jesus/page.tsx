@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { SalvationClient } from '@/components/salvation-client';
 
+export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Know Jesus | The Prayer Jar' };
 
 export default async function KnowJesusPage() {

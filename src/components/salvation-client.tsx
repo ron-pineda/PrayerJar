@@ -19,13 +19,17 @@ export function SalvationClient({
   const [submitted, setSubmitted] = useState(false);
   const [count, setCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleDecision() {
     setLoading(true);
+    setError('');
     try {
       const newCount = await logSalvationDecisionAction(name.trim() || undefined);
       setCount(newCount);
       setSubmitted(true);
+    } catch {
+      setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -139,6 +143,9 @@ export function SalvationClient({
           >
             {loading ? 'Saving…' : 'I prayed this prayer'}
           </Button>
+          {error && (
+            <p className="text-sm text-destructive text-center">{error}</p>
+          )}
         </div>
       ) : (
         <div className="text-center max-w-sm mx-auto">

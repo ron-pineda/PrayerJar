@@ -6,6 +6,7 @@ const WINDOWS: Record<string, { limit: number; windowMs: number }> = {
   submit: { limit: 5, windowMs: 60 * 60 * 1000 },
   pray: { limit: 20, windowMs: 60 * 60 * 1000 },
   message: { limit: 10, windowMs: 60 * 60 * 1000 },
+  salvation: { limit: 3, windowMs: 24 * 60 * 60 * 1000 },
 };
 
 export async function checkRateLimit(

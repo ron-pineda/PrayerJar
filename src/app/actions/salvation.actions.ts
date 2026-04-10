@@ -5,9 +5,18 @@ import { salvationDecisions } from '@/db/schema';
 import { sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function logSalvationDecisionAction(name?: string): Promise<number> {
-  const [session, headersList] = await Promise.all([auth(), headers()]);
+  const session = await auth();
+  const headersList = await headers();
+
+  const ip = headersList.get('x-forwarded-for') ?? 'unknown';
+  const identifier = session?.user?.id ?? ip;
+  const rateCheck = await checkRateLimit('salvation', identifier);
+  if (!rateCheck.allowed) {
+    throw new Error('Too many requests. Please try again later.');
+  }
 
   const country =
     headersList.get('cf-ipcountry') ??
