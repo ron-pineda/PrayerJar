@@ -31,8 +31,7 @@ export async function GET(req: NextRequest) {
     const results = await searchChurches({ lat, lng, radiusMiles, userId: session?.user?.id ?? null });
     return NextResponse.json(results);
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
     console.error("[church_search] searchChurches failed:", err);
-    return NextResponse.json({ error: "Search failed. Please try again.", _debug: msg }, { status: 500 });
+    return NextResponse.json({ error: "Search failed. Please try again." }, { status: 500 });
   }
 }

@@ -6,7 +6,7 @@ import {
   churchRecommendations,
   savedChurches,
 } from "@/db/schema";
-import { and, eq, gt, isNotNull, sql } from "drizzle-orm";
+import { and, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { moderateContent } from "@/services/ai.service";
 import { sendClaimVerificationEmail } from "@/services/email.service";
 
@@ -187,11 +187,11 @@ async function mergeWithCurationData(
     db
       .select()
       .from(churchClaims)
-      .where(sql`${churchClaims.googlePlaceId} = ANY(${placeIds})`),
+      .where(inArray(churchClaims.googlePlaceId, placeIds)),
     db
       .select()
       .from(churchRecommendations)
-      .where(sql`${churchRecommendations.googlePlaceId} = ANY(${placeIds})`),
+      .where(inArray(churchRecommendations.googlePlaceId, placeIds)),
     userId
       ? db
           .select()
@@ -199,7 +199,7 @@ async function mergeWithCurationData(
           .where(
             and(
               eq(savedChurches.userId, userId),
-              sql`${savedChurches.googlePlaceId} = ANY(${placeIds})`
+              inArray(savedChurches.googlePlaceId, placeIds)
             )
           )
       : Promise.resolve([]),
