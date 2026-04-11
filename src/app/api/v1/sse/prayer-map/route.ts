@@ -30,7 +30,8 @@ export async function GET(req: NextRequest) {
             .where(
               and(
                 gte(prayerInteractions.createdAt, fiveMinutesAgo),
-                isNotNull(prayerInteractions.latitude)
+                isNotNull(prayerInteractions.latitude),
+                isNotNull(prayerInteractions.longitude)
               )
             );
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ points: rows })}\n\n`));
