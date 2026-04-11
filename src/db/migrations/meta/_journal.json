@@ -92,6 +92,13 @@
       "when": 1775942113419,
       "tag": "0012_ordinary_deathbird",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1775945940509,
+      "tag": "0013_lucky_odin",
+      "breakpoints": true
     }
   ]
 }

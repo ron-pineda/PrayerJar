@@ -405,3 +405,19 @@ export const collectionPrayers = pgTable("collectionPrayers", {
 
 export type Collection = typeof collections.$inferSelect;
 export type CollectionPrayer = typeof collectionPrayers.$inferSelect;
+
+// --- Campaigns (pj-s3.2-49) ---
+
+export const campaigns = pgTable('campaigns', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  slug: text('slug').notNull().unique(),
+  title: text('title').notNull(),
+  description: text('description'),
+  coverEmoji: text('cover_emoji'),
+  isActive: boolean('is_active').notNull().default(false),
+  startDate: date('start_date'),
+  endDate: date('end_date'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Campaign = typeof campaigns.$inferSelect;
