@@ -71,7 +71,7 @@ The Bible verse connected to this prayer is: ${verse}
 
 Write a warm, personal 2-3 sentence encouragement for the person who just prayed. Acknowledge what they did, connect it to the verse, and leave them feeling affirmed. Plain text only — no markdown, no quotes.`,
       temperature: 0.7,
-      maxTokens: 150,
+      maxOutputTokens: 150,
     });
     return { encouragement: text.trim() };
   } catch {
