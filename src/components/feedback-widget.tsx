@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type FeedbackType = 'bug' | 'feature' | 'general' | 'praise';
 type UIState = 'idle' | 'loading' | 'success' | 'error';
@@ -18,6 +18,9 @@ export function FeedbackWidget() {
   const [message, setMessage] = useState('');
   const [uiState, setUiState] = useState<UIState>('idle');
 
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
   function handleOpen() {
     setOpen(true);
     setUiState('idle');
@@ -28,7 +31,60 @@ export function FeedbackWidget() {
   function handleClose() {
     setOpen(false);
     setUiState('idle');
+    // Restore focus to trigger button on close
+    triggerRef.current?.focus();
   }
+
+  // Move focus into dialog when it opens
+  useEffect(() => {
+    if (open && panelRef.current) {
+      const firstFocusable = panelRef.current.querySelector<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      firstFocusable?.focus();
+    }
+  }, [open]);
+
+  // Trap focus inside dialog while open
+  useEffect(() => {
+    if (!open) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        handleClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const panel = panelRef.current;
+      if (!panel) return;
+
+      const focusable = Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -61,11 +117,13 @@ export function FeedbackWidget() {
     <>
       {/* Floating trigger button */}
       <button
+        ref={triggerRef}
         onClick={handleOpen}
         className="fixed bottom-6 right-6 z-50 flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium shadow-md hover:bg-muted transition-colors"
         aria-label="Open feedback form"
+        aria-haspopup="dialog"
       >
-        💬 Feedback
+        <span aria-hidden="true">💬</span> Feedback
       </button>
 
       {/* Overlay + dialog */}
@@ -78,9 +136,15 @@ export function FeedbackWidget() {
           <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
 
           {/* Panel */}
-          <div className="relative z-10 w-full max-w-sm rounded-xl border border-border bg-background p-5 shadow-xl">
+          <div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="feedback-dialog-title"
+            className="relative z-10 w-full max-w-sm rounded-xl border border-border bg-background p-5 shadow-xl"
+          >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Send Feedback</h2>
+              <h2 id="feedback-dialog-title" className="text-base font-semibold">Send Feedback</h2>
               <button
                 onClick={handleClose}
                 className="text-muted-foreground hover:text-foreground transition-colors text-lg leading-none"

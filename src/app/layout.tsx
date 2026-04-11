@@ -45,9 +45,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SessionProvider>
         <ThemeProvider>
         <header className="border-b">
-          <nav className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <nav aria-label="Main navigation" className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-lg">
-              🫙 Prayer Jar
+              <span aria-hidden="true">🫙</span> Prayer Jar
             </Link>
 
             {/* Desktop nav — hidden on mobile */}
@@ -96,12 +96,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="border-t mt-auto py-6 px-4">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
             <span>© {new Date().getFullYear()} The Prayer Jar</span>
-            <div className="flex gap-4">
-              <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-              <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-            </div>
+            <nav aria-label="Footer navigation">
+              <div className="flex gap-4">
+                <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
+                <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+                <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+                <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+              </div>
+            </nav>
           </div>
         </footer>
         </ThemeProvider>

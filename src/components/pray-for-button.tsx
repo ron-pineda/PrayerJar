@@ -59,7 +59,7 @@ export function PrayForButton({ prayerId, initialCount }: Props) {
     return (
       <div className="flex flex-col items-center gap-2">
         <Button size="lg" className="w-full" disabled>
-          <Check className="h-5 w-5 mr-2" />
+          <Check className="h-5 w-5 mr-2" aria-hidden="true" />
           Prayer Sent
         </Button>
         <p className="text-sm text-muted-foreground">
@@ -72,7 +72,7 @@ export function PrayForButton({ prayerId, initialCount }: Props) {
   return (
     <div className="flex flex-col items-center gap-2">
       <Button size="lg" className="w-full" onClick={handlePray} disabled={pending}>
-        <HandHeart className="h-5 w-5 mr-2" />
+        <HandHeart className="h-5 w-5 mr-2" aria-hidden="true" />
         {pending ? 'Praying...' : 'Pray for This Person'}
       </Button>
       <p className="text-sm text-muted-foreground">

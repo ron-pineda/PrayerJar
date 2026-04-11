@@ -74,10 +74,10 @@ export default async function HomePage() {
             <p className="text-2xl font-bold text-primary">{stats.active}</p>
             <p className="text-xs text-muted-foreground mt-0.5">prayers waiting</p>
           </div>
-          <div className="w-px bg-border" />
+          <div className="w-px bg-border" aria-hidden="true" />
           <div className="text-center">
             <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{stats.answered}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">lights released ✨</p>
+            <p className="text-xs text-muted-foreground mt-0.5">lights released <span aria-hidden="true">✨</span></p>
           </div>
         </div>
 

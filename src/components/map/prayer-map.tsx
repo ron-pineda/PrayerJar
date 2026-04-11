@@ -239,7 +239,12 @@ export function PrayerMap({ className }: PrayerMapProps) {
   return (
     <div className={`relative ${className ?? ""}`}>
       {/* Map container */}
-      <div ref={mapRef} className="w-full h-full" />
+      <div
+        ref={mapRef}
+        className="w-full h-full"
+        role="application"
+        aria-label="Live prayer map showing recent prayer locations around the world"
+      />
 
       {/* Geolocation opt-in button */}
       {!locationDot && (
@@ -253,13 +258,18 @@ export function PrayerMap({ className }: PrayerMapProps) {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] rounded-md bg-white/90 px-3 py-2 shadow-md text-xs text-gray-700 space-y-1">
+      <div
+        className="absolute bottom-4 left-4 z-[1000] rounded-md bg-white/90 px-3 py-2 shadow-md text-xs text-gray-700 space-y-1"
+        role="complementary"
+        aria-label="Prayer category colour legend"
+      >
         <p className="font-semibold mb-1">Live Prayers</p>
         {Object.entries(CATEGORY_COLORS).slice(0, 6).map(([cat, color]) => (
           <div key={cat} className="flex items-center gap-1.5">
             <span
               className="inline-block w-2.5 h-2.5 rounded-full"
               style={{ backgroundColor: color }}
+              aria-hidden="true"
             />
             <span className="capitalize">{cat}</span>
           </div>

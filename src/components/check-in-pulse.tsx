@@ -76,7 +76,7 @@ export function CheckInPulse({ prayerId, prayerCreatedAt }: CheckInPulseProps) {
       <Card className="bg-amber-50/60 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-800/30">
         <CardContent className="pt-5 pb-5 text-center">
           <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
-            Thank you for sharing. We&apos;re praying for you. 🙏
+            Thank you for sharing. We&apos;re praying for you. <span aria-hidden="true">🙏</span>
           </p>
         </CardContent>
       </Card>
@@ -88,7 +88,7 @@ export function CheckInPulse({ prayerId, prayerCreatedAt }: CheckInPulseProps) {
       <Card className="bg-blue-50/60 dark:bg-blue-950/20 border-blue-200/60 dark:border-blue-800/30">
         <CardContent className="pt-5 pb-5 text-center">
           <p className="text-sm text-blue-800 dark:text-blue-300">
-            You&apos;ve already shared how you&apos;re doing 💙
+            You&apos;ve already shared how you&apos;re doing <span aria-hidden="true">💙</span>
           </p>
         </CardContent>
       </Card>
@@ -124,7 +124,7 @@ export function CheckInPulse({ prayerId, prayerCreatedAt }: CheckInPulseProps) {
               ].join(' ')}
               aria-label={label}
             >
-              <span className="text-xl leading-none">{emoji}</span>
+              <span className="text-xl leading-none" aria-hidden="true">{emoji}</span>
               <span>{label}</span>
             </Button>
           ))}
