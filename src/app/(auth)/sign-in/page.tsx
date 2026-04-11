@@ -57,10 +57,14 @@ export default async function SignInPage({
             <form
               action={async (formData: FormData) => {
                 'use server';
-                await signIn('resend', formData, { redirectTo: '/' });
+                const url = formData.get('callbackUrl') as string || '/';
+                await signIn('resend', formData, { redirectTo: url });
               }}
               className="space-y-4"
             >
+              {params.callbackUrl && (
+                <input type="hidden" name="callbackUrl" value={params.callbackUrl} />
+              )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <Input

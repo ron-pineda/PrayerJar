@@ -1,7 +1,7 @@
 # Prayer Jar — Build Progress
 
 ## Live URL
-https://prayer-jar.vercel.app/
+https://prayerjar.org (also accessible at prayer-jar.vercel.app)
 
 ## GitHub
 https://github.com/ron-pineda/PrayerJar (branch: `feature/prayer-jar`)
@@ -98,13 +98,14 @@ The shadcn installation uses `@base-ui/react` (NOT Radix). Key difference:
 | `DATABASE_URL` | Neon connection string |
 | `NEXTAUTH_SECRET` | Random base64 string |
 | `AUTH_RESEND_KEY` | Resend API key (`re_...`) |
-| `AUTH_EMAIL_FROM` | `Prayer Jar <onboarding@resend.dev>` (swap for custom domain later) |
+| `AUTH_EMAIL_FROM` | `Prayer Jar <noreply@prayerjar.org>` |
 | `ADMIN_EMAILS` | `ronnel.pineda@gmail.com` |
 
 ---
 
 ## Known / Pending
-- [ ] Custom email domain (currently using `onboarding@resend.dev`)
-- [ ] Auto-deploy from GitHub push not triggering (deploying manually via `vercel --prod`)
+- [x] ~~Custom email domain~~ — prayerjar.org configured in Resend (click tracking disabled), DNS verified
+- [x] ~~Auto-deploy~~ — GitHub Actions workflow deploys on push to `feature/prayer-jar`
 - [ ] `.env.local` on local machine has real credentials (do not commit)
 - [ ] `ADMIN_EMAILS` only supports a single email (comma-separation not yet implemented)
+- [ ] Resend domain verification may still be pending — test sign-in email sender address
