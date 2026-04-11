@@ -47,7 +47,7 @@ export default async function ChurchDetailPage({
         <a href="/find-a-church" className="text-slate-400 text-sm hover:text-slate-300 block mb-4">
           ← Back to results
         </a>
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <h1 className="text-slate-100 text-2xl font-bold">{church.name}</h1>
             <p className="text-slate-400 text-sm mt-1">{church.address}</p>
@@ -77,7 +77,7 @@ export default async function ChurchDetailPage({
               )}
             </div>
           </div>
-          <div className="flex gap-3 ml-4">
+          <div className="flex gap-3">
             <SaveChurchButton
               placeId={church.placeId}
               name={church.name}

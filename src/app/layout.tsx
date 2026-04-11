@@ -44,7 +44,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               🫙 Prayer Jar
             </Link>
 
-            <div className="flex items-center gap-1">
+            {/* Desktop nav — hidden on mobile */}
+            <div className="hidden md:flex items-center gap-1">
               <Button variant="ghost" size="sm" render={<Link href="/" />}>Prayer Jar</Button>
               <Button variant="ghost" size="sm" render={<Link href="/pray" />}>Pray</Button>
               <Button variant="ghost" size="sm" render={<Link href="/praise-wall" />}>Lights Released</Button>
@@ -52,6 +53,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Button variant="ghost" size="sm" render={<Link href="/find-a-church" />}>Find a Church</Button>
               <ThemeToggle />
 
+              {session ? (
+                <>
+                  <NotificationBell />
+                  <UserMenu
+                    userName={session.user?.name}
+                    signOutSlot={<SignOutButton />}
+                  />
+                </>
+              ) : (
+                <Button variant="ghost" size="sm" render={<Link href="/sign-in" />}>Sign In</Button>
+              )}
+            </div>
+
+            {/* Mobile header actions */}
+            <div className="flex md:hidden items-center gap-2">
+              <ThemeToggle />
               {session ? (
                 <>
                   <NotificationBell />

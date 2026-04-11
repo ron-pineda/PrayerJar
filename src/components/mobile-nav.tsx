@@ -12,7 +12,7 @@ export function MobileNav() {
       <div className="flex items-center justify-around h-14">
         <Link
           href="/"
-          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
             pathname === '/' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -22,7 +22,7 @@ export function MobileNav() {
 
         <Link
           href="/pray"
-          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
             pathname.startsWith('/pray') ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -41,7 +41,7 @@ export function MobileNav() {
 
         <Link
           href="/praise-wall"
-          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
             pathname === '/praise-wall' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -51,7 +51,7 @@ export function MobileNav() {
 
         <Link
           href="/find-a-church"
-          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
             pathname.startsWith('/find-a-church') ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -61,7 +61,7 @@ export function MobileNav() {
 
         <Link
           href="/profile"
-          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
             pathname === '/profile' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >

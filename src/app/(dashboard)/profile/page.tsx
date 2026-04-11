@@ -44,7 +44,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         <div className="text-center p-4 rounded-xl border bg-card">
           <p className="text-2xl font-bold text-primary">{prayerCount}</p>
           <p className="text-xs text-muted-foreground mt-1">Prayers submitted</p>
