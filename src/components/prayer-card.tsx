@@ -10,6 +10,7 @@ import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
 import { PhotoUpload } from './photo-upload';
+import { CelebrationAnimation } from './celebration-animation';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -32,6 +33,7 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
   const [error, setError] = useState('');
   const [localStatus, setLocalStatus] = useState<Prayer['status']>(prayer.status);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   async function handleMarkAnswered(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,6 +47,7 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
       setLocalStatus('answered');
       setShowTestimony(false);
       setImageUrl(null);
+      setShowCelebration(true);
     } else {
       setError(result.error);
     }
@@ -61,7 +64,10 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
   }
 
   return (
-    <Card>
+    <Card className="relative">
+      {showCelebration && (
+        <CelebrationAnimation onComplete={() => setShowCelebration(false)} />
+      )}
       <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xl">{icon}</span>

@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { submitPrayerAction } from '@/app/actions/prayer.actions';
 import { CrisisResources } from './crisis-resources';
 import { PhotoUpload } from './photo-upload';
+import { SubmissionPrompt } from './submission-prompt';
 
 export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) {
   const [pending, setPending] = useState(false);
@@ -16,6 +17,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [content, setContent] = useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,6 +35,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
     if (result.success) {
       onSuccess?.(result.prayerId);
       (e.target as HTMLFormElement).reset();
+      setContent('');
       setImageUrl(null);
     } else if (result.selfHarm) {
       setShowCrisis(true);
@@ -46,14 +49,19 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="content">Your prayer request</Label>
+          {content === '' && (
+            <SubmissionPrompt onSelect={setContent} />
+          )}
           <Textarea
             id="content"
             name="content"
-            placeholder="Share what&apos;s on your heart..."
+            placeholder="Share what's on your heart..."
             rows={5}
             required
             minLength={10}
             maxLength={1000}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
 

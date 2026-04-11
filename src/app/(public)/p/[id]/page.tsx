@@ -14,9 +14,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const prayer = await getPrayerById(id);
   if (!prayer) return { title: 'Prayer Not Found' };
 
+  const categoryLabel = PRAYER_CATEGORIES.find((c) => c.value === prayer.category)?.label;
+  const truncatedContent = prayer.content.slice(0, 120);
+
   const ogUrl = prayer.status === 'answered'
-    ? `/api/og/testimony/${id}`
-    : `/api/og/prayer/${id}`;
+    ? `/api/og/card/answered?text=${encodeURIComponent(truncatedContent)}&category=${encodeURIComponent(categoryLabel ?? '')}`
+    : `/api/og/card/prayer?text=${encodeURIComponent(truncatedContent)}&category=${encodeURIComponent(categoryLabel ?? '')}&count=${prayer.prayerCount}`;
 
   return {
     title: 'A Prayer Request | Prayer Jar',

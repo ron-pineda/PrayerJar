@@ -1,82 +1,97 @@
-'use client';
+import type { Metadata } from 'next';
+import { PRAYER_CATEGORIES } from '@/lib/utils';
+import PrayByCategoryClient from './client';
 
-import { use, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { GuidedPrayer } from '@/components/guided-prayer';
-import { Button } from '@/components/ui/button';
-import type { Prayer } from '@/db/schema';
-
-async function fetchRandomPrayer(category: string, urgent?: string): Promise<Prayer | null> {
-  const params = new URLSearchParams({ category });
-  if (urgent) params.set('urgent', urgent);
-  const res = await fetch(`/api/v1/prayers/random?${params.toString()}`, { cache: 'no-store' });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.prayer ?? null;
-}
-
-export default function PrayByCategoryPage({
-  params,
-  searchParams,
-}: {
+type Props = {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ urgent?: string }>;
-}) {
-  const { category } = use(params);
-  const { urgent } = use(searchParams);
+};
 
-  const router = useRouter();
-  const [prayer, setPrayer] = useState<Prayer | null | 'loading' | 'empty'>('loading');
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  health:
+    'Pray for people facing illness, recovery, and medical challenges. Join thousands lifting health prayers on PrayerJar.',
+  family:
+    'Stand with families navigating conflict, distance, and change. Bring your family prayers to a community that cares.',
+  financial:
+    'Lift up those facing debt, job loss, and financial uncertainty. Your prayers over financial struggles matter deeply.',
+  grief:
+    'Sit with those who are mourning loss, heartbreak, and sorrow. Join a community that prays through grief together.',
+  gratitude:
+    'Celebrate answered prayers and blessings. Add your voice to a chorus of thanksgiving on PrayerJar.',
+  guidance:
+    'Pray for those seeking direction in major decisions and life transitions. Wisdom comes when people pray together.',
+  relationships:
+    'Cover friendships, marriages, and broken bonds in prayer. Thousands are believing for restored relationships on PrayerJar.',
+  work_career:
+    'Pray for those navigating career uncertainty, new opportunities, and workplace challenges. Work-life prayers welcome here.',
+  spiritual_growth:
+    'Intercede for those pursuing deeper faith, freedom, and closeness with God. Spiritual growth prayers find a home here.',
+  other:
+    'Every prayer need belongs here. Bring the requests that do not fit a category — they matter just as much.',
+};
 
-  // Kick off the fetch on first render via a resource pattern
-  const [fetchKey, setFetchKey] = useState(0);
+function getCategoryLabel(value: string): string {
+  const found = PRAYER_CATEGORIES.find((c) => c.value === value);
+  return found ? found.label : value.replace('_', ' ');
+}
 
-  // Use a simple approach: render a loader that fetches on mount
-  const PrayerLoader = useCallback(() => {
-    if (prayer === 'loading') {
-      fetchRandomPrayer(category, urgent)
-        .then((p) => setPrayer(p ?? 'empty'))
-        .catch(() => setPrayer('empty'));
-    }
-    return null;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchKey]);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category } = await params;
+  const label = getCategoryLabel(category);
+  const description =
+    CATEGORY_DESCRIPTIONS[category] ??
+    `Pray for ${label.toLowerCase()} requests submitted by real people. Join the PrayerJar community today.`;
+  const title = `${label} Prayer Requests | PrayerJar`;
+  const url = `https://prayerjar.org/pray/${category}`;
 
-  if (prayer === 'loading') {
-    return (
-      <>
-        <PrayerLoader />
-        <div className="max-w-xl mx-auto px-4 py-20 text-center">
-          <p className="text-muted-foreground animate-pulse">Finding a prayer request...</p>
-        </div>
-      </>
-    );
-  }
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'PrayerJar',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
-  if (prayer === 'empty' || prayer === null) {
-    return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
-        <p className="text-lg font-medium">No prayer requests found in this category.</p>
-        <p className="text-muted-foreground">Check back later or try another category.</p>
-        <Button onClick={() => router.push('/pray')}>Back to Categories</Button>
-      </div>
-    );
-  }
+export default async function PrayByCategoryPage({ params, searchParams }: Props) {
+  const { category } = await params;
+  const { urgent } = await searchParams;
+
+  const label = getCategoryLabel(category);
+  const description =
+    CATEGORY_DESCRIPTIONS[category] ??
+    `Pray for ${label.toLowerCase()} requests submitted by real people. Join the PrayerJar community today.`;
+  const url = `https://prayerjar.org/pray/${category}`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: `${label} Prayer Requests`,
+    description,
+    url,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'PrayerJar',
+      url: 'https://prayerjar.org',
+    },
+  };
 
   return (
-    <main className="max-w-xl mx-auto px-4 py-12">
-      <GuidedPrayer
-        prayer={prayer}
-        onPrayForAnother={() => {
-          setPrayer('loading');
-          setFetchKey((k) => k + 1);
-        }}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mt-6 text-center">
-        <Button variant="ghost" onClick={() => router.push('/pray')}>
-          Change Category
-        </Button>
-      </div>
-    </main>
+      <PrayByCategoryClient category={category} urgent={urgent} />
+    </>
   );
 }
