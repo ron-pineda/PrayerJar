@@ -11,7 +11,8 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const yearParam = searchParams.get('year');
   const currentYear = new Date().getFullYear();
-  const year = yearParam ? parseInt(yearParam, 10) : currentYear;
+  const yearRaw = yearParam ? parseInt(yearParam, 10) : currentYear;
+  const year = Number.isFinite(yearRaw) ? yearRaw : currentYear;
 
   const stats = await getWrappedStats(userId, year);
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getWrappedStats } from '@/services/wrapped.service';
@@ -15,6 +15,9 @@ export default async function WrappedPage({
 }) {
   const { year: yearStr } = await params;
   const year = parseInt(yearStr, 10);
+  if (!Number.isFinite(year) || year < 2020 || year > new Date().getFullYear()) {
+    notFound();
+  }
 
   const session = await auth();
   if (!session?.user?.id) {
@@ -84,19 +87,24 @@ export default async function WrappedPage({
           Share your year in prayer with others.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild size="lg">
-            <a
-              href={`https://twitter.com/intent/tweet?text=My+${year}+Year+in+Prayer+on+%40PrayerJar+%F0%9F%99%8F&url=${encodeURIComponent(`https://prayerjar.org${ogUrl}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Share on X / Twitter
-            </a>
+          <Button
+            size="lg"
+            render={
+              <a
+                href={`https://twitter.com/intent/tweet?text=My+${year}+Year+in+Prayer+on+%40PrayerJar+%F0%9F%99%8F&url=${encodeURIComponent(`https://prayerjar.org${ogUrl}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+          >
+            Share on X / Twitter
           </Button>
-          <Button variant="outline" asChild size="lg">
-            <a href={ogUrl} target="_blank" rel="noopener noreferrer">
-              Download Image
-            </a>
+          <Button
+            variant="outline"
+            size="lg"
+            render={<a href={ogUrl} target="_blank" rel="noopener noreferrer" />}
+          >
+            Download Image
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
