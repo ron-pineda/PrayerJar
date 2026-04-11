@@ -99,6 +99,9 @@ export const prayers = pgTable('prayers', {
   testimonyStory: text('testimonyStory'),
   followUpSentAt: timestamp('followUpSentAt'),
   groupId: uuid('group_id').references(() => groups.id, { onDelete: 'set null' }),
+  latitude: doublePrecision('latitude'),
+  longitude: doublePrecision('longitude'),
+  country: text('country'),
 });
 
 export const prayerInteractions = pgTable('prayer_interactions', {
@@ -108,6 +111,9 @@ export const prayerInteractions = pgTable('prayer_interactions', {
   message: text('message'),
   isAnonymous: boolean('is_anonymous').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  latitude: doublePrecision('latitude'),
+  longitude: doublePrecision('longitude'),
+  country: text('country'),
 });
 
 export const notifications = pgTable('notifications', {
