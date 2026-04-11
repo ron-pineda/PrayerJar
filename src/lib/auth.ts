@@ -1,8 +1,10 @@
 import NextAuth from 'next-auth';
 import Resend from 'next-auth/providers/resend';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { render } from '@react-email/components';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import SignInEmail from '@/emails/sign-in';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
@@ -15,6 +17,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
       from: process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>',
+      async sendVerificationRequest({ identifier: to, url, provider }) {
+        const html = await render(SignInEmail({ url }));
+        const res = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${provider.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: provider.from,
+            to,
+            subject: 'Sign in to The Prayer Jar',
+            html,
+          }),
+        });
+        if (!res.ok) throw new Error('Resend error: ' + JSON.stringify(await res.json()));
+      },
     }),
   ],
   callbacks: {
