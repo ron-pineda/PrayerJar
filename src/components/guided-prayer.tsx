@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { prayForRequestAction } from '@/app/actions/interaction.actions';
+import { generateEncouragementAction } from '@/app/actions/ai.actions';
 import type { Prayer } from '@/db/schema';
 import { ShareButtons } from '@/components/share-buttons';
 
@@ -23,6 +25,28 @@ export function GuidedPrayer({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [encouragement, setEncouragement] = useState<string | null>(null);
+  const [encouragementLoading, setEncouragementLoading] = useState(false);
+
+  // Fetch AI encouragement when we reach the done stage
+  useEffect(() => {
+    if (stage !== 'done') return;
+    if (!prayer.suggestedVerse) return;
+    let cancelled = false;
+    setEncouragementLoading(true);
+    generateEncouragementAction(prayer.content, prayer.suggestedVerse)
+      .then(({ encouragement: text }) => {
+        if (!cancelled) setEncouragement(text);
+      })
+      .catch(() => {
+        if (!cancelled)
+          setEncouragement('Your prayer matters. Thank you for interceding for others.');
+      })
+      .finally(() => {
+        if (!cancelled) setEncouragementLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [stage, prayer.content, prayer.suggestedVerse]);
 
   async function handlePrayed() {
     setPending(true);
@@ -54,15 +78,44 @@ export function GuidedPrayer({
 
   if (stage === 'done') {
     return (
-      <div className="text-center space-y-4 py-8">
-        <p className="text-lg font-medium">Thank you for praying! 🙏</p>
-        <p className="text-muted-foreground">Your encouragement has been delivered.</p>
+      <div className="space-y-6 py-4 max-w-xl mx-auto">
+        <div className="text-center space-y-2">
+          <p className="text-lg font-medium">Thank you for praying! 🙏</p>
+          <p className="text-muted-foreground">Your encouragement has been delivered.</p>
+        </div>
+
+        {/* AI Encouragement card — only shown when a verse is available */}
+        {prayer.suggestedVerse && (
+          <Card className="bg-amber-50/70 dark:bg-amber-950/25 border-amber-200/70 dark:border-amber-800/40">
+            <CardContent className="pt-5 pb-5 space-y-3">
+              {encouragementLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-4 w-4/6" />
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm leading-relaxed text-amber-900 dark:text-amber-100">
+                    {encouragement ?? 'Your prayer matters. Thank you for interceding for others.'}
+                  </p>
+                  <p className="text-xs text-amber-700/70 dark:text-amber-400/70 italic">
+                    — {prayer.suggestedVerse}
+                  </p>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         <ShareButtons
           url={`/p/${prayer.id}`}
           text="I just prayed for someone on Prayer Jar. Will you join me?"
           variant="bar"
         />
-        <Button onClick={onPrayForAnother}>Pray for Another</Button>
+        <div className="text-center">
+          <Button onClick={onPrayForAnother}>Pray for Another</Button>
+        </div>
       </div>
     );
   }

@@ -12,6 +12,7 @@ import { Share2 } from 'lucide-react';
 import { PhotoUpload } from './photo-upload';
 import { CelebrationAnimation } from './celebration-animation';
 import { ExpandableText } from './expandable-text';
+import { AdoptPrayerButton } from './adopt-prayer-button';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -25,7 +26,13 @@ const STATUS_COLORS: Record<Prayer['status'], string> = {
   expired: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
 };
 
-export function PrayerCard({ prayer }: { prayer: Prayer }) {
+interface PrayerCardProps {
+  prayer: Prayer;
+  isAdopted?: boolean;
+  adoptionCount?: number;
+}
+
+export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: PrayerCardProps) {
   const icon = CATEGORY_ICONS[prayer.category] ?? '📖';
   const ago = formatDistanceToNow(new Date(prayer.createdAt), { addSuffix: true });
 
@@ -118,6 +125,14 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
         </p>
 
         {error && <p className="text-xs text-destructive">{error}</p>}
+
+        {localStatus === 'active' && (
+          <AdoptPrayerButton
+            prayerId={prayer.id}
+            initialAdopted={isAdopted}
+            initialCount={adoptionCount}
+          />
+        )}
 
         {localStatus === 'active' && (
           <div className="flex gap-2 flex-wrap pt-1">

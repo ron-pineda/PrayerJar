@@ -1,6 +1,6 @@
 import {
   pgTable, pgEnum, uuid, text, boolean, integer, serial,
-  timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb,
+  timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb, index,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
 
@@ -13,6 +13,7 @@ export const prayerStatusEnum = pgEnum('prayer_status', ['active', 'answered', '
 
 export const notificationTypeEnum = pgEnum('notification_type', [
   'someone_prayed', 'message_received', 'prayer_answered', 'badge_earned',
+  'partnership_request', 'partnership_ended', 'chain_joined', 'group_joined', 'testimony_posted',
 ]);
 
 export const badgeTypeEnum = pgEnum('badge_type', [
@@ -23,6 +24,8 @@ export const badgeTypeEnum = pgEnum('badge_type', [
 ]);
 
 export const reportStatusEnum = pgEnum('report_status', ['pending', 'reviewed', 'dismissed']);
+
+export const groupRoleEnum = pgEnum('group_role', ['owner', 'member']);
 
 export const emailPreferenceEnum = pgEnum('email_preference', ['off', 'realtime', 'daily', 'weekly']);
 export const activityLevelEnum = pgEnum('activity_level', ['new', 'active', 'power']);
@@ -93,7 +96,9 @@ export const prayers = pgTable('prayers', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
   answeredAt: timestamp('answered_at'),
+  testimonyStory: text('testimonyStory'),
   followUpSentAt: timestamp('followUpSentAt'),
+  groupId: uuid('group_id').references(() => groups.id, { onDelete: 'set null' }),
 });
 
 export const prayerInteractions = pgTable('prayer_interactions', {
@@ -245,3 +250,152 @@ export const pushSubscriptions = pgTable('push_subscriptions', {
 });
 
 export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+
+// --- Check-ins (pj-s1.3-27) ---
+
+export const checkInMoodEnum = pgEnum('check_in_mood', ['struggling', 'okay', 'better', 'breakthrough']);
+
+export const checkIns = pgTable('check_ins', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  mood: checkInMoodEnum('mood').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type CheckIn = typeof checkIns.$inferSelect;
+
+// --- Grief Dates (pj-s1.3-29) ---
+
+export const griefDates = pgTable('grief_dates', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  prayerId: uuid('prayer_id').references(() => prayers.id, { onDelete: 'set null' }),
+  label: text('label').notNull(),
+  anniversaryDate: date('anniversary_date').notNull(),
+  lastSentYear: integer('last_sent_year'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type GriefDate = typeof griefDates.$inferSelect;
+
+// --- Prayer Partnerships (pj-s2.1-31) ---
+
+export const partnershipStatusEnum = pgEnum('partnership_status', ['active', 'ended', 'expired']);
+
+export const prayerPartnerships = pgTable('prayer_partnerships', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  partnerId: uuid('partner_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: partnershipStatusEnum('status').notNull().default('active'),
+  matchedAt: timestamp('matched_at', { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  endedAt: timestamp('ended_at', { withTimezone: true }),
+  endedBy: uuid('ended_by').references(() => users.id, { onDelete: 'set null' }),
+  extendRequestedBy: uuid('extend_requested_by').references(() => users.id, { onDelete: 'set null' }),
+}, (t) => [
+  index('prayer_partnerships_user_status_idx').on(t.userId, t.status),
+  index('prayer_partnerships_partner_status_idx').on(t.partnerId, t.status),
+]);
+
+export type PrayerPartnership = typeof prayerPartnerships.$inferSelect;
+
+// --- Partner Messages (pj-s2.1-32) ---
+
+export const partnerMessages = pgTable('partner_messages', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  partnershipId: uuid('partnership_id').notNull().references(() => prayerPartnerships.id, { onDelete: 'cascade' }),
+  senderId: uuid('sender_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('partner_messages_partnership_created_idx').on(t.partnershipId, t.createdAt),
+]);
+
+export type PartnerMessage = typeof partnerMessages.$inferSelect;
+
+// --- Prayer Adoptions (pj-s2.2-34) ---
+
+export const prayerAdoptions = pgTable('prayer_adoptions', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  adoptedAt: timestamp('adopted_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('prayer_adoptions_user_prayer_idx').on(table.userId, table.prayerId),
+  index('prayer_adoptions_prayer_idx').on(table.prayerId),
+]);
+
+export type PrayerAdoption = typeof prayerAdoptions.$inferSelect;
+
+// --- Prayer Chains (pj-s2.2-35) ---
+
+export const prayerChains = pgTable('prayer_chains', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  startsAt: timestamp('starts_at', { withTimezone: true }).notNull(),
+  endsAt: timestamp('ends_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type PrayerChain = typeof prayerChains.$inferSelect;
+
+export const chainParticipants = pgTable('chain_participants', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  chainId: uuid('chain_id').notNull().references(() => prayerChains.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  slotHour: integer('slot_hour').notNull(),
+}, (table) => [
+  uniqueIndex('chain_participants_chain_slot_idx').on(table.chainId, table.slotHour),
+  index('chain_participants_chain_idx').on(table.chainId),
+]);
+
+export type ChainParticipant = typeof chainParticipants.$inferSelect;
+
+// --- Groups (pj-s2.3-37) ---
+
+export const groups = pgTable('groups', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text('name').notNull(),
+  description: text('description'),
+  createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  inviteCode: text('invite_code').notNull().unique(),
+  isPublic: boolean('is_public').default(false).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const groupMembers = pgTable('group_members', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  groupId: uuid('group_id').notNull().references(() => groups.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: groupRoleEnum('role').notNull().default('member'),
+  joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('group_members_group_user_idx').on(table.groupId, table.userId),
+  index('group_members_user_idx').on(table.userId),
+]);
+
+export type Group = typeof groups.$inferSelect;
+export type GroupMember = typeof groupMembers.$inferSelect;
+
+// --- Collections (pj-s2.4) ---
+
+export const collections = pgTable("collections", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  slug: text("slug").notNull().unique(),
+  coverEmoji: text("coverEmoji"),
+  isPublished: boolean("isPublished").notNull().default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const collectionPrayers = pgTable("collectionPrayers", {
+  collectionId: uuid("collectionId").notNull().references(() => collections.id, { onDelete: "cascade" }),
+  prayerId: uuid("prayerId").notNull().references(() => prayers.id, { onDelete: "cascade" }),
+  addedAt: timestamp("addedAt").defaultNow().notNull(),
+}, (t) => [primaryKey({ columns: [t.collectionId, t.prayerId] })]);
+
+export type Collection = typeof collections.$inferSelect;
+export type CollectionPrayer = typeof collectionPrayers.$inferSelect;

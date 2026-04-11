@@ -5,6 +5,7 @@ import { OnboardingOverlay } from '@/components/onboarding-overlay';
 import { PrayerJar } from '@/components/prayer-jar';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { ScrollReveal } from '@/components/scroll-reveal';
+import { PrayingNowCounter } from '@/components/praying-now-counter';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
 import { prayers, prayerInteractions, users } from '@/db/schema';
@@ -105,6 +106,9 @@ export default async function HomePage() {
               <AnimatedCounter value={stats.active + stats.answered} label="Prayers Submitted" />
               <AnimatedCounter value={stats.prayedFor} label="Times Prayed" />
               <AnimatedCounter value={stats.answered} label="Answered" />
+            </div>
+            <div className="mt-6 flex justify-center">
+              <PrayingNowCounter />
             </div>
           </div>
         </section>

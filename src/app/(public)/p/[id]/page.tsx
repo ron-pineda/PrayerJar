@@ -8,6 +8,12 @@ import Link from 'next/link';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { ShareButtons } from '@/components/share-buttons';
 import { PrayForButton } from '@/components/pray-for-button';
+import { CheckInPulse } from '@/components/check-in-pulse';
+import { AdoptPrayerButton } from '@/components/adopt-prayer-button';
+import { PrayerChain } from '@/components/prayer-chain';
+import { getAdoptionCount, isAdopted } from '@/services/adoption.service';
+import { getChainByPrayer } from '@/services/chain.service';
+import { auth } from '@/lib/auth';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -40,8 +46,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function SharedPrayerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const prayer = await getPrayerById(id);
+  const [prayer, session] = await Promise.all([getPrayerById(id), auth()]);
   if (!prayer || prayer.status === 'expired') notFound();
+
+  const userId = session?.user?.id;
+  const [adoptionCount, userAdopted, chain] = await Promise.all([
+    getAdoptionCount(prayer.id),
+    userId ? isAdopted(userId, prayer.id) : Promise.resolve(false),
+    getChainByPrayer(prayer.id),
+  ]);
 
   const categoryLabel = PRAYER_CATEGORIES.find((c) => c.value === prayer.category)?.label;
 
@@ -87,6 +100,19 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
       </Card>
 
       <PrayForButton prayerId={prayer.id} initialCount={prayer.prayerCount} />
+
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-muted-foreground">Commit to pray for this daily</p>
+        <AdoptPrayerButton
+          prayerId={prayer.id}
+          initialAdopted={userAdopted}
+          initialCount={adoptionCount}
+        />
+      </div>
+
+      <CheckInPulse prayerId={prayer.id} prayerCreatedAt={prayer.createdAt} />
+
+      <PrayerChain prayerId={prayer.id} chainId={chain?.id} />
 
       <div className="space-y-3">
         <Button

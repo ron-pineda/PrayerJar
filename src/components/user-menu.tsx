@@ -35,6 +35,15 @@ export function UserMenu({ userName, signOutSlot }: UserMenuProps) {
         <DropdownMenuItem render={<Link href="/my-prayers" />}>
           My Prayers
         </DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/adopted" />}>
+          Adopted Prayers
+        </DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/partner" />}>
+          Prayer Partner
+        </DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/groups" />}>
+          Groups
+        </DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/saved-churches" />}>
           Saved Churches
         </DropdownMenuItem>

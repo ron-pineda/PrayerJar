@@ -55,6 +55,33 @@ Content: "${content}"`,
   return output;
 }
 
+export async function generateEncouragement(
+  prayerContent: string,
+  verse: string
+): Promise<{ encouragement: string }> {
+  try {
+    const truncatedContent = prayerContent.slice(0, 200);
+    const { text } = await generateText({
+      model: MODEL,
+      system:
+        'You are a compassionate Christian encourager. Your role is to affirm and warm the hearts of people who have just prayed for others. Speak directly to the intercessor — the person who just prayed. Be genuine, personal, and grounded in scripture. Write in plain prose with no markdown, no quotation marks, and no greeting salutation.',
+      prompt: `Someone just finished praying for this request: "${truncatedContent}"
+
+The Bible verse connected to this prayer is: ${verse}
+
+Write a warm, personal 2-3 sentence encouragement for the person who just prayed. Acknowledge what they did, connect it to the verse, and leave them feeling affirmed. Plain text only — no markdown, no quotes.`,
+      temperature: 0.7,
+      maxTokens: 150,
+    });
+    return { encouragement: text.trim() };
+  } catch {
+    return {
+      encouragement:
+        'Your prayer matters. Thank you for interceding for others.',
+    };
+  }
+}
+
 export async function moderateImage(imageUrl: string): Promise<{
   safe: boolean;
   reason?: string;

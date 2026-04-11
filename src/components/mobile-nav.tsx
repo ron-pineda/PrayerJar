@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, HandHeart, Star, User, Church, Cross } from 'lucide-react';
+import { Home, HandHeart, Star, User, Cross, Users } from 'lucide-react';
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -54,13 +54,13 @@ export function MobileNav() {
         </Link>
 
         <Link
-          href="/find-a-church"
+          href="/partner"
           className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
-            pathname.startsWith('/find-a-church') ? 'text-primary' : 'text-muted-foreground'
+            pathname.startsWith('/partner') ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
-          <Church className="h-5 w-5" />
-          <span>Church</span>
+          <Users className="h-5 w-5" />
+          <span>Partner</span>
         </Link>
 
         <Link

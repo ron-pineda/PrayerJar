@@ -7,6 +7,7 @@ import { ChurchClaimVerifyEmail } from '@/emails/church-claim-verify';
 import Welcome1Email from '@/emails/welcome-1';
 import Welcome2Email from '@/emails/welcome-2';
 import Welcome3Email from '@/emails/welcome-3';
+import IntercessorThanksEmail from '@/emails/intercessor-thanks';
 import { db } from '@/db';
 import { prayerInteractions, prayers, users, welcomeDripStatus, type BadgeType } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -157,4 +158,18 @@ export async function sendWelcome3Email(userId: string, email: string) {
     .update(welcomeDripStatus)
     .set({ email3SentAt: new Date() })
     .where(eq(welcomeDripStatus.userId, userId));
+}
+
+export async function sendIntercessorCareEmail(
+  email: string,
+  { userName, prayerCount }: { userName?: string; prayerCount: number }
+) {
+  const html = await render(IntercessorThanksEmail({ userName, prayerCount }));
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Thank you for interceding 🙏',
+    html,
+  });
 }

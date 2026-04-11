@@ -1,6 +1,6 @@
 import { db } from '@/db';
-import { prayers, type CategoryValue } from '@/db/schema';
-import { eq, and, sql, gt } from 'drizzle-orm';
+import { prayers, users, type CategoryValue } from '@/db/schema';
+import { eq, and, sql, gt, isNull, isNotNull } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 import { categorizePrayer, moderateContent } from './ai.service';
 
@@ -58,6 +58,7 @@ export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnl
   const conditions = [
     eq(prayers.status, 'active'),
     gt(prayers.expiresAt, now),
+    isNull(prayers.groupId),
   ];
 
   if (category !== 'any') conditions.push(eq(prayers.category, category));
@@ -118,7 +119,7 @@ export async function expireOverduePrayers() {
 }
 
 export async function getAnsweredPrayers(category?: CategoryValue) {
-  const conditions = [eq(prayers.status, 'answered')];
+  const conditions = [eq(prayers.status, 'answered'), isNull(prayers.groupId)];
   if (category) conditions.push(eq(prayers.category, category));
 
   return db
@@ -141,6 +142,7 @@ export async function searchPrayers(opts: {
   const conditions = [
     eq(prayers.status, 'active'),
     gt(prayers.expiresAt, now),
+    isNull(prayers.groupId),
   ];
 
   if (category && category !== 'any') {
@@ -166,7 +168,7 @@ export async function getAnsweredPrayersFiltered(
   period: 'week' | 'month' | 'all',
   category?: CategoryValue,
 ) {
-  const conditions = [eq(prayers.status, 'answered')];
+  const conditions = [eq(prayers.status, 'answered'), isNull(prayers.groupId)];
   if (category) conditions.push(eq(prayers.category, category));
 
   if (period === 'week') {
@@ -185,4 +187,36 @@ export async function getAnsweredPrayersFiltered(
     .from(prayers)
     .where(and(...conditions))
     .orderBy(prayers.createdAt);
+}
+
+
+export async function getTestimonyById(prayerId: string) {
+  const [row] = await db
+    .select({
+      id: prayers.id,
+      content: prayers.content,
+      testimonyStory: prayers.testimonyStory,
+      answeredAt: prayers.answeredAt,
+      category: prayers.category,
+      authorId: prayers.authorId,
+    })
+    .from(prayers)
+    .where(and(eq(prayers.id, prayerId), isNotNull(prayers.answeredAt)))
+    .limit(1);
+
+  if (!row) return null;
+
+  let author: { name: string | null; createdAt: Date } | null = null;
+  if (row.authorId) {
+    const [user] = await db
+      .select({ name: users.name, createdAt: users.createdAt })
+      .from(users)
+      .where(eq(users.id, row.authorId))
+      .limit(1);
+    if (user) {
+      author = { name: user.name ? user.name.split(' ')[0] : null, createdAt: user.createdAt };
+    }
+  }
+
+  return { prayer: { ...row }, author };
 }

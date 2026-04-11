@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { submitPrayerAction } from '@/app/actions/prayer.actions';
@@ -10,6 +11,19 @@ import { CrisisResources } from './crisis-resources';
 import { PhotoUpload } from './photo-upload';
 import { SubmissionPrompt } from './submission-prompt';
 import { RateLimitCountdown } from './rate-limit-countdown';
+
+const CATEGORIES = [
+  'general',
+  'healing',
+  'relationships',
+  'grief',
+  'finances',
+  'guidance',
+  'praise',
+  'other',
+] as const;
+
+type Category = (typeof CATEGORIES)[number];
 
 export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) {
   const [pending, setPending] = useState(false);
@@ -20,6 +34,9 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
   const [isUrgent, setIsUrgent] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [content, setContent] = useState('');
+  const [category, setCategory] = useState<Category>('general');
+  const [griefLabel, setGriefLabel] = useState('');
+  const [griefDate, setGriefDate] = useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,10 +52,30 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
     setPending(false);
 
     if (result.success) {
+      // If grief category and both grief fields are filled, save the anniversary date
+      if (category === 'grief' && griefLabel.trim() && griefDate) {
+        try {
+          await fetch('/api/v1/grief-dates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prayerId: result.prayerId,
+              label: griefLabel.trim(),
+              anniversaryDate: griefDate,
+            }),
+          });
+        } catch {
+          // Non-blocking — grief date save failure should not block the prayer submission success
+        }
+      }
+
       onSuccess?.(result.prayerId);
       (e.target as HTMLFormElement).reset();
       setContent('');
       setImageUrl(null);
+      setCategory('general');
+      setGriefLabel('');
+      setGriefDate('');
     } else if (result.selfHarm) {
       setShowCrisis(true);
     } else if (result.rateLimited && result.retryAfterMs) {
@@ -68,6 +105,51 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <select
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Category)}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {category === 'grief' && (
+          <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+            <p className="text-sm text-muted-foreground">
+              You can optionally save a date so we can send you a gentle remembrance each year.
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="griefLabel">What are we remembering? <span className="text-muted-foreground">(optional)</span></Label>
+              <Input
+                id="griefLabel"
+                type="text"
+                placeholder="e.g. Dad, Baby Emma, Our marriage"
+                maxLength={255}
+                value={griefLabel}
+                onChange={(e) => setGriefLabel(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="griefDate">Anniversary date <span className="text-muted-foreground">(optional)</span></Label>
+              <Input
+                id="griefDate"
+                type="date"
+                value={griefDate}
+                onChange={(e) => setGriefDate(e.target.value)}
+              />
+            </div>
+          </div>
+        )}
 
         <PhotoUpload
           url={imageUrl}
