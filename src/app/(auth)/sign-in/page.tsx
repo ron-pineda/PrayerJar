@@ -1,4 +1,5 @@
-import { signIn } from '@/lib/auth';
+import { signIn, auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +14,8 @@ export default async function SignInPage({
   searchParams: Promise<{ verify?: string; callbackUrl?: string }>;
 }) {
   const params = await searchParams;
+  const session = await auth();
+  if (session && !params.verify) redirect(params.callbackUrl ?? '/');
 
   if (params.verify) {
     return (
@@ -54,7 +57,7 @@ export default async function SignInPage({
             <form
               action={async (formData: FormData) => {
                 'use server';
-                await signIn('nodemailer', formData);
+                await signIn('nodemailer', formData, { redirectTo: '/' });
               }}
               className="space-y-4"
             >
