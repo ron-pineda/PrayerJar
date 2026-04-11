@@ -99,6 +99,13 @@
       "when": 1775945940509,
       "tag": "0013_lucky_odin",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1775949233965,
+      "tag": "0014_cute_firelord",
+      "breakpoints": true
     }
   ]
 }

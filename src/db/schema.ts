@@ -421,3 +421,32 @@ export const campaigns = pgTable('campaigns', {
 });
 
 export type Campaign = typeof campaigns.$inferSelect;
+
+// --- Feedback (pj-s3.3-51) ---
+
+export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature', 'general', 'praise']);
+
+export const feedback = pgTable('feedback', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  type: feedbackTypeEnum('type').notNull().default('general'),
+  message: text('message').notNull(),
+  page: text('page'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Feedback = typeof feedback.$inferSelect;
+
+// --- Feature Flags (pj-s3.3-53) ---
+
+export const featureFlags = pgTable('feature_flags', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  key: text('key').notNull().unique(),
+  description: text('description'),
+  isEnabled: boolean('is_enabled').notNull().default(false),
+  allowedUserIds: text('allowed_user_ids').array().default([]).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type FeatureFlag = typeof featureFlags.$inferSelect;
