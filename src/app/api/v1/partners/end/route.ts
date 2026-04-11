@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db } from '@/db';
 import { prayerPartnerships } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 import { createNotification } from '@/services/notification.service';
 
 const bodySchema = z.object({

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db } from '@/db';
 import { partnerMessages, prayerPartnerships } from '@/db/schema';
 import { eq, asc } from 'drizzle-orm';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 
 // ---------------------------------------------------------------------------
 // GET /api/v1/partner-messages?partnershipId=<id>

@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { prayerPartnerships } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { addDays } from 'date-fns';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth';
 
 const bodySchema = z.object({
   partnershipId: z.string().uuid(),
