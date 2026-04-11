@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface PrayerPoint {
   id: string;
@@ -33,6 +33,79 @@ function categoryColor(category: string | null): string {
   return CATEGORY_COLORS[category] ?? "#f97316";
 }
 
+function processSSEEvent(
+  event: MessageEvent,
+  L: any,
+  map: any,
+  dotMapRef: React.MutableRefObject<Map<string, { marker: any; timer: ReturnType<typeof setTimeout> }>>,
+) {
+  let data: { points: PrayerPoint[] };
+  try {
+    data = JSON.parse(event.data);
+  } catch {
+    return;
+  }
+
+  const now = Date.now();
+  const FIVE_MIN = 5 * 60 * 1000;
+
+  // Build set of current ids from this batch
+  const incomingIds = new Set(data.points.map((p) => p.id));
+
+  // Collect IDs to delete first, delete after (Fix 3: avoid mutating Map during forEach)
+  const toDelete: string[] = [];
+  dotMapRef.current.forEach(({ marker, timer }, id) => {
+    if (!incomingIds.has(id)) {
+      clearTimeout(timer);
+      marker.remove();
+      toDelete.push(id);
+    }
+  });
+  toDelete.forEach((id) => dotMapRef.current.delete(id));
+
+  for (const point of data.points) {
+    if (dotMapRef.current.has(point.id)) continue; // already shown
+
+    const color = categoryColor(point.category);
+    const label = [point.country, point.category].filter(Boolean).join(" · ") || "Prayer";
+
+    const marker = L.circleMarker([point.latitude, point.longitude], {
+      radius: 6,
+      fillColor: color,
+      fillOpacity: 0,   // start transparent for fade-in
+      color: color,
+      weight: 2,
+      opacity: 0,
+    }).addTo(map).bindTooltip(label, { direction: "top" });
+
+    // Fade-in: Leaflet circleMarker exposes the SVG path element
+    // We animate via a short rAF sequence rather than CSS transition
+    // (circleMarker is SVG, not a DOM element with style)
+    const el = (marker as any).getElement?.() as SVGElement | undefined;
+    if (el) {
+      el.style.transition = "opacity 0.6s ease";
+      el.style.opacity = "0";
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.opacity = "1";
+        });
+      });
+    }
+    marker.setStyle({ fillOpacity: 0.75, opacity: 1 });
+
+    // Auto-expire: remove after remaining TTL (createdAt + 5 min)
+    const createdAt = new Date(point.createdAt).getTime();
+    const expiresIn = Math.max(0, createdAt + FIVE_MIN - now);
+
+    const timer = setTimeout(() => {
+      marker.remove();
+      dotMapRef.current.delete(point.id);
+    }, expiresIn);
+
+    dotMapRef.current.set(point.id, { marker, timer });
+  }
+}
+
 export function PrayerMap({ className }: PrayerMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
@@ -41,6 +114,7 @@ export function PrayerMap({ className }: PrayerMapProps) {
   const [locationDot, setLocationDot] = useState<{ lat: number; lng: number } | null>(null);
   const locationMarkerRef = useRef<any>(null);
   const mapReadyRef = useRef(false);
+  const pendingRef = useRef<MessageEvent[]>([]);
 
   // Initialise Leaflet map once
   useEffect(() => {
@@ -70,6 +144,12 @@ export function PrayerMap({ className }: PrayerMapProps) {
       }).addTo(map);
 
       mapReadyRef.current = true;
+
+      // Replay any SSE events that arrived before the map was ready
+      for (const e of pendingRef.current) {
+        processSSEEvent(e, L, map, dotMapRef);
+      }
+      pendingRef.current = [];
     }
 
     initMap();
@@ -88,73 +168,15 @@ export function PrayerMap({ className }: PrayerMapProps) {
     const es = new EventSource("/api/v1/sse/prayer-map");
 
     es.onmessage = async (event) => {
-      if (!mapReadyRef.current || !leafletMapRef.current) return;
-
-      let data: { points: PrayerPoint[] };
-      try {
-        data = JSON.parse(event.data);
-      } catch {
+      // Fix 1: buffer events that arrive before the map is ready
+      if (!mapReadyRef.current || !leafletMapRef.current) {
+        pendingRef.current.push(event);
         return;
       }
 
       const L = (await import("leaflet")).default;
       const map = leafletMapRef.current;
-      const now = Date.now();
-      const FIVE_MIN = 5 * 60 * 1000;
-
-      // Build set of current ids from this batch
-      const incomingIds = new Set(data.points.map((p) => p.id));
-
-      // Remove dots no longer in the stream (they expired server-side)
-      dotMapRef.current.forEach(({ marker, timer }, id) => {
-        if (!incomingIds.has(id)) {
-          clearTimeout(timer);
-          marker.remove();
-          dotMapRef.current.delete(id);
-        }
-      });
-
-      for (const point of data.points) {
-        if (dotMapRef.current.has(point.id)) continue; // already shown
-
-        const color = categoryColor(point.category);
-        const label = [point.country, point.category].filter(Boolean).join(" · ") || "Prayer";
-
-        const marker = L.circleMarker([point.latitude, point.longitude], {
-          radius: 6,
-          fillColor: color,
-          fillOpacity: 0,   // start transparent for fade-in
-          color: color,
-          weight: 2,
-          opacity: 0,
-        }).addTo(map).bindTooltip(label, { direction: "top" });
-
-        // Fade-in: Leaflet circleMarker exposes the SVG path element
-        // We animate via a short rAF sequence rather than CSS transition
-        // (circleMarker is SVG, not a DOM element with style)
-        const el = (marker as any).getElement?.() as SVGElement | undefined;
-        if (el) {
-          el.style.transition = "opacity 0.6s ease";
-          el.style.opacity = "0";
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              el.style.opacity = "1";
-            });
-          });
-        }
-        marker.setStyle({ fillOpacity: 0.75, opacity: 1 });
-
-        // Auto-expire: remove after remaining TTL (createdAt + 5 min)
-        const createdAt = new Date(point.createdAt).getTime();
-        const expiresIn = Math.max(0, createdAt + FIVE_MIN - now);
-
-        const timer = setTimeout(() => {
-          marker.remove();
-          dotMapRef.current.delete(point.id);
-        }, expiresIn);
-
-        dotMapRef.current.set(point.id, { marker, timer });
-      }
+      processSSEEvent(event, L, map, dotMapRef);
     };
 
     es.onerror = () => {
@@ -172,7 +194,9 @@ export function PrayerMap({ className }: PrayerMapProps) {
 
     async function addLocationDot() {
       const L = (await import("leaflet")).default;
+      // Fix 2: re-check after async import — component may have unmounted
       const map = leafletMapRef.current;
+      if (!map) return;
 
       // Remove previous user dot
       if (locationMarkerRef.current) {
