@@ -75,7 +75,7 @@ export function GuidedPrayer({
           <p className="text-sm text-muted-foreground mb-2">
             {prayer.isAnonymous ? 'Anonymous' : 'Someone'} is asking for prayer:
           </p>
-          <p className="text-lg leading-relaxed">{prayer.content}</p>
+          <p className="text-lg leading-relaxed animate-prayer-text-in">{prayer.content}</p>
           {prayer.isUrgent && (
             <span className="inline-block mt-3 text-xs font-medium bg-red-100 text-red-700 px-2 py-0.5 rounded">
               Urgent
@@ -109,7 +109,7 @@ export function GuidedPrayer({
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <Button onClick={handlePrayed} disabled={pending} size="lg" className="mt-4 active:animate-pray-ripple">
+          <Button onClick={handlePrayed} disabled={pending} size="lg" className="mt-4 active:animate-pray-ripple hover:animate-pray-ring transition-shadow">
             {pending ? 'Recording...' : 'I Prayed for This 🙏'}
           </Button>
         </div>

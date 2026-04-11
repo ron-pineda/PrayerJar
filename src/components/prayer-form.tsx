@@ -9,10 +9,12 @@ import { submitPrayerAction } from '@/app/actions/prayer.actions';
 import { CrisisResources } from './crisis-resources';
 import { PhotoUpload } from './photo-upload';
 import { SubmissionPrompt } from './submission-prompt';
+import { RateLimitCountdown } from './rate-limit-countdown';
 
 export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
+  const [retryAfterMs, setRetryAfterMs] = useState<number | null>(null);
   const [showCrisis, setShowCrisis] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
@@ -39,6 +41,8 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
       setImageUrl(null);
     } else if (result.selfHarm) {
       setShowCrisis(true);
+    } else if (result.rateLimited && result.retryAfterMs) {
+      setRetryAfterMs(result.retryAfterMs);
     } else {
       setError(result.error);
     }
@@ -83,8 +87,14 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
         </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
+        {retryAfterMs !== null && (
+          <RateLimitCountdown
+            retryAfterMs={retryAfterMs}
+            onReady={() => setRetryAfterMs(null)}
+          />
+        )}
 
-        <Button type="submit" disabled={pending} className="w-full">
+        <Button type="submit" disabled={pending || retryAfterMs !== null} className="w-full">
           {pending ? 'Submitting...' : 'Add to the Prayer Jar'}
         </Button>
       </form>

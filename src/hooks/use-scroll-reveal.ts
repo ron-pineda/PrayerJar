@@ -1,50 +1,39 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export function useScrollReveal<T extends HTMLElement>() {
+export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(options?: {
+  threshold?: number;
+  once?: boolean;
+}) {
+  const { threshold = 0.1, once = true } = options ?? {};
   const ref = useRef<T>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // Check for reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setIsVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-slide-up');
-            observer.unobserve(entry.target);
-          }
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (once) observer.unobserve(el);
+        } else if (!once) {
+          setIsVisible(false);
+        }
       },
-      { threshold: 0.1 }
+      { threshold }
     );
 
-    // Observe all direct children
-    Array.from(el.children).forEach((child) => {
-      (child as HTMLElement).style.opacity = '0';
-      observer.observe(child);
-    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, once]);
 
-    // Fallback: if intersection never fires, make children visible after 3 seconds
-    const fallbackTimer = setTimeout(() => {
-      Array.from(el.children).forEach((child) => {
-        const htmlChild = child as HTMLElement;
-        if (htmlChild.style.opacity === '0') {
-          htmlChild.style.opacity = '';
-        }
-      });
-    }, 3000);
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(fallbackTimer);
-    };
-  }, []);
-
-  return ref;
+  return { ref, isVisible };
 }

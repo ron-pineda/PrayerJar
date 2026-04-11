@@ -21,7 +21,7 @@ const GLOBAL_SEARCH_KEY = 'church_search:global';
 export async function checkRateLimit(
   action: keyof typeof WINDOWS,
   identifier: string
-): Promise<{ allowed: boolean; remaining: number }> {
+): Promise<{ allowed: boolean; remaining: number; retryAfterMs?: number }> {
   const { limit, windowMs } = WINDOWS[action];
   const key = `${action}:${identifier}`;
   const windowStart = new Date(Date.now() - windowMs);
@@ -38,7 +38,8 @@ export async function checkRateLimit(
   }
 
   if (row.count >= limit) {
-    return { allowed: false, remaining: 0 };
+    const retryAfterMs = row.windowStart.getTime() + windowMs - Date.now();
+    return { allowed: false, remaining: 0, retryAfterMs: Math.max(retryAfterMs, 1000) };
   }
 
   await db

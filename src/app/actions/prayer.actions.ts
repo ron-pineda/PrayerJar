@@ -16,7 +16,7 @@ const submitPrayerSchema = z.object({
 
 export type SubmitPrayerResult =
   | { success: true; prayerId: string }
-  | { success: false; error: string; selfHarm?: boolean };
+  | { success: false; error: string; selfHarm?: boolean; rateLimited?: boolean; retryAfterMs?: number };
 
 export async function submitPrayerAction(
   formData: FormData
@@ -39,7 +39,12 @@ export async function submitPrayerAction(
   const identifier = session?.user?.id ?? ip;
   const rateCheck = await checkRateLimit('submit', identifier);
   if (!rateCheck.allowed) {
-    return { success: false, error: 'Too many requests. Please wait before submitting again.' };
+    return {
+      success: false,
+      error: 'Too many requests. Please wait before submitting again.',
+      rateLimited: true,
+      retryAfterMs: rateCheck.retryAfterMs,
+    };
   }
 
   try {

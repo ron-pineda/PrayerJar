@@ -4,6 +4,7 @@ import { PrayerDialog } from '@/components/prayer-dialog';
 import { OnboardingOverlay } from '@/components/onboarding-overlay';
 import { PrayerJar } from '@/components/prayer-jar';
 import { AnimatedCounter } from '@/components/animated-counter';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
 import { prayers, prayerInteractions } from '@/db/schema';
@@ -79,28 +80,32 @@ export default async function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="pb-12 px-4">
-        <div className="max-w-lg mx-auto rounded-xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 py-8 px-6">
-          <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
-            A Community in Prayer
-          </p>
-          <div className="grid grid-cols-3 divide-x divide-border">
-            <AnimatedCounter value={stats.active + stats.answered} label="Prayers Submitted" />
-            <AnimatedCounter value={stats.prayedFor} label="Times Prayed" />
-            <AnimatedCounter value={stats.answered} label="Answered" />
+      <ScrollReveal>
+        <section className="pb-12 px-4">
+          <div className="max-w-lg mx-auto rounded-xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 py-8 px-6">
+            <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
+              A Community in Prayer
+            </p>
+            <div className="grid grid-cols-3 divide-x divide-border">
+              <AnimatedCounter value={stats.active + stats.answered} label="Prayers Submitted" />
+              <AnimatedCounter value={stats.prayedFor} label="Times Prayed" />
+              <AnimatedCounter value={stats.answered} label="Answered" />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* Secondary CTAs */}
-      <section className="pb-20 px-4 text-center">
-        <div className="border-t max-w-xs mx-auto mb-8" />
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button variant="ghost" render={<Link href="/praise-wall" />}>✨ View Lights Released</Button>
-          <Button variant="ghost" render={<Link href="/find-a-church" />}>⛪ Find a Church</Button>
-          <Button variant="ghost" render={<Link href="/know-jesus" />}>✝️ Know Jesus</Button>
-        </div>
-      </section>
+      <ScrollReveal delay={120}>
+        <section className="pb-20 px-4 text-center">
+          <div className="border-t max-w-xs mx-auto mb-8" />
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released</Button>
+            <Button variant="ghost" render={<Link href="/find-a-church" />}>Find a Church</Button>
+            <Button variant="ghost" render={<Link href="/know-jesus" />}>Know Jesus</Button>
+          </div>
+        </section>
+      </ScrollReveal>
     </main>
   );
 }

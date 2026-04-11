@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { LightsSky } from '@/components/lights-sky';
 import { PraiseCard } from '@/components/praise-card';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { getFilteredPraisesAction } from '@/app/actions/praise.actions';
 
 type Prayer = Awaited<ReturnType<typeof getFilteredPraisesAction>>[number];
@@ -70,10 +71,10 @@ export function LightsReleasedClient({
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {prayers.map((prayer) => (
-            <div key={prayer.id} className="animate-fade-slide-up" style={{ opacity: 0 }}>
+          {prayers.map((prayer, i) => (
+            <ScrollReveal key={prayer.id} delay={Math.min(i, 5) * 80}>
               <PraiseCard prayer={prayer} />
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       )}

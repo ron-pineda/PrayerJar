@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
 import { PhotoUpload } from './photo-upload';
 import { CelebrationAnimation } from './celebration-animation';
+import { ExpandableText } from './expandable-text';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -34,6 +35,15 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
   const [localStatus, setLocalStatus] = useState<Prayer['status']>(prayer.status);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [countKey, setCountKey] = useState(0);
+  const prevCountRef = useRef(prayer.prayerCount);
+
+  useEffect(() => {
+    if (prayer.prayerCount !== prevCountRef.current) {
+      prevCountRef.current = prayer.prayerCount;
+      setCountKey((k) => k + 1);
+    }
+  }, [prayer.prayerCount]);
 
   async function handleMarkAnswered(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,7 +74,7 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
   }
 
   return (
-    <Card className="relative">
+    <Card className="relative animate-card-entry transition-shadow duration-300 hover:shadow-amber-500/10 hover:shadow-lg">
       {showCelebration && (
         <CelebrationAnimation onComplete={() => setShowCelebration(false)} />
       )}
@@ -85,7 +95,7 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        <p className="text-sm leading-relaxed">{prayer.content}</p>
+        <ExpandableText text={prayer.content} maxLines={4} />
 
         {prayer.imageUrl && (
           <img
@@ -101,7 +111,10 @@ export function PrayerCard({ prayer }: { prayer: Prayer }) {
         )}
 
         <p className="text-xs text-muted-foreground">
-          {prayer.prayerCount} {prayer.prayerCount === 1 ? 'person has' : 'people have'} prayed for this
+          <span key={countKey} className={countKey > 0 ? 'animate-count-flash inline-block' : 'inline-block'}>
+            {prayer.prayerCount}
+          </span>
+          {' '}{prayer.prayerCount === 1 ? 'person has' : 'people have'} prayed for this
         </p>
 
         {error && <p className="text-xs text-destructive">{error}</p>}
