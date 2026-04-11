@@ -111,7 +111,7 @@ export function GroupWall({ groupId, currentUserId }: GroupWallProps) {
           required
         />
         <div className="flex items-center gap-3 flex-wrap">
-          <Select value={category} onValueChange={setCategory} disabled={posting}>
+          <Select value={category} onValueChange={(v) => setCategory(v ?? '')} disabled={posting}>
             <SelectTrigger className="w-44">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
