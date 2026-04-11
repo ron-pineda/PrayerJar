@@ -57,7 +57,7 @@ export default async function SignInPage({
             <form
               action={async (formData: FormData) => {
                 'use server';
-                await signIn('nodemailer', formData, { redirectTo: '/' });
+                await signIn('resend', formData, { redirectTo: '/' });
               }}
               className="space-y-4"
             >

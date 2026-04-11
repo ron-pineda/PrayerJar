@@ -15,7 +15,7 @@ import { SessionProvider } from '@/components/session-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org'),
   title: 'Prayer Jar',
   description: 'A global prayer jar — share your heart, intercede for others.',
   openGraph: {
