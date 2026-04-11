@@ -9,8 +9,46 @@ import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { updateEmailPreferenceAction } from '@/app/actions/settings.actions';
+import { Switch } from '@/components/ui/switch';
+import {
+  updateEmailPreferenceAction,
+  updateNotificationTypesAction,
+  updateQuietHoursAction,
+} from '@/app/actions/settings.actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+
+const TIMEZONES = [
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Phoenix',
+  'America/Anchorage',
+  'Pacific/Honolulu',
+  'America/Toronto',
+  'America/Vancouver',
+  'America/Sao_Paulo',
+  'America/Argentina/Buenos_Aires',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Europe/Moscow',
+  'Africa/Lagos',
+  'Africa/Nairobi',
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+  'Australia/Sydney',
+  'Pacific/Auckland',
+];
+
+const HOURS_12H = Array.from({ length: 24 }, (_, i) => {
+  const period = i < 12 ? 'AM' : 'PM';
+  const h = i % 12 === 0 ? 12 : i % 12;
+  return { value: i, label: `${h}:00 ${period}` };
+});
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -19,9 +57,11 @@ export default async function SettingsPage() {
   const [user] = await db.select().from(users).where(eq(users.id, session.user.id)).limit(1);
   if (!user) redirect('/sign-in');
 
+  const quietEnabled = user.quietHoursStart !== null && user.quietHoursEnd !== null;
+
   return (
-    <main className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Settings</h1>
+    <main className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+      <h1 className="text-3xl font-bold">Settings</h1>
 
       <Card>
         <CardHeader>
@@ -47,6 +87,137 @@ export default async function SettingsPage() {
               </Select>
             </div>
             <Button type="submit">Save preferences</Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Notification Types</CardTitle>
+          <CardDescription>
+            Choose which events trigger notifications for you.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={updateNotificationTypesAction} className="space-y-5">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notifyOnPrayed">Someone prays for your request</Label>
+                <Switch
+                  id="notifyOnPrayed"
+                  name="notifyOnPrayed"
+                  defaultChecked={user.notifyOnPrayed}
+                  uncheckedValue="off"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notifyOnMessage">Someone leaves you a message</Label>
+                <Switch
+                  id="notifyOnMessage"
+                  name="notifyOnMessage"
+                  defaultChecked={user.notifyOnMessage}
+                  uncheckedValue="off"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notifyOnBadge">You earn a badge</Label>
+                <Switch
+                  id="notifyOnBadge"
+                  name="notifyOnBadge"
+                  defaultChecked={user.notifyOnBadge}
+                  uncheckedValue="off"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="notifyOnDigest">Weekly digest</Label>
+                <Switch
+                  id="notifyOnDigest"
+                  name="notifyOnDigest"
+                  defaultChecked={user.notifyOnDigest}
+                  uncheckedValue="off"
+                />
+              </div>
+            </div>
+            <Button type="submit">Save preferences</Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quiet Hours</CardTitle>
+          <CardDescription>
+            Suppress notifications during a time window so you are not disturbed while sleeping.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={updateQuietHoursAction} className="space-y-5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="quietHoursEnabled">Enable quiet hours</Label>
+              <Switch
+                id="quietHoursEnabled"
+                name="quietHoursEnabled"
+                defaultChecked={quietEnabled}
+                uncheckedValue="off"
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="quietHoursStart">From</Label>
+                <Select
+                  name="quietHoursStart"
+                  defaultValue={user.quietHoursStart !== null ? String(user.quietHoursStart) : '22'}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {HOURS_12H.map((h) => (
+                      <SelectItem key={h.value} value={String(h.value)}>
+                        {h.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="quietHoursEnd">To</Label>
+                <Select
+                  name="quietHoursEnd"
+                  defaultValue={user.quietHoursEnd !== null ? String(user.quietHoursEnd) : '7'}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {HOURS_12H.map((h) => (
+                      <SelectItem key={h.value} value={String(h.value)}>
+                        {h.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="quietHoursTimezone">Timezone</Label>
+                <Select
+                  name="quietHoursTimezone"
+                  defaultValue={user.quietHoursTimezone ?? 'America/New_York'}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIMEZONES.map((tz) => (
+                      <SelectItem key={tz} value={tz}>
+                        {tz.replace(/_/g, ' ')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <Button type="submit">Save quiet hours</Button>
           </form>
         </CardContent>
       </Card>

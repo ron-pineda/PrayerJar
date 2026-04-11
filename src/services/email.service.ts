@@ -4,8 +4,11 @@ import PrayerNotificationEmail from '@/emails/prayer-notification';
 import EncouragementEmail from '@/emails/encouragement-message';
 import BadgeEarnedEmail from '@/emails/badge-earned';
 import { ChurchClaimVerifyEmail } from '@/emails/church-claim-verify';
+import Welcome1Email from '@/emails/welcome-1';
+import Welcome2Email from '@/emails/welcome-2';
+import Welcome3Email from '@/emails/welcome-3';
 import { db } from '@/db';
-import { prayerInteractions, prayers, users, type BadgeType } from '@/db/schema';
+import { prayerInteractions, prayers, users, welcomeDripStatus, type BadgeType } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
@@ -103,4 +106,55 @@ export async function sendClaimVerificationEmail(
     subject: "Verify your church listing on The Prayer Jar",
     html,
   });
+}
+
+export async function sendWelcome1Email(userId: string, email: string) {
+  const html = await render(Welcome1Email());
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Welcome to PrayerJar',
+    html,
+  });
+
+  await db
+    .insert(welcomeDripStatus)
+    .values({ userId, email1SentAt: new Date() })
+    .onConflictDoUpdate({
+      target: welcomeDripStatus.userId,
+      set: { email1SentAt: new Date() },
+    });
+}
+
+export async function sendWelcome2Email(userId: string, email: string) {
+  const html = await render(Welcome2Email());
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Someone may need your prayer today',
+    html,
+  });
+
+  await db
+    .update(welcomeDripStatus)
+    .set({ email2SentAt: new Date() })
+    .where(eq(welcomeDripStatus.userId, userId));
+}
+
+export async function sendWelcome3Email(userId: string, email: string) {
+  const html = await render(Welcome3Email());
+
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "How's your prayer going?",
+    html,
+  });
+
+  await db
+    .update(welcomeDripStatus)
+    .set({ email3SentAt: new Date() })
+    .where(eq(welcomeDripStatus.userId, userId));
 }

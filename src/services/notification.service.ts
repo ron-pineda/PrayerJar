@@ -5,6 +5,7 @@ import {
 } from '@/db/schema';
 import { eq, and, desc, count } from 'drizzle-orm';
 import { sendPrayerNotificationEmail, sendEncouragementEmail, sendBadgeEmail } from './email.service';
+import { isInQuietHours } from '@/lib/quiet-hours';
 
 export async function createNotification(data: {
   userId: string;
@@ -58,7 +59,7 @@ export async function notifyPrayerAuthor(prayerId: string) {
   });
 
   const [user] = await db.select().from(users).where(eq(users.id, prayer.authorId)).limit(1);
-  if (user?.email && user.emailPreference !== 'off') {
+  if (user?.email && user.emailPreference !== 'off' && user.notifyOnPrayed && !isInQuietHours(user)) {
     sendPrayerNotificationEmail(user.email, prayerId).catch(() => {});
   }
 }
@@ -82,7 +83,7 @@ export async function notifyMessageReceived(interactionId: string) {
   });
 
   const [user] = await db.select().from(users).where(eq(users.id, prayer.authorId)).limit(1);
-  if (user?.email && user.emailPreference !== 'off') {
+  if (user?.email && user.emailPreference !== 'off' && user.notifyOnMessage && !isInQuietHours(user)) {
     sendEncouragementEmail(user.email, interactionId).catch(() => {});
   }
 }
@@ -91,7 +92,7 @@ export async function notifyBadgeEarned(userId: string, badgeType: BadgeType) {
   await createNotification({ userId, type: 'badge_earned' });
 
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-  if (user?.email && user.emailPreference !== 'off') {
+  if (user?.email && user.emailPreference !== 'off' && user.notifyOnBadge && !isInQuietHours(user)) {
     sendBadgeEmail(user.email, badgeType).catch(() => {});
   }
 }

@@ -1,5 +1,5 @@
 import {
-  pgTable, pgEnum, uuid, text, boolean, integer,
+  pgTable, pgEnum, uuid, text, boolean, integer, serial,
   timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
@@ -36,6 +36,13 @@ export const users = pgTable('users', {
   currentStreak: integer('current_streak').default(0).notNull(),
   lastPrayedDate: date('last_prayed_date'),
   emailPreference: emailPreferenceEnum('email_preference').default('off').notNull(),
+  notifyOnPrayed: boolean('notifyOnPrayed').default(true).notNull(),
+  notifyOnMessage: boolean('notifyOnMessage').default(true).notNull(),
+  notifyOnBadge: boolean('notifyOnBadge').default(true).notNull(),
+  notifyOnDigest: boolean('notifyOnDigest').default(true).notNull(),
+  quietHoursStart: integer('quietHoursStart'),
+  quietHoursEnd: integer('quietHoursEnd'),
+  quietHoursTimezone: text('quietHoursTimezone'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -200,6 +207,14 @@ export const churchSearchCache = pgTable("church_search_cache", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
+export const welcomeDripStatus = pgTable('welcomeDripStatus', {
+  userId: uuid('userId').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  email1SentAt: timestamp('email1SentAt'),
+  email2SentAt: timestamp('email2SentAt'),
+  email3SentAt: timestamp('email3SentAt'),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Prayer = typeof prayers.$inferSelect;
 export type PrayerInteraction = typeof prayerInteractions.$inferSelect;
@@ -211,5 +226,17 @@ export type SavedChurch = typeof savedChurches.$inferSelect;
 export type ChurchClaim = typeof churchClaims.$inferSelect;
 export type ChurchRecommendation = typeof churchRecommendations.$inferSelect;
 export type ChurchSearchCache = typeof churchSearchCache.$inferSelect;
+export type WelcomeDripStatus = typeof welcomeDripStatus.$inferSelect;
 export type CategoryValue = typeof categoryEnum.enumValues[number];
 export type BadgeType = typeof badgeTypeEnum.enumValues[number];
+
+export const pushSubscriptions = pgTable('push_subscriptions', {
+  id: serial('id').primaryKey(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  endpoint: text('endpoint').notNull().unique(),
+  p256dh: text('p256dh').notNull(),
+  auth: text('auth').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;

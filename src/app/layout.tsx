@@ -35,6 +35,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <script dangerouslySetInnerHTML={{ __html: `if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));}` }} />
+      </head>
       <body className={`${inter.className} min-h-screen flex flex-col`}>
         <SessionProvider>
         <ThemeProvider>

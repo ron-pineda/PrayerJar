@@ -5,6 +5,7 @@ import { render } from '@react-email/components';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import SignInEmail from '@/emails/sign-in';
+import { sendWelcome1Email } from '@/services/email.service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
@@ -36,6 +37,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  events: {
+    async createUser({ user }) {
+      if (user.id && user.email) {
+        await sendWelcome1Email(user.id, user.email);
+      }
+    },
+  },
   callbacks: {
     session({ session, user }) {
       session.user.id = user.id;
