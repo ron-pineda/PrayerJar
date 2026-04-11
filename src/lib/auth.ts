@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth';
-import Resend from 'next-auth/providers/resend';
+import Nodemailer from 'next-auth/providers/nodemailer';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
@@ -12,8 +12,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     verificationTokensTable: schema.verificationTokens,
   }),
   providers: [
-    Resend({
-      apiKey: process.env.AUTH_RESEND_KEY,
+    Nodemailer({
+      server: {
+        host: 'smtp.resend.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'resend',
+          pass: process.env.AUTH_RESEND_KEY,
+        },
+      },
       from: process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.app>',
     }),
   ],
