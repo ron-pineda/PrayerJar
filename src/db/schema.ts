@@ -25,6 +25,7 @@ export const badgeTypeEnum = pgEnum('badge_type', [
 export const reportStatusEnum = pgEnum('report_status', ['pending', 'reviewed', 'dismissed']);
 
 export const emailPreferenceEnum = pgEnum('email_preference', ['off', 'realtime', 'daily', 'weekly']);
+export const activityLevelEnum = pgEnum('activity_level', ['new', 'active', 'power']);
 
 // NextAuth required tables (users extended with app fields)
 export const users = pgTable('users', {
@@ -44,6 +45,9 @@ export const users = pgTable('users', {
   quietHoursEnd: integer('quietHoursEnd'),
   quietHoursTimezone: text('quietHoursTimezone'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  onboardingCompleted: boolean('onboardingCompleted').default(false).notNull(),
+  preferredCategories: text('preferredCategories').array().default([]).notNull(),
+  activityLevel: activityLevelEnum('activityLevel').default('new').notNull(),
 });
 
 export const accounts = pgTable('accounts', {
@@ -89,6 +93,7 @@ export const prayers = pgTable('prayers', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
   answeredAt: timestamp('answered_at'),
+  followUpSentAt: timestamp('followUpSentAt'),
 });
 
 export const prayerInteractions = pgTable('prayer_interactions', {

@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { prayForRequest, ModerationError } from '@/services/interaction.service';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { refreshActivityLevel } from '@/lib/progressive-disclosure';
 
 const praySchema = z.object({
   prayerId: z.string().uuid(),
@@ -37,6 +38,9 @@ export async function prayForRequestAction(formData: FormData): Promise<PrayResu
       isAnonymous: parsed.data.isAnonymous,
     });
     revalidatePath('/pray');
+    if (session?.user?.id) {
+      refreshActivityLevel(session.user.id).catch(() => {});
+    }
     return { success: true, interactionId: interaction.id };
   } catch (err) {
     if (err instanceof ModerationError) {

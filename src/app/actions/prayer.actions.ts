@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { refreshActivityLevel } from '@/lib/progressive-disclosure';
 
 const submitPrayerSchema = z.object({
   content: z.string().min(10, 'Please write at least 10 characters').max(1000),
@@ -54,6 +55,9 @@ export async function submitPrayerAction(
       imageUrl: parsed.data.imageUrl ?? null,
     });
     revalidatePath('/');
+    if (session?.user?.id) {
+      refreshActivityLevel(session.user.id).catch(() => {});
+    }
     return { success: true, prayerId: prayer.id };
   } catch (err) {
     if (err instanceof ModerationError) {

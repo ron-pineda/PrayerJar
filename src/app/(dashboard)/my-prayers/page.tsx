@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { EmptyState } from '@/components/empty-state';
 import { Heart } from 'lucide-react';
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const metadata = { title: 'My Prayers | The Prayer Jar' };
 
@@ -15,7 +18,10 @@ export default async function MyPrayersPage() {
     redirect('/sign-in');
   }
 
-  const prayers = await getPrayersByAuthor(session.user.id);
+  const [prayers, userRecord] = await Promise.all([
+    getPrayersByAuthor(session.user.id),
+    db.select({ activityLevel: users.activityLevel }).from(users).where(eq(users.id, session.user.id)).then((r) => r[0]),
+  ]);
 
   const active = prayers.filter((p) => p.status === 'active');
   const answered = prayers.filter((p) => p.status === 'answered');
@@ -25,7 +31,14 @@ export default async function MyPrayersPage() {
     <main className="max-w-3xl mx-auto px-4 py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight mb-1">My Prayers</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-3xl font-bold tracking-tight">My Prayers</h1>
+            {userRecord?.activityLevel === 'power' && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                Power Intercessor
+              </span>
+            )}
+          </div>
           <p className="text-muted-foreground">
             Manage your prayer requests and share testimonies.
           </p>

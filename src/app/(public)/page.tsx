@@ -7,8 +7,9 @@ import { AnimatedCounter } from '@/components/animated-counter';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
-import { prayers, prayerInteractions } from '@/db/schema';
+import { prayers, prayerInteractions, users } from '@/db/schema';
 import { eq, and, gt, sql } from 'drizzle-orm';
+import { auth } from '@/lib/auth';
 
 async function getStats() {
   const [totalRow] = await db
@@ -32,13 +33,27 @@ async function getStats() {
   };
 }
 
+async function getUserOnboardingState(userId: string) {
+  const row = await db
+    .select({ onboardingCompleted: users.onboardingCompleted })
+    .from(users)
+    .where(eq(users.id, userId))
+    .then((r) => r[0]);
+  return row?.onboardingCompleted ?? true;
+}
+
 export default async function HomePage() {
-  const stats = await getStats();
+  const [stats, session] = await Promise.all([getStats(), auth()]);
   const verse = getDailyVerse();
+
+  const needsOnboarding =
+    session?.user?.id
+      ? !(await getUserOnboardingState(session.user.id))
+      : false;
 
   return (
     <main className="min-h-screen">
-      <OnboardingOverlay />
+      <OnboardingOverlay showOnboarding={needsOnboarding} />
       {/* Hero */}
       <section className="py-20 px-4 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold tracking-tight mb-4">
