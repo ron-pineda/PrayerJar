@@ -40,7 +40,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           {prayer.prayerCount} {prayer.prayerCount === 1 ? 'person has' : 'people have'} prayed for this
         </div>
         <div style={{ fontSize: 14, color: '#d4a843', marginTop: 24, display: 'flex' }}>
-          prayerjar.app · Pray with me
+          prayerjar.org · Pray with me
         </div>
       </div>
     ),

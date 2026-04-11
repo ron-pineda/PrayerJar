@@ -9,7 +9,7 @@ import { prayerInteractions, prayers, users, type BadgeType } from '@/db/schema'
 import { eq } from 'drizzle-orm';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
-const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.app>';
+const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
 const BASE_URL = process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
 
 const BADGE_LABELS: Record<BadgeType, { name: string; description: string }> = {

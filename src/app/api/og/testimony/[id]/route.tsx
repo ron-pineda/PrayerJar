@@ -39,7 +39,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           {prayer.prayerCount} people prayed
         </div>
         <div style={{ fontSize: 14, color: '#d4a843', marginTop: 24, display: 'flex' }}>
-          prayerjar.app · Praise Wall
+          prayerjar.org · Praise Wall
         </div>
       </div>
     ),
