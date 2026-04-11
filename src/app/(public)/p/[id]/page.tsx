@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { getPrayerById } from '@/services/prayer.service';
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { ShareButtons } from '@/components/share-buttons';
+import { PrayForButton } from '@/components/pray-for-button';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -42,48 +43,84 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
   const categoryLabel = PRAYER_CATEGORIES.find((c) => c.value === prayer.category)?.label;
 
   return (
-    <main className="max-w-xl mx-auto px-4 py-12 space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold mb-2">A Prayer Request</h1>
-        <p className="text-muted-foreground">Someone shared this with you. Would you pray for them?</p>
+    <main className="max-w-lg mx-auto px-4 py-10 space-y-8">
+
+      <div className="text-center space-y-2">
+        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+          Someone shared a prayer with you
+        </p>
+        <h1 className="text-3xl font-bold leading-tight tracking-tight">
+          Will you stand with them?
+        </h1>
+        <p className="text-muted-foreground text-base">
+          This person asked Prayer Jar to carry their need before God. You can join them right now.
+        </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary">{categoryLabel}</Badge>
+      <Card className="border-2">
+        <CardContent className="pt-6 space-y-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            {categoryLabel && <Badge variant="secondary">{categoryLabel}</Badge>}
             {prayer.isUrgent && <Badge variant="destructive">Urgent</Badge>}
-            <span className="text-xs text-muted-foreground">
-              {prayer.prayerCount} {prayer.prayerCount === 1 ? 'person' : 'people'} prayed
-            </span>
           </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg leading-relaxed">{prayer.content}</p>
-          {prayer.suggestedVerse && (
-            <p className="mt-4 text-sm text-muted-foreground italic">✝️ {prayer.suggestedVerse}</p>
-          )}
+
+          <p className="text-lg leading-relaxed font-medium">{prayer.content}</p>
+
           {prayer.imageUrl && (
             <img
               src={prayer.imageUrl}
               alt="Prayer photo"
-              className="w-full h-48 object-cover rounded-lg mt-4"
+              className="w-full h-56 object-cover rounded-lg"
               loading="lazy"
             />
+          )}
+
+          {prayer.suggestedVerse && (
+            <p className="text-sm text-muted-foreground italic border-l-2 border-muted pl-3">
+              {prayer.suggestedVerse}
+            </p>
           )}
         </CardContent>
       </Card>
 
-      <ShareButtons
-        url={`/p/${prayer.id}`}
-        text={prayer.isAnonymous ? 'Someone needs your prayer' : 'Please pray for this request'}
-        variant="bar"
-      />
+      <PrayForButton prayerId={prayer.id} initialCount={prayer.prayerCount} />
 
-      <div className="flex flex-col gap-3">
-        <Button size="lg" render={<Link href="/pray/any" />}>I Prayed — Pray for Another</Button>
-        <Button variant="outline" render={<Link href="/" />}>Visit Prayer Jar</Button>
+      <div className="space-y-3">
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full"
+          render={<Link href="/" />}
+        >
+          Submit Your Own Prayer
+        </Button>
       </div>
+
+      <div className="border-t pt-6 space-y-3">
+        <ShareButtons
+          url={`/p/${prayer.id}`}
+          text={prayer.isAnonymous ? 'Someone needs your prayer' : 'Please pray for this request'}
+          variant="bar"
+        />
+      </div>
+
+      <div className="rounded-xl bg-muted/50 px-5 py-4 text-sm text-muted-foreground space-y-1">
+        <p className="font-medium text-foreground">What is Prayer Jar?</p>
+        <p>
+          Prayer Jar is a quiet place online where people bring their real burdens — health, family,
+          grief, hope — and ask others to pray. No accounts required to pray. Just you, this moment,
+          and someone who needs to know they are not alone.
+        </p>
+        <Button
+          variant="link"
+          size="sm"
+          className="px-0 h-auto"
+          render={<Link href="/" />}
+        >
+          Learn more at PrayerJar.org
+        </Button>
+      </div>
+
     </main>
   );
 }

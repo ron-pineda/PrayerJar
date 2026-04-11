@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { PrayerDialog } from '@/components/prayer-dialog';
 import { OnboardingOverlay } from '@/components/onboarding-overlay';
 import { PrayerJar } from '@/components/prayer-jar';
+import { AnimatedCounter } from '@/components/animated-counter';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
-import { prayers } from '@/db/schema';
+import { prayers, prayerInteractions } from '@/db/schema';
 import { eq, and, gt, sql } from 'drizzle-orm';
 
 async function getStats() {
@@ -19,9 +20,14 @@ async function getStats() {
     .from(prayers)
     .where(eq(prayers.status, 'answered'));
 
+  const [interactionsRow] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(prayerInteractions);
+
   return {
     active: Number(totalRow?.count ?? 0),
     answered: Number(answeredRow?.count ?? 0),
+    prayedFor: Number(interactionsRow?.count ?? 0),
   };
 }
 
@@ -69,6 +75,20 @@ export default async function HomePage() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <PrayerDialog />
           <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="pb-12 px-4">
+        <div className="max-w-lg mx-auto rounded-xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 py-8 px-6">
+          <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-6">
+            A Community in Prayer
+          </p>
+          <div className="grid grid-cols-3 divide-x divide-border">
+            <AnimatedCounter value={stats.active + stats.answered} label="Prayers Submitted" />
+            <AnimatedCounter value={stats.prayedFor} label="Times Prayed" />
+            <AnimatedCounter value={stats.answered} label="Answered" />
+          </div>
         </div>
       </section>
 

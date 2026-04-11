@@ -4,6 +4,8 @@ import { PrayerCard } from '@/components/prayer-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { EmptyState } from '@/components/empty-state';
+import { Heart } from 'lucide-react';
 
 export const metadata = { title: 'My Prayers | The Prayer Jar' };
 
@@ -32,13 +34,12 @@ export default async function MyPrayersPage() {
       </div>
 
       {prayers.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-lg font-medium mb-2">You haven&apos;t submitted any prayer requests yet.</p>
-          <p className="text-muted-foreground mb-6">
-            Share what&apos;s on your heart — the community is here to pray.
-          </p>
-          <Button render={<Link href="/" />}>Submit a Prayer Request</Button>
-        </div>
+        <EmptyState
+          icon={<Heart size={24} />}
+          title="No prayers yet"
+          description="When you submit a prayer, it will appear here."
+          action={{ label: "Submit a Prayer", href: "/" }}
+        />
       ) : (
         <div className="space-y-10">
           {active.length > 0 && (

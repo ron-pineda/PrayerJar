@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, HandHeart, Star, User, Church } from 'lucide-react';
+import { Home, HandHeart, Star, User, Church, Cross } from 'lucide-react';
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export function MobileNav() {
       <div className="flex items-center justify-around h-14">
         <Link
           href="/"
-          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
             pathname === '/' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -22,7 +22,7 @@ export function MobileNav() {
 
         <Link
           href="/pray"
-          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
             pathname.startsWith('/pray') ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -30,18 +30,22 @@ export function MobileNav() {
           <span>Pray</span>
         </Link>
 
-        {/* Elevated Add button — links to homepage where PrayerDialog lives */}
+        {/* Elevated Know Jesus button */}
         <Link
-          href="/"
-          className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg -mt-6"
-          aria-label="Add a prayer request"
+          href="/know-jesus"
+          className={`flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full shadow-lg -mt-6 ${
+            pathname === '/know-jesus'
+              ? 'bg-amber-500 text-white'
+              : 'bg-primary text-primary-foreground'
+          }`}
+          aria-label="Know Jesus"
         >
-          <span className="text-lg">🕯</span>
+          <Cross className="h-5 w-5" />
         </Link>
 
         <Link
           href="/praise-wall"
-          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
             pathname === '/praise-wall' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -51,7 +55,7 @@ export function MobileNav() {
 
         <Link
           href="/find-a-church"
-          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
             pathname.startsWith('/find-a-church') ? 'text-primary' : 'text-muted-foreground'
           }`}
         >
@@ -61,7 +65,7 @@ export function MobileNav() {
 
         <Link
           href="/profile"
-          className={`flex flex-col items-center gap-0.5 px-3 py-2 text-xs ${
+          className={`flex flex-col items-center gap-0.5 px-3 min-h-[44px] justify-center text-xs ${
             pathname === '/profile' ? 'text-primary' : 'text-muted-foreground'
           }`}
         >

@@ -7,6 +7,8 @@ import { getPrayerById } from '@/services/prayer.service';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { redirect } from 'next/navigation';
+import { EmptyState } from '@/components/empty-state';
+import { BookOpen } from 'lucide-react';
 
 export default async function JournalPage() {
   const session = await auth();
@@ -27,10 +29,12 @@ export default async function JournalPage() {
       <p className="text-muted-foreground mb-8">Prayers you&apos;ve interceded for.</p>
 
       {interactionsWithPrayers.length === 0 ? (
-        <p className="text-muted-foreground text-center py-12">
-          You haven&apos;t prayed for anyone yet.{' '}
-          <a href="/pray" className="underline">Start praying</a>
-        </p>
+        <EmptyState
+          icon={<BookOpen size={24} />}
+          title="Your journal is empty"
+          description="Prayers you've prayed for others will be saved here."
+          action={{ label: "Pray for Someone", href: "/pray" }}
+        />
       ) : (
         <div className="space-y-4">
           {interactionsWithPrayers.map(({ interaction, prayer }) => {

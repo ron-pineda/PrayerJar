@@ -6,6 +6,8 @@ import { getNotificationsForUser, markAllRead } from '@/services/notification.se
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { revalidatePath } from 'next/cache';
+import { EmptyState } from '@/components/empty-state';
+import { Bell } from 'lucide-react';
 
 const TYPE_LABELS: Record<string, string> = {
   someone_prayed: 'Someone prayed for your request',
@@ -38,7 +40,11 @@ export default async function NotificationsPage() {
       </div>
 
       {notifications.length === 0 ? (
-        <p className="text-muted-foreground text-center py-12">No notifications yet.</p>
+        <EmptyState
+          icon={<Bell size={24} />}
+          title="No notifications yet"
+          description="You'll be notified when someone prays for you or leaves a message."
+        />
       ) : (
         <ul className="divide-y">
           {notifications.map((n) => (
