@@ -19,12 +19,12 @@ interface PrayerMapProps {
 const CATEGORY_COLORS: Record<string, string> = {
   health:      "#ef4444", // red
   family:      "#f97316", // orange
-  finance:     "#eab308", // yellow
+  financial:   "#eab308", // yellow
   guidance:    "#3b82f6", // blue
   relationships: "#ec4899", // pink
-  work:        "#8b5cf6", // purple
+  work_career: "#8b5cf6", // purple
   grief:       "#6b7280", // gray
-  praise:      "#10b981", // green
+  gratitude:   "#10b981", // green
   other:       "#f97316", // default warm accent
 };
 

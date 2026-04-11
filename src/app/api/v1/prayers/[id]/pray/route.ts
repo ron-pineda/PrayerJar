@@ -6,6 +6,9 @@ import { z } from 'zod';
 const schema = z.object({
   message: z.string().max(500).optional(),
   isAnonymous: z.boolean(),
+  latitude: z.number().nullable().optional(),
+  longitude: z.number().nullable().optional(),
+  country: z.string().max(10).nullable().optional(),
 });
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -22,6 +25,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       userId: session?.user?.id ?? null,
       message: parsed.data.message,
       isAnonymous: parsed.data.isAnonymous,
+      latitude: parsed.data.latitude ?? null,
+      longitude: parsed.data.longitude ?? null,
+      country: parsed.data.country ?? null,
     });
     return NextResponse.json({ interaction }, { status: 201 });
   } catch (err) {

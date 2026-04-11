@@ -10,6 +10,9 @@ export type PrayForInput = {
   userId: string | null;
   message?: string;
   isAnonymous: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  country?: string | null;
 };
 
 export class ModerationError extends Error {
@@ -32,6 +35,9 @@ export async function prayForRequest(input: PrayForInput) {
       userId: input.userId,
       message: input.message ?? null,
       isAnonymous: input.isAnonymous,
+      latitude: input.latitude ?? null,
+      longitude: input.longitude ?? null,
+      country: input.country ?? null,
     })
     .returning();
 

@@ -10,6 +10,9 @@ const praySchema = z.object({
   prayerId: z.string().uuid(),
   message: z.string().max(500).optional(),
   isAnonymous: z.boolean(),
+  latitude: z.coerce.number().nullable().optional(),
+  longitude: z.coerce.number().nullable().optional(),
+  country: z.string().max(10).nullable().optional(),
 });
 
 export type PrayResult =
@@ -20,10 +23,17 @@ export async function prayForRequestAction(formData: FormData): Promise<PrayResu
   const session = await auth();
   const message = formData.get('message') as string | null;
 
+  const rawLat = formData.get('latitude') as string | null;
+  const rawLng = formData.get('longitude') as string | null;
+  const rawCountry = formData.get('country') as string | null;
+
   const parsed = praySchema.safeParse({
     prayerId: formData.get('prayerId'),
     message: message || undefined,
     isAnonymous: formData.get('isAnonymous') === 'true',
+    latitude: rawLat !== null && rawLat !== '' ? rawLat : undefined,
+    longitude: rawLng !== null && rawLng !== '' ? rawLng : undefined,
+    country: rawCountry !== null && rawCountry !== '' ? rawCountry : undefined,
   });
 
   if (!parsed.success) {
@@ -36,6 +46,9 @@ export async function prayForRequestAction(formData: FormData): Promise<PrayResu
       userId: session?.user?.id ?? null,
       message: parsed.data.message,
       isAnonymous: parsed.data.isAnonymous,
+      latitude: parsed.data.latitude ?? null,
+      longitude: parsed.data.longitude ?? null,
+      country: parsed.data.country ?? null,
     });
     revalidatePath('/pray');
     if (session?.user?.id) {

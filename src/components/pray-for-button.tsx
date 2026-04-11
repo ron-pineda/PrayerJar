@@ -18,9 +18,35 @@ export function PrayForButton({ prayerId, initialCount }: Props) {
   async function handlePray() {
     if (prayed || pending) return;
     setPending(true);
+
+    // Optionally collect geolocation — never blocks the pray action
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+    const country: string | null =
+      Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1] ?? null;
+
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      await new Promise<void>((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            // Fuzz to ±0.5° for region-level privacy
+            latitude = pos.coords.latitude + (Math.random() - 0.5);
+            longitude = pos.coords.longitude + (Math.random() - 0.5);
+            resolve();
+          },
+          () => resolve(), // denied or error — proceed without geo
+          { enableHighAccuracy: false, timeout: 5000 },
+        );
+      });
+    }
+
     const formData = new FormData();
     formData.set('prayerId', prayerId);
     formData.set('isAnonymous', 'true');
+    if (latitude !== null) formData.set('latitude', String(latitude));
+    if (longitude !== null) formData.set('longitude', String(longitude));
+    if (country) formData.set('country', country);
+
     const result = await prayForRequestAction(formData);
     setPending(false);
     if (result.success) {
