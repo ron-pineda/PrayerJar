@@ -11,6 +11,7 @@ import { MobileNav } from '@/components/mobile-nav';
 import { UserMenu } from '@/components/user-menu';
 import { SignOutButton } from '@/components/sign-out-button';
 import { SessionProvider } from '@/components/session-provider';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -104,6 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </footer>
         </ThemeProvider>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );
