@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import Stripe from 'stripe';
-import { createCheckoutSession } from '@/services/billing.service';
+import { createCheckoutSession, createSubscriptionCheckout, createEventLicenseCheckout } from '@/services/billing.service';
 import { auth } from '@/lib/auth';
 
-const schema = z.object({
-  amountCents: z.number().int().min(100).max(100000),
-});
+const schema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('donation'),
+    amountCents: z.number().int().min(100).max(100000),
+  }),
+  z.object({
+    type: z.literal('subscription'),
+    stripePriceId: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal('event_license'),
+    eventName: z.string().min(1).max(100),
+    attendeeCapacity: z.number().int().min(1).max(10000),
+  }),
+]);
 
 export async function POST(req: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -30,11 +41,41 @@ export async function POST(req: NextRequest) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org';
 
   try {
-    const url = await createCheckoutSession({
+    const data = result.data;
+
+    if (data.type === 'donation') {
+      const url = await createCheckoutSession({
+        userId,
+        amountCents: data.amountCents,
+        successUrl: `${origin}/give?success=1`,
+        cancelUrl: `${origin}/give`,
+      });
+      return NextResponse.json({ url }, { status: 200 });
+    }
+
+    if (data.type === 'subscription') {
+      if (!userId) {
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      }
+      const url = await createSubscriptionCheckout({
+        userId,
+        stripePriceId: data.stripePriceId,
+        successUrl: `${origin}/billing?success=1`,
+        cancelUrl: `${origin}/billing`,
+      });
+      return NextResponse.json({ url }, { status: 200 });
+    }
+
+    // event_license
+    if (!userId) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    const url = await createEventLicenseCheckout({
       userId,
-      amountCents: result.data.amountCents,
-      successUrl: `${origin}/give?success=1`,
-      cancelUrl: `${origin}/give`,
+      eventName: data.eventName,
+      attendeeCapacity: data.attendeeCapacity,
+      successUrl: `${origin}/events?success=1`,
+      cancelUrl: `${origin}/events`,
     });
     return NextResponse.json({ url }, { status: 200 });
   } catch (err) {
