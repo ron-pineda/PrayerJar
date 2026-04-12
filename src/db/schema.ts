@@ -498,7 +498,7 @@ export type Plan = typeof plans.$inferSelect;
 // --- Subscriptions (pj-s4.2-60) ---
 
 export const subscriptionStatusEnum = pgEnum('subscription_status', [
-  'active', 'canceled', 'past_due', 'trialing', 'incomplete',
+  'active', 'canceled', 'past_due', 'trialing', 'incomplete', 'unpaid', 'paused',
 ]);
 
 export const subscriptions = pgTable('subscriptions', {

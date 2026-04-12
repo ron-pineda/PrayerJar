@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
           status: 'active',
           currentPeriodStart: new Date(item.current_period_start * 1000),
           currentPeriodEnd: new Date(item.current_period_end * 1000),
-        });
+        }).onConflictDoNothing();
       } catch (err) {
         console.error('Webhook subscription processing error:', err);
         return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
           attendeeCapacity,
           validFrom: now,
           validUntil,
-        });
+        }).onConflictDoNothing();
       } catch (err) {
         console.error('Webhook event license processing error:', err);
         return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
@@ -119,16 +119,23 @@ export async function POST(req: NextRequest) {
     const stripeSubscription = event.data.object as Stripe.Subscription;
     const item = stripeSubscription.items.data[0];
     try {
-      await db
+      const result = await db
         .update(subscriptions)
         .set({
-          status: stripeSubscription.status as 'active' | 'canceled' | 'past_due' | 'trialing' | 'incomplete',
+          status: stripeSubscription.status,
           currentPeriodStart: new Date(item.current_period_start * 1000),
           currentPeriodEnd: new Date(item.current_period_end * 1000),
           cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
           updatedAt: new Date(),
         })
-        .where(eq(subscriptions.stripeSubscriptionId, stripeSubscription.id));
+        .where(eq(subscriptions.stripeSubscriptionId, stripeSubscription.id))
+        .returning({ id: subscriptions.id });
+
+      if (result.length === 0) {
+        console.error(`subscription.updated: no subscription found for ${stripeSubscription.id}`);
+        // Return 200 so Stripe doesn't retry — this may be a race with checkout.session.completed
+        return NextResponse.json({ received: true });
+      }
     } catch (err) {
       console.error('Webhook subscription update error:', err);
       return NextResponse.json({ error: 'Processing failed' }, { status: 500 });

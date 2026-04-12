@@ -3,12 +3,14 @@ import type Stripe from 'stripe';
 
 // Hoist mocks so they are available before vi.mock factories run
 const mocks = vi.hoisted(() => {
-  const insertValues = vi.fn().mockResolvedValue(undefined);
-  const updateWhere = vi.fn().mockResolvedValue(undefined);
+  const insertOnConflictDoNothing = vi.fn().mockResolvedValue(undefined);
+  const insertValues = vi.fn().mockReturnValue({ onConflictDoNothing: insertOnConflictDoNothing });
+  const updateReturning = vi.fn().mockResolvedValue([{ id: 'sub-id-1' }]);
+  const updateWhere = vi.fn().mockReturnValue({ returning: updateReturning });
   const updateSet = vi.fn().mockReturnValue({ where: updateWhere });
   const subscriptionsRetrieve = vi.fn();
 
-  return { insertValues, updateSet, updateWhere, subscriptionsRetrieve };
+  return { insertValues, insertOnConflictDoNothing, updateSet, updateWhere, updateReturning, subscriptionsRetrieve };
 });
 
 vi.mock('@/services/billing.service', () => ({
@@ -45,6 +47,8 @@ vi.mock('@/db', () => ({
     },
   },
 }));
+
+
 
 vi.mock('@/db/schema', () => ({
   donations: {},
@@ -121,8 +125,10 @@ describe('POST /api/webhooks/stripe', () => {
     process.env.STRIPE_SECRET_KEY = 'sk_test_fake';
 
     // Re-attach hoisted mocks after clearAllMocks resets them
-    mocks.insertValues.mockResolvedValue(undefined);
-    mocks.updateWhere.mockResolvedValue(undefined);
+    mocks.insertOnConflictDoNothing.mockResolvedValue(undefined);
+    mocks.insertValues.mockReturnValue({ onConflictDoNothing: mocks.insertOnConflictDoNothing });
+    mocks.updateReturning.mockResolvedValue([{ id: 'sub-id-1' }]);
+    mocks.updateWhere.mockReturnValue({ returning: mocks.updateReturning });
     mocks.updateSet.mockReturnValue({ where: mocks.updateWhere });
     vi.mocked(db.insert).mockReturnValue({ values: mocks.insertValues } as ReturnType<typeof db.insert>);
     vi.mocked(db.update).mockReturnValue({ set: mocks.updateSet } as ReturnType<typeof db.update>);

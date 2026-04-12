@@ -120,6 +120,13 @@
       "when": 1775957213107,
       "tag": "0016_low_violations",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1775958155658,
+      "tag": "0017_minor_bruce_banner",
+      "breakpoints": true
     }
   ]
 }

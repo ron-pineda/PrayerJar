@@ -66,10 +66,10 @@ export default async function BillingPage() {
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Renews on {formatDate(subscription.currentPeriodEnd)}
-                  {subscription.cancelAtPeriodEnd && (
-                    <span className="ml-2 text-destructive font-medium">(cancels at period end)</span>
-                  )}
+                  {subscription.cancelAtPeriodEnd
+                    ? `Access until ${formatDate(subscription.currentPeriodEnd)}`
+                    : `Renews on ${formatDate(subscription.currentPeriodEnd)}`
+                  }
                 </p>
               </div>
               <Button variant="outline" render={<Link href="/give" />}>
