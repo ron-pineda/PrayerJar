@@ -297,17 +297,30 @@ describe('updateAssignmentStatus', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('calls db.update and passes both assignmentId and userId as ownership guard', async () => {
+    const testUserId = 'user-1';
     const chain = makeChain(undefined);
     (db as Record<string, unknown>).update = vi.fn(() => chain);
 
-    await updateAssignmentStatus('assign-1', 'user-1', 'accepted');
+    await updateAssignmentStatus('assign-1', testUserId, 'accepted');
 
     expect((db as Record<string, unknown>).update).toHaveBeenCalledTimes(1);
     expect(chain.set).toHaveBeenCalledWith(
       expect.objectContaining({ status: 'accepted' }),
     );
-    // The where clause should use both assignment id and userId — verify .where was called
+    // The WHERE clause must include the userId ownership guard — not just the assignment id.
+    // Walk the drizzle condition tree (which has circular refs so JSON.stringify fails)
+    // and collect all primitive values to verify testUserId is present.
     expect(chain.where).toHaveBeenCalled();
+    const collectValues = (obj: unknown, seen = new Set<unknown>()): string[] => {
+      if (obj === null || obj === undefined) return [];
+      if (seen.has(obj)) return [];
+      if (typeof obj === 'string' || typeof obj === 'number') return [String(obj)];
+      if (typeof obj !== 'object') return [];
+      seen.add(obj);
+      return Object.values(obj as Record<string, unknown>).flatMap((v) => collectValues(v, seen));
+    };
+    const allValues = collectValues(chain.where.mock.calls[0]);
+    expect(allValues).toContain(testUserId);
   });
 
   it('sets the correct status', async () => {

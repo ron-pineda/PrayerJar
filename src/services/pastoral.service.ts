@@ -7,7 +7,7 @@ import {
   users,
   churchMembers,
 } from '@/db/schema';
-import { eq, and, inArray, desc, count } from 'drizzle-orm';
+import { eq, and, inArray, desc, count, gt } from 'drizzle-orm';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -295,7 +295,7 @@ export async function assignPrayer(input: {
       assignedBy: input.assignedBy,
       notes: input.notes ?? null,
     })
-    .onConflictDoNothing();
+    .onConflictDoNothing({ target: [prayerAssignments.prayerId, prayerAssignments.assignedTo] });
 }
 
 export async function updateAssignmentStatus(
@@ -333,6 +333,7 @@ export async function getPastoralStats(churchId: string): Promise<{
       and(
         eq(prayers.churchId, churchId),
         eq(prayers.status, 'active'),
+        gt(prayers.expiresAt, now),
       ),
     );
 
