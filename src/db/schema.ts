@@ -529,6 +529,7 @@ export const churches = pgTable('churches', {
   name: text('name').notNull(),
   description: text('description'),
   logoUrl: text('logo_url'),
+  subdomain: text('subdomain').unique(),
   welcomeMessage: text('welcome_message'),
   primaryColor: text('primary_color').default('#d4a843').notNull(),
   createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -607,6 +608,29 @@ export const prayerAssignments = pgTable('prayer_assignments', {
 export type PrayerFlag = typeof prayerFlags.$inferSelect;
 export type PastoralNote = typeof pastoralNotes.$inferSelect;
 export type PrayerAssignment = typeof prayerAssignments.$inferSelect;
+
+// --- Testimony Approvals (pj-s5.3) ---
+
+export const testimonyApprovalStatusEnum = pgEnum('testimony_approval_status', [
+  'pending', 'approved', 'rejected',
+]);
+
+export const testimonyApprovals = pgTable('testimony_approvals', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  submittedBy: uuid('submitted_by').notNull().references(() => users.id),
+  reviewedBy: uuid('reviewed_by').references(() => users.id),
+  status: testimonyApprovalStatusEnum('status').notNull().default('pending'),
+  testimony: text('testimony').notNull(),
+  reviewNotes: text('review_notes'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+}, (t) => [
+  uniqueIndex('testimony_approval_unique').on(t.churchId, t.prayerId, t.submittedBy),
+]);
+
+export type TestimonyApproval = typeof testimonyApprovals.$inferSelect;
 
 // --- Event Licenses (pj-s4.2-62) ---
 
