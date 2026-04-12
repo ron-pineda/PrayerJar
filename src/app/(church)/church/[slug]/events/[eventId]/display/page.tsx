@@ -176,6 +176,14 @@ export default function DisplayPage() {
     }
   }, [eventId]);
 
+  // One-time fetch on mount to get event metadata
+  useEffect(() => {
+    fetch(`/api/v1/events/${eventId}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.event) setEvent(data.event); })
+      .catch(() => {});
+  }, [eventId]);
+
   // Initial load + polling
   useEffect(() => {
     fetchPrayers();

@@ -76,15 +76,20 @@ export default function ModerationConsole({ eventId, churchSlug }: Props) {
   }, [eventId]);
 
   async function act(prayerId: string, newStatus: 'approved' | 'spotlighted' | 'hidden') {
+    // Optimistically remove from queue
+    setPrayers((prev) => prev.filter((p) => p.id !== prayerId));
     setActioning((prev) => new Set(prev).add(prayerId));
     try {
-      await fetch(`/api/v1/events/${eventId}/prayers/${prayerId}`, {
+      const res = await fetch(`/api/v1/events/${eventId}/prayers/${prayerId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
-      });
-      // Remove from pending queue regardless of exact response
-      setPrayers((prev) => prev.filter((p) => p.id !== prayerId));
+      }).catch(() => null);
+
+      if (!res?.ok) {
+        // SSE will restore it on next poll — just log
+        console.error('Failed to moderate prayer', prayerId, newStatus);
+      }
     } finally {
       setActioning((prev) => {
         const next = new Set(prev);
