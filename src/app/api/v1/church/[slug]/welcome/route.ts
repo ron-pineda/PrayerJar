@@ -7,6 +7,7 @@ import {
 } from '@/services/church-platform.service';
 
 const schema = z.object({
+  // min not set — empty string clears the welcome message (intentional)
   message: z.string().max(1000),
 });
 

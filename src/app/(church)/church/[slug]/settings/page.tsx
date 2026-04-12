@@ -15,11 +15,24 @@ export default async function ChurchSettingsPage({ params }: Props) {
   if (!church) notFound();
 
   const session = await auth();
-  const members = await getChurchMembers(church.id);
+  if (!session?.user?.id) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <p className="text-muted-foreground mb-4">
+          You don&apos;t have permission to edit church settings.
+        </p>
+        <Link
+          href={`/church/${slug}`}
+          className="text-sm text-primary hover:underline"
+        >
+          ← Back to {church.name}
+        </Link>
+      </div>
+    );
+  }
 
-  const currentMember = session?.user?.id
-    ? members.find((m) => m.user.id === session.user!.id)
-    : undefined;
+  const members = await getChurchMembers(church.id);
+  const currentMember = members.find((m) => m.user.id === session.user!.id);
 
   const canEdit =
     currentMember?.member.role === 'admin' ||

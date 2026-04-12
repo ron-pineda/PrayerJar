@@ -45,8 +45,6 @@ export function WelcomeMessageForm({ churchId, slug, initialMessage }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <input type="hidden" name="churchId" value={churchId} />
-
       <div className="flex flex-col gap-1.5">
         <textarea
           name="welcomeMessage"

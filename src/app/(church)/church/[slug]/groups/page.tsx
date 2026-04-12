@@ -23,11 +23,24 @@ export default async function ChurchGroupsPage({ params }: Props) {
   if (!church) notFound();
 
   const session = await auth();
-  const members = await getChurchMembers(church.id);
+  if (!session?.user?.id) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <p className="text-muted-foreground mb-4">
+          You must be a member of this church to view this page.
+        </p>
+        <Link
+          href={`/church/${slug}`}
+          className="text-sm text-primary hover:underline"
+        >
+          ← Back to {church.name}
+        </Link>
+      </div>
+    );
+  }
 
-  const currentMember = session?.user?.id
-    ? members.find((m) => m.user.id === session.user!.id)
-    : undefined;
+  const members = await getChurchMembers(church.id);
+  const currentMember = members.find((m) => m.user.id === session.user!.id);
 
   if (!currentMember) {
     return (
@@ -65,7 +78,7 @@ export default async function ChurchGroupsPage({ params }: Props) {
           <h1 className="text-2xl font-bold">{church.name} — Small Groups</h1>
         </div>
         <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
-          {members.length} member{members.length === 1 ? '' : 's'}
+          {groups.length} group{groups.length === 1 ? '' : 's'}
         </span>
       </div>
 

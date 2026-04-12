@@ -18,6 +18,7 @@ import {
   getChurchMembers,
   updateWelcomeMessage,
 } from '@/services/church-platform.service';
+import { PUT } from './route';
 
 const mockChurch = {
   id: 'church-1',
@@ -68,7 +69,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
   it('returns 401 when unauthenticated', async () => {
     vi.mocked(auth).mockResolvedValueOnce(null);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'Hello' }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -85,7 +85,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
     } as Awaited<ReturnType<typeof auth>>);
     vi.mocked(getChurchBySlug).mockResolvedValueOnce(null);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'Hello' }),
       { params: Promise.resolve({ slug: 'nonexistent' }) },
@@ -99,7 +98,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'Hello' }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -115,7 +113,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-99', name: 'Stranger', email: 'stranger@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'Hello' }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -129,7 +126,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'New welcome message' }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -146,7 +142,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-3', name: 'Pastor Carol', email: 'carol@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'Pastoral welcome' }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -161,7 +156,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const res = await PUT(
       makeRequest({ message: 'x'.repeat(1001) }),
       { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
@@ -176,7 +170,6 @@ describe('PUT /api/v1/church/[slug]/welcome', () => {
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
-    const { PUT } = await import('./route');
     const req = new Request('http://localhost/api/v1/church/grace-chapel-ab12/welcome', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

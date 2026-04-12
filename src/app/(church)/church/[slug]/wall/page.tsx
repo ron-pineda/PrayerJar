@@ -23,10 +23,24 @@ export default async function ChurchWallPage({ params }: Props) {
   if (!church) notFound();
 
   const session = await auth();
+  if (!session?.user?.id) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <p className="text-muted-foreground mb-4">
+          You must be a member of this church to view this wall.
+        </p>
+        <Link
+          href={`/church/${slug}`}
+          className="text-sm text-primary hover:underline"
+        >
+          ← Back to {church.name}
+        </Link>
+      </div>
+    );
+  }
+
   const members = await getChurchMembers(church.id);
-  const currentMember = session?.user?.id
-    ? members.find((m) => m.user.id === session.user!.id)
-    : undefined;
+  const currentMember = members.find((m) => m.user.id === session.user!.id);
 
   if (!currentMember) {
     return (
@@ -44,7 +58,7 @@ export default async function ChurchWallPage({ params }: Props) {
     );
   }
 
-  const prayers = await getChurchPrayers(church.id);
+  const prayers = (await getChurchPrayers(church.id)).map(({ authorId: _, ...p }) => p);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
