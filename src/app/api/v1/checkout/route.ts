@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import Stripe from 'stripe';
 import { createCheckoutSession } from '@/services/billing.service';
 import { auth } from '@/lib/auth';
 
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   const session = await auth();
   const userId = session?.user?.id;
-  const origin = req.headers.get('origin') ?? 'https://prayerjar.org';
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org';
 
   try {
     const url = await createCheckoutSession({
@@ -37,10 +38,14 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ url }, { status: 200 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Internal server error';
-    if (message === 'STRIPE_SECRET_KEY not configured') {
-      return NextResponse.json({ error: 'Payments not configured' }, { status: 503 });
+    if (err instanceof Error && err.message.includes('not configured')) {
+      return NextResponse.json({ error: err.message }, { status: 503 });
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    if ((err as any)?.type?.startsWith('Stripe')) {
+      console.error('Stripe error:', (err as any).type, (err as any).message);
+      return NextResponse.json({ error: 'Payment provider error. Please try again.' }, { status: 502 });
+    }
+    console.error('Checkout error:', err);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { eq } from 'drizzle-orm';
 import { constructStripeEvent } from '@/services/billing.service';
 import { evaluateDonorBadge } from '@/services/badge.service';
 import { db } from '@/db';
@@ -31,16 +32,26 @@ export async function POST(req: NextRequest) {
       ? session.payment_intent
       : (session.payment_intent?.id ?? session.id);
 
-    await db.insert(donations).values({
-      userId: userId || null,
-      stripePaymentIntentId: paymentIntentId,
-      amountCents,
-      currency: session.currency ?? 'usd',
-      status: 'succeeded',
+    const existing = await db.query.donations.findFirst({
+      where: eq(donations.stripePaymentIntentId, paymentIntentId),
     });
+    if (existing) return NextResponse.json({ received: true });
 
-    if (userId) {
-      await evaluateDonorBadge(userId);
+    try {
+      await db.insert(donations).values({
+        userId: userId || null,
+        stripePaymentIntentId: paymentIntentId,
+        amountCents,
+        currency: session.currency ?? 'usd',
+        status: 'succeeded',
+      });
+
+      if (userId) {
+        await evaluateDonorBadge(userId);
+      }
+    } catch (err) {
+      console.error('Webhook processing error:', err);
+      return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
     }
   }
 

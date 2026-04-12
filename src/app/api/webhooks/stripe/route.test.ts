@@ -14,6 +14,11 @@ vi.mock('@/db', () => ({
     insert: vi.fn().mockReturnValue({
       values: vi.fn().mockResolvedValue(undefined),
     }),
+    query: {
+      donations: {
+        findFirst: vi.fn().mockResolvedValue(null),
+      },
+    },
   },
 }));
 
