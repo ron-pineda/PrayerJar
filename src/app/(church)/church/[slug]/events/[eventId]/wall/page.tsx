@@ -123,9 +123,14 @@ export default async function EventWallPage({ params }: Props) {
             </form>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Use the API or moderation console (Sprint 5.4 Task 3) for real-time control.
-        </p>
+        <div className="flex gap-3 mt-4">
+          <Link href={`/church/${slug}/events/${eventId}/moderation`} className="text-sm text-primary underline">
+            Moderation Console →
+          </Link>
+          <Link href={`/church/${slug}/events/${eventId}/display`} className="text-sm text-primary underline">
+            Display Mode →
+          </Link>
+        </div>
       </div>
 
       {/* Prayer wall */}

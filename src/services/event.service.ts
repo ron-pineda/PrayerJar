@@ -144,7 +144,7 @@ export async function moderateEventPrayer(
 ): Promise<void> {
   await db
     .update(eventPrayers)
-    .set({ status, moderatedBy: moderatorId })
+    .set({ status, moderatedBy: moderatorId, updatedAt: new Date() })
     .where(eq(eventPrayers.id, prayerId));
 }
 

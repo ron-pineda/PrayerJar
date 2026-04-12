@@ -17,6 +17,7 @@ export async function POST(
 ) {
   const { eventId } = await params;
 
+  // TODO: add rate limiting per IP to prevent spam submissions
   const event = await getEvent(eventId);
   if (!event) {
     return Response.json({ error: 'Event not found' }, { status: 404 });
