@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
     }
     return Response.json({ prayer }, { status: 200 });
   } catch (err) {
-    console.error('[prayers/random]', err);
-    return Response.json({ error: 'Failed to fetch prayer' }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[prayers/random]', msg);
+    return Response.json({ error: msg }, { status: 500 });
   }
 }
