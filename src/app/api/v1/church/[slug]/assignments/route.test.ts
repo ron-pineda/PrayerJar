@@ -18,6 +18,11 @@ import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.se
 import { assignPrayer } from '@/services/pastoral.service';
 import { POST } from './route';
 
+// Use UUIDs for user IDs so they pass z.string().uuid() in assignedTo
+const ADMIN_ID    = '110e8400-e29b-41d4-a716-446655440001';
+const MEMBER_ID   = '220e8400-e29b-41d4-a716-446655440002';
+const PASTOR_ID   = '330e8400-e29b-41d4-a716-446655440003';
+
 const mockChurch = {
   id: 'church-1',
   slug: 'grace-chapel-ab12',
@@ -26,29 +31,30 @@ const mockChurch = {
   welcomeMessage: null,
   logoUrl: null,
   primaryColor: '#d4a843',
-  createdBy: 'user-1',
+  createdBy: ADMIN_ID,
   subscriptionId: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
 const adminMember = {
-  member: { id: 'm1', churchId: 'church-1', userId: 'user-1', role: 'admin' as const, joinedAt: new Date() },
-  user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+  member: { id: 'm1', churchId: 'church-1', userId: ADMIN_ID, role: 'admin' as const, joinedAt: new Date() },
+  user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
 };
 
 const pastorMember = {
-  member: { id: 'm3', churchId: 'church-1', userId: 'user-3', role: 'pastor' as const, joinedAt: new Date() },
-  user: { id: 'user-3', name: 'Pastor Carol', email: 'carol@example.com' },
+  member: { id: 'm3', churchId: 'church-1', userId: PASTOR_ID, role: 'pastor' as const, joinedAt: new Date() },
+  user: { id: PASTOR_ID, name: 'Pastor Carol', email: 'carol@example.com' },
 };
 
 const memberOnly = {
-  member: { id: 'm2', churchId: 'church-1', userId: 'user-2', role: 'member' as const, joinedAt: new Date() },
-  user: { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
+  member: { id: 'm2', churchId: 'church-1', userId: MEMBER_ID, role: 'member' as const, joinedAt: new Date() },
+  user: { id: MEMBER_ID, name: 'Bob', email: 'bob@example.com' },
 };
 
-const validPrayerId = '550e8400-e29b-41d4-a716-446655440000';
-const validAssignedTo = '660e8400-e29b-41d4-a716-446655440001';
+const validPrayerId  = '550e8400-e29b-41d4-a716-446655440000';
+// assignedTo must be a UUID that matches a church member
+const validAssignedTo = ADMIN_ID;
 
 function makeRequest(body: unknown) {
   return new Request('http://localhost/api/v1/church/grace-chapel-ab12/assignments', {
@@ -81,7 +87,7 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
 
   it('returns 403 when user is a plain member', async () => {
     vi.mocked(auth).mockResolvedValueOnce({
-      user: { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
+      user: { id: MEMBER_ID, name: 'Bob', email: 'bob@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
     const res = await POST(makeRequest({ prayerId: validPrayerId, assignedTo: validAssignedTo }), routeParams);
@@ -103,7 +109,7 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
 
   it('returns 200 and calls assignPrayer when admin assigns', async () => {
     vi.mocked(auth).mockResolvedValueOnce({
-      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+      user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
     const res = await POST(makeRequest({ prayerId: validPrayerId, assignedTo: validAssignedTo }), routeParams);
@@ -115,14 +121,14 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
       churchId: 'church-1',
       prayerId: validPrayerId,
       assignedTo: validAssignedTo,
-      assignedBy: 'user-1',
+      assignedBy: ADMIN_ID,
       notes: undefined,
     });
   });
 
   it('returns 200 and passes notes when pastor assigns with notes', async () => {
     vi.mocked(auth).mockResolvedValueOnce({
-      user: { id: 'user-3', name: 'Pastor Carol', email: 'carol@example.com' },
+      user: { id: PASTOR_ID, name: 'Pastor Carol', email: 'carol@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
     const res = await POST(
@@ -138,7 +144,7 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
 
   it('returns 400 when prayerId is not a valid UUID', async () => {
     vi.mocked(auth).mockResolvedValueOnce({
-      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+      user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
     const res = await POST(makeRequest({ prayerId: 'not-a-uuid', assignedTo: validAssignedTo }), routeParams);
@@ -149,7 +155,7 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
 
   it('returns 400 for invalid JSON body', async () => {
     vi.mocked(auth).mockResolvedValueOnce({
-      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+      user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
 
     const req = new Request('http://localhost/api/v1/church/grace-chapel-ab12/assignments', {
@@ -160,5 +166,22 @@ describe('POST /api/v1/church/[slug]/assignments', () => {
 
     const res = await POST(req, routeParams);
     expect(res.status).toBe(400);
+  });
+
+  it('returns 400 when assignedTo user is not a member of this church', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const outsiderId = 'f47ac10b-58cc-4372-a567-0e02b2c3d479'; // valid UUID, not in members
+    const res = await POST(
+      makeRequest({ prayerId: validPrayerId, assignedTo: outsiderId }),
+      routeParams,
+    );
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body).toHaveProperty('error', 'User is not a member of this church');
+    expect(assignPrayer).not.toHaveBeenCalled();
   });
 });

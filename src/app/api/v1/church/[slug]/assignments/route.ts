@@ -47,6 +47,11 @@ export async function POST(
     return Response.json({ error: 'Invalid input' }, { status: 400 });
   }
 
+  const isMember = members.some(m => m.user.id === parsed.data.assignedTo);
+  if (!isMember) {
+    return Response.json({ error: 'User is not a member of this church' }, { status: 400 });
+  }
+
   await assignPrayer({
     churchId: church.id,
     prayerId: parsed.data.prayerId,

@@ -57,7 +57,7 @@ export default async function PastoralCareInboxPage({ params }: Props) {
       </div>
 
       <div className="mb-8">
-        <CreateNoteForm churchId={church.id} churchSlug={slug} />
+        <CreateNoteForm churchSlug={slug} />
       </div>
 
       {notes.length === 0 ? (

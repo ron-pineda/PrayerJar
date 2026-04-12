@@ -13,6 +13,26 @@ vi.mock('@/services/pastoral.service', () => ({
   reviewFlag: vi.fn(),
 }));
 
+const mockDbSelect = vi.fn();
+vi.mock('@/db', () => ({
+  db: {
+    select: () => ({
+      from: () => ({
+        where: mockDbSelect,
+      }),
+    }),
+  },
+}));
+
+vi.mock('@/db/schema', () => ({
+  prayerFlags: { id: 'id', churchId: 'churchId' },
+}));
+
+vi.mock('drizzle-orm', () => ({
+  eq: vi.fn(),
+  and: vi.fn(),
+}));
+
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { reviewFlag } from '@/services/pastoral.service';
@@ -64,6 +84,7 @@ describe('PUT /api/v1/church/[slug]/flags/[flagId]', () => {
     vi.mocked(getChurchBySlug).mockResolvedValue(mockChurch);
     vi.mocked(getChurchMembers).mockResolvedValue([adminMember, memberOnly, pastorMember]);
     vi.mocked(reviewFlag).mockResolvedValue(undefined);
+    mockDbSelect.mockResolvedValue([{ id: 'flag-123' }]);
   });
 
   it('returns 401 when unauthenticated', async () => {
@@ -146,5 +167,19 @@ describe('PUT /api/v1/church/[slug]/flags/[flagId]', () => {
 
     const res = await PUT(req, routeParams);
     expect(res.status).toBe(400);
+  });
+
+  it('returns 404 when flag does not belong to this church', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+    mockDbSelect.mockResolvedValueOnce([]);
+
+    const res = await PUT(makeRequest({ status: 'reviewed' }), routeParams);
+
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body).toHaveProperty('error', 'Flag not found');
+    expect(reviewFlag).not.toHaveBeenCalled();
   });
 });

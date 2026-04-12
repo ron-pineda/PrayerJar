@@ -1,5 +1,8 @@
 import { z } from 'zod';
+import { and, eq } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
+import { db } from '@/db';
+import { prayerFlags } from '@/db/schema';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { reviewFlag } from '@/services/pastoral.service';
 
@@ -32,6 +35,12 @@ export async function PUT(
     (currentMember.member.role !== 'admin' && currentMember.member.role !== 'pastor')
   ) {
     return Response.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  const [flag] = await db.select({ id: prayerFlags.id }).from(prayerFlags)
+    .where(and(eq(prayerFlags.id, flagId), eq(prayerFlags.churchId, church.id)));
+  if (!flag) {
+    return Response.json({ error: 'Flag not found' }, { status: 404 });
   }
 
   let body: unknown;
