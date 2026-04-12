@@ -551,6 +551,63 @@ export const churchMembers = pgTable('church_members', {
 export type Church = typeof churches.$inferSelect;
 export type ChurchMember = typeof churchMembers.$inferSelect;
 
+// --- Pastoral Tools (pj-s5.2) ---
+
+export const prayerFlagReasonEnum = pgEnum('prayer_flag_reason', [
+  'self_harm', 'crisis', 'abuse', 'inappropriate', 'spam', 'other',
+]);
+
+export const prayerFlagStatusEnum = pgEnum('prayer_flag_status', [
+  'pending', 'reviewed', 'dismissed', 'escalated',
+]);
+
+export const prayerFlags = pgTable('prayer_flags', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  churchId: uuid('church_id').references(() => churches.id, { onDelete: 'cascade' }),
+  reason: prayerFlagReasonEnum('reason').notNull(),
+  aiConfidence: doublePrecision('ai_confidence'),
+  notes: text('notes'),
+  status: prayerFlagStatusEnum('status').notNull().default('pending'),
+  reviewedBy: uuid('reviewed_by').references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+});
+
+export const pastoralNotes = pgTable('pastoral_notes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  prayerId: uuid('prayer_id').references(() => prayers.id, { onDelete: 'set null' }),
+  memberId: uuid('member_id').references(() => users.id, { onDelete: 'set null' }),
+  authorId: uuid('author_id').notNull().references(() => users.id),
+  content: text('content').notNull(),
+  isPrivate: boolean('is_private').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const prayerAssignmentStatusEnum = pgEnum('prayer_assignment_status', [
+  'assigned', 'accepted', 'praying', 'completed',
+]);
+
+export const prayerAssignments = pgTable('prayer_assignments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  prayerId: uuid('prayer_id').notNull().references(() => prayers.id, { onDelete: 'cascade' }),
+  assignedTo: uuid('assigned_to').notNull().references(() => users.id),
+  assignedBy: uuid('assigned_by').notNull().references(() => users.id),
+  status: prayerAssignmentStatusEnum('status').notNull().default('assigned'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  uniqueIndex('prayer_assignment_unique').on(t.prayerId, t.assignedTo),
+]);
+
+export type PrayerFlag = typeof prayerFlags.$inferSelect;
+export type PastoralNote = typeof pastoralNotes.$inferSelect;
+export type PrayerAssignment = typeof prayerAssignments.$inferSelect;
+
 // --- Event Licenses (pj-s4.2-62) ---
 
 export const eventLicenses = pgTable('event_licenses', {
