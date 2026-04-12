@@ -22,6 +22,7 @@ function generateSlug(name: string): string {
 export async function createChurch(params: {
   name: string;
   description?: string;
+  welcomeMessage?: string;
   createdBy: string;
 }): Promise<Church> {
   const slug = generateSlug(params.name);
@@ -32,6 +33,7 @@ export async function createChurch(params: {
       slug,
       name: params.name,
       description: params.description ?? null,
+      welcomeMessage: params.welcomeMessage ?? null,
       createdBy: params.createdBy,
     })
     .returning();
