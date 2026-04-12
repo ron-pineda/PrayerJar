@@ -20,7 +20,7 @@ export const badgeTypeEnum = pgEnum('badge_type', [
   'first_light', 'first_prayer',
   'intercessor_bronze', 'intercessor_silver', 'intercessor_gold',
   'encourager_bronze', 'encourager_silver', 'encourager_gold',
-  'faithful', 'devoted', 'witness', 'testimony', 'community_builder',
+  'faithful', 'devoted', 'witness', 'testimony', 'community_builder', 'donor',
 ]);
 
 export const reportStatusEnum = pgEnum('report_status', ['pending', 'reviewed', 'dismissed']);
@@ -450,3 +450,29 @@ export const featureFlags = pgTable('feature_flags', {
 });
 
 export type FeatureFlag = typeof featureFlags.$inferSelect;
+
+// --- Stripe Customers (pj-s4.1-57) ---
+
+export const stripeCustomers = pgTable('stripe_customers', {
+  userId: uuid('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  stripeCustomerId: text('stripe_customer_id').notNull().unique(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type StripeCustomer = typeof stripeCustomers.$inferSelect;
+
+// --- Donations (pj-s4.1-57) ---
+
+export const donationStatusEnum = pgEnum('donation_status', ['pending', 'succeeded', 'failed', 'refunded']);
+
+export const donations = pgTable('donations', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  stripePaymentIntentId: text('stripe_payment_intent_id').notNull().unique(),
+  amountCents: integer('amount_cents').notNull(),
+  currency: text('currency').notNull().default('usd'),
+  status: donationStatusEnum('status').notNull().default('pending'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Donation = typeof donations.$inferSelect;
