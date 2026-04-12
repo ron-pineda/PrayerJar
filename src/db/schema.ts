@@ -646,3 +646,44 @@ export const eventLicenses = pgTable('event_licenses', {
 });
 
 export type EventLicense = typeof eventLicenses.$inferSelect;
+
+// --- Live Events (pj-s5.4) ---
+
+export const eventStatusEnum = pgEnum('event_status', [
+  'draft', 'active', 'paused', 'ended',
+]);
+
+export const events = pgTable('events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  description: text('description'),
+  eventLicenseId: uuid('event_license_id').references(() => eventLicenses.id),
+  status: eventStatusEnum('status').notNull().default('draft'),
+  displayMode: text('display_mode').notNull().default('stream'), // 'stream' | 'spotlight' | 'category'
+  startsAt: timestamp('starts_at', { withTimezone: true }),
+  endsAt: timestamp('ends_at', { withTimezone: true }),
+  createdBy: uuid('created_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const eventPrayerStatusEnum = pgEnum('event_prayer_status', [
+  'pending', 'approved', 'spotlighted', 'hidden',
+]);
+
+export const eventPrayers = pgTable('event_prayers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  eventId: uuid('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  submitterName: text('submitter_name'),   // optional display name (can be anonymous)
+  isAnonymous: boolean('is_anonymous').notNull().default(false),
+  category: categoryEnum('category').notNull().default('other'),
+  status: eventPrayerStatusEnum('status').notNull().default('pending'),
+  moderatedBy: uuid('moderated_by').references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type Event = typeof events.$inferSelect;
+export type EventPrayer = typeof eventPrayers.$inferSelect;
