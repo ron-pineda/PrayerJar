@@ -13,7 +13,8 @@ export async function GET(request: NextRequest) {
       return Response.json({ prayer: null }, { status: 200 });
     }
     return Response.json({ prayer }, { status: 200 });
-  } catch {
+  } catch (err) {
+    console.error('[prayers/random]', err);
     return Response.json({ error: 'Failed to fetch prayer' }, { status: 500 });
   }
 }
