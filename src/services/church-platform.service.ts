@@ -47,6 +47,16 @@ export async function createChurch(params: {
   return church;
 }
 
+// Get church by ID (returns null if not found)
+export async function getChurchById(id: string): Promise<Church | null> {
+  const [church] = await db
+    .select()
+    .from(churches)
+    .where(eq(churches.id, id))
+    .limit(1);
+  return church ?? null;
+}
+
 // Get church by slug (returns null if not found)
 export async function getChurchBySlug(slug: string): Promise<Church | null> {
   const [church] = await db
