@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateApiKey } from '@/lib/api-key-auth';
 import { createPrayer, ModerationError } from '@/services/prayer.service';
 import { db } from '@/db';
-import { prayers } from '@/db/schema';
+import { prayers, categoryEnum } from '@/db/schema';
 import { eq, and, gt, isNull, count } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
   ];
 
   if (category) {
-    conditions.push(eq(prayers.category, category as typeof prayers.category.dataType));
+    conditions.push(eq(prayers.category, category as (typeof categoryEnum.enumValues)[number]));
   }
 
   const whereClause = and(...conditions);

@@ -1,6 +1,8 @@
 'use client';
 
-export { track } from '@vercel/analytics';
+import { track } from '@vercel/analytics';
+
+export { track };
 
 export function trackPrayer(category: string) {
   track('prayer_submitted', { category });

@@ -16,6 +16,7 @@ const BADGE_META: Record<BadgeType, { name: string; description: string; icon: s
   witness: { name: 'Witness', description: 'Had a prayer answered', icon: '⭐' },
   testimony: { name: 'Testimony', description: 'Shared a testimony', icon: '📖' },
   community_builder: { name: 'Community Builder', description: 'First prayer in a group', icon: '🤝' },
+  donor: { name: 'Donor', description: 'Made a donation to PrayerJar', icon: '💝' },
 };
 
 const ALL_BADGE_TYPES = Object.keys(BADGE_META) as BadgeType[];

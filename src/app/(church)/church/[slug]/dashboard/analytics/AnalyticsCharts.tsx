@@ -57,8 +57,8 @@ export default function AnalyticsCharts({
               />
               <YAxis tick={{ fontSize: 10 }} width={28} allowDecimals={false} />
               <Tooltip
-                labelFormatter={(v: string) => `Date: ${v}`}
-                formatter={(v: number) => [v, 'Prayers']}
+                labelFormatter={(v) => `Date: ${v}`}
+                formatter={(v) => [v, 'Prayers']}
               />
               <Line
                 type="monotone"
@@ -83,8 +83,8 @@ export default function AnalyticsCharts({
               />
               <YAxis tick={{ fontSize: 10 }} width={28} allowDecimals={false} />
               <Tooltip
-                labelFormatter={(v: string) => `Date: ${v}`}
-                formatter={(v: number) => [v, 'Interactions']}
+                labelFormatter={(v) => `Date: ${v}`}
+                formatter={(v) => [v, 'Interactions']}
               />
               <Line
                 type="monotone"
@@ -115,7 +115,7 @@ export default function AnalyticsCharts({
                 interval={0}
               />
               <YAxis tick={{ fontSize: 10 }} width={28} allowDecimals={false} />
-              <Tooltip formatter={(v: number) => [v, 'Prayers']} />
+              <Tooltip formatter={(v) => [v, 'Prayers']} />
               <Bar dataKey="count" fill={PRIMARY} radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -133,8 +133,8 @@ export default function AnalyticsCharts({
               />
               <YAxis tick={{ fontSize: 10 }} width={28} allowDecimals={false} />
               <Tooltip
-                labelFormatter={(v: string) => `Date: ${v}`}
-                formatter={(v: number) => [v, 'New members']}
+                labelFormatter={(v) => `Date: ${v}`}
+                formatter={(v) => [v, 'New members']}
               />
               <Line
                 type="monotone"

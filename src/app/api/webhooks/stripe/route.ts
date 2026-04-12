@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
       const result = await db
         .update(subscriptions)
         .set({
-          status: stripeSubscription.status,
+          status: stripeSubscription.status as (typeof subscriptions.$inferSelect)['status'],
           currentPeriodStart: new Date(item.current_period_start * 1000),
           currentPeriodEnd: new Date(item.current_period_end * 1000),
           cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,

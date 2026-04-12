@@ -8,12 +8,13 @@ interface Props {
 }
 
 export function TestimonyActions({ testimonyId, churchSlug }: Props) {
-  const [state, setState] = useState<'idle' | 'rejecting' | 'loading' | 'done' | 'error'>('idle');
+  const [state, setState] = useState<'idle' | 'rejecting' | 'done' | 'error'>('idle');
+  const [submitting, setSubmitting] = useState(false);
   const [rejectNotes, setRejectNotes] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   async function handleApprove() {
-    setState('loading');
+    setSubmitting(true);
     try {
       const res = await fetch(`/api/v1/church/${churchSlug}/testimony/${testimonyId}`, {
         method: 'PUT',
@@ -25,6 +26,8 @@ export function TestimonyActions({ testimonyId, churchSlug }: Props) {
     } catch {
       setErrorMsg('Failed to approve. Please try again.');
       setState('error');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -33,7 +36,7 @@ export function TestimonyActions({ testimonyId, churchSlug }: Props) {
       setErrorMsg('A rejection reason is required.');
       return;
     }
-    setState('loading');
+    setSubmitting(true);
     try {
       const res = await fetch(`/api/v1/church/${churchSlug}/testimony/${testimonyId}`, {
         method: 'PUT',
@@ -45,6 +48,8 @@ export function TestimonyActions({ testimonyId, churchSlug }: Props) {
     } catch {
       setErrorMsg('Failed to reject. Please try again.');
       setState('error');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -68,7 +73,7 @@ export function TestimonyActions({ testimonyId, churchSlug }: Props) {
         <div className="flex gap-2">
           <button
             onClick={handleReject}
-            disabled={state === 'loading'}
+            disabled={submitting}
             className="rounded-md bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
           >
             Confirm Reject
@@ -89,14 +94,14 @@ export function TestimonyActions({ testimonyId, churchSlug }: Props) {
       {errorMsg && <p className="w-full text-xs text-destructive">{errorMsg}</p>}
       <button
         onClick={handleApprove}
-        disabled={state === 'loading'}
+        disabled={submitting}
         className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
       >
-        {state === 'loading' ? 'Saving…' : 'Approve'}
+        {submitting ? 'Saving…' : 'Approve'}
       </button>
       <button
         onClick={() => { setState('rejecting'); setErrorMsg(''); }}
-        disabled={state === 'loading'}
+        disabled={submitting}
         className="rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50"
       >
         Reject

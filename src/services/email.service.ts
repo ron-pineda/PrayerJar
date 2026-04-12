@@ -30,6 +30,7 @@ const BADGE_LABELS: Record<BadgeType, { name: string; description: string }> = {
   witness: { name: 'Witness', description: 'Your prayer was answered!' },
   testimony: { name: 'Testimony', description: 'You shared your testimony on the Praise Wall.' },
   community_builder: { name: 'Community Builder', description: 'First prayer in a group room.' },
+  donor: { name: 'Donor', description: 'You made a donation to PrayerJar. Thank you!' },
 };
 
 export async function sendPrayerNotificationEmail(email: string, prayerId: string) {

@@ -25,9 +25,7 @@ export default async function ExportPage() {
           <p className="text-sm text-muted-foreground">
             Your export includes prayers, interactions, badges, and account details.
           </p>
-          <Button asChild>
-            <a href="/api/v1/export">Download My Data</a>
-          </Button>
+          <Button render={<a href="/api/v1/export" />}>Download My Data</Button>
         </CardContent>
       </Card>
     </main>
