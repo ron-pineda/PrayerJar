@@ -93,3 +93,7 @@ export async function evaluateTestimonyBadge(userId: string) {
 export async function getBadgesForUser(userId: string) {
   return db.select().from(badges).where(eq(badges.userId, userId)).orderBy(badges.awardedAt);
 }
+
+export async function evaluateDonorBadge(userId: string) {
+  await awardBadge(userId, 'donor');
+}
