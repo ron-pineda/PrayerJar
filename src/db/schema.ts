@@ -103,6 +103,10 @@ export const prayers = pgTable('prayers', {
   latitude: doublePrecision('latitude'),
   longitude: doublePrecision('longitude'),
   country: text('country'),
+  audioUrl: text('audio_url'),
+  transcription: text('transcription'),
+  videoUrl: text('video_url'),
+  videoDurationSeconds: integer('video_duration_seconds'),
 });
 
 export const prayerInteractions = pgTable('prayer_interactions', {

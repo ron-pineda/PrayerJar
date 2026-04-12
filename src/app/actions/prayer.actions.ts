@@ -13,6 +13,7 @@ const submitPrayerSchema = z.object({
   isAnonymous: z.boolean(),
   isUrgent: z.boolean(),
   imageUrl: z.string().url().nullable().optional(),
+  audioUrl: z.string().url().nullable().optional(),
 });
 
 export type SubmitPrayerResult =
@@ -29,6 +30,7 @@ export async function submitPrayerAction(
     isAnonymous: formData.get('isAnonymous') === 'true',
     isUrgent: formData.get('isUrgent') === 'true',
     imageUrl: formData.get('imageUrl') || null,
+    audioUrl: formData.get('audioUrl') || null,
   });
 
   if (!parsed.success) {
@@ -53,6 +55,7 @@ export async function submitPrayerAction(
       ...parsed.data,
       authorId: session?.user?.id ?? null,
       imageUrl: parsed.data.imageUrl ?? null,
+      audioUrl: parsed.data.audioUrl ?? null,
     });
     revalidatePath('/');
     if (session?.user?.id) {

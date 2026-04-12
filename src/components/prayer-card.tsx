@@ -10,6 +10,7 @@ import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
 import { PhotoUpload } from './photo-upload';
+import { VideoRecorder } from './video-recorder';
 import { CelebrationAnimation } from './celebration-animation';
 import { ExpandableText } from './expandable-text';
 import { AdoptPrayerButton } from './adopt-prayer-button';
@@ -41,6 +42,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
   const [error, setError] = useState('');
   const [localStatus, setLocalStatus] = useState<Prayer['status']>(prayer.status);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [countKey, setCountKey] = useState(0);
   const prevCountRef = useRef(prayer.prayerCount);
@@ -58,12 +61,18 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
     setError('');
     const formData = new FormData(e.currentTarget);
     if (imageUrl) formData.set('imageUrl', imageUrl);
+    if (videoUrl) {
+      formData.set('videoUrl', videoUrl);
+      formData.set('videoDurationSeconds', String(videoDurationSeconds ?? 0));
+    }
     const result = await markAnsweredAction(formData);
     setPending(false);
     if (result.success) {
       setLocalStatus('answered');
       setShowTestimony(false);
       setImageUrl(null);
+      setVideoUrl(null);
+      setVideoDurationSeconds(null);
       setShowCelebration(true);
     } else {
       setError(result.error);
@@ -111,6 +120,10 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
             className="w-full h-48 object-cover rounded-lg"
             loading="lazy"
           />
+        )}
+
+        {prayer.audioUrl && (
+          <audio controls src={prayer.audioUrl} className="w-full mt-2" />
         )}
 
         {prayer.suggestedVerse && (
@@ -174,6 +187,11 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
               maxLength={2000}
             />
             <PhotoUpload url={imageUrl} onUpload={setImageUrl} onRemove={() => setImageUrl(null)} variant="warm" />
+            <VideoRecorder
+              url={videoUrl}
+              onUpload={(url, secs) => { setVideoUrl(url); setVideoDurationSeconds(secs); }}
+              onRemove={() => { setVideoUrl(null); setVideoDurationSeconds(null); }}
+            />
             <div className="flex gap-2">
               <Button type="submit" size="sm" disabled={pending}>
                 {pending ? 'Saving...' : 'Confirm Answered'}

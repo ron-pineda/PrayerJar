@@ -155,6 +155,20 @@
       "when": 1775968668605,
       "tag": "0021_bent_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1775997421207,
+      "tag": "0022_colossal_jazinda",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1775998409266,
+      "tag": "0023_stiff_mesmero",
+      "breakpoints": true
     }
   ]
 }

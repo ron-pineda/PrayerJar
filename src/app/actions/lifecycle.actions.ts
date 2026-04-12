@@ -9,6 +9,8 @@ const answeredSchema = z.object({
   prayerId: z.string().uuid(),
   testimony: z.string().max(2000).optional(),
   imageUrl: z.string().url().nullable().optional(),
+  videoUrl: z.string().url().nullable().optional(),
+  videoDurationSeconds: z.coerce.number().int().min(0).nullable().optional(),
 });
 
 const renewSchema = z.object({
@@ -29,6 +31,8 @@ export async function markAnsweredAction(formData: FormData): Promise<LifecycleR
     prayerId: formData.get('prayerId'),
     testimony: formData.get('testimony') || undefined,
     imageUrl: formData.get('imageUrl') || null,
+    videoUrl: formData.get('videoUrl') || null,
+    videoDurationSeconds: formData.get('videoDurationSeconds') || null,
   });
 
   if (!parsed.success) {
@@ -39,7 +43,9 @@ export async function markAnsweredAction(formData: FormData): Promise<LifecycleR
     parsed.data.prayerId,
     session.user.id,
     parsed.data.testimony,
-    parsed.data.imageUrl ?? undefined
+    parsed.data.imageUrl ?? undefined,
+    parsed.data.videoUrl ?? undefined,
+    parsed.data.videoDurationSeconds ?? undefined
   );
 
   if (!updated) {

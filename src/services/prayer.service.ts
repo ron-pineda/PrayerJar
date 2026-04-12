@@ -10,6 +10,7 @@ export type CreatePrayerInput = {
   isUrgent: boolean;
   authorId: string | null;
   imageUrl?: string | null;
+  audioUrl?: string | null;
 };
 
 export class ModerationError extends Error {
@@ -43,6 +44,7 @@ export async function createPrayer(input: CreatePrayerInput) {
       isUrgent: input.isUrgent,
       authorId: input.authorId,
       imageUrl: input.imageUrl ?? null,
+      audioUrl: input.audioUrl ?? null,
       category: categorization.category,
       tags: categorization.tags,
       suggestedVerse: categorization.verse,
@@ -87,13 +89,22 @@ export async function getPrayersByAuthor(authorId: string) {
     .orderBy(prayers.createdAt);
 }
 
-export async function markPrayerAnswered(id: string, authorId: string, testimony?: string, imageUrl?: string) {
+export async function markPrayerAnswered(
+  id: string,
+  authorId: string,
+  testimony?: string,
+  imageUrl?: string,
+  videoUrl?: string,
+  videoDurationSeconds?: number
+) {
   const [updated] = await db
     .update(prayers)
     .set({
       status: 'answered',
       testimony: testimony ?? null,
       imageUrl: imageUrl ?? undefined,
+      videoUrl: videoUrl ?? undefined,
+      videoDurationSeconds: videoDurationSeconds ?? undefined,
       answeredAt: new Date(),
     })
     .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
@@ -199,6 +210,7 @@ export async function getTestimonyById(prayerId: string) {
       answeredAt: prayers.answeredAt,
       category: prayers.category,
       authorId: prayers.authorId,
+      videoUrl: prayers.videoUrl,
     })
     .from(prayers)
     .where(and(eq(prayers.id, prayerId), isNotNull(prayers.answeredAt)))
