@@ -476,3 +476,58 @@ export const donations = pgTable('donations', {
 });
 
 export type Donation = typeof donations.$inferSelect;
+
+// --- Plans (pj-s4.2-61) ---
+
+export const planTierEnum = pgEnum('plan_tier', ['free', 'starter', 'pro', 'enterprise']);
+
+export const plans = pgTable('plans', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  tier: planTierEnum('tier').notNull().unique(),
+  name: text('name').notNull(),
+  monthlyPriceCents: integer('monthly_price_cents').notNull().default(0),
+  yearlyPriceCents: integer('yearly_price_cents').notNull().default(0),
+  stripePriceIdMonthly: text('stripe_price_id_monthly'),
+  stripePriceIdYearly: text('stripe_price_id_yearly'),
+  features: text('features').array().default([]).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Plan = typeof plans.$inferSelect;
+
+// --- Subscriptions (pj-s4.2-60) ---
+
+export const subscriptionStatusEnum = pgEnum('subscription_status', [
+  'active', 'canceled', 'past_due', 'trialing', 'incomplete',
+]);
+
+export const subscriptions = pgTable('subscriptions', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  stripeSubscriptionId: text('stripe_subscription_id').notNull().unique(),
+  stripePriceId: text('stripe_price_id').notNull(),
+  tier: planTierEnum('tier').notNull(),
+  status: subscriptionStatusEnum('status').notNull().default('active'),
+  currentPeriodStart: timestamp('current_period_start', { withTimezone: true }).notNull(),
+  currentPeriodEnd: timestamp('current_period_end', { withTimezone: true }).notNull(),
+  cancelAtPeriodEnd: boolean('cancel_at_period_end').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type Subscription = typeof subscriptions.$inferSelect;
+
+// --- Event Licenses (pj-s4.2-62) ---
+
+export const eventLicenses = pgTable('event_licenses', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  stripePaymentIntentId: text('stripe_payment_intent_id').notNull().unique(),
+  eventName: text('event_name').notNull(),
+  attendeeCapacity: integer('attendee_capacity').notNull().default(100),
+  validFrom: timestamp('valid_from', { withTimezone: true }).notNull(),
+  validUntil: timestamp('valid_until', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type EventLicense = typeof eventLicenses.$inferSelect;
