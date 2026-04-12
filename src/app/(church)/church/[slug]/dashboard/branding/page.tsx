@@ -1,14 +1,3 @@
-'use client';
-
-// BrandingForm is co-located below the server page export.
-// The file uses a top-level 'use client' only for the client component;
-// the server component is exported as default and runs on the server.
-// Next.js supports mixed server+client in the same file when using
-// the pattern: server component imports and renders a client component
-// that is defined in the same file with its own 'use client' directive.
-// However, the cleanest approach for App Router is to split into two
-// files. We keep them co-located here per the task spec.
-
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
