@@ -99,6 +99,7 @@ export const prayers = pgTable('prayers', {
   testimonyStory: text('testimonyStory'),
   followUpSentAt: timestamp('followUpSentAt'),
   groupId: uuid('group_id').references(() => groups.id, { onDelete: 'set null' }),
+  churchId: uuid('church_id').references(() => churches.id, { onDelete: 'set null' }),
   latitude: doublePrecision('latitude'),
   longitude: doublePrecision('longitude'),
   country: text('country'),
@@ -368,6 +369,7 @@ export const groups = pgTable('groups', {
   inviteCode: text('invite_code').notNull().unique(),
   isPublic: boolean('is_public').default(false).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  churchId: uuid('church_id').references(() => churches.id, { onDelete: 'set null' }),
 });
 
 export const groupMembers = pgTable('group_members', {
@@ -516,6 +518,38 @@ export const subscriptions = pgTable('subscriptions', {
 });
 
 export type Subscription = typeof subscriptions.$inferSelect;
+
+// --- Churches (pj-s5.1-64) ---
+
+export const churchMemberRoleEnum = pgEnum('church_member_role', ['admin', 'pastor', 'member']);
+
+export const churches = pgTable('churches', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  slug: text('slug').notNull().unique(),
+  name: text('name').notNull(),
+  description: text('description'),
+  logoUrl: text('logo_url'),
+  welcomeMessage: text('welcome_message'),
+  primaryColor: text('primary_color').default('#d4a843').notNull(),
+  createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  subscriptionId: uuid('subscription_id').references(() => subscriptions.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const churchMembers = pgTable('church_members', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: churchMemberRoleEnum('role').notNull().default('member'),
+  joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  uniqueIndex('church_members_church_user_idx').on(t.churchId, t.userId),
+  index('church_members_user_idx').on(t.userId),
+]);
+
+export type Church = typeof churches.$inferSelect;
+export type ChurchMember = typeof churchMembers.$inferSelect;
 
 // --- Event Licenses (pj-s4.2-62) ---
 
