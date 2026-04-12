@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { PostEventCta } from '@/components/event/post-event-cta';
 
 interface EventPrayer {
   id: string;
@@ -18,6 +19,8 @@ interface Event {
   name: string;
   status: string;
   displayMode: string | null;
+  churchName: string | null;
+  churchSlug: string | null;
 }
 
 type DisplayMode = 'stream' | 'spotlight' | 'category';
@@ -273,6 +276,13 @@ export default function DisplayPage() {
         {mode === 'stream' && <StreamView prayers={approvedPrayers} />}
         {mode === 'spotlight' && <SpotlightView prayers={prayers} />}
         {mode === 'category' && <CategoryView prayers={approvedPrayers} />}
+
+        {event?.status === 'ended' && (
+          <PostEventCta
+            churchName={event.churchName ?? event.name}
+            churchSlug={event.churchSlug ?? slug}
+          />
+        )}
       </div>
     </div>
   );

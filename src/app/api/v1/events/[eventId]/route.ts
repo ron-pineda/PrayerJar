@@ -1,4 +1,5 @@
 import { getEvent } from '@/services/event.service';
+import { getChurchById } from '@/services/church-platform.service';
 
 export async function GET(
   _req: Request,
@@ -11,6 +12,8 @@ export async function GET(
     return Response.json({ error: 'Not found' }, { status: 404 });
   }
 
+  const church = await getChurchById(event.churchId);
+
   return Response.json({
     event: {
       id: event.id,
@@ -18,6 +21,8 @@ export async function GET(
       status: event.status,
       displayMode: event.displayMode,
       churchId: event.churchId,
+      churchName: church?.name ?? null,
+      churchSlug: church?.slug ?? null,
     },
   });
 }
