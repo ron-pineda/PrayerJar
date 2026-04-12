@@ -14,8 +14,7 @@ export async function GET(request: NextRequest) {
     }
     return Response.json({ prayer }, { status: 200 });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error('[prayers/random]', msg);
-    return Response.json({ error: msg }, { status: 500 });
+    console.error('[prayers/random]', err);
+    return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

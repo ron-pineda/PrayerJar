@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrayerJar — QA Testing Guide</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2e2e2e;
+      --amber: #d4a843;
+      --amber-dim: #8a6b22;
+      --text: #e8e8e8;
+      --muted: #888;
+      --pass: #4caf50;
+      --fail: #e53935;
+      --warn: #fb8c00;
+      --tag-bg: #252525;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+    nav {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px 0 40px;
+    }
+    nav .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    nav .logo h1 { font-size: 15px; font-weight: 700; color: var(--amber); }
+    nav .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    nav a {
+      display: block;
+      padding: 7px 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.15s;
+    }
+    nav a:hover { color: var(--text); }
+    nav .nav-section {
+      padding: 14px 20px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+    }
+    main {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 900px;
+    }
+
+    /* ── Typography ── */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--amber);
+      margin: 48px 0 4px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    h2:first-of-type { margin-top: 0; border-top: none; }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 24px 0 10px;
+    }
+    p { color: var(--muted); margin-bottom: 10px; }
+    code {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: #c8a96e;
+    }
+    pre {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: #c8a96e;
+      margin: 12px 0;
+    }
+
+    /* ── Tags / badges ── */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-left: 6px;
+    }
+    .tag-new { background: #1a3b2a; color: #4caf81; border: 1px solid #2d6045; }
+    .tag-api { background: #1e2b3e; color: #5b9bd5; border: 1px solid #2d4a6b; }
+    .tag-auth { background: #2e1e1e; color: #e87d7d; border: 1px solid #5c2e2e; }
+    .tag-admin { background: #2e2a14; color: #d4a843; border: 1px solid #5c4e1a; }
+    .tag-native { background: #251a2e; color: #b47dd4; border: 1px solid #4e2e5c; }
+
+    /* ── Checklist items ── */
+    .checklist { list-style: none; margin: 0 0 16px; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .checklist li:hover { background: var(--surface); }
+    .checklist li.done { opacity: 0.45; }
+    .checklist li.done .step-text { text-decoration: line-through; }
+    .checklist li.flagged { background: #2a1a1a; border-color: #5c2e2e; }
+    .cb {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      background: transparent;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      transition: background 0.1s, border-color 0.1s;
+    }
+    .done .cb { background: var(--pass); border-color: var(--pass); color: #fff; }
+    .flagged .cb { border-color: var(--fail); color: var(--fail); }
+    .step-text { flex: 1; color: var(--text); }
+    .step-text small { display: block; color: var(--muted); font-size: 11px; margin-top: 1px; }
+    .expected {
+      font-size: 11px;
+      color: #6a9;
+      background: #0d1f14;
+      border: 1px solid #1d3d2a;
+      border-radius: 4px;
+      padding: 2px 8px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    /* ── Info / warning boxes ── */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .callout-warn { background: #221a0a; border: 1px solid #5c3f0a; color: #f0b860; }
+    .callout-info { background: #0d1a2e; border: 1px solid #1a3a5c; color: #7ab3d8; }
+    .callout-tip  { background: #0d1f14; border: 1px solid #1d4a2a; color: #72c98a; }
+    .callout b { color: inherit; }
+    .callout code { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--amber);
+      width: 0%;
+      transition: width 0.3s;
+      z-index: 100;
+    }
+
+    /* ── Stats strip ── */
+    #stats-strip {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 10px 32px;
+      font-size: 12px;
+      z-index: 50;
+    }
+    #stats-strip span { color: var(--muted); }
+    #stats-strip b { color: var(--text); }
+    #stats-strip .s-pass { color: var(--pass); }
+    #stats-strip .s-fail { color: var(--fail); }
+    #stats-strip .s-pct { color: var(--amber); font-size: 14px; font-weight: 700; }
+    .reset-btn {
+      margin-left: auto;
+      padding: 4px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .reset-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* ── Section summary ── */
+    .section-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 10px;
+      font-weight: 400;
+    }
+
+    /* ── Table ── */
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; }
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 8px 12px; border-bottom: 1px solid #222; color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Separator ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+    pb { display: block; height: 80px; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div class="layout">
+
+  <!-- ── Sidebar Nav ── -->
+  <nav>
+    <div class="logo">
+      <h1>🙏 PrayerJar</h1>
+      <p>QA Testing Guide — V2</p>
+    </div>
+
+    <div class="nav-section">Setup</div>
+    <a href="#setup">Environment &amp; Prerequisites</a>
+
+    <div class="nav-section">Core Flows</div>
+    <a href="#prayer-submission">Prayer Submission</a>
+    <a href="#guided-prayer">Guided Prayer</a>
+    <a href="#praise-wall">Praise Wall &amp; Testimonies</a>
+    <a href="#browse">Browse &amp; Search</a>
+
+    <div class="nav-section">Community</div>
+    <a href="#groups">Groups</a>
+    <a href="#partner">Prayer Partner</a>
+    <a href="#adopt">Adopt a Prayer</a>
+    <a href="#chains">Prayer Chains</a>
+    <a href="#checkins">Check-ins</a>
+
+    <div class="nav-section">User Dashboard</div>
+    <a href="#my-prayers">My Prayers</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#badges">Badges &amp; Streaks</a>
+    <a href="#journal">Journal</a>
+    <a href="#export">Data Export</a>
+
+    <div class="nav-section">Media — Phase 6</div>
+    <a href="#audio">Audio Recording</a>
+    <a href="#video">Video Testimony</a>
+
+    <div class="nav-section">Native — Phase 6</div>
+    <a href="#share">Share Prayer</a>
+    <a href="#push">Push Notifications</a>
+
+    <div class="nav-section">Church Dashboard</div>
+    <a href="#church-dashboard">Analytics &amp; Overview</a>
+    <a href="#testimony-review">Testimony Review</a>
+    <a href="#events">Event Mode</a>
+
+    <div class="nav-section">Public API</div>
+    <a href="#api-keys">API Keys</a>
+    <a href="#v2-api">v2 REST API</a>
+
+    <div class="nav-section">Partnerships</div>
+    <a href="#partners-page">Partners Page</a>
+    <a href="#press-page">Press Page</a>
+    <a href="#crisis">Crisis Resources</a>
+
+    <div class="nav-section">Billing</div>
+    <a href="#billing">Subscriptions &amp; Donations</a>
+
+    <div class="nav-section">Admin</div>
+    <a href="#admin">Moderation Queue</a>
+  </nav>
+
+  <!-- ── Main Content ── -->
+  <main>
+
+    <h2 id="setup">Environment &amp; Prerequisites</h2>
+    <p>Verify these before running any tests. Everything else depends on them.</p>
+
+    <div class="callout callout-info">
+      <b>Live URL:</b> <code>https://prayerjar.org</code> &nbsp;·&nbsp;
+      <b>Branch:</b> <code>feature/prayer-jar</code> &nbsp;·&nbsp;
+      <b>Admin email:</b> <code>ronnel.pineda@gmail.com</code>
+    </div>
+
+    <h3>Vercel Environment Variables</h3>
+    <table>
+      <tr><th>Variable</th><th>Required For</th><th>Status</th></tr>
+      <tr><td><code>DATABASE_URL</code></td><td>Everything</td><td>✅ Set</td></tr>
+      <tr><td><code>NEXTAUTH_SECRET</code></td><td>Auth sessions</td><td>✅ Set</td></tr>
+      <tr><td><code>AUTH_RESEND_KEY</code></td><td>Magic link email</td><td>✅ Set</td></tr>
+      <tr><td><code>AUTH_EMAIL_FROM</code></td><td>Email sender</td><td>✅ Set</td></tr>
+      <tr><td><code>ADMIN_EMAILS</code></td><td>Admin routes</td><td>✅ Set</td></tr>
+      <tr><td><code>BLOB_READ_WRITE_TOKEN</code></td><td>Audio/video upload</td><td>⚠️ Add if missing</td></tr>
+      <tr><td><code>STRIPE_SECRET_KEY</code></td><td>Subscriptions/donations</td><td>⚠️ Pending</td></tr>
+      <tr><td><code>STRIPE_PUBLISHABLE_KEY</code></td><td>Checkout UI</td><td>⚠️ Pending</td></tr>
+      <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>Webhook verification</td><td>⚠️ Pending</td></tr>
+      <tr><td><code>VAPID_PUBLIC_KEY</code></td><td>Web push</td><td>⚠️ Pending</td></tr>
+      <tr><td><code>VAPID_PRIVATE_KEY</code></td><td>Web push</td><td>⚠️ Pending</td></tr>
+      <tr><td><code>VAPID_SUBJECT</code></td><td>Web push</td><td>⚠️ Pending</td></tr>
+    </table>
+
+    <ul class="checklist" data-section="setup">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Vercel deployment is green (no build errors after latest push)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">prayerjar.org loads without 500 errors</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Sign in via magic link with your email — session persists after page reload</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Theme toggle (sun/moon) in nav switches between dark &amp; light and persists on reload</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ CORE FLOWS ══════════════════════ -->
+
+    <h2 id="prayer-submission">Prayer Submission</h2>
+    <p>The main entry point. Tests AI moderation, categorization, rate limiting, and anonymous mode.</p>
+
+    <h3>Basic submission</h3>
+    <ul class="checklist" data-section="prayer-submission">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a prayer while signed in — appears in your My Prayers list
+        <small>Category should be auto-assigned by Claude Haiku</small>
+      </div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit anonymously (toggle off name) — no author shown on prayer card</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit with "urgent" toggle — prayer card shows urgent indicator</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a prayer under 1 character — form shows validation error</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a prayer over 2000 characters — form blocks submission</div></li>
+    </ul>
+
+    <h3>AI moderation</h3>
+    <ul class="checklist" data-section="prayer-submission">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit prayer mentioning self-harm — crisis resources appear instead of submission confirmation
+        <small>Crisis resources panel should show 6 resources in 2 categories</small>
+      </div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a normal prayer — no crisis UI shown, prayer saved normally</div></li>
+    </ul>
+
+    <h3>Rate limiting</h3>
+    <ul class="checklist" data-section="prayer-submission">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit 6 prayers rapidly (signed-in, limit is 5/hr) — 6th gets a rate limit error</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="guided-prayer">Guided Prayer</h2>
+    <p>The <code>/pray</code> page — guided prayer flow with scripture and AI encouragement.</p>
+
+    <ul class="checklist" data-section="guided-prayer">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/pray</code> — a random active prayer loads</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click category filter (e.g. "healing") — prayer shown matches that category</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click "I Prayed" — prayer count increments, next prayer loads</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">After clicking "Amen" — AI encouragement card appears (skeleton → text within ~3s)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Leave an encouragement message — appears on the prayer's share page</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click "Report" on a prayer — confirmation shown, prayer removed from feed</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="praise-wall">Praise Wall &amp; Testimonies</h2>
+    <p>Answered prayer stories shown publicly. Tests testimony creation and the redesigned praise card.</p>
+
+    <h3>Marking a prayer answered</h3>
+    <ul class="checklist" data-section="praise-wall">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">In My Prayers, click "Mark Answered" on an active prayer — status changes to answered</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Add testimony text to an answered prayer — story saved, accessible at <code>/testimony/[id]</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Testimony page shows: original prayer, amber callout with story, answered date, author</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Copy share link button on testimony page — URL copied to clipboard</div></li>
+    </ul>
+
+    <h3>Praise Wall</h3>
+    <ul class="checklist" data-section="praise-wall">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/praise</code> — answered prayers appear as praise cards</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayers with testimony stories show "Read story →" button linking to <code>/testimony/[id]</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Category filter on Praise Wall works — only matching categories shown</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="browse">Browse &amp; Search</h2>
+    <p>Discovery features: category grid, search, and curated collections.</p>
+
+    <ul class="checklist" data-section="browse">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/browse</code> — category emoji grid shows with prayer counts per category</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click a category tile — filters to prayers in that category (grid hides, results show)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Search for a keyword that matches a prayer — results appear, category grid hides</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">"Clear filters" button resets search and shows the category grid again</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Published collections are listed — clicking one goes to <code>/browse/collections/[slug]</code> with paginated prayers</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ COMMUNITY ══════════════════════ -->
+
+    <h2 id="groups">Groups</h2>
+    <p>Self-created private prayer rooms with a wall and activity feed.</p>
+
+    <h3>Create &amp; manage</h3>
+    <ul class="checklist" data-section="groups">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/groups</code> — existing groups listed, empty state shown if none</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Create a new group (name ≤50 chars, desc ≤200 chars) — group appears in list</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Group detail page shows invite code and a "Copy" button — copies to clipboard</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">From a different account, join the group using the invite code — member count increments</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Non-owner can leave — removed from member list</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Owner cannot delete group while members exist — appropriate error shown</div></li>
+    </ul>
+
+    <h3>Group prayer wall</h3>
+    <ul class="checklist" data-section="groups">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Post a prayer in the group wall — appears immediately (optimistic prepend)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Group prayers do NOT appear on the public <code>/pray</code> feed or <code>/browse</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Non-members cannot access <code>/groups/[id]</code> — redirected</div></li>
+    </ul>
+
+    <h3>Activity feed</h3>
+    <ul class="checklist" data-section="groups">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Group activity tab shows timeline: prayers posted, prayers answered, members joined — sorted newest first</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="partner">Prayer Partner</h2>
+    <p>Matched partners with a private message thread.</p>
+
+    <ul class="checklist" data-section="partner">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/partner</code> — empty state with match prompt when no partner</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">When matched: partner's name, last 3 active prayers, and message thread visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Send a message — appears as own bubble immediately (optimistic), partner sees it on their end</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Message over 500 chars — blocked with counter shown</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Extend partnership (mutual) — both parties confirm, 28 days added</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">End partnership early — both receive in-app notification</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="adopt">Adopt a Prayer</h2>
+    <p>Users commit to pray daily for a specific request.</p>
+
+    <ul class="checklist" data-section="adopt">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On a prayer's share page (<code>/p/[id]</code>) — "Adopt" button with count visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click Adopt — button turns amber, count increments (optimistic)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/adopted</code> — adopted prayer appears, sorted by adoption date</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click Adopt again — un-adopts, count decrements</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Unauthenticated adopt attempt — shows "sign in" message, not an error</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="chains">Prayer Chains</h2>
+    <p>24-slot hourly coverage grid on share pages.</p>
+
+    <ul class="checklist" data-section="chains">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On <code>/p/[id]</code> — prayer chain grid shows 24 hour slots</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click an empty slot — slot marked with your name, notification sent (if enabled)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Filled slot appears with occupant's name — cannot be double-booked</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="checkins">Check-ins (7-day Pulse)</h2>
+    <p>Anonymous mood check-ins on individual prayer pages.</p>
+
+    <ul class="checklist" data-section="checkins">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On <code>/p/[id]</code> — check-in card shows 4 mood options (Struggling / Okay / Better / Breakthrough)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a check-in — confirmation shown, card hides (localStorage dedup)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Revisit the same prayer within 7 days — check-in card is hidden (already checked in)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Check-in card shown only on prayers less than 7 days old</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ USER DASHBOARD ══════════════════════ -->
+
+    <h2 id="my-prayers">My Prayers</h2>
+
+    <ul class="checklist" data-section="my-prayers">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">All submitted prayers visible — filter tabs: Active / Answered / Expired</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Active prayer — "Renew" button resets 30-day expiry</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Answered prayer with no testimony — "Add Testimony" link visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Answered prayer with testimony — "View Story" link visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer card shows adoption count and prayer count</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="notifications">Notifications</h2>
+
+    <ul class="checklist" data-section="notifications">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Notification bell in nav shows unread count badge (caps at "9+")</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Bell dropdown shows last 5 notifications with icons + relative timestamps</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/notifications</code> — notifications grouped: Today / This Week / Older</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">"Mark all read" clears the badge count</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Settings → email frequency preference (off / realtime / daily / weekly) saves correctly</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="badges">Badges &amp; Streaks</h2>
+    <p>14 badge types including the new <strong>Donor</strong> badge added in Phase 6.</p>
+
+    <ul class="checklist" data-section="badges">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/badges</code> — all 14 badges shown (earned bright, locked greyed out + grayscale)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Donor badge (💝) visible in the grid</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Pray for 10 unique prayers — Intercessor Bronze badge earned, email sent</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer streak shown on dashboard — increments after daily prayer activity</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">7-day streak — Faithful badge (🔥) earned</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="journal">Journal</h2>
+
+    <ul class="checklist" data-section="journal">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/journal</code> — private notes list visible (only to signed-in user)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Create a journal entry — appears in list</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Edit an entry — changes save</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Delete an entry — removed from list</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Sign out — journal not accessible via direct URL (<code>/journal</code> redirects to sign-in)</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="export">Data Export <span class="tag tag-new">Phase 6</span></h2>
+
+    <ul class="checklist" data-section="export">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/settings/export</code> — "Download My Data" link (anchor, not button) renders correctly</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click "Download My Data" — JSON file downloads containing prayers, interactions, badges, and account info</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Export without being signed in — redirects to <code>/sign-in</code></div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ MEDIA — PHASE 6 ══════════════════════ -->
+
+    <h2 id="audio">Audio Recording <span class="tag tag-new">Phase 6</span></h2>
+    <p>Prayer requests can include a voice recording (up to 60 seconds). Requires microphone permission.</p>
+
+    <div class="callout callout-warn">
+      <b>Browser requirement:</b> Chrome or Firefox on desktop. Safari iOS 15+. MediaRecorder is not available in all environments — test in a real browser, not a webview.
+    </div>
+
+    <h3>Recording</h3>
+    <ul class="checklist" data-section="audio">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer submission form shows an audio recorder below the photo upload area</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click record — browser prompts for microphone permission</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Deny microphone permission — recorder shows friendly "Permission denied" message, does not crash</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Grant microphone, start recording — countdown timer from 60s visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Stop recording before 60s — audio waveform/player appears in form</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Record for 60s — recording stops automatically, player shown</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Playback of recorded audio works before submitting</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Re-record button clears previous recording</div></li>
+    </ul>
+
+    <h3>Upload &amp; storage</h3>
+    <ul class="checklist" data-section="audio">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit prayer with audio — prayer saves with <code>audioUrl</code> pointing to Vercel Blob</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer card shows audio player — clicking play streams the audio</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer submitted without audio — no audio player shown on card</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Upload rate limit: attempt more than 10 audio uploads within 15 minutes — 429 response</div></li>
+    </ul>
+
+    <div class="callout callout-tip">
+      <b>API test:</b> <code>POST /api/upload/audio</code> with a <code>multipart/form-data</code> body containing a file field. Accepted types: <code>audio/webm</code>, <code>audio/ogg</code>, <code>audio/mp4</code>, <code>audio/mpeg</code>. Max 5 MB.
+    </div>
+
+    <hr />
+
+    <h2 id="video">Video Testimony <span class="tag tag-new">Phase 6</span></h2>
+    <p>Answered prayers can include a short video testimony (up to 120 seconds).</p>
+
+    <div class="callout callout-warn">
+      <b>Camera + microphone required.</b> Test on a device with a real camera. The video preview uses <code>srcObject</code> — this will not work in all test environments.
+    </div>
+
+    <h3>Recording</h3>
+    <ul class="checklist" data-section="video">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">In My Prayers → "Mark Answered" — a video recorder option appears</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Start recording — live camera preview shown, countdown from 120s</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Stop before 120s — recorded clip shown for review</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Record for full 120s — stops automatically</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate away or unmount component — camera stream is released (no indefinite camera indicator)</div></li>
+    </ul>
+
+    <h3>Upload &amp; display</h3>
+    <ul class="checklist" data-section="video">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit answered prayer with video — <code>videoUrl</code> and <code>videoDurationSeconds</code> saved to DB</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Testimony page (<code>/testimony/[id]</code>) shows <code>&lt;video&gt;</code> player with controls</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Video upload rate limit: more than 5 uploads within 15 minutes — 429 response</div></li>
+    </ul>
+
+    <div class="callout callout-tip">
+      <b>API test:</b> <code>POST /api/upload/video</code> — accepts <code>video/webm</code>, <code>video/mp4</code>, <code>video/ogg</code>. Max 50 MB. Response includes <code>{ url, durationSeconds }</code>.
+    </div>
+
+    <hr />
+
+    <!-- ══════════════════════ NATIVE — PHASE 6 ══════════════════════ -->
+
+    <h2 id="share">Share Prayer <span class="tag tag-native">Native</span> <span class="tag tag-new">Phase 6</span></h2>
+    <p>Uses the Web Share API on mobile/native, clipboard fallback on desktop.</p>
+
+    <ul class="checklist" data-section="share">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On desktop: clicking Share copies the URL to clipboard — toast/confirmation shown</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On mobile browser: clicking Share opens the native share sheet</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">In a Capacitor-wrapped build: native share sheet opens with prayer title and URL</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="push">Push Notifications <span class="tag tag-native">Native</span> <span class="tag tag-new">Phase 6</span></h2>
+    <p>Token registration is a no-op on desktop browser; only fires in native Capacitor context.</p>
+
+    <div class="callout callout-warn">
+      <b>Requires VAPID keys</b> to be set in Vercel env vars. Currently pending — skip this section until keys are added.
+    </div>
+
+    <ul class="checklist" data-section="push">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">On web browser: <code>registerPushToken()</code> is called silently — no error thrown, no-op</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">In Android build (Capacitor): app requests notification permission on first launch</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Grant permission — push token saved to DB via <code>/api/v1/push-token</code> endpoint</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Receive a test push notification — notification appears in system tray</div></li>
+    </ul>
+
+    <div class="callout callout-info">
+      <b>Mobile build:</b> GitHub Actions workflow at <code>.github/workflows/mobile-build.yml</code> builds Android and iOS on push to <code>main</code>. Capacitor app ID: <code>org.prayerjar.app</code>.
+    </div>
+
+    <hr />
+
+    <!-- ══════════════════════ CHURCH DASHBOARD ══════════════════════ -->
+
+    <h2 id="church-dashboard">Church Dashboard — Analytics &amp; Overview</h2>
+    <p>Church admins access <code>/church/[slug]/dashboard</code>. Must be the church owner.</p>
+
+    <ul class="checklist" data-section="church-dashboard">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Dashboard loads with 5 stat cards: total prayers, active prayers, members, answered rate, interactions</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Analytics tab — 4 charts render: Prayer Activity (30d), Interactions (30d), Category Breakdown, Member Growth</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Answered Rate stat card shows percentage + fraction (e.g. "12 of 89 prayers answered")</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Charts correctly show amber (#d4a843) lines and bars</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Hovering chart points shows tooltip with correct label and value</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Non-owner cannot access <code>/church/[slug]/dashboard</code> — redirected</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="testimony-review">Testimony Review</h2>
+    <p>Church admins can approve or reject testimonies submitted by members.</p>
+
+    <ul class="checklist" data-section="testimony-review">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Dashboard → Testimonies tab — pending testimonies listed</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click "Approve" — row changes to "Review submitted" (no page reload needed)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click "Reject" — rejection reason textarea appears</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit rejection without a reason — inline error: "A rejection reason is required."</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit rejection with a reason — row changes to "Review submitted"</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Both Approve and Reject buttons disabled while saving (no double-submit)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Cancel rejection — form collapses, returns to Approve/Reject buttons</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="events">Event Mode</h2>
+    <p>Churches can run live events where attendees submit prayers to a live screen.</p>
+
+    <ul class="checklist" data-section="events">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Create an event from church dashboard — event appears in list</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Event prayer wall shows submitted prayers in real time</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Moderator can approve, spotlight, or hide prayers</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Spotlighted prayer shown on display view</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Attendee without account can submit prayer (anonymous, event-scoped)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Event license check: event requires active license — unlicensed church redirected</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ PUBLIC API ══════════════════════ -->
+
+    <h2 id="api-keys">API Keys <span class="tag tag-new">Phase 6</span> <span class="tag tag-api">API</span></h2>
+    <p>Users can generate API keys to integrate with PrayerJar from external apps.</p>
+
+    <ul class="checklist" data-section="api-keys">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/settings/api-keys</code> — key list and "Generate Key" button visible</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Generate a new key — raw key shown <em>once</em> (prefixed <code>pj_</code>) with copy prompt</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Dismiss dialog — key list shows name + prefix only (full key not recoverable)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Revoke a key — key removed from list, subsequent API calls with that key return 401</div></li>
+    </ul>
+
+    <div class="callout callout-info">
+      <b>API test (cURL):</b>
+      <pre>curl -H "Authorization: Bearer pj_&lt;your-key&gt;" https://prayerjar.org/api/v2/prayers</pre>
+    </div>
+
+    <hr />
+
+    <h2 id="v2-api">v2 REST API <span class="tag tag-new">Phase 6</span> <span class="tag tag-api">API</span></h2>
+    <p>Public-facing API for external integrations. All endpoints require a valid API key.</p>
+
+    <h3>GET /api/v2/prayers</h3>
+    <ul class="checklist" data-section="v2-api">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Returns paginated active public prayers — fields: <code>id</code>, <code>content</code>, <code>category</code>, <code>createdAt</code>, <code>isAnonymous</code>, <code>prayerCount</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text"><code>?category=healing</code> filter returns only prayers in that category</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text"><code>?limit=5&amp;offset=10</code> pagination works correctly — <code>total</code> field in response</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">No API key — 401 Unauthorized</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Invalid category enum value — 400 error response</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Group prayers (groupId not null) are excluded from results</div></li>
+    </ul>
+
+    <h3>POST /api/v2/prayers</h3>
+    <ul class="checklist" data-section="v2-api">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a prayer via API — 201 response with <code>{ prayer: { id, content, category, createdAt } }</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Prayer submitted via API passes through AI moderation — self-harm content returns 422 <code>{ error: "moderation", selfHarm: true }</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Missing <code>content</code> field — 400 validation error</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Content over 2000 chars — 400 validation error</div></li>
+    </ul>
+
+    <h3>GET /api/v2/stats</h3>
+    <ul class="checklist" data-section="v2-api">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Returns aggregate stats: total prayers, active prayers, answered rate, total users</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">No API key — 401 Unauthorized</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ PARTNERSHIPS ══════════════════════ -->
+
+    <h2 id="partners-page">Partners Page <span class="tag tag-new">Phase 6</span></h2>
+    <p>Public page at <code>/partners</code> for churches, ministries, and mental health orgs.</p>
+
+    <ul class="checklist" data-section="partners-page">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/partners</code> — page loads without auth</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Three partnership tiers shown: Church / Ministry / Mental Health</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">CTA buttons link to correct contact/signup destinations (no broken links)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Page renders correctly on mobile (responsive layout)</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="press-page">Press Page <span class="tag tag-new">Phase 6</span></h2>
+    <p>Public page at <code>/press</code> for media inquiries and brand assets.</p>
+
+    <ul class="checklist" data-section="press-page">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/press</code> — page loads without auth</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Stats grid shows (total prayers, users, etc.) — real numbers from DB</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Brand asset download links present (even if placeholder files)</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Press contact email (<code>press@prayerjar.org</code>) visible</div></li>
+    </ul>
+
+    <hr />
+
+    <h2 id="crisis">Crisis Resources <span class="tag tag-new">Phase 6</span></h2>
+    <p>Expanded to 6 resources in 2 categories. Shown when self-harm is detected.</p>
+
+    <ul class="checklist" data-section="crisis">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Submit a prayer with self-harm language — crisis panel appears instead of success state</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Panel shows 2 categories: "Immediate Crisis" and "Mental Health"</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">All 6 resource links open in a new tab (<code>target="_blank"</code>) and load correctly</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Panel is scrollable if content overflows viewport</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Copy on panel is warm and compassionate (not clinical)</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ BILLING ══════════════════════ -->
+
+    <h2 id="billing">Subscriptions &amp; Donations <span class="tag tag-warn">⚠ Stripe keys pending</span></h2>
+
+    <div class="callout callout-warn">
+      Stripe keys are not yet set in Vercel. These tests will fail until <code>STRIPE_SECRET_KEY</code>, <code>STRIPE_PUBLISHABLE_KEY</code>, and <code>STRIPE_WEBHOOK_SECRET</code> are added.
+    </div>
+
+    <ul class="checklist" data-section="billing">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Navigate to <code>/pricing</code> — subscription tiers displayed with Stripe checkout buttons</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Click Subscribe (Starter tier) — Stripe Checkout opens in test mode</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Complete checkout with Stripe test card <code>4242 4242 4242 4242</code> — subscription created in DB</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Webhook: <code>checkout.session.completed</code> fires — subscription row in DB with correct tier + status</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Webhook: <code>customer.subscription.updated</code> fires — <code>status</code>, <code>currentPeriodStart</code>, <code>currentPeriodEnd</code> update in DB</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Webhook: <code>customer.subscription.deleted</code> fires — status set to <code>canceled</code></div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Donation via Stripe — <code>donations</code> row created; <code>evaluateDonorBadge</code> runs; 💝 Donor badge earned</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Event license purchase — <code>eventLicenses</code> row created, valid for 1 year</div></li>
+    </ul>
+
+    <hr />
+
+    <!-- ══════════════════════ ADMIN ══════════════════════ -->
+
+    <h2 id="admin">Admin — Moderation Queue <span class="tag tag-admin">Admin</span></h2>
+    <p>Accessible only to emails listed in <code>ADMIN_EMAILS</code> env var.</p>
+
+    <ul class="checklist" data-section="admin">
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Non-admin user visiting <code>/admin/queue</code> — 403 or redirect</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Admin user: reported prayers listed in queue</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Approve a reported prayer — removed from queue, prayer stays active</div></li>
+      <li onclick="toggle(this)"><div class="cb">✓</div><div class="step-text">Reject a reported prayer — removed from queue, prayer marked inactive</div></li>
+    </ul>
+
+    <pb></pb>
+  </main>
+</div>
+
+<!-- ── Stats strip ── -->
+<div id="stats-strip">
+  <span>Total: <b id="s-total">0</b></span>
+  <span>Done: <b class="s-pass" id="s-done">0</b></span>
+  <span>Flagged: <b class="s-fail" id="s-flagged">0</b></span>
+  <span class="s-pct" id="s-pct">0%</span>
+  <button class="reset-btn" onclick="resetAll()">Reset All</button>
+</div>
+
+<script>
+  // ── State ──
+  const KEY = 'pj-qa-v2';
+  let state = JSON.parse(localStorage.getItem(KEY) || '{}');
+
+  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  function getId(li) {
+    const section = li.closest('[data-section]').dataset.section;
+    const text = li.querySelector('.step-text').childNodes[0].textContent.trim().slice(0, 60);
+    return section + '::' + text;
+  }
+
+  function toggle(li) {
+    const id = getId(li);
+    const cur = state[id] || 'idle';
+    if (cur === 'idle') { state[id] = 'done'; li.classList.add('done'); li.querySelector('.cb').textContent = '✓'; li.classList.remove('flagged'); }
+    else if (cur === 'done') { state[id] = 'flagged'; li.classList.remove('done'); li.classList.add('flagged'); li.querySelector('.cb').textContent = '✗'; }
+    else { state[id] = 'idle'; li.classList.remove('done', 'flagged'); li.querySelector('.cb').textContent = '✓'; }
+    save();
+    updateStats();
+  }
+
+  function applyState() {
+    document.querySelectorAll('.checklist li').forEach(li => {
+      const id = getId(li);
+      const s = state[id] || 'idle';
+      li.classList.remove('done', 'flagged');
+      if (s === 'done') { li.classList.add('done'); li.querySelector('.cb').textContent = '✓'; }
+      else if (s === 'flagged') { li.classList.add('flagged'); li.querySelector('.cb').textContent = '✗'; }
+      else { li.querySelector('.cb').textContent = '✓'; }
+    });
+    updateStats();
+  }
+
+  function updateStats() {
+    const all = document.querySelectorAll('.checklist li');
+    const done = document.querySelectorAll('.checklist li.done').length;
+    const flagged = document.querySelectorAll('.checklist li.flagged').length;
+    const total = all.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-done').textContent = done;
+    document.getElementById('s-flagged').textContent = flagged;
+    document.getElementById('s-pct').textContent = pct + '%';
+    document.getElementById('progress-bar').style.width = pct + '%';
+  }
+
+  function resetAll() {
+    if (!confirm('Reset all checkboxes?')) return;
+    state = {};
+    save();
+    applyState();
+  }
+
+  applyState();
+</script>
+</body>
+</html>
