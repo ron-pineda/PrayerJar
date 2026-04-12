@@ -10,6 +10,7 @@ export type CreatePrayerInput = {
   isUrgent: boolean;
   authorId: string | null;
   imageUrl?: string | null;
+  audioUrl?: string | null;
 };
 
 export class ModerationError extends Error {
@@ -43,6 +44,7 @@ export async function createPrayer(input: CreatePrayerInput) {
       isUrgent: input.isUrgent,
       authorId: input.authorId,
       imageUrl: input.imageUrl ?? null,
+      audioUrl: input.audioUrl ?? null,
       category: categorization.category,
       tags: categorization.tags,
       suggestedVerse: categorization.verse,

@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { submitPrayerAction } from '@/app/actions/prayer.actions';
 import { CrisisResources } from './crisis-resources';
 import { PhotoUpload } from './photo-upload';
+import { AudioRecorder } from './audio-recorder';
 import { SubmissionPrompt } from './submission-prompt';
 import { RateLimitCountdown } from './rate-limit-countdown';
 
@@ -33,6 +34,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [content, setContent] = useState('');
   const [category, setCategory] = useState<Category>('general');
   const [griefLabel, setGriefLabel] = useState('');
@@ -47,6 +49,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
     formData.set('isAnonymous', String(isAnonymous));
     formData.set('isUrgent', String(isUrgent));
     if (imageUrl) formData.set('imageUrl', imageUrl);
+    if (audioUrl) formData.set('audioUrl', audioUrl);
 
     const result = await submitPrayerAction(formData);
     setPending(false);
@@ -73,6 +76,7 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
       (e.target as HTMLFormElement).reset();
       setContent('');
       setImageUrl(null);
+      setAudioUrl(null);
       setCategory('general');
       setGriefLabel('');
       setGriefDate('');
@@ -155,6 +159,12 @@ export function PrayerForm({ onSuccess }: { onSuccess?: (id: string) => void }) 
           url={imageUrl}
           onUpload={setImageUrl}
           onRemove={() => setImageUrl(null)}
+        />
+
+        <AudioRecorder
+          url={audioUrl}
+          onUpload={setAudioUrl}
+          onRemove={() => setAudioUrl(null)}
         />
 
         <div className="flex items-center justify-between">

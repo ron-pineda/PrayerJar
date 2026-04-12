@@ -113,6 +113,10 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
           />
         )}
 
+        {prayer.audioUrl && (
+          <audio controls src={prayer.audioUrl} className="w-full mt-2" />
+        )}
+
         {prayer.suggestedVerse && (
           <p className="text-xs text-muted-foreground italic">✝️ {prayer.suggestedVerse}</p>
         )}
