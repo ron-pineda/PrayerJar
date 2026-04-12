@@ -691,3 +691,18 @@ export const eventPrayers = pgTable('event_prayers', {
 
 export type Event = typeof events.$inferSelect;
 export type EventPrayer = typeof eventPrayers.$inferSelect;
+
+// --- Integration API Keys (Feature 90) ---
+
+export const apiKeys = pgTable('api_keys', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  keyHash: text('key_hash').notNull().unique(),
+  keyPrefix: text('key_prefix').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  lastUsedAt: timestamp('last_used_at'),
+  revokedAt: timestamp('revoked_at'),
+});
+
+export type ApiKey = typeof apiKeys.$inferSelect;
