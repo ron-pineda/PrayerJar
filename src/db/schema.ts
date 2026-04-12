@@ -105,6 +105,7 @@ export const prayers = pgTable('prayers', {
   country: text('country'),
   audioUrl: text('audio_url'),
   transcription: text('transcription'),
+  videoUrl: text('video_url'),
   videoDurationSeconds: integer('video_duration_seconds'),
 });
 

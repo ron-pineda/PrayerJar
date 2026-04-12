@@ -73,6 +73,12 @@ export default async function TestimonyPage({
         </div>
       )}
 
+      {/* Video testimony */}
+      {prayer.videoUrl && (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video controls src={prayer.videoUrl} className="w-full rounded-lg mt-4" />
+      )}
+
       {/* Share */}
       <div className="flex items-center gap-2">
         <Share2 className="h-4 w-4 text-muted-foreground" />
