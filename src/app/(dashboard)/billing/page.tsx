@@ -72,7 +72,7 @@ export default async function BillingPage() {
                   }
                 </p>
               </div>
-              <Button variant="outline" render={<Link href="/give" />}>
+              <Button variant="outline" render={<Link href="/for-churches" />}>
                 Manage Subscription
               </Button>
             </div>
@@ -88,7 +88,7 @@ export default async function BillingPage() {
                   Upgrade to unlock church features like private prayer walls and pastoral tools.
                 </p>
               </div>
-              <Button render={<Link href="/give" />}>Upgrade to unlock church features</Button>
+              <Button render={<Link href="/for-churches" />}>Upgrade to unlock church features</Button>
             </div>
           )}
         </CardContent>
@@ -143,7 +143,7 @@ export default async function BillingPage() {
                     <Button
                       className="w-full"
                       variant={isEnterprise ? 'outline' : 'default'}
-                      render={<Link href="/give" />}
+                      render={<Link href="/for-churches" />}
                     >
                       {isEnterprise ? 'Contact Sales' : 'Get Started'}
                     </Button>

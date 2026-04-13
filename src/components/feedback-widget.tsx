@@ -119,7 +119,7 @@ export function FeedbackWidget() {
       <button
         ref={triggerRef}
         onClick={handleOpen}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium shadow-md hover:bg-muted transition-colors"
+        className="fixed bottom-20 right-6 md:bottom-6 z-50 flex items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium shadow-md hover:bg-muted transition-colors"
         aria-label="Open feedback form"
         aria-haspopup="dialog"
       >

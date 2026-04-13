@@ -49,8 +49,8 @@ export default function TermsPage() {
           <h2 className="text-base font-semibold text-foreground mb-2">Contact</h2>
           <p>
             Questions about these terms?{" "}
-            <a href="mailto:hello@prayerjar.app" className="text-primary underline underline-offset-4">
-              hello@prayerjar.app
+            <a href="mailto:hello@prayerjar.org" className="text-primary underline underline-offset-4">
+              hello@prayerjar.org
             </a>
           </p>
         </section>

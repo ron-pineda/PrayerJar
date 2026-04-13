@@ -86,8 +86,9 @@ export default function AboutPage() {
               someone, you pray — you don&apos;t critique, correct, or counsel unsolicited.
             </p>
             <p>
-              We are not selling anything. There are no ads, no data brokers, no premium tiers
-              that gate the ability to ask for prayer. This is a tool, not a business model.
+              Prayer is free — always. There are no ads, no data brokers, and no paywall on
+              asking for prayer or praying for others. We offer paid plans for churches that want
+              pastoral tools and private prayer walls, but the core experience is free for everyone.
             </p>
           </div>
         </section>

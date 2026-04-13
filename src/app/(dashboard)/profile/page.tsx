@@ -7,7 +7,7 @@ import { getBadgesForUser } from "@/services/badge.service";
 import { BadgeDisplay } from "@/components/badge-display";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Bell, Star, Church, Heart, Settings } from "lucide-react";
+import { BookOpen, Bell, Star, Church, Heart, Settings, Users } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profile | The Prayer Jar" };
@@ -80,6 +80,7 @@ export default async function ProfilePage() {
         <div className="space-y-2">
           {[
             { href: "/my-prayers", icon: Heart, label: "My Prayers", description: "Your prayer requests and testimonies" },
+            { href: "/partner", icon: Users, label: "Prayer Partner", description: "Your matched prayer partner" },
             { href: "/journal", icon: BookOpen, label: "Prayer Journal", description: "Prayers you've interceded for" },
             { href: "/saved-churches", icon: Church, label: "Saved Churches", description: "Churches you've bookmarked" },
             { href: "/notifications", icon: Bell, label: "Notifications", description: "Updates on your prayer requests" },

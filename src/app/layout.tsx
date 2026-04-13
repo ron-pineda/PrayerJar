@@ -99,6 +99,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <nav aria-label="Footer navigation">
               <div className="flex gap-4">
                 <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
+                <Link href="/for-churches" className="hover:text-foreground transition-colors">For Churches</Link>
                 <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
                 <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>

@@ -2041,5 +2041,269 @@
       "Back-filled — sprint 6.3 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
+  },
+  {
+    "id": "pj-s7.1-1",
+    "sprint": "7.1",
+    "title": "Fix contact email domain (.app to .org) across contact, privacy, terms pages",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "contact/page.tsx, privacy/page.tsx, and terms/page.tsx all reference hello@prayerjar.app. Should be hello@prayerjar.org.",
+    "files": [
+      "src/app/(public)/contact/page.tsx",
+      "src/app/(public)/privacy/page.tsx",
+      "src/app/(public)/terms/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Fixed hello@prayerjar.app → hello@prayerjar.org in contact, privacy, terms pages"
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.1-2",
+    "sprint": "7.1",
+    "title": "Fix About page — remove outdated 'no premium tiers' copy",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "About page says 'no premium tiers' but we now have Starter/Pro/Enterprise plans. Update copy to reflect paid church tiers while keeping 'prayer is free' message.",
+    "files": [
+      "src/app/(public)/about/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Replaced \"no premium tiers\" with accurate copy: prayer is free, paid plans for church tools"
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.1-3",
+    "sprint": "7.1",
+    "title": "Fix Press Kit — replace broken download links with contact CTA",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Press page links to nonexistent /press/logo.svg, /press/logo-pack.zip, /press/brand-guide.pdf. Replace with coming soon notice and press@prayerjar.org CTA.",
+    "files": [
+      "src/app/(public)/press/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Replaced broken download buttons with coming-soon notice + press@prayerjar.org CTA"
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.1-4",
+    "sprint": "7.1",
+    "title": "Fix billing upgrade button — routes to /give instead of /for-churches",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Billing page upgrade/manage buttons link to /give (donation form). Should link to /for-churches. Depends on pj-s7.2-4 being created first.",
+    "files": [
+      "src/app/(dashboard)/billing/page.tsx"
+    ],
+    "blockers": [
+      "pj-s7.2-4"
+    ],
+    "notes": [
+      "Changed all 3 /give hrefs to /for-churches in billing page"
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-1",
+    "sprint": "7.2",
+    "title": "Fix Find a Church page — respect theme instead of hardcoded dark mode",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "find-a-church/page.tsx uses hardcoded slate-900/800 dark classes. Replace with theme-aware equivalents so it works in both light and dark mode.",
+    "files": [
+      "src/app/(public)/find-a-church/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-2",
+    "sprint": "7.2",
+    "title": "Add save confirmation feedback on Settings page",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Settings page has 3 forms with Save buttons but no visual feedback on success. Add brief 'Saved!' confirmation after each form submission.",
+    "files": [
+      "src/app/(dashboard)/settings/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-3",
+    "sprint": "7.2",
+    "title": "Create /help page with FAQ covering all major features",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "No FAQ or help page exists. Create /help with accordion-style Q&A covering getting started, praying, community, account/settings, and church features. Add link in footer.",
+    "files": [
+      "src/app/(public)/help/page.tsx",
+      "src/app/layout.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-4",
+    "sprint": "7.2",
+    "title": "Create /for-churches landing page (replaces /pricing concept)",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Church leaders need to see platform value and plans without signing up. Create /for-churches page that leads with ministry value prop, shows features, plans grid at bottom. Footer link only — NOT in main nav. Keeps prayer-first feel.",
+    "files": [
+      "src/app/(public)/for-churches/page.tsx",
+      "src/app/layout.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Created /for-churches with ministry value prop, features grid, plans with monthly/yearly toggle, FAQ. Footer link added."
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-5",
+    "sprint": "7.2",
+    "title": "Add 'How it works' 3-step section to homepage",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Homepage goes hero to stats to CTAs with no product explanation. Add a 3-step section (Share, Others Pray, Mark Answered) between hero CTAs and stats.",
+    "files": [
+      "src/app/(public)/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-6",
+    "sprint": "7.2",
+    "title": "Add self-service account deletion with confirmation dialog",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Trust page says 'email us' to delete account. Add self-service: API route at /api/v1/account/delete, Danger Zone card on /settings with confirmation dialog, cascade-delete user row, sign out, redirect.",
+    "files": [
+      "src/app/api/v1/account/delete/route.ts",
+      "src/app/(dashboard)/settings/page.tsx",
+      "src/app/(public)/trust/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-7",
+    "sprint": "7.2",
+    "title": "Fix profile page — show user avatar when image available",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "low",
+    "description": "Profile page always shows prayer hands emoji. Users table has image field. Show actual avatar when present, fallback to emoji.",
+    "files": [
+      "src/app/(dashboard)/profile/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-8",
+    "sprint": "7.2",
+    "title": "Improve homepage secondary CTAs — visual hierarchy",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "low",
+    "description": "All 3 secondary CTAs are identical ghost buttons. Give 'Know Jesus' a primary/accent treatment, move it first, add sub-labels.",
+    "files": [
+      "src/app/(public)/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T12:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.1-5",
+    "sprint": "7.1",
+    "title": "Fix feedback widget overlapping mobile nav (Partner/Profile untappable)",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Floating feedback button is fixed bottom-6 right-6, sitting directly on top of mobile nav. Partner and Profile links are blocked. Change to bottom-20 on mobile, bottom-6 on md+.",
+    "files": [
+      "src/components/feedback-widget.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Changed bottom-6 to bottom-20 md:bottom-6 — clears 56px mobile nav"
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.1-6",
+    "sprint": "7.1",
+    "title": "Fix mobile nav — reduce to 5 items, center Know Jesus",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Mobile nav has 6 items, Know Jesus is off-center (2 left, 3 right). Remove Partner from nav (move to Profile page activity links). Result: Home, Pray, Know Jesus (centered), Lights, Profile.",
+    "files": [
+      "src/components/mobile-nav.tsx",
+      "src/app/(dashboard)/profile/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "Removed Partner from mobile nav (6→5 items). Added Partner link to profile activity list."
+    ],
+    "last_touched": "2026-04-13T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-9",
+    "sprint": "7.2",
+    "title": "Hide billing page from non-church users",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Billing page shows plan tiers and 'Free Plan' label to all signed-in users. This is SaaS framing that undermines the ministry feel. Guard /billing behind church admin/pastor role check. Redirect regular users to /profile. Remove billing from profile activity links for non-church users.",
+    "files": [
+      "src/app/(dashboard)/billing/page.tsx",
+      "src/app/(dashboard)/profile/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T14:00:00.000Z"
+  },
+  {
+    "id": "pj-s7.2-10",
+    "sprint": "7.2",
+    "title": "Press Kit — replace hardcoded stats with live DB queries",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Press page has hardcoded '50+ Countries' and '10,000+ Prayers' stats that may be aspirational or stale. Replace with live DB queries (same pattern as homepage getStats) or use honest non-specific language.",
+    "files": [
+      "src/app/(public)/press/page.tsx"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-13T14:00:00.000Z"
   }
 ]

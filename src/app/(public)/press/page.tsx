@@ -48,19 +48,20 @@ export default function PressPage() {
 
         <section>
           <h2 className="text-base font-semibold text-foreground mb-4">Brand Assets</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Download our official brand assets for use in your coverage.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button variant="outline" render={<Link href="/press/logo.svg" />}>
-              Download Logo (SVG)
-            </Button>
-            <Button variant="outline" render={<Link href="/press/logo-pack.zip" />}>
-              Download Logo Pack (ZIP)
-            </Button>
-            <Button variant="outline" render={<Link href="/press/brand-guide.pdf" />}>
-              Brand Colors Guide (PDF)
-            </Button>
+          <div className="rounded-xl border bg-muted/30 p-6 text-center space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Official brand assets (logos, color guide, screenshots) are being prepared.
+            </p>
+            <p className="text-sm">
+              Need assets now?{" "}
+              <a
+                href="mailto:press@prayerjar.org"
+                className="text-primary underline underline-offset-4"
+              >
+                Email our press team
+              </a>{" "}
+              and we&apos;ll send them directly.
+            </p>
           </div>
         </section>
 

@@ -11,10 +11,10 @@ export default function ContactPage() {
         Have a question, feedback, or want to partner with us? We'd love to hear from you.
       </p>
       <a
-        href="mailto:hello@prayerjar.app"
+        href="mailto:hello@prayerjar.org"
         className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
       >
-        hello@prayerjar.app
+        hello@prayerjar.org
       </a>
       <p className="text-xs text-muted-foreground mt-8">
         For prayer-related support, please use the app directly.
