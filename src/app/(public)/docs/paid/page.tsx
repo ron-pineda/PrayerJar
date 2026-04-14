@@ -1,12 +1,75 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PLANS } from '@/lib/plans';
+import {
+  ClipboardList,
+  ShieldAlert,
+  Radio,
+  Palette,
+  BarChart3,
+  Check,
+  X,
+  Crown,
+  Sparkles,
+  ArrowLeft,
+  Church,
+  Mail,
+  Heart,
+  HelpCircle,
+  Zap,
+} from 'lucide-react';
+import { FaqItem } from './faq-item';
 
 export const metadata: Metadata = { title: 'Paid Features | PrayerJar Docs' };
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
 
 function formatCents(cents: number): string {
   return `$${(cents / 100).toFixed(0)}`;
 }
+
+type CellValue = boolean | string;
+
+/* ------------------------------------------------------------------ */
+/*  Plan tier styling                                                  */
+/* ------------------------------------------------------------------ */
+
+const TIER_STYLES: Record<string, { color: string; bg: string; border: string; badge: string; gradient: string }> = {
+  free: {
+    color: 'text-slate-500',
+    bg: 'bg-slate-500/10',
+    border: 'border-slate-500/20',
+    badge: 'bg-slate-500/10 text-slate-600 dark:text-slate-400',
+    gradient: 'from-slate-500/5 to-transparent',
+  },
+  starter: {
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/20',
+    badge: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    gradient: 'from-blue-500/5 to-transparent',
+  },
+  pro: {
+    color: 'text-violet-500',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    badge: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+    gradient: 'from-violet-500/5 to-transparent',
+  },
+  enterprise: {
+    color: 'text-amber-500',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    gradient: 'from-amber-500/5 to-transparent',
+  },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Feature comparison data                                            */
+/* ------------------------------------------------------------------ */
 
 const FEATURE_COMPARISON = [
   { feature: 'Public prayer feed (browse & pray)', free: true, starter: true, pro: true, enterprise: true },
@@ -35,107 +98,273 @@ const FEATURE_COMPARISON = [
   { feature: 'Dedicated account manager', free: false, starter: false, pro: false, enterprise: true },
 ];
 
-type CellValue = boolean | string;
+/* ------------------------------------------------------------------ */
+/*  Pro feature deep-dive data                                         */
+/* ------------------------------------------------------------------ */
 
-function Cell({ value }: { value: CellValue }) {
-  if (value === true) return <span className="text-primary text-lg">✓</span>;
-  if (value === false) return <span className="text-muted-foreground/40">—</span>;
+const FEATURE_DEEP_DIVES = [
+  {
+    icon: ClipboardList,
+    title: 'Pastoral Dashboard',
+    plan: 'Pro',
+    color: 'text-violet-500',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    body: 'The pastoral dashboard gives admins and pastors a real-time overview of church prayer activity. See active requests, recent volume trends, member engagement, and a queue of requests flagged for pastoral care. All in one screen \u2014 no digging through individual submissions.',
+  },
+  {
+    icon: ShieldAlert,
+    title: 'AI-Flagged Care Alerts',
+    plan: 'Pro',
+    color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/20',
+    body: "Every prayer submitted to your private wall is screened for language indicating crisis, self-harm, acute grief, or mental health distress. Flagged requests are surfaced in the pastoral dashboard immediately. Pastors can add private notes and assign follow-up \u2014 so no one falls through the cracks.",
+  },
+  {
+    icon: Radio,
+    title: 'Live Event Prayer Wall',
+    plan: 'Starter',
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/20',
+    body: 'Run a real-time prayer wall at services, conferences, retreats, or prayer meetings. Attendees submit from their phones. A pastor moderates submissions on one screen while the wall displays on the projector. All submissions are logged and exportable as CSV after the event.',
+    planDetail: 'Starter (2/yr), Pro (12/yr), Enterprise (unlimited)',
+  },
+  {
+    icon: Palette,
+    title: 'Custom Branding',
+    plan: 'Pro',
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    body: "Upload your church logo and choose accent colors. The private wall, event wall, and welcome messages will display your branding instead of the default PrayerJar look. Members feel like they're in a space that belongs to your congregation.",
+  },
+  {
+    icon: BarChart3,
+    title: 'Analytics & PDF Reports',
+    plan: 'Pro',
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-500/10',
+    border: 'border-cyan-500/20',
+    body: 'Track prayer volume over time, member engagement, answered prayer rates, and category breakdowns. Export a formatted PDF report for any time period \u2014 useful for elder board updates, annual reports, or grant applications.',
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  FAQ data                                                           */
+/* ------------------------------------------------------------------ */
+
+const FAQS = [
+  {
+    q: 'Is there a free trial?',
+    a: 'Yes. Start on the Free plan with no credit card required. Upgrade when your congregation grows or when you need pastoral tools.',
+  },
+  {
+    q: 'Can I cancel at any time?',
+    a: 'Yes. Cancel from Billing (Profile \u2192 Billing). You retain access until the end of your billing period.',
+  },
+  {
+    q: 'What happens to our data if we cancel?',
+    a: 'Your church data, member prayers, and history are retained for 90 days after cancellation in case you reactivate. After 90 days, data is permanently deleted.',
+  },
+  {
+    q: 'Do individual members need to pay?',
+    a: 'Never. Individual users \u2014 even members of a paid church \u2014 always use PrayerJar for free.',
+  },
+  {
+    q: 'Do you offer discounts for non-profits or small congregations?',
+    a: 'Email hello@prayerjar.org to discuss your situation. We want churches of every size to be able to use these tools.',
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
+function CellIcon({ value }: { value: CellValue }) {
+  if (value === true) return <Check className="h-4 w-4 text-primary mx-auto" />;
+  if (value === false) return <X className="h-4 w-4 text-muted-foreground/30 mx-auto" />;
   return <span className="text-xs font-medium">{value}</span>;
 }
+
+function PlanBadge({ plan }: { plan: string }) {
+  const tier = plan.toLowerCase().replace('+', '') as keyof typeof TIER_STYLES;
+  const style = TIER_STYLES[tier] ?? TIER_STYLES.pro;
+  return (
+    <span className={`inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${style.badge}`}>
+      <Crown className="h-3 w-3" />
+      {plan}+
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 
 export default function PaidFeaturesPage() {
   const plans = [PLANS.free, PLANS.starter, PLANS.pro, PLANS.enterprise];
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-14">
+    <main className="max-w-5xl mx-auto px-4 py-14">
+      {/* ---- Back link ---- */}
+      <Link
+        href="/docs"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Docs
+      </Link>
 
-      <div className="mb-12">
-        <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Back to Docs</Link>
-        <h1 className="text-3xl font-bold tracking-tight mt-4 mb-3">Paid Features Guide</h1>
-        <p className="text-muted-foreground">
-          What church plan subscribers get — and how to make the most of every feature.
-        </p>
-      </div>
+      {/* ---- Hero ---- */}
+      <div className="relative rounded-2xl border bg-gradient-to-br from-violet-500/5 via-card to-primary/5 p-8 sm:p-12 mb-12 overflow-hidden">
+        <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-violet-500/5 blur-2xl" />
+        <div className="absolute -bottom-12 -left-12 h-36 w-36 rounded-full bg-primary/5 blur-2xl" />
 
-      {/* Ministry note */}
-      <div className="rounded-xl border bg-muted/30 p-5 mb-12">
-        <p className="text-sm leading-relaxed">
-          <span className="font-semibold">Prayer is always free.</span> There is no paywall on submitting a prayer request or praying for others. Church plans exist to support congregations that need pastoral tools, private prayer walls, and oversight features. Individual users never need to pay anything.
-        </p>
-      </div>
-
-      {/* Plan cards */}
-      <section className="mb-16">
-        <h2 className="text-xl font-semibold mb-6">Plans at a glance</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {plans.map((plan) => (
-            <div
-              key={plan.tier}
-              className={`rounded-xl border p-5 space-y-4 ${plan.tier === 'pro' ? 'border-primary ring-2 ring-primary/20' : ''}`}
-            >
-              {plan.tier === 'pro' && (
-                <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-primary text-primary-foreground">
-                  Most Popular
-                </span>
-              )}
-              <div>
-                <p className="font-semibold">{plan.name}</p>
-                <p className="text-2xl font-bold mt-1">
-                  {plan.tier === 'enterprise' ? (
-                    <span className="text-base font-semibold">Contact sales</span>
-                  ) : plan.monthlyPriceCents === 0 ? (
-                    'Free'
-                  ) : (
-                    <>{formatCents(plan.monthlyPriceCents)}<span className="text-sm font-normal text-muted-foreground">/mo</span></>
-                  )}
-                </p>
-                {plan.yearlyPriceCents > 0 && (
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    or {formatCents(plan.yearlyPriceCents)}/yr (save ~20%)
-                  </p>
-                )}
-              </div>
-              <ul className="space-y-1.5">
-                {plan.features.map((f) => (
-                  <li key={f} className="text-xs text-muted-foreground flex gap-2">
-                    <span className="text-primary mt-0.5">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="relative flex flex-col sm:flex-row items-start gap-6">
+          <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+            <Crown className="h-8 w-8 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+              Paid Features Guide
+            </h1>
+            <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl">
+              What church plan subscribers get -- and how to make the most of every feature.
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-center mt-5 text-muted-foreground">
+      </div>
+
+      {/* ---- Ministry note ---- */}
+      <div className="rounded-xl border bg-gradient-to-r from-primary/5 to-transparent p-6 mb-14 flex items-start gap-4">
+        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <Heart className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <p className="font-semibold text-sm mb-1">Prayer is always free.</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            There is no paywall on submitting a prayer request or praying for others. Church plans exist to support congregations that need pastoral tools, private prayer walls, and oversight features. Individual users never need to pay anything.
+          </p>
+        </div>
+      </div>
+
+      {/* ---- Plan cards ---- */}
+      <section className="mb-16">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-xl font-semibold">Plans at a glance</h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {plans.map((plan) => {
+            const style = TIER_STYLES[plan.tier];
+            const isPopular = plan.tier === 'pro';
+            return (
+              <div
+                key={plan.tier}
+                className={`relative rounded-xl border-2 p-6 space-y-5 transition-shadow hover:shadow-lg ${
+                  isPopular
+                    ? 'border-primary ring-2 ring-primary/10 bg-gradient-to-b from-primary/5 to-card'
+                    : `${style.border} bg-card`
+                }`}
+              >
+                {isPopular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full bg-primary text-primary-foreground">
+                    <Zap className="h-3 w-3" />
+                    Most Popular
+                  </span>
+                )}
+
+                {/* Plan icon + name */}
+                <div className="flex items-center gap-3">
+                  <div className={`h-10 w-10 rounded-xl ${style.bg} flex items-center justify-center`}>
+                    <Crown className={`h-5 w-5 ${style.color}`} />
+                  </div>
+                  <p className="font-semibold text-base">{plan.name}</p>
+                </div>
+
+                {/* Price */}
+                <div>
+                  <p className="text-3xl font-bold">
+                    {plan.tier === 'enterprise' ? (
+                      <span className="text-base font-semibold">Contact sales</span>
+                    ) : plan.monthlyPriceCents === 0 ? (
+                      'Free'
+                    ) : (
+                      <>
+                        {formatCents(plan.monthlyPriceCents)}
+                        <span className="text-sm font-normal text-muted-foreground">/mo</span>
+                      </>
+                    )}
+                  </p>
+                  {plan.yearlyPriceCents > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      or {formatCents(plan.yearlyPriceCents)}/yr (save ~20%)
+                    </p>
+                  )}
+                </div>
+
+                {/* Feature list */}
+                <ul className="space-y-2 pt-2 border-t">
+                  {plan.features.map((f) => (
+                    <li key={f} className="text-sm text-muted-foreground flex items-start gap-2.5">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-sm text-center mt-6 text-muted-foreground">
           Ready to upgrade?{' '}
-          <Link href="/for-churches" className="text-primary underline underline-offset-4">View the For Churches page</Link>
-          {' '}to get started.
+          <Link href="/for-churches" className="text-primary underline underline-offset-4">
+            View the For Churches page
+          </Link>{' '}
+          to get started.
         </p>
       </section>
 
-      {/* Comparison table */}
+      {/* ---- Full comparison table ---- */}
       <section className="mb-16">
-        <h2 className="text-xl font-semibold mb-6">Full comparison</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+            <BarChart3 className="h-5 w-5 text-cyan-500" />
+          </div>
+          <h2 className="text-xl font-semibold">Full comparison</h2>
+        </div>
+
         <div className="rounded-xl border overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50">
-                <th className="text-left px-4 py-3 font-medium w-1/2">Feature</th>
-                {plans.map((p) => (
-                  <th key={p.tier} className={`text-center px-3 py-3 font-medium ${p.tier === 'pro' ? 'text-primary' : ''}`}>
-                    {p.name}
-                  </th>
-                ))}
+                <th className="text-left px-4 py-3.5 font-medium w-[40%]">Feature</th>
+                {plans.map((p) => {
+                  const style = TIER_STYLES[p.tier];
+                  return (
+                    <th key={p.tier} className="text-center px-3 py-3.5 font-medium">
+                      <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${style.badge}`}>
+                        {p.name}
+                      </span>
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
               {FEATURE_COMPARISON.map((row, i) => (
                 <tr key={row.feature} className={`border-b last:border-0 ${i % 2 === 0 ? '' : 'bg-muted/20'}`}>
-                  <td className="px-4 py-2.5 text-muted-foreground">{row.feature}</td>
-                  <td className="text-center px-3 py-2.5"><Cell value={row.free} /></td>
-                  <td className="text-center px-3 py-2.5"><Cell value={row.starter} /></td>
-                  <td className="text-center px-3 py-2.5"><Cell value={row.pro} /></td>
-                  <td className="text-center px-3 py-2.5"><Cell value={row.enterprise} /></td>
+                  <td className="px-4 py-3 text-muted-foreground">{row.feature}</td>
+                  <td className="text-center px-3 py-3"><CellIcon value={row.free} /></td>
+                  <td className="text-center px-3 py-3"><CellIcon value={row.starter} /></td>
+                  <td className="text-center px-3 py-3"><CellIcon value={row.pro} /></td>
+                  <td className="text-center px-3 py-3"><CellIcon value={row.enterprise} /></td>
                 </tr>
               ))}
             </tbody>
@@ -143,99 +372,95 @@ export default function PaidFeaturesPage() {
         </div>
       </section>
 
-      {/* Feature deep dives */}
-      <section className="space-y-12 mb-16">
-        <h2 className="text-xl font-semibold">Pro feature details</h2>
+      {/* ---- Feature deep dives ---- */}
+      <section className="mb-16">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-violet-500" />
+          </div>
+          <h2 className="text-xl font-semibold">Pro feature details</h2>
+        </div>
 
-        {[
-          {
-            icon: '📋',
-            title: 'Pastoral Dashboard',
-            plan: 'Pro+',
-            body: 'The pastoral dashboard gives admins and pastors a real-time overview of church prayer activity. See active requests, recent volume trends, member engagement, and a queue of requests flagged for pastoral care. All in one screen — no digging through individual submissions.',
-          },
-          {
-            icon: '🤖',
-            title: 'AI-Flagged Care Alerts',
-            plan: 'Pro+',
-            body: "Every prayer submitted to your private wall is screened for language indicating crisis, self-harm, acute grief, or mental health distress. Flagged requests are surfaced in the pastoral dashboard immediately. Pastors can add private notes and assign follow-up — so no one falls through the cracks.",
-          },
-          {
-            icon: '🎤',
-            title: 'Live Event Prayer Wall',
-            plan: 'Starter (2/yr), Pro (12/yr), Enterprise (unlimited)',
-            body: 'Run a real-time prayer wall at services, conferences, retreats, or prayer meetings. Attendees submit from their phones. A pastor moderates submissions on one screen while the wall displays on the projector. All submissions are logged and exportable as CSV after the event.',
-          },
-          {
-            icon: '🎨',
-            title: 'Custom Branding',
-            plan: 'Pro+',
-            body: "Upload your church logo and choose accent colors. The private wall, event wall, and welcome messages will display your branding instead of the default PrayerJar look. Members feel like they're in a space that belongs to your congregation.",
-          },
-          {
-            icon: '📊',
-            title: 'Analytics & PDF Reports',
-            plan: 'Pro+',
-            body: 'Track prayer volume over time, member engagement, answered prayer rates, and category breakdowns. Export a formatted PDF report for any time period — useful for elder board updates, annual reports, or grant applications.',
-          },
-        ].map(({ icon, title, plan, body }) => (
-          <div key={title} className="flex gap-4">
-            <div className="text-2xl flex-shrink-0">{icon}</div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-3 flex-wrap">
-                <p className="font-semibold text-sm">{title}</p>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{plan}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {FEATURE_DEEP_DIVES.map(({ icon: Icon, title, plan, color, bg, border, body, planDetail }) => (
+            <div
+              key={title}
+              className={`rounded-xl border-2 ${border} bg-gradient-to-br ${TIER_STYLES[plan.toLowerCase()]?.gradient ?? 'from-violet-500/5 to-transparent'} p-6 space-y-4 hover:shadow-md transition-shadow`}
+            >
+              {/* Header */}
+              <div className="flex items-start gap-4">
+                <div className={`h-12 w-12 rounded-xl ${bg} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className={`h-6 w-6 ${color}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-base mb-1">{title}</p>
+                  <PlanBadge plan={plan} />
+                </div>
               </div>
+
+              {/* Body */}
               <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+
+              {/* Plan detail note */}
+              {planDetail && (
+                <p className="text-xs text-muted-foreground border-t pt-3">
+                  <span className="font-medium">Availability:</span> {planDetail}
+                </p>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
-      {/* FAQ */}
-      <section className="space-y-5 mb-16">
-        <h2 className="text-xl font-semibold">Common questions</h2>
-        {[
-          {
-            q: 'Is there a free trial?',
-            a: 'Yes. Start on the Free plan with no credit card required. Upgrade when your congregation grows or when you need pastoral tools.',
-          },
-          {
-            q: 'Can I cancel at any time?',
-            a: 'Yes. Cancel from Billing (Profile → Billing). You retain access until the end of your billing period.',
-          },
-          {
-            q: 'What happens to our data if we cancel?',
-            a: 'Your church data, member prayers, and history are retained for 90 days after cancellation in case you reactivate. After 90 days, data is permanently deleted.',
-          },
-          {
-            q: 'Do individual members need to pay?',
-            a: 'Never. Individual users — even members of a paid church — always use PrayerJar for free.',
-          },
-          {
-            q: 'Do you offer discounts for non-profits or small congregations?',
-            a: 'Email hello@prayerjar.org to discuss your situation. We want churches of every size to be able to use these tools.',
-          },
-        ].map(({ q, a }) => (
-          <div key={q} className="rounded-xl border p-5 space-y-2">
-            <p className="font-medium text-sm">{q}</p>
-            <p className="text-sm text-muted-foreground leading-relaxed">{a}</p>
+      {/* ---- FAQ ---- */}
+      <section className="mb-16">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+            <HelpCircle className="h-5 w-5 text-amber-500" />
           </div>
-        ))}
+          <h2 className="text-xl font-semibold">Common questions</h2>
+        </div>
+
+        <div className="space-y-3">
+          {FAQS.map(({ q, a }) => (
+            <FaqItem key={q} q={q} a={a} />
+          ))}
+        </div>
       </section>
 
-      <div className="pt-8 border-t flex flex-col sm:flex-row gap-3">
-        <Link href="/for-churches" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors">
-          View Church Plans
-        </Link>
-        <Link href="/docs/churches" className="inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-accent/50 transition-colors">
-          Church Admin Guide
-        </Link>
-        <a href="mailto:hello@prayerjar.org" className="inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-accent/50 transition-colors">
-          Contact Sales
-        </a>
+      {/* ---- CTA Footer ---- */}
+      <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-card to-violet-500/5 p-8 sm:p-10 text-center">
+        <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
+          <Church className="h-7 w-7 text-primary" />
+        </div>
+        <h3 className="text-xl font-bold mb-2">Ready to equip your church?</h3>
+        <p className="text-muted-foreground text-sm max-w-lg mx-auto mb-6">
+          Start free, upgrade when you need pastoral tools. Every plan comes with a community that prays.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            href="/for-churches"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <Zap className="h-4 w-4" />
+            View Church Plans
+          </Link>
+          <Link
+            href="/docs/churches"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border px-6 py-3 text-sm font-medium hover:bg-accent/50 transition-colors"
+          >
+            <ClipboardList className="h-4 w-4" />
+            Church Admin Guide
+          </Link>
+          <a
+            href="mailto:hello@prayerjar.org"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border px-6 py-3 text-sm font-medium hover:bg-accent/50 transition-colors"
+          >
+            <Mail className="h-4 w-4" />
+            Contact Sales
+          </a>
+        </div>
       </div>
-
     </main>
   );
 }

@@ -1,7 +1,9 @@
 import { db } from '@/db';
-import { churches, churchMembers, prayers, groups, users } from '@/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { churches, churchMembers, prayers, groups, users, subscriptions } from '@/db/schema';
+import { eq, and, desc, count } from 'drizzle-orm';
 import type { Church, ChurchMember } from '@/db/schema';
+import { PLANS } from '@/lib/plans';
+import type { PlanTier } from '@/lib/plans';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -12,6 +14,22 @@ function generateSlug(name: string): string {
   const base = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${base}-${suffix}`;
+}
+
+// ---------------------------------------------------------------------------
+// Tier helpers
+// ---------------------------------------------------------------------------
+
+export async function getChurchTier(churchId: string): Promise<PlanTier> {
+  const [row] = await db
+    .select({ tier: subscriptions.tier, status: subscriptions.status })
+    .from(churches)
+    .leftJoin(subscriptions, eq(subscriptions.id, churches.subscriptionId))
+    .where(eq(churches.id, churchId))
+    .limit(1);
+
+  if (row?.tier && row.status === 'active') return row.tier as PlanTier;
+  return 'free';
 }
 
 // ---------------------------------------------------------------------------
@@ -91,6 +109,19 @@ export async function addChurchMember(
   userId: string,
   role: 'admin' | 'pastor' | 'member' = 'member',
 ): Promise<void> {
+  const tier = await getChurchTier(churchId);
+  const limit = PLANS[tier].limits.members;
+
+  if (limit !== null) {
+    const [{ value: currentCount }] = await db
+      .select({ value: count() })
+      .from(churchMembers)
+      .where(eq(churchMembers.churchId, churchId));
+    if (Number(currentCount) >= limit) {
+      throw new Error('Member limit reached for your plan. Upgrade to add more members.');
+    }
+  }
+
   await db
     .insert(churchMembers)
     .values({ churchId, userId, role })

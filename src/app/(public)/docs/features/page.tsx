@@ -1,12 +1,33 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import {
+  HandHeart,
+  ChevronRight,
+  ArrowLeft,
+} from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Feature Guide | PrayerJar Docs' };
 
-const FEATURES = [
+interface FeatureCategory {
+  category: string;
+  emoji: string;
+  subtitle: string;
+  borderColor: string;
+  numBg: string;
+  numText: string;
+  itemEmoji: string;
+  items: { name: string; desc: string }[];
+}
+
+const FEATURES: FeatureCategory[] = [
   {
     category: 'Prayer Requests',
-    icon: '🫙',
+    emoji: '✍️',
+    subtitle: 'Submit, manage, and mark prayers as answered.',
+    borderColor: 'border-blue-500/30',
+    numBg: 'bg-blue-500/10',
+    numText: 'text-blue-500',
+    itemEmoji: '🔵',
     items: [
       { name: 'Submit a prayer request', desc: 'Write a request in any length. Add category, urgency flag, and optional tags.' },
       { name: 'Anonymous submissions', desc: 'Post without revealing your name — the community prays without knowing who asked.' },
@@ -23,7 +44,12 @@ const FEATURES = [
   },
   {
     category: 'Praying for Others',
-    icon: '🙏',
+    emoji: '🤲',
+    subtitle: 'Intercede, encourage, and commit to consistent prayer.',
+    borderColor: 'border-rose-500/30',
+    numBg: 'bg-rose-500/10',
+    numText: 'text-rose-500',
+    itemEmoji: '🔴',
     items: [
       { name: '"I prayed for this" button', desc: 'One tap to log intercession. The requester gets notified that someone prayed.' },
       { name: 'Prayer counter', desc: 'Each request shows how many times it has been prayed for.' },
@@ -36,7 +62,12 @@ const FEATURES = [
   },
   {
     category: 'Community & Discovery',
-    icon: '🌍',
+    emoji: '🌍',
+    subtitle: 'Browse, filter, and celebrate answered prayers together.',
+    borderColor: 'border-emerald-500/30',
+    numBg: 'bg-emerald-500/10',
+    numText: 'text-emerald-500',
+    itemEmoji: '🟢',
     items: [
       { name: 'Community prayer feed', desc: 'Browse active requests from around the world — no account required.' },
       { name: 'Category filter', desc: 'Filter the feed by prayer category.' },
@@ -50,7 +81,12 @@ const FEATURES = [
   },
   {
     category: 'Prayer Partner',
-    icon: '🤝',
+    emoji: '🤝',
+    subtitle: 'One-on-one matched intercession — mutual and consistent.',
+    borderColor: 'border-pink-500/30',
+    numBg: 'bg-pink-500/10',
+    numText: 'text-pink-500',
+    itemEmoji: '🩷',
     items: [
       { name: 'Matched prayer partnership', desc: 'Opt in to be matched with one other person for consistent mutual intercession.' },
       { name: 'Partner prayer reminders', desc: 'Gentle notifications reminding you to pray for your partner.' },
@@ -60,7 +96,12 @@ const FEATURES = [
   },
   {
     category: 'Notifications',
-    icon: '🔔',
+    emoji: '🔔',
+    subtitle: 'Stay informed without being overwhelmed.',
+    borderColor: 'border-amber-500/30',
+    numBg: 'bg-amber-500/10',
+    numText: 'text-amber-500',
+    itemEmoji: '🟡',
     items: [
       { name: 'Prayed-for notification', desc: 'Get notified when someone prays for your request.' },
       { name: 'Message notification', desc: 'Get notified when someone leaves you an encouraging message.' },
@@ -74,7 +115,12 @@ const FEATURES = [
   },
   {
     category: 'Gamification & Badges',
-    icon: '🏅',
+    emoji: '🏅',
+    subtitle: 'Milestones that celebrate your faithfulness.',
+    borderColor: 'border-orange-500/30',
+    numBg: 'bg-orange-500/10',
+    numText: 'text-orange-500',
+    itemEmoji: '🟠',
     items: [
       { name: 'Badge system', desc: 'Earn badges for milestones: first prayer, 10 prayers, 7-day streak, 100 prayers prayed for, and more.' },
       { name: 'Day streak', desc: 'Consecutive-day streak counter shown on your profile and badge page.' },
@@ -84,7 +130,12 @@ const FEATURES = [
   },
   {
     category: 'Profile & Account',
-    icon: '👤',
+    emoji: '👤',
+    subtitle: 'Your stats, settings, and privacy controls.',
+    borderColor: 'border-slate-500/30',
+    numBg: 'bg-slate-500/10',
+    numText: 'text-slate-500',
+    itemEmoji: '⚪',
     items: [
       { name: 'Profile page', desc: 'Shows your stats, recent badges, streak, and links to all your activity.' },
       { name: 'Profile avatar', desc: 'Displays your Google/GitHub profile picture when signed in via OAuth.' },
@@ -98,7 +149,12 @@ const FEATURES = [
   },
   {
     category: 'Faith Resources',
-    icon: '✝️',
+    emoji: '✝️',
+    subtitle: 'Scripture, pathways, and tools for spiritual growth.',
+    borderColor: 'border-violet-500/30',
+    numBg: 'bg-violet-500/10',
+    numText: 'text-violet-500',
+    itemEmoji: '🟣',
     items: [
       { name: 'Daily verse', desc: 'A rotating Scripture verse shown on the homepage each day.' },
       { name: 'Know Jesus page', desc: 'An introduction to Christian faith for seekers, with prayer of salvation.' },
@@ -108,12 +164,17 @@ const FEATURES = [
   },
   {
     category: 'Church Features',
-    icon: '⛪',
+    emoji: '⛪',
+    subtitle: 'Private walls, groups, events, and pastoral tools.',
+    borderColor: 'border-indigo-500/30',
+    numBg: 'bg-indigo-500/10',
+    numText: 'text-indigo-500',
+    itemEmoji: '🔷',
     items: [
       { name: 'Church creation & setup', desc: 'Wizard to create a church profile with name, description, and welcome message.' },
       { name: 'Church prayer wall', desc: "A private wall visible only to church members — separate from the public feed." },
       { name: 'Member management', desc: 'Invite members, assign roles (admin, pastor, member), remove members.' },
-      { name: 'Church groups', desc: 'Sub-groups within a congregation (e.g. Women\'s Ministry, Youth) each with their own prayer context.' },
+      { name: 'Church groups', desc: "Sub-groups within a congregation (e.g. Women's Ministry, Youth) each with their own prayer context." },
       { name: 'Pastoral dashboard', desc: 'Overview of church prayer activity, member engagement, and flagged care needs.' },
       { name: 'AI-flagged care alerts', desc: 'Requests containing crisis language (self-harm, grief, mental health) are flagged for pastoral review.' },
       { name: 'Pastoral notes', desc: 'Pastors can add private notes to flagged requests for follow-up tracking.' },
@@ -132,7 +193,12 @@ const FEATURES = [
   },
   {
     category: 'Safety & Trust',
-    icon: '🛡️',
+    emoji: '🛡️',
+    subtitle: 'AI screening, privacy controls, and zero ads.',
+    borderColor: 'border-teal-500/30',
+    numBg: 'bg-teal-500/10',
+    numText: 'text-teal-500',
+    itemEmoji: '🩵',
     items: [
       { name: 'AI safety screening', desc: 'All submissions are screened for crisis language, self-harm indicators, and sensitive content.' },
       { name: 'Content reporting', desc: 'Any user can report a prayer request for review.' },
@@ -145,7 +211,12 @@ const FEATURES = [
   },
   {
     category: 'Progressive Web App',
-    icon: '📱',
+    emoji: '📱',
+    subtitle: 'Install on mobile, work offline, get push notifications.',
+    borderColor: 'border-cyan-500/30',
+    numBg: 'bg-cyan-500/10',
+    numText: 'text-cyan-500',
+    itemEmoji: '🔵',
     items: [
       { name: 'Installable on mobile', desc: 'Add to home screen on iOS and Android — works like a native app.' },
       { name: 'Offline support', desc: 'Service worker caches key assets for basic offline resilience.' },
@@ -159,50 +230,88 @@ export default function FeaturesPage() {
   const totalFeatures = FEATURES.reduce((sum, cat) => sum + cat.items.length, 0);
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-14">
+    <main className="max-w-4xl mx-auto px-4 py-14">
 
+      {/* ═══════════════════════════════════════════════════════
+          BACK + HERO
+      ═══════════════════════════════════════════════════════ */}
       <div className="mb-12">
-        <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Back to Docs</Link>
-        <h1 className="text-3xl font-bold tracking-tight mt-4 mb-3">Full Feature Guide</h1>
-        <p className="text-muted-foreground">
-          Every feature available in PrayerJar V2 — {totalFeatures} features across {FEATURES.length} categories.
-        </p>
+        <Link href="/docs" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Docs
+        </Link>
+
+        <div className="mt-8 text-center space-y-4">
+          <div className="text-6xl leading-none">✅</div>
+          <h1 className="text-4xl font-bold tracking-tight">Full Feature Guide</h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Every feature available in PrayerJar V2 —{' '}
+            <span className="font-bold text-foreground">{totalFeatures} features</span>{' '}
+            across{' '}
+            <span className="font-bold text-foreground">{FEATURES.length} categories</span>.
+          </p>
+        </div>
       </div>
 
-      {/* Quick nav */}
-      <nav className="rounded-xl border bg-muted/30 p-4 mb-12" aria-label="Feature categories">
-        <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Jump to category</p>
-        <div className="flex flex-wrap gap-2">
+      {/* ═══════════════════════════════════════════════════════
+          CATEGORY QUICK-NAV
+      ═══════════════════════════════════════════════════════ */}
+      <nav className="rounded-2xl border bg-gradient-to-br from-muted/40 to-muted/10 p-5 mb-14" aria-label="Feature categories">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4 text-center">Jump to Category</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {FEATURES.map((cat) => (
             <a
               key={cat.category}
               href={`#${cat.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
-              className="text-xs px-3 py-1.5 rounded-full border hover:bg-accent/50 transition-colors"
+              className={`flex items-center gap-2.5 rounded-xl border ${cat.borderColor} bg-card hover:bg-accent/50 transition-colors px-3 py-2.5`}
             >
-              {cat.icon} {cat.category}
+              <span className="text-xl leading-none flex-shrink-0">{cat.emoji}</span>
+              <div className="min-w-0">
+                <span className="text-xs font-semibold truncate block leading-tight">{cat.category}</span>
+                <span className="text-[10px] text-muted-foreground">{cat.items.length} features</span>
+              </div>
             </a>
           ))}
         </div>
       </nav>
 
+      {/* ═══════════════════════════════════════════════════════
+          FEATURE CATEGORIES
+      ═══════════════════════════════════════════════════════ */}
       <div className="space-y-12">
         {FEATURES.map((cat) => (
           <section
             key={cat.category}
             id={cat.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+            className="scroll-mt-8"
           >
-            <h2 className="flex items-center gap-2 text-lg font-semibold mb-5">
-              <span>{cat.icon}</span>
-              {cat.category}
-              <span className="ml-auto text-xs font-normal text-muted-foreground">{cat.items.length} features</span>
-            </h2>
-            <div className="rounded-xl border divide-y">
+            {/* Category header */}
+            <div className={`rounded-2xl border ${cat.borderColor} bg-gradient-to-r from-muted/20 to-transparent p-6 mb-5 flex items-start gap-5`}>
+              <div className="text-5xl leading-none flex-shrink-0">{cat.emoji}</div>
+              <div>
+                <div className="flex items-center gap-3 flex-wrap mb-1">
+                  <h2 className="text-lg font-bold">{cat.category}</h2>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${cat.numBg} ${cat.numText}`}>
+                    {cat.items.length} features
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">{cat.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Feature grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {cat.items.map((item) => (
-                <div key={item.name} className="px-4 py-3 flex gap-4">
-                  <span className="text-primary mt-0.5 flex-shrink-0">✓</span>
+                <div
+                  key={item.name}
+                  className={`rounded-xl border ${cat.borderColor} bg-card hover:bg-accent/20 transition-colors p-4 flex gap-3`}
+                >
+                  <div className={`w-7 h-7 rounded-full ${cat.numBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                    <span className={`text-xs font-black ${cat.numText}`}>✓</span>
+                  </div>
                   <div>
-                    <p className="text-sm font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                    <p className="text-sm font-semibold leading-snug">{item.name}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -211,15 +320,24 @@ export default function FeaturesPage() {
         ))}
       </div>
 
-      <div className="mt-12 pt-8 border-t text-center space-y-3">
-        <p className="text-sm text-muted-foreground">Ready to explore?</p>
-        <div className="flex justify-center gap-3">
-          <Link href="/pray" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors">
-            Start Praying
-          </Link>
-          <Link href="/docs" className="inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-accent/50 transition-colors">
-            Back to Docs
-          </Link>
+      {/* ═══════════════════════════════════════════════════════
+          FOOTER CTA
+      ═══════════════════════════════════════════════════════ */}
+      <div className="mt-16 pt-8 border-t">
+        <div className="rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent p-8 text-center space-y-5">
+          <div className="text-5xl leading-none">🚀</div>
+          <p className="text-xl font-bold">Ready to explore?</p>
+          <p className="text-sm text-muted-foreground">Start praying for others or dive deeper into the docs.</p>
+          <div className="flex justify-center gap-3 flex-wrap">
+            <Link href="/pray" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors">
+              <HandHeart className="w-4 h-4" />
+              Start Praying
+            </Link>
+            <Link href="/docs" className="inline-flex items-center gap-1 justify-center rounded-xl border px-5 py-3 text-sm font-semibold hover:bg-accent/50 transition-colors">
+              Back to Docs
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </div>
 

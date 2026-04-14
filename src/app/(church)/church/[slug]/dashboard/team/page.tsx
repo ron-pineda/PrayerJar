@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getChurchAssignments } from '@/services/pastoral.service';
 import { AssignPrayerForm } from './AssignPrayerForm';
+import { CopyInviteLink } from '@/components/church/copy-invite-link';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -70,6 +71,18 @@ export default async function PrayerTeamPage({ params }: Props) {
         </Link>
         <h1 className="text-2xl font-bold">Prayer Team</h1>
       </div>
+
+      {/* Invite Members */}
+      <section className="mb-10 rounded-xl border bg-card p-6">
+        <h2 className="text-lg font-semibold mb-1">Invite Members</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Share this link with your congregation to let them join your private
+          prayer wall. Anyone with the link can join as a member.
+        </p>
+        <CopyInviteLink
+          inviteUrl={`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org'}/church/join?code=${slug}`}
+        />
+      </section>
 
       {/* Assign form */}
       <div className="mb-10">

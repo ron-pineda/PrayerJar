@@ -7,8 +7,10 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Flag } from 'lucide-react';
 import { prayForRequestAction } from '@/app/actions/interaction.actions';
 import { generateEncouragementAction } from '@/app/actions/ai.actions';
+import { submitReportAction } from '@/app/actions/report.actions';
 import type { Prayer } from '@/db/schema';
 import { ShareButtons } from '@/components/share-buttons';
 
@@ -27,6 +29,8 @@ export function GuidedPrayer({
   const [error, setError] = useState('');
   const [encouragement, setEncouragement] = useState<string | null>(null);
   const [encouragementLoading, setEncouragementLoading] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reported, setReported] = useState(false);
 
   // Fetch AI encouragement when we reach the done stage
   useEffect(() => {
@@ -47,6 +51,15 @@ export function GuidedPrayer({
       });
     return () => { cancelled = true; };
   }, [stage, prayer.content, prayer.suggestedVerse]);
+
+  async function handleReport(reason: string) {
+    setReportOpen(false);
+    const formData = new FormData();
+    formData.set('prayerId', prayer.id);
+    formData.set('reason', reason);
+    await submitReportAction(formData);
+    setReported(true);
+  }
 
   async function handlePrayed() {
     setPending(true);
@@ -142,6 +155,47 @@ export function GuidedPrayer({
               loading="lazy"
             />
           )}
+
+          {/* Report button — subtle, bottom-right */}
+          <div className="flex justify-end mt-3">
+            {reported ? (
+              <span className="text-xs text-muted-foreground/60">Thanks for reporting</span>
+            ) : reportOpen ? (
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-xs text-muted-foreground mb-0.5">Why are you reporting this?</span>
+                {[
+                  { value: 'spam', label: 'Spam' },
+                  { value: 'inappropriate', label: 'Inappropriate content' },
+                  { value: 'not_a_prayer', label: 'Not a prayer request' },
+                  { value: 'harassment', label: 'Harassment' },
+                  { value: 'other', label: 'Other' },
+                ].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => handleReport(value)}
+                    className="text-xs text-muted-foreground hover:text-foreground text-right"
+                  >
+                    {label}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setReportOpen(false)}
+                  className="text-xs text-muted-foreground/50 hover:text-muted-foreground mt-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setReportOpen(true)}
+                className="flex items-center gap-1 text-xs text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+                aria-label="Report this prayer"
+              >
+                <Flag className="h-3 w-3" />
+                Report
+              </button>
+            )}
+          </div>
         </CardContent>
       </Card>
 

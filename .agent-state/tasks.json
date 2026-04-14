@@ -2307,51 +2307,253 @@
   {
     "id": "pj-s7.3-1",
     "title": "Documentation: One-pager overview page",
-    "status": "proposed",
+    "status": "done",
     "sprint": "7.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-13T22:26:44.076040Z",
-    "notes": "New page at /docs."
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Verified built at /docs — hero, live stats, audience breakdown, how-it-works, nav to sub-pages."
   },
   {
     "id": "pj-s7.3-2",
     "title": "Documentation: Full feature guide",
-    "status": "proposed",
+    "status": "done",
     "sprint": "7.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-13T22:26:44.076040Z",
-    "notes": "New page at /docs/features."
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Verified built at /docs/features — 155+ features across 11 categories."
   },
   {
     "id": "pj-s7.3-3",
     "title": "Documentation: Individual user guide",
-    "status": "proposed",
+    "status": "done",
     "sprint": "7.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-13T22:26:44.076040Z",
-    "notes": "New page at /docs/guide."
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Verified built at /docs/guide — 8 sections with step-by-step instructions."
   },
   {
     "id": "pj-s7.3-4",
     "title": "Documentation: Church administrator guide",
-    "status": "proposed",
+    "status": "done",
     "sprint": "7.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-13T22:26:44.076040Z",
-    "notes": "New page at /docs/churches."
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Verified built at /docs/churches — 8 sections covering setup, wall, dashboard, events, analytics, billing."
   },
   {
     "id": "pj-s7.3-5",
     "title": "Documentation: Paid features guide",
-    "status": "proposed",
+    "status": "done",
     "sprint": "7.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-13T22:26:44.076040Z",
-    "notes": "New page at /docs/paid."
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Verified built at /docs/paid — plan comparison table, Pro feature deep dives, FAQ."
+  },
+  {
+    "id": "pj-s8.1-1",
+    "title": "Sync production DB schema (db:push)",
+    "status": "proposed",
+    "sprint": "8.1",
+    "assigned_to": "Database Engineer",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Tables from migrations 0018+ missing in prod. Profile, billing, church features all crash."
+  },
+  {
+    "id": "pj-s8.1-2",
+    "title": "Fix /profile crash (defensive churchMembers query)",
+    "status": "proposed",
+    "sprint": "8.1",
+    "assigned_to": "Backend Engineer",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Wrap churchMembers query in try-catch so profile works even if table is missing."
+  },
+  {
+    "id": "pj-s8.1-3",
+    "title": "Fix /billing crash for non-church users",
+    "status": "proposed",
+    "sprint": "8.1",
+    "assigned_to": "Backend Engineer",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Handle DB errors gracefully instead of showing 'something went wrong'."
+  },
+  {
+    "id": "pj-s8.1-4",
+    "title": "Fix church search 50-mile radius bug",
+    "status": "proposed",
+    "sprint": "8.1",
+    "assigned_to": "Backend Engineer",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Google Places API max radius is 50000m (~31mi). 50mi sends 80467m, returns empty. Clamp API call and adjust UI."
+  },
+  {
+    "id": "pj-s8.2-1",
+    "title": "Add dynamic sitemap.xml",
+    "status": "proposed",
+    "sprint": "8.2",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Next.js App Router sitemap route covering all public pages."
+  },
+  {
+    "id": "pj-s8.2-2",
+    "title": "Add robots.txt",
+    "status": "proposed",
+    "sprint": "8.2",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Standard robots.txt allowing crawlers, pointing to sitemap."
+  },
+  {
+    "id": "pj-s8.2-3",
+    "title": "Add security headers",
+    "status": "proposed",
+    "sprint": "8.2",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "CSP, HSTS, X-Frame-Options, X-Content-Type-Options in next.config.ts headers."
+  },
+  {
+    "id": "pj-s8.3-1",
+    "title": "Denomination filter on /find-a-church",
+    "status": "proposed",
+    "sprint": "8.3",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Data exists in church_recommendations. Add dropdown filter to search bar."
+  },
+  {
+    "id": "pj-s8.3-2",
+    "title": "Real contact form on /contact",
+    "status": "proposed",
+    "sprint": "8.3",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Replace mailto with server action form that sends via Resend."
+  },
+  {
+    "id": "pj-s8.3-3",
+    "title": "Add /give link to footer and nav",
+    "status": "proposed",
+    "sprint": "8.3",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Donate page exists at /give but is not discoverable."
+  },
+  {
+    "id": "pj-s8.3-4",
+    "title": "PWA install prompt",
+    "status": "proposed",
+    "sprint": "8.3",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Listen for beforeinstallprompt and show install banner."
+  },
+  {
+    "id": "pj-s8.4-1",
+    "title": "Visual docs overhaul: /docs, /docs/guide, /docs/features",
+    "status": "proposed",
+    "sprint": "8.4",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Replace text-heavy guides with illustrated step-by-step cards, flow diagrams, icon-driven layouts."
+  },
+  {
+    "id": "pj-s8.4-2",
+    "title": "Visual docs overhaul: /docs/churches, /docs/paid",
+    "status": "proposed",
+    "sprint": "8.4",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Visual feature showcases for church admins evaluating the platform."
+  },
+  {
+    "id": "pj-s8.5-1",
+    "title": "Church member invite flow",
+    "status": "proposed",
+    "sprint": "8.5",
+    "assigned_to": "Full Stack",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Email invite + shareable join link for church admins to invite congregation."
+  },
+  {
+    "id": "pj-s8.5-2",
+    "title": "Subscription tier feature gating",
+    "status": "proposed",
+    "sprint": "8.5",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Check subscription tier before unlocking paid church features."
+  },
+  {
+    "id": "pj-s8.3-5",
+    "title": "User report button on prayer cards",
+    "status": "in-progress",
+    "sprint": "8.3",
+    "assigned_to": "Full Stack",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Report button on prayer cards with reason categories (spam, inappropriate, not a prayer, harassment, other). Server action records reports. Defer ban system and audio moderation to Sprint 9."
+  },
+  {
+    "id": "pj-s8.5-3",
+    "title": "Cancel/upgrade subscription UI on /billing",
+    "status": "proposed",
+    "sprint": "8.5",
+    "assigned_to": "Full Stack",
+    "priority": "medium",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Stripe customer portal or custom cancel/upgrade buttons."
+  },
+  {
+    "id": "pj-s8.3-5",
+    "title": "User report button on prayer cards",
+    "status": "done",
+    "sprint": "8.3",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "notes": "Already built in guided-prayer.tsx. Fixed Zod type error in report.actions.ts."
+  },
+  {
+    "id": "pj-s8.5-4",
+    "title": "Church member invite flow",
+    "status": "done",
+    "sprint": "8.5",
+    "assigned_to": "Full Stack",
+    "priority": "high",
+    "last_touched": "2026-04-14T00:00:00Z",
+    "files": [
+      "src/app/(public)/church/join/page.tsx",
+      "src/app/(public)/church/join/JoinButton.tsx",
+      "src/app/actions/church-join.actions.ts",
+      "src/components/church/copy-invite-link.tsx",
+      "src/app/(church)/church/[slug]/dashboard/team/page.tsx"
+    ],
+    "notes": [
+      "Join page at /church/join?code={slug}: handles unauthenticated (shows church preview + sign-in CTA), already-member, and join states. Uses existing getChurchBySlug + getChurchMembers from church-platform.service.ts.",
+      "joinChurchAction server action: auth-guards, idempotency via addChurchMember onConflictDoNothing, redirects to /church/{slug}/wall on success.",
+      "CopyInviteLink client component: readonly input + clipboard copy with 2s 'Copied!' feedback.",
+      "Team page (/dashboard/team): Invite Members section added at top with copy-link UI. Invite URL uses NEXT_PUBLIC_SITE_URL env var with fallback."
+    ]
   }
 ]

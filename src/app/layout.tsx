@@ -13,6 +13,7 @@ import { SignOutButton } from '@/components/sign-out-button';
 import { SessionProvider } from '@/components/session-provider';
 import { Analytics } from '@vercel/analytics/next';
 import { FeedbackWidget } from '@/components/feedback-widget';
+import { PwaInstallPrompt } from '@/components/pwa-install-prompt';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -98,6 +99,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="flex-1 pb-16 md:pb-0">
           {children}
         </div>
+        <PwaInstallPrompt />
         <MobileNav />
         <footer className="border-t mt-auto py-6 px-4">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -111,6 +113,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
                 <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+                <Link href="/give" className="hover:text-foreground transition-colors">Give</Link>
               </div>
             </nav>
           </div>

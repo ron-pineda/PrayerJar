@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { db } from '@/db';
 import { prayers, users, prayerInteractions } from '@/db/schema';
 import { sql } from 'drizzle-orm';
+import {
+  ChevronRight,
+} from 'lucide-react';
 
 export const metadata: Metadata = { title: 'About PrayerJar | Docs' };
 
@@ -25,44 +28,167 @@ export default async function DocsOverviewPage() {
   const stats = await getStats();
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-14 space-y-14">
+    <main className="max-w-4xl mx-auto px-4 py-14 space-y-20">
 
-      {/* Header */}
-      <header className="text-center space-y-4">
-        <span className="text-5xl" aria-hidden="true">🫙</span>
-        <h1 className="text-4xl font-bold tracking-tight">The Prayer Jar</h1>
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          A free global community where people submit prayer requests and others around the world intercede for them — 24/7, no church membership required.
-        </p>
+      {/* ═══════════════════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════════════════ */}
+      <header className="text-center space-y-6">
+        <div className="text-7xl leading-none select-none">🙏</div>
+        <div className="space-y-3">
+          <h1 className="text-5xl font-bold tracking-tight">The Prayer Jar</h1>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            A free global community where people submit prayer requests and others around the world intercede — 24/7, no church membership required.
+          </p>
+        </div>
         <div className="flex flex-wrap justify-center gap-3 pt-2">
-          <Link href="/pray" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors">
-            Start Praying
+          <Link href="/pray" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-7 py-3 text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
+            🤲 Start Praying
           </Link>
-          <Link href="/sign-in" className="inline-flex items-center justify-center rounded-md border px-5 py-2.5 text-sm font-medium hover:bg-accent/50 transition-colors">
-            Create Account
+          <Link href="/sign-in" className="inline-flex items-center justify-center gap-2 rounded-xl border px-7 py-3 text-sm font-semibold hover:bg-accent/50 transition-colors">
+            ✨ Create Account
           </Link>
         </div>
       </header>
 
-      {/* Live stats */}
+      {/* ═══════════════════════════════════════════════════════
+          LIVE STATS
+      ═══════════════════════════════════════════════════════ */}
       <section>
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="text-center mb-8">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Live Community Stats</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { value: fmt(stats.prayers), label: 'Prayers submitted' },
-            { value: fmt(stats.interactions), label: 'Times prayed for others' },
-            { value: fmt(stats.users), label: 'Community members' },
-          ].map(({ value, label }) => (
-            <div key={label} className="rounded-xl border bg-card p-5">
-              <p className="text-3xl font-bold text-primary">{value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{label}</p>
+            { value: fmt(stats.prayers), label: 'Prayers Submitted', emoji: '✍️', gradient: 'from-blue-500/15 to-blue-500/5', accent: 'text-blue-500' },
+            { value: fmt(stats.interactions), label: 'Times Prayed For Others', emoji: '🤝', gradient: 'from-rose-500/15 to-rose-500/5', accent: 'text-rose-500' },
+            { value: fmt(stats.users), label: 'Community Members', emoji: '👥', gradient: 'from-emerald-500/15 to-emerald-500/5', accent: 'text-emerald-500' },
+          ].map(({ value, label, emoji, gradient, accent }) => (
+            <div key={label} className={`rounded-2xl border bg-gradient-to-br ${gradient} p-8 text-center space-y-3`}>
+              <div className="text-4xl leading-none">{emoji}</div>
+              <p className={`text-4xl font-bold ${accent}`}>{value}</p>
+              <p className="text-sm text-muted-foreground font-medium">{label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* What it is */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">What is The Prayer Jar?</h2>
+      {/* ═══════════════════════════════════════════════════════
+          HOW IT WORKS — Big numbered flow
+      ═══════════════════════════════════════════════════════ */}
+      <section className="space-y-8">
+        <div className="text-center space-y-2">
+          <div className="text-4xl leading-none">⚡</div>
+          <h2 className="text-2xl font-bold">How It Works</h2>
+          <p className="text-muted-foreground">Three simple steps — pray, be prayed for, celebrate.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">
+          {[
+            {
+              step: 1,
+              emoji: '✍️',
+              title: 'Share Your Heart',
+              body: 'Submit a prayer request in seconds. Choose who sees it — public community, your church only, or private.',
+              bg: 'from-blue-500/10 to-blue-500/5',
+              border: 'border-blue-500/20',
+              numBg: 'bg-blue-500',
+            },
+            {
+              step: 2,
+              emoji: '🤲',
+              title: 'The Community Intercedes',
+              body: 'Others around the world pray for your request. You get notified each time someone intercedes — even anonymously.',
+              bg: 'from-rose-500/10 to-rose-500/5',
+              border: 'border-rose-500/20',
+              numBg: 'bg-rose-500',
+            },
+            {
+              step: 3,
+              emoji: '☀️',
+              title: 'Release a Light',
+              body: 'When your prayer is answered, mark it as testimony. A light joins the Lights Released wall for the whole community to celebrate.',
+              bg: 'from-amber-500/10 to-amber-500/5',
+              border: 'border-amber-500/20',
+              numBg: 'bg-amber-500',
+            },
+          ].map(({ step, emoji, title, body, bg, border, numBg }, idx, arr) => (
+            <div key={step} className="relative flex flex-col">
+              <div className={`flex-1 rounded-2xl border ${border} bg-gradient-to-br ${bg} p-7 space-y-4`}>
+                {/* Big number */}
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full ${numBg} text-white flex items-center justify-center text-lg font-black flex-shrink-0`}>
+                    {step}
+                  </div>
+                  {idx < arr.length - 1 && (
+                    <div className="hidden md:flex flex-1 items-center justify-end absolute -right-3 top-10 z-10">
+                      <div className="w-6 h-6 rounded-full bg-background border flex items-center justify-center">
+                        <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {/* Big emoji */}
+                <div className="text-5xl leading-none">{emoji}</div>
+                {/* Text */}
+                <div className="space-y-2">
+                  <p className="font-bold text-base">{title}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          WHO IT'S FOR
+      ═══════════════════════════════════════════════════════ */}
+      <section className="space-y-8">
+        <div className="text-center space-y-2">
+          <div className="text-4xl leading-none">💛</div>
+          <h2 className="text-2xl font-bold">Who It&apos;s For</h2>
+          <p className="text-muted-foreground">Everyone is welcome here.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {[
+            {
+              emoji: '🙋',
+              title: 'Individuals',
+              body: 'Anyone who needs prayer, wants to pray for others, or is exploring faith. No account required to start.',
+              border: 'border-rose-500/20',
+              bg: 'from-rose-500/10 to-rose-500/5',
+            },
+            {
+              emoji: '⛪',
+              title: 'Churches',
+              body: 'Congregations that want a private prayer wall, pastoral oversight tools, and community engagement features.',
+              border: 'border-blue-500/20',
+              bg: 'from-blue-500/10 to-blue-500/5',
+            },
+            {
+              emoji: '🌱',
+              title: 'Seekers',
+              body: "People who don't yet have a faith community. The Know Jesus pathway and church finder help connect them.",
+              border: 'border-amber-500/20',
+              bg: 'from-amber-500/10 to-amber-500/5',
+            },
+          ].map(({ emoji, title, body, border, bg }) => (
+            <div key={title} className={`rounded-2xl border ${border} bg-gradient-to-br ${bg} p-7 space-y-4`}>
+              <div className="text-5xl leading-none">{emoji}</div>
+              <p className="font-bold text-base">{title}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          WHAT IS IT — callout
+      ═══════════════════════════════════════════════════════ */}
+      <section className="rounded-2xl border bg-gradient-to-br from-primary/10 to-primary/5 p-8 sm:p-10 space-y-4">
+        <div className="text-5xl leading-none">✨</div>
+        <h2 className="text-xl font-bold">What is The Prayer Jar?</h2>
         <p className="text-muted-foreground leading-relaxed">
           The Prayer Jar is a community prayer platform built on a simple idea: everyone deserves to have someone pray for them. You write a request — as specific or as brief as you need — and the community intercedes. When your prayer is answered, you release a light to celebrate with others.
         </p>
@@ -71,98 +197,64 @@ export default async function DocsOverviewPage() {
         </p>
       </section>
 
-      {/* Who it's for */}
-      <section className="space-y-5">
-        <h2 className="text-xl font-semibold">Who it's for</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* ═══════════════════════════════════════════════════════
+          OUR COMMITMENTS — icon grid
+      ═══════════════════════════════════════════════════════ */}
+      <section className="space-y-8">
+        <div className="text-center space-y-2">
+          <div className="text-4xl leading-none">🛡️</div>
+          <h2 className="text-2xl font-bold">Our Commitments</h2>
+          <p className="text-muted-foreground">What we promise to every person who uses PrayerJar.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            {
-              icon: '🙏',
-              title: 'Individuals',
-              body: 'Anyone who needs prayer, wants to pray for others, or is exploring faith. No account required to start.',
-            },
-            {
-              icon: '⛪',
-              title: 'Churches',
-              body: 'Congregations that want a private prayer wall, pastoral oversight tools, and community engagement features.',
-            },
-            {
-              icon: '✝️',
-              title: 'Seekers',
-              body: "People who don't yet have a faith community. The Know Jesus pathway and church finder help connect them.",
-            },
-          ].map(({ icon, title, body }) => (
-            <div key={title} className="rounded-xl border bg-card p-5 space-y-2">
-              <p className="text-2xl">{icon}</p>
-              <p className="font-semibold text-sm">{title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{body}</p>
+            { emoji: '🚫', text: 'No ads — ever' },
+            { emoji: '🔒', text: 'No data selling or third-party sharing' },
+            { emoji: '💚', text: 'Prayer submission is always free' },
+            { emoji: '🥷', text: 'Anonymous prayer option for sensitive requests' },
+            { emoji: '🤖', text: 'AI safety screening for crisis and self-harm language' },
+            { emoji: '🗑️', text: 'Self-service account deletion in Settings' },
+            { emoji: '🌐', text: 'End-to-end HTTPS; no plaintext storage of sensitive data' },
+          ].map(({ emoji, text }) => (
+            <div key={text} className="flex items-center gap-4 rounded-xl border bg-card p-4">
+              <div className="text-2xl leading-none w-10 text-center flex-shrink-0">{emoji}</div>
+              <p className="text-sm text-muted-foreground font-medium">{text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="space-y-5">
-        <h2 className="text-xl font-semibold">How it works</h2>
-        <ol className="space-y-4">
+      {/* ═══════════════════════════════════════════════════════
+          DOCS NAV
+      ═══════════════════════════════════════════════════════ */}
+      <section className="space-y-8">
+        <div className="text-center space-y-2">
+          <div className="text-4xl leading-none">📚</div>
+          <h2 className="text-2xl font-bold">Documentation</h2>
+          <p className="text-muted-foreground">Everything you need to get the most out of PrayerJar.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { step: '1', title: 'Share your heart', body: 'Submit a prayer request in seconds. Choose who sees it — public community, your church only, or private.' },
-            { step: '2', title: 'The community intercedes', body: "Others pray for your request. You get notified each time someone intercedes — even if they don't leave a message." },
-            { step: '3', title: 'Release a light', body: "When your prayer is answered, mark it as testimony. A light joins the Lights Released wall for the whole community to celebrate." },
-          ].map(({ step, title, body }) => (
-            <li key={step} className="flex gap-4">
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold text-primary flex-shrink-0">
-                {step}
-              </div>
-              <div>
-                <p className="font-medium text-sm">{title}</p>
-                <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Key values */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">Our commitments</h2>
-        <ul className="space-y-2 text-sm text-muted-foreground">
-          {[
-            'No ads — ever',
-            'No data selling or third-party sharing',
-            'Prayer submission is always free',
-            'Anonymous prayer option for sensitive requests',
-            'AI safety screening for crisis and self-harm language',
-            'Self-service account deletion in Settings',
-            'End-to-end HTTPS; no plaintext storage of sensitive data',
-          ].map((item) => (
-            <li key={item} className="flex gap-2">
-              <span className="text-primary mt-0.5">✓</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Docs nav */}
-      <section className="space-y-4">
-        <h2 className="text-xl font-semibold">Documentation</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            { href: '/docs/guide', title: 'User Guide', desc: 'Step-by-step guide for individuals' },
-            { href: '/docs/churches', title: 'Church Admin Guide', desc: 'Setting up and managing a church community' },
-            { href: '/docs/paid', title: 'Paid Features', desc: 'What church plan subscribers get' },
-            { href: '/docs/features', title: 'Full Feature List', desc: 'Every feature available in V2' },
-            { href: '/help', title: 'FAQ', desc: 'Common questions answered' },
-            { href: '/contact', title: 'Contact', desc: 'Reach our team directly' },
-          ].map(({ href, title, desc }) => (
+            { href: '/docs/guide', emoji: '📖', title: 'User Guide', desc: 'Step-by-step guide for individuals', accent: 'border-blue-500/20 hover:border-blue-500/40' },
+            { href: '/docs/churches', emoji: '⛪', title: 'Church Admin Guide', desc: 'Setting up and managing a church community', accent: 'border-violet-500/20 hover:border-violet-500/40' },
+            { href: '/docs/paid', emoji: '👑', title: 'Paid Features', desc: 'What church plan subscribers get', accent: 'border-emerald-500/20 hover:border-emerald-500/40' },
+            { href: '/docs/features', emoji: '✅', title: 'Full Feature List', desc: 'Every feature available in V2', accent: 'border-amber-500/20 hover:border-amber-500/40' },
+            { href: '/help', emoji: '❓', title: 'FAQ', desc: 'Common questions answered', accent: 'border-rose-500/20 hover:border-rose-500/40' },
+            { href: '/contact', emoji: '✉️', title: 'Contact', desc: 'Reach our team directly', accent: 'border-sky-500/20 hover:border-sky-500/40' },
+          ].map(({ href, emoji, title, desc, accent }) => (
             <Link
               key={href}
               href={href}
-              className="rounded-xl border bg-card hover:bg-accent/50 transition-colors p-4 flex flex-col gap-1"
+              className={`group rounded-xl border ${accent} bg-card hover:bg-accent/50 transition-all p-5 flex items-center gap-4`}
             >
-              <p className="font-medium text-sm">{title}</p>
-              <p className="text-xs text-muted-foreground">{desc}</p>
+              <div className="text-3xl leading-none w-12 text-center flex-shrink-0">{emoji}</div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm flex items-center gap-1">
+                  {title}
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+              </div>
             </Link>
           ))}
         </div>

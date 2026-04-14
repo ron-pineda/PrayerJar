@@ -16,8 +16,8 @@ export async function GET(req: NextRequest) {
   if (isNaN(lat) || isNaN(lng)) {
     return NextResponse.json({ error: "lat and lng are required" }, { status: 400 });
   }
-  if (![5, 10, 25, 50].includes(radiusMiles)) {
-    return NextResponse.json({ error: "radius must be 5, 10, 25, or 50" }, { status: 400 });
+  if (![5, 10, 25, 30].includes(radiusMiles)) {
+    return NextResponse.json({ error: "radius must be 5, 10, 25, or 30" }, { status: 400 });
   }
 
   const globalAllowed = await checkGlobalChurchSearchLimit();

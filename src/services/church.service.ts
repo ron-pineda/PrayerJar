@@ -107,7 +107,7 @@ async function fetchGooglePlaces(
 ): Promise<GooglePlace[]> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
   if (!key) throw new Error("GOOGLE_PLACES_API_KEY is not configured");
-  const radiusMeters = Math.round(radiusMiles * MILES_TO_METERS);
+  const radiusMeters = Math.min(Math.round(radiusMiles * MILES_TO_METERS), 50000);
   const res = await fetch(
     "https://places.googleapis.com/v1/places:searchNearby",
     {

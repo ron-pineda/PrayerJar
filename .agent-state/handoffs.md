@@ -1,3 +1,4 @@
+[2026-04-14] Full Stack → Done: pj-s8.5-4 — Church member invite flow — join page, server action, copy-link component, team page invite section all complete
 [2026-04-11] Frontend → Reviewer: pj-s2.3-37 + pj-s2.3-38 + pj-s2.3-39 -- groups pages, group wall, activity feed
 [2026-04-11] Backend → QA: pj-s2.2-35 — rework complete, ready for re-QA
 [2026-04-11] Backend → QA: pj-s1.3-28 — rework complete, ready for re-QA

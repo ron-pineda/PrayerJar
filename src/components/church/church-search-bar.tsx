@@ -85,7 +85,7 @@ export function ChurchSearchBar({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {["5", "10", "25", "50"].map((r) => (
+            {["5", "10", "25", "30"].map((r) => (
               <SelectItem key={r} value={r}>{r} mi</SelectItem>
             ))}
           </SelectContent>
@@ -115,7 +115,7 @@ export function ChurchSearchBar({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {["5", "10", "25", "50"].map((r) => (
+              {["5", "10", "25", "30"].map((r) => (
                 <SelectItem key={r} value={r}>{r} mi</SelectItem>
               ))}
             </SelectContent>

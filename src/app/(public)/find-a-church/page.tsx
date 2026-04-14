@@ -25,6 +25,7 @@ export default function FindAChurchPage() {
   const [searchAddress, setSearchAddress] = useState("");
   const [highlightedPlaceId, setHighlightedPlaceId] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("distance");
+  const [denomination, setDenomination] = useState("all");
   const [activeTab, setActiveTab] = useState<"list" | "map">("list");
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 12;
@@ -39,6 +40,7 @@ export default function FindAChurchPage() {
       if (!res.ok) throw new Error(`Search failed (${res.status})`);
       const data: ChurchResult[] = await res.json();
       setResults(data);
+      setDenomination("all");
       setSearched(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
@@ -60,7 +62,29 @@ export default function FindAChurchPage() {
     [results, sort]
   );
 
-  const paginated = sorted.slice(0, (page + 1) * PAGE_SIZE);
+  const denominations = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          results.flatMap((c) =>
+            c.recommendations.map((r) => r.denomination).filter(Boolean)
+          )
+        )
+      ).sort() as string[],
+    [results]
+  );
+
+  const filtered = useMemo(
+    () =>
+      denomination === "all"
+        ? sorted
+        : sorted.filter((c) =>
+            c.recommendations.some((r) => r.denomination === denomination)
+          ),
+    [sorted, denomination]
+  );
+
+  const paginated = filtered.slice(0, (page + 1) * PAGE_SIZE);
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -74,15 +98,29 @@ export default function FindAChurchPage() {
       {/* Sort + count bar */}
       {searched && (
         <div className="flex items-center justify-between px-4 py-2 bg-background border-b border-border text-xs text-muted-foreground">
-          <span>{results.length} churches found</span>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-muted border border-border rounded px-2 py-1 text-foreground"
-          >
-            <option value="distance">Sort: Distance</option>
-            <option value="verified">Sort: Community Verified First</option>
-          </select>
+          <span>{filtered.length} churches found</span>
+          <div className="flex items-center gap-2">
+            {denominations.length > 0 && (
+              <select
+                value={denomination}
+                onChange={(e) => { setDenomination(e.target.value); setPage(0); }}
+                className="bg-muted border border-border rounded px-2 py-1 text-foreground"
+              >
+                <option value="all">Denomination: All</option>
+                {denominations.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            )}
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOption)}
+              className="bg-muted border border-border rounded px-2 py-1 text-foreground"
+            >
+              <option value="distance">Sort: Distance</option>
+              <option value="verified">Sort: Community Verified First</option>
+            </select>
+          </div>
         </div>
       )}
 
@@ -99,7 +137,7 @@ export default function FindAChurchPage() {
                   : "text-muted-foreground"
               }`}
             >
-              {tab === "list" ? `List (${results.length})` : "Map"}
+              {tab === "list" ? `List (${filtered.length})` : "Map"}
             </button>
           ))}
         </div>
@@ -129,14 +167,14 @@ export default function FindAChurchPage() {
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="bg-muted rounded-xl h-28 animate-pulse" />
               ))
-            ) : sorted.length === 0 ? (
+            ) : filtered.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground text-sm">
                 <p className="mb-3">No churches found in this area.</p>
                 <button
-                  onClick={() => handleSearch({ lat: searchCoords!.lat, lng: searchCoords!.lng, radiusMiles: 50, formattedAddress: searchAddress })}
+                  onClick={() => handleSearch({ lat: searchCoords!.lat, lng: searchCoords!.lng, radiusMiles: 30, formattedAddress: searchAddress })}
                   className="text-primary hover:underline"
                 >
-                  Try expanding to 50 miles
+                  Try expanding to 30 miles
                 </button>
               </div>
             ) : (
@@ -151,12 +189,12 @@ export default function FindAChurchPage() {
                     isLoggedIn={!!session?.user}
                   />
                 ))}
-                {paginated.length < sorted.length && (
+                {paginated.length < filtered.length && (
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     className="w-full py-3 text-sm text-primary hover:text-primary/80 border border-border rounded-xl"
                   >
-                    Show more ({sorted.length - paginated.length} remaining)
+                    Show more ({filtered.length - paginated.length} remaining)
                   </button>
                 )}
               </>
@@ -170,7 +208,7 @@ export default function FindAChurchPage() {
             {searchCoords && (
               <Suspense fallback={<div className="h-full bg-muted animate-pulse" />}>
                 <ChurchMap
-                  churches={sorted}
+                  churches={filtered}
                   userLat={searchCoords.lat}
                   userLng={searchCoords.lng}
                   highlightedPlaceId={highlightedPlaceId}

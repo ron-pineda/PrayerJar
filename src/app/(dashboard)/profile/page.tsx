@@ -16,13 +16,19 @@ export default async function ProfilePage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/sign-in");
 
-  const [user, prayerCount, interactionCount, badges, churchRole] = await Promise.all([
+  const [user, prayerCount, interactionCount, badges] = await Promise.all([
     db.select().from(users).where(eq(users.id, session.user.id)).then((r) => r[0]),
     db.select({ count: sql<number>`count(*)` }).from(prayers).where(eq(prayers.authorId, session.user.id)).then((r) => Number(r[0]?.count ?? 0)),
     db.select({ count: sql<number>`count(*)` }).from(prayerInteractions).where(eq(prayerInteractions.userId, session.user.id)).then((r) => Number(r[0]?.count ?? 0)),
     getBadgesForUser(session.user.id),
-    db.select({ role: churchMembers.role }).from(churchMembers).where(eq(churchMembers.userId, session.user.id)).limit(1).then((r) => r[0]),
   ]);
+
+  let churchRole: { role: string } | undefined;
+  try {
+    churchRole = await db.select({ role: churchMembers.role }).from(churchMembers).where(eq(churchMembers.userId, session.user.id)).limit(1).then((r) => r[0]);
+  } catch {
+    // church_members table may not exist yet
+  }
 
   if (!user) redirect("/sign-in");
 

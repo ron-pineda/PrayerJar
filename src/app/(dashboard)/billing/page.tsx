@@ -8,6 +8,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { PLANS } from '@/lib/plans';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { CancelSubscriptionButton, UpgradeButton } from './BillingActions';
 
 export const metadata: Metadata = { title: 'Billing | The Prayer Jar' };
 
@@ -25,34 +26,48 @@ export default async function BillingPage() {
   const userId = session.user.id;
 
   // Billing is for church admins/pastors only — regular users never see plan tiers
-  const churchRole = await db
-    .select({ role: churchMembers.role })
-    .from(churchMembers)
-    .where(eq(churchMembers.userId, userId))
-    .limit(1)
-    .then((r) => r[0]);
+  let churchRole: { role: string } | undefined;
+  try {
+    churchRole = await db
+      .select({ role: churchMembers.role })
+      .from(churchMembers)
+      .where(eq(churchMembers.userId, userId))
+      .limit(1)
+      .then((r) => r[0]);
+  } catch {
+    // Table may not exist if migrations haven't been applied
+    redirect('/profile');
+  }
 
   const isChurchAdmin = churchRole?.role === 'admin' || churchRole?.role === 'pastor';
   if (!isChurchAdmin) redirect('/profile');
 
-  const [subscription, donationHistory, licenses] = await Promise.all([
-    db.query.subscriptions.findFirst({
-      where: and(eq(subscriptions.userId, userId), eq(subscriptions.status, 'active')),
-      orderBy: [desc(subscriptions.createdAt)],
-    }),
-    db
-      .select()
-      .from(donations)
-      .where(and(eq(donations.userId, userId), eq(donations.status, 'succeeded')))
-      .orderBy(desc(donations.createdAt))
-      .limit(5),
-    db
-      .select()
-      .from(eventLicenses)
-      .where(eq(eventLicenses.userId, userId))
-      .orderBy(desc(eventLicenses.createdAt))
-      .limit(10),
-  ]);
+  let subscription: Awaited<ReturnType<typeof db.query.subscriptions.findFirst>> | undefined;
+  let donationHistory: (typeof donations.$inferSelect)[] = [];
+  let licenses: (typeof eventLicenses.$inferSelect)[] = [];
+
+  try {
+    [subscription, donationHistory, licenses] = await Promise.all([
+      db.query.subscriptions.findFirst({
+        where: and(eq(subscriptions.userId, userId), eq(subscriptions.status, 'active')),
+        orderBy: [desc(subscriptions.createdAt)],
+      }),
+      db
+        .select()
+        .from(donations)
+        .where(and(eq(donations.userId, userId), eq(donations.status, 'succeeded')))
+        .orderBy(desc(donations.createdAt))
+        .limit(5),
+      db
+        .select()
+        .from(eventLicenses)
+        .where(eq(eventLicenses.userId, userId))
+        .orderBy(desc(eventLicenses.createdAt))
+        .limit(10),
+    ]);
+  } catch {
+    // Tables may not exist if migrations haven't been fully applied — show empty state
+  }
 
   const activeTier = subscription?.tier ?? 'free';
   const activePlan = PLANS[activeTier];
@@ -78,14 +93,14 @@ export default async function BillingPage() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {subscription.cancelAtPeriodEnd
-                    ? `Access until ${formatDate(subscription.currentPeriodEnd)}`
+                    ? `Cancellation scheduled — access until ${formatDate(subscription.currentPeriodEnd)}`
                     : `Renews on ${formatDate(subscription.currentPeriodEnd)}`
                   }
                 </p>
               </div>
-              <Button variant="outline" render={<Link href="/for-churches" />}>
-                Manage Subscription
-              </Button>
+              {subscription.cancelAtPeriodEnd ? null : (
+                <CancelSubscriptionButton />
+              )}
             </div>
           ) : (
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -99,7 +114,7 @@ export default async function BillingPage() {
                   Upgrade to unlock church features like private prayer walls and pastoral tools.
                 </p>
               </div>
-              <Button render={<Link href="/for-churches" />}>Upgrade to unlock church features</Button>
+              <UpgradeButton tier="starter" billing="monthly" label="Upgrade to unlock church features" />
             </div>
           )}
         </CardContent>
@@ -150,14 +165,16 @@ export default async function BillingPage() {
                       </li>
                     ))}
                   </ul>
-                  {isCurrent ? null : isFree ? null : (
+                  {isCurrent ? null : isFree ? null : isEnterprise ? (
                     <Button
                       className="w-full"
-                      variant={isEnterprise ? 'outline' : 'default'}
-                      render={<Link href="/for-churches" />}
+                      variant="outline"
+                      render={<Link href="/contact" />}
                     >
-                      {isEnterprise ? 'Contact Sales' : 'Get Started'}
+                      Contact Sales
                     </Button>
+                  ) : (
+                    <UpgradeButton tier={plan.tier} billing="monthly" className="w-full" />
                   )}
                 </CardContent>
               </Card>

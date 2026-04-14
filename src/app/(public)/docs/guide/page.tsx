@@ -1,13 +1,35 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import {
+  Church,
+  CreditCard,
+  HelpCircle,
+  ChevronRight,
+  ArrowLeft,
+} from 'lucide-react';
 
 export const metadata: Metadata = { title: 'User Guide | PrayerJar Docs' };
 
-const SECTIONS = [
+interface Section {
+  id: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  accentBorder: string;
+  accentNum: string;
+  accentNumText: string;
+  steps: { heading: string; body: string }[];
+}
+
+const SECTIONS: Section[] = [
   {
     id: 'getting-started',
+    emoji: '🌊',
     title: 'Getting Started',
-    icon: '👋',
+    subtitle: 'You can start right now — no account needed.',
+    accentBorder: 'border-sky-500/30',
+    accentNum: 'bg-sky-500',
+    accentNumText: 'text-sky-500',
     steps: [
       {
         heading: 'No account? No problem.',
@@ -25,8 +47,12 @@ const SECTIONS = [
   },
   {
     id: 'submitting-a-prayer',
+    emoji: '✍️',
     title: 'Submitting a Prayer Request',
-    icon: '🫙',
+    subtitle: 'Share your need with the community in under a minute.',
+    accentBorder: 'border-blue-500/30',
+    accentNum: 'bg-blue-500',
+    accentNumText: 'text-blue-500',
     steps: [
       {
         heading: 'Tap "Submit a Request"',
@@ -60,8 +86,12 @@ const SECTIONS = [
   },
   {
     id: 'praying-for-others',
+    emoji: '🤲',
     title: 'Praying for Others',
-    icon: '🙏',
+    subtitle: 'One tap logs your intercession — a notification goes to the requester.',
+    accentBorder: 'border-rose-500/30',
+    accentNum: 'bg-rose-500',
+    accentNumText: 'text-rose-500',
     steps: [
       {
         heading: 'Open the prayer feed',
@@ -87,8 +117,12 @@ const SECTIONS = [
   },
   {
     id: 'your-journal',
+    emoji: '📓',
     title: 'Your Prayer Journal',
-    icon: '📖',
+    subtitle: 'Every prayer you offer is automatically logged here.',
+    accentBorder: 'border-violet-500/30',
+    accentNum: 'bg-violet-500',
+    accentNumText: 'text-violet-500',
     steps: [
       {
         heading: 'What the journal tracks',
@@ -106,8 +140,12 @@ const SECTIONS = [
   },
   {
     id: 'answered-prayers',
+    emoji: '✨',
     title: 'When a Prayer is Answered',
-    icon: '✨',
+    subtitle: 'Mark it, share your testimony, release a light.',
+    accentBorder: 'border-amber-500/30',
+    accentNum: 'bg-amber-500',
+    accentNumText: 'text-amber-500',
     steps: [
       {
         heading: 'Mark it as answered',
@@ -125,8 +163,12 @@ const SECTIONS = [
   },
   {
     id: 'notifications',
+    emoji: '🔔',
     title: 'Notifications & Settings',
-    icon: '🔔',
+    subtitle: 'Stay informed without being overwhelmed.',
+    accentBorder: 'border-emerald-500/30',
+    accentNum: 'bg-emerald-500',
+    accentNumText: 'text-emerald-500',
     steps: [
       {
         heading: 'Access Settings',
@@ -152,8 +194,12 @@ const SECTIONS = [
   },
   {
     id: 'badges-streaks',
+    emoji: '🏅',
     title: 'Badges & Streaks',
-    icon: '🏅',
+    subtitle: 'Milestones that celebrate your faithfulness.',
+    accentBorder: 'border-orange-500/30',
+    accentNum: 'bg-orange-500',
+    accentNumText: 'text-orange-500',
     steps: [
       {
         heading: 'Earning badges',
@@ -171,8 +217,12 @@ const SECTIONS = [
   },
   {
     id: 'prayer-partner',
+    emoji: '🤝',
     title: 'Prayer Partner',
-    icon: '🤝',
+    subtitle: 'One-on-one matched intercession — mutual and consistent.',
+    accentBorder: 'border-pink-500/30',
+    accentNum: 'bg-pink-500',
+    accentNumText: 'text-pink-500',
     steps: [
       {
         heading: 'What it is',
@@ -194,8 +244,12 @@ const SECTIONS = [
   },
   {
     id: 'account',
+    emoji: '⚙️',
     title: 'Account & Privacy',
-    icon: '⚙️',
+    subtitle: 'Your data, your control.',
+    accentBorder: 'border-slate-500/30',
+    accentNum: 'bg-slate-500',
+    accentNumText: 'text-slate-500',
     steps: [
       {
         heading: 'Editing your profile',
@@ -215,67 +269,115 @@ const SECTIONS = [
 
 export default function UserGuidePage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-14">
+    <main className="max-w-4xl mx-auto px-4 py-14">
 
+      {/* ═══════════════════════════════════════════════════════
+          BACK + HERO
+      ═══════════════════════════════════════════════════════ */}
       <div className="mb-12">
-        <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">← Back to Docs</Link>
-        <h1 className="text-3xl font-bold tracking-tight mt-4 mb-3">User Guide</h1>
-        <p className="text-muted-foreground">
-          A step-by-step guide to using The Prayer Jar as an individual — from your first visit to advanced features.
-        </p>
+        <Link href="/docs" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Docs
+        </Link>
+
+        <div className="mt-8 text-center space-y-4">
+          <div className="text-6xl leading-none">📖</div>
+          <h1 className="text-4xl font-bold tracking-tight">User Guide</h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            A step-by-step visual guide to using The Prayer Jar — from your first visit to advanced features.
+          </p>
+        </div>
       </div>
 
-      {/* Quick nav */}
-      <nav className="rounded-xl border bg-muted/30 p-4 mb-12" aria-label="Guide sections">
-        <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Sections</p>
-        <div className="flex flex-wrap gap-2">
-          {SECTIONS.map((s) => (
+      {/* ═══════════════════════════════════════════════════════
+          QUICK-START OVERVIEW CARDS (top-level flow)
+      ═══════════════════════════════════════════════════════ */}
+      <div className="rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent p-6 mb-14">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-5 text-center">The Journey at a Glance</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {SECTIONS.map((s, i) => (
             <a
               key={s.id}
               href={`#${s.id}`}
-              className="text-xs px-3 py-1.5 rounded-full border hover:bg-accent/50 transition-colors"
+              className={`group rounded-xl border ${s.accentBorder} bg-card hover:bg-accent/50 transition-all p-4 flex flex-col items-center text-center gap-2`}
             >
-              {s.icon} {s.title}
+              <div className="text-2xl leading-none">{s.emoji}</div>
+              <div className="flex items-center gap-1.5">
+                <span className={`text-[10px] font-black ${s.accentNumText} opacity-60`}>{i + 1}</span>
+                <span className="text-xs font-semibold leading-tight">{s.title}</span>
+              </div>
             </a>
           ))}
         </div>
-      </nav>
+      </div>
 
+      {/* ═══════════════════════════════════════════════════════
+          SECTIONS — numbered step cards
+      ═══════════════════════════════════════════════════════ */}
       <div className="space-y-14">
-        {SECTIONS.map((section) => (
-          <section key={section.id} id={section.id}>
-            <h2 className="flex items-center gap-2 text-lg font-semibold mb-6">
-              <span>{section.icon}</span>
-              {section.title}
-            </h2>
-            <ol className="space-y-5">
+        {SECTIONS.map((section, sectionIdx) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="scroll-mt-8"
+          >
+            {/* Section header */}
+            <div className="flex items-start gap-5 mb-6">
+              <div className="text-5xl leading-none flex-shrink-0">{section.emoji}</div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-xs font-black opacity-40 ${section.accentNumText}`}>
+                    SECTION {sectionIdx + 1}
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold">{section.title}</h2>
+                <p className="text-sm text-muted-foreground mt-1">{section.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Step cards */}
+            <div className="space-y-3 pl-0">
               {section.steps.map((step, i) => (
-                <li key={i} className="flex gap-4">
-                  <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0 mt-0.5">
+                <div
+                  key={i}
+                  className={`rounded-xl border ${section.accentBorder} bg-card hover:bg-accent/20 transition-colors p-5 flex gap-5`}
+                >
+                  {/* Big step number */}
+                  <div className={`w-10 h-10 rounded-full ${section.accentNum} text-white flex items-center justify-center text-base font-black flex-shrink-0`}>
                     {i + 1}
                   </div>
-                  <div>
-                    <p className="font-medium text-sm">{step.heading}</p>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{step.body}</p>
+                  {/* Content */}
+                  <div className="pt-1.5">
+                    <p className="font-semibold text-sm mb-1">{step.heading}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{step.body}</p>
                   </div>
-                </li>
+                </div>
               ))}
-            </ol>
+            </div>
           </section>
         ))}
       </div>
 
-      <div className="mt-14 pt-8 border-t">
-        <p className="text-sm font-medium mb-4">Other guides</p>
+      {/* ═══════════════════════════════════════════════════════
+          OTHER GUIDES FOOTER
+      ═══════════════════════════════════════════════════════ */}
+      <div className="mt-16 pt-8 border-t">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-5">Other Guides</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { href: '/docs/churches', title: 'Church Admin Guide', desc: 'For pastors and administrators' },
-            { href: '/docs/paid', title: 'Paid Features', desc: 'Church subscription plans' },
-            { href: '/help', title: 'FAQ', desc: 'Quick answers' },
-          ].map(({ href, title, desc }) => (
-            <Link key={href} href={href} className="rounded-xl border bg-card hover:bg-accent/50 transition-colors p-4">
-              <p className="font-medium text-sm">{title}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+            { href: '/docs/churches', emoji: '⛪', title: 'Church Admin Guide', desc: 'For pastors and administrators', icon: Church },
+            { href: '/docs/paid', emoji: '👑', title: 'Paid Features', desc: 'Church subscription plans', icon: CreditCard },
+            { href: '/help', emoji: '❓', title: 'FAQ', desc: 'Quick answers', icon: HelpCircle },
+          ].map(({ href, emoji, title, desc }) => (
+            <Link key={href} href={href} className="group rounded-xl border bg-card hover:bg-accent/50 transition-colors p-5 flex items-center gap-4">
+              <div className="text-2xl leading-none flex-shrink-0">{emoji}</div>
+              <div>
+                <p className="font-semibold text-sm flex items-center gap-1">
+                  {title}
+                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+              </div>
             </Link>
           ))}
         </div>

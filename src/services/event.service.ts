@@ -1,6 +1,8 @@
 import { db } from '@/db';
 import { events, eventPrayers } from '@/db/schema';
-import { eq, and, desc, count, inArray } from 'drizzle-orm';
+import { eq, and, desc, count, inArray, ne } from 'drizzle-orm';
+import { getChurchTier } from '@/services/church-platform.service';
+import { PLANS } from '@/lib/plans';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +26,22 @@ export async function createEvent(input: {
   endsAt?: Date;
   createdBy: string;
 }): Promise<Event> {
+  const tier = await getChurchTier(input.churchId);
+  const limit = PLANS[tier].limits.events;
+
+  if (limit === 0) {
+    throw new Error('Live events require a Starter plan or higher.');
+  }
+  if (limit !== null) {
+    const [{ value: currentCount }] = await db
+      .select({ value: count() })
+      .from(events)
+      .where(and(eq(events.churchId, input.churchId), ne(events.status, 'ended')));
+    if (Number(currentCount) >= limit) {
+      throw new Error('Event limit reached for your plan. Upgrade to run more events.');
+    }
+  }
+
   const [created] = await db
     .insert(events)
     .values({
