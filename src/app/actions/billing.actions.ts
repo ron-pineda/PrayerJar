@@ -2,7 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
-import { subscriptions } from '@/db/schema';
+import { subscriptions, churchMembers } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
@@ -41,9 +41,18 @@ export async function createCheckoutAction(
     return { error: 'This plan is not available for purchase. Please contact sales.' };
   }
 
+  // Look up the church this admin belongs to so the webhook can link the subscription
+  const membership = await db.query.churchMembers.findFirst({
+    where: and(
+      eq(churchMembers.userId, userId),
+      eq(churchMembers.role, 'admin'),
+    ),
+  });
+
   try {
     const url = await createSubscriptionCheckout({
       userId,
+      churchId: membership?.churchId ?? null,
       stripePriceId,
       successUrl: `${origin}/billing?success=1`,
       cancelUrl: `${origin}/billing`,

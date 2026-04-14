@@ -5,7 +5,7 @@ import { constructStripeEvent } from '@/services/billing.service';
 import { evaluateDonorBadge } from '@/services/badge.service';
 import { getPlanByStripePriceId } from '@/lib/plans';
 import { db } from '@/db';
-import { donations, subscriptions, eventLicenses } from '@/db/schema';
+import { donations, subscriptions, eventLicenses, churches } from '@/db/schema';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY not configured');
@@ -41,20 +41,29 @@ export async function POST(req: NextRequest) {
         console.error('Subscription checkout completed without userId');
         return NextResponse.json({ received: true });
       }
+      const churchId = session.metadata?.churchId || null;
       try {
         const stripe = getStripe();
         const stripeSubscription = await stripe.subscriptions.retrieve(session.subscription as string);
         const item = stripeSubscription.items.data[0];
         const plan = getPlanByStripePriceId(item.price.id);
-        await db.insert(subscriptions).values({
+        const [inserted] = await db.insert(subscriptions).values({
           userId,
           stripeSubscriptionId: stripeSubscription.id,
           stripePriceId: item.price.id,
           tier: plan?.tier ?? 'starter',
           status: 'active',
-          currentPeriodStart: new Date(item.current_period_start * 1000),
-          currentPeriodEnd: new Date(item.current_period_end * 1000),
-        }).onConflictDoNothing();
+          currentPeriodStart: new Date((item as any).current_period_start * 1000),
+          currentPeriodEnd: new Date((item as any).current_period_end * 1000),
+        }).onConflictDoNothing().returning({ id: subscriptions.id });
+
+        // Link the subscription to the church so getChurchTier() resolves correctly
+        if (inserted?.id && churchId) {
+          await db
+            .update(churches)
+            .set({ subscriptionId: inserted.id, updatedAt: new Date() })
+            .where(eq(churches.id, churchId));
+        }
       } catch (err) {
         console.error('Webhook subscription processing error:', err);
         return NextResponse.json({ error: 'Processing failed' }, { status: 500 });

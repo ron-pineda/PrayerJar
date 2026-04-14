@@ -37,11 +37,13 @@ export async function createCheckoutSession({
 
 export async function createSubscriptionCheckout({
   userId,
+  churchId,
   stripePriceId,
   successUrl,
   cancelUrl,
 }: {
   userId: string;
+  churchId: string | null;
   stripePriceId: string;
   successUrl: string;
   cancelUrl: string;
@@ -53,7 +55,7 @@ export async function createSubscriptionCheckout({
     mode: 'subscription',
     success_url: successUrl,
     cancel_url: cancelUrl,
-    metadata: { userId, type: 'subscription' },
+    metadata: { userId, type: 'subscription', churchId: churchId ?? '' },
   });
   return session.url!;
 }

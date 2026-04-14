@@ -2545,5 +2545,38 @@
       "CopyInviteLink client component: readonly input + clipboard copy with 2s 'Copied!' feedback.",
       "Team page (/dashboard/team): Invite Members section added at top with copy-link UI. Invite URL uses NEXT_PUBLIC_SITE_URL env var with fallback."
     ]
+  },
+  {
+    "id": "pj-s9.1-1",
+    "sprint": "9.1",
+    "title": "Fix subscription→church linkage",
+    "status": "in-progress",
+    "assigned_to": "Backend Engineer",
+    "priority": "critical",
+    "description": "Stripe webhook creates subscriptions row but never sets churches.subscriptionId, so getChurchTier() always returns free. Pass churchId in checkout metadata and update churches.subscriptionId in the webhook handler.",
+    "notes": [],
+    "last_touched": "2026-04-14T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s9.2-1",
+    "sprint": "9.2",
+    "title": "Public church profile page /church/[slug]",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Build a public-facing /church/[slug] page visible to non-members. Shows church name, description, welcome message, member count. Join CTA for non-members, View Wall for members. OG meta for sharing.",
+    "notes": [],
+    "last_touched": "2026-04-14T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s9.3-1",
+    "sprint": "9.3",
+    "title": "Custom 404 and error pages",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Add not-found.tsx and error.tsx to replace Next.js generic defaults. On-brand design with navigation back to home.",
+    "notes": [],
+    "last_touched": "2026-04-14T00:00:00.000Z"
   }
 ]
