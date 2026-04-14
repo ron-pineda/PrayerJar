@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org'),
   title: 'Prayer Jar',
   description: 'A global prayer jar — share your heart, intercede for others.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icons/icon-192.png',
+  },
   openGraph: {
     title: 'Prayer Jar',
     description: 'A global prayer jar — share your heart, intercede for others.',
