@@ -24,11 +24,13 @@ export const metadata: Metadata = {
     title: 'Prayer Jar',
     description: 'A global prayer jar — share your heart, intercede for others.',
     siteName: 'Prayer Jar',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Prayer Jar',
     description: 'A global prayer jar — share your heart, intercede for others.',
+    images: ['/opengraph-image'],
   },
 };
 
