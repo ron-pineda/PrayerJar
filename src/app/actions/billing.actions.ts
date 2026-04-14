@@ -90,11 +90,15 @@ export async function cancelSubscriptionAction(): Promise<CancelResult> {
       cancel_at_period_end: true,
     });
 
+    // current_period_end is present at runtime but the SDK Response<T> wrapper
+    // doesn't expose it in its type — cast to access it safely.
+    const periodEnd = (updated as unknown as { current_period_end: number }).current_period_end;
+
     await db
       .update(subscriptions)
       .set({
         cancelAtPeriodEnd: true,
-        currentPeriodEnd: new Date(updated.current_period_end * 1000),
+        currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : undefined,
         updatedAt: new Date(),
       })
       .where(eq(subscriptions.id, subscription.id));
