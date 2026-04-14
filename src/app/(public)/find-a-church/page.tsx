@@ -1,11 +1,11 @@
 // src/app/(public)/find-a-church/page.tsx
 "use client";
 
-import { useState, lazy, Suspense, useMemo } from "react";
+import { useState, lazy, Suspense, useMemo, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { ChurchSearchBar, type SearchParams } from "@/components/church/church-search-bar";
 import { ChurchCard } from "@/components/church/church-card";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { ChurchResult } from "@/services/church.service";
 
 const ChurchMap = lazy(() =>
@@ -17,6 +17,8 @@ type SortOption = "distance" | "verified";
 export default function FindAChurchPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [results, setResults] = useState<ChurchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,11 +32,9 @@ export default function FindAChurchPage() {
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 12;
 
-  async function handleSearch({ lat, lng, radiusMiles, formattedAddress }: SearchParams) {
+  const fetchResults = useCallback(async (lat: number, lng: number, radiusMiles: number) => {
     setLoading(true);
     setError(null);
-    setSearchCoords({ lat, lng });
-    setSearchAddress(formattedAddress);
     try {
       const res = await fetch(`/api/v1/churches/search?lat=${lat}&lng=${lng}&radius=${radiusMiles}`);
       if (!res.ok) throw new Error(`Search failed (${res.status})`);
@@ -47,6 +47,34 @@ export default function FindAChurchPage() {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Restore search from URL params (e.g. after navigating back from a church detail)
+  useEffect(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    const radius = searchParams.get("radius");
+    const address = searchParams.get("address");
+    if (lat && lng && radius) {
+      setSearchCoords({ lat: Number(lat), lng: Number(lng) });
+      setSearchAddress(address ?? "");
+      fetchResults(Number(lat), Number(lng), Number(radius));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // only on mount
+
+  async function handleSearch({ lat, lng, radiusMiles, formattedAddress }: SearchParams) {
+    setSearchCoords({ lat, lng });
+    setSearchAddress(formattedAddress);
+    // Encode search in URL so back-navigation restores results
+    const params = new URLSearchParams({
+      lat: String(lat),
+      lng: String(lng),
+      radius: String(radiusMiles),
+      address: formattedAddress,
+    });
+    router.replace(`/find-a-church?${params.toString()}`);
+    await fetchResults(lat, lng, radiusMiles);
   }
 
   const sorted = useMemo(
@@ -171,7 +199,7 @@ export default function FindAChurchPage() {
               <div className="text-center py-12 text-muted-foreground text-sm">
                 <p className="mb-3">No churches found in this area.</p>
                 <button
-                  onClick={() => handleSearch({ lat: searchCoords!.lat, lng: searchCoords!.lng, radiusMiles: 30, formattedAddress: searchAddress })}
+                  onClick={() => fetchResults(searchCoords!.lat, searchCoords!.lng, 30)}
                   className="text-primary hover:underline"
                 >
                   Try expanding to 30 miles
@@ -201,9 +229,11 @@ export default function FindAChurchPage() {
             )}
           </div>
 
-          {/* Map */}
+          {/* Map — isolated stacking context prevents Leaflet z-indices from
+              bleeding above the site header/nav dropdown */}
           <div
             className={`flex-1 md:block ${activeTab === "list" ? "hidden md:block" : ""}`}
+            style={{ isolation: "isolate" }}
           >
             {searchCoords && (
               <Suspense fallback={<div className="h-full bg-muted animate-pulse" />}>

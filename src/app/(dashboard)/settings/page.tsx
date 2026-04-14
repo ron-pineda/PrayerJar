@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import {
+  updateDisplayNameAction,
   updateEmailPreferenceAction,
   updateNotificationTypesAction,
   updateQuietHoursAction,
@@ -63,6 +64,31 @@ export default async function SettingsPage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12 space-y-8">
       <h1 className="text-3xl font-bold">Settings</h1>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Display Name</CardTitle>
+          <CardDescription>
+            This name appears on your prayers, group memberships, and profile.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SettingsForm action={updateDisplayNameAction} submitLabel="Save name">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="name">Name</Label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                defaultValue={user.name ?? ''}
+                maxLength={50}
+                placeholder="Your display name"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+          </SettingsForm>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

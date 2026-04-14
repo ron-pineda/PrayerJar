@@ -8,6 +8,27 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
+const displayNameSchema = z.object({
+  name: z.string().trim().min(1).max(50),
+});
+
+export async function updateDisplayNameAction(_prev: unknown, formData: FormData): Promise<{ success: boolean; error?: string }> {
+  const session = await auth();
+  if (!session?.user?.id) redirect('/sign-in');
+
+  const parsed = displayNameSchema.safeParse({ name: formData.get('name') });
+  if (!parsed.success) return { success: false, error: 'Name must be between 1 and 50 characters.' };
+
+  await db
+    .update(users)
+    .set({ name: parsed.data.name })
+    .where(eq(users.id, session.user.id));
+
+  revalidatePath('/settings');
+  revalidatePath('/profile');
+  return { success: true };
+}
+
 const prefsSchema = z.object({
   emailPreference: z.enum(['off', 'realtime', 'daily', 'weekly']),
 });
