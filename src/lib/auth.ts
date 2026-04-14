@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import Resend from 'next-auth/providers/resend';
+import Google from 'next-auth/providers/google';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { render } from '@react-email/components';
 import { db } from '@/db';
@@ -15,6 +16,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     verificationTokensTable: schema.verificationTokens,
   }),
   providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
       from: process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>',
