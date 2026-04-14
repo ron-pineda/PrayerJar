@@ -1,7 +1,7 @@
 [
   {
     "id": "pj-001",
-    "title": "Fix GitHub \u00e2\u2020\u2019 Vercel auto-deploy (push not triggering)",
+    "title": "Fix GitHub â†’ Vercel auto-deploy (push not triggering)",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
@@ -9,9 +9,9 @@
     "blockers": [],
     "notes": [
       "Root cause: no GitHub Actions workflow existed; native Git integration broken due to worktree deploy path",
-      "Fix: created .github/workflows/deploy.yml \u00e2\u20ac\u201d triggers on push to feature/prayer-jar, prebuilt deploy pattern",
+      "Fix: created .github/workflows/deploy.yml â€” triggers on push to feature/prayer-jar, prebuilt deploy pattern",
       "Verified: first run (24265781881) succeeded in 1m24s on 2026-04-10",
-      "Minor: actions/checkout@v4 deprecation warning \u00e2\u20ac\u201d Node.js 24 required after June 2026, update before then"
+      "Minor: actions/checkout@v4 deprecation warning â€” Node.js 24 required after June 2026, update before then"
     ],
     "last_touched": "2026-04-10T21:52:00.000Z"
   },
@@ -25,33 +25,33 @@
     "blockers": [],
     "notes": [
       "Domain purchased: prayerjar.org (Porkbun)",
-      "Vercel domains configured: prayerjar.org + www.prayerjar.org (CNAME \u00e2\u2020\u2019 cname.vercel-dns.com)",
+      "Vercel domains configured: prayerjar.org + www.prayerjar.org (CNAME â†’ cname.vercel-dns.com)",
       "Resend domain added (ID: 241d4bcd-7bc1-4282-ab88-2e37183719d6), click tracking DISABLED",
-      "DNS records added in Porkbun: A (76.76.21.21), CNAME www, TXT DKIM, MX feedback-smtp, TXT SPF \u00e2\u20ac\u201d all verified via nslookup",
+      "DNS records added in Porkbun: A (76.76.21.21), CNAME www, TXT DKIM, MX feedback-smtp, TXT SPF â€” all verified via nslookup",
       "AUTH_EMAIL_FROM updated to 'Prayer Jar <noreply@prayerjar.org>' in Vercel env vars",
       "auth.ts switched back to Resend API provider (from Nodemailer SMTP workaround)",
       "metadataBase updated to https://prayerjar.org",
       "Deployed and live at https://prayerjar.org (run succeeded 2026-04-11)",
-      "Resend domain verification was still 'pending' at deploy time \u00e2\u20ac\u201d should auto-verify once DNS fully propagates",
+      "Resend domain verification was still 'pending' at deploy time â€” should auto-verify once DNS fully propagates",
       "TODO: confirm sign-in email arrives from noreply@prayerjar.org (not onboarding@resend.dev) after Resend verifies domain"
     ],
     "last_touched": "2026-04-11T04:00:00.000Z"
   },
   {
     "id": "pj-004",
-    "title": "Fix Resend click tracking \u00e2\u20ac\u201d magic link SSL error",
+    "title": "Fix Resend click tracking â€” magic link SSL error",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Sign-in was broken. Resend click tracking rewrites magic link URLs through us-east-1.resend-clicks.com, which throws ERR_SSL_PROTOCOL_ERROR. Users could not sign in.",
     "blockers": [],
     "notes": [
-      "Root cause: Resend's click tracking domain (us-east-1.resend-clicks.com) is down \u00e2\u20ac\u201d ECONNREFUSED on both HTTP/HTTPS",
+      "Root cause: Resend's click tracking domain (us-east-1.resend-clicks.com) is down â€” ECONNREFUSED on both HTTP/HTTPS",
       "Click tracking is a domain-level setting in Resend, no per-email toggle, and sandbox domain (onboarding@resend.dev) has no dashboard control",
-      "Fix: switched auth provider from Resend API to Nodemailer via Resend SMTP (smtp.resend.com:465) \u00e2\u20ac\u201d SMTP bypasses link rewriting entirely",
+      "Fix: switched auth provider from Resend API to Nodemailer via Resend SMTP (smtp.resend.com:465) â€” SMTP bypasses link rewriting entirely",
       "Installed nodemailer@7.0.13 to satisfy next-auth peer dep (v8 caused ERESOLVE on Vercel)",
       "Deployed: run 24271401726 succeeded, 1m29s",
-      "Additional fixes: signIn('resend') \u00e2\u2020\u2019 signIn('nodemailer') provider ID mismatch, text-only email to bypass click tracking, @types/nodemailer for TS build, redirectTo:'/' after auth callback, DropdownMenuLabel Base UI error #31 (GroupLabel outside Menu.Group)"
+      "Additional fixes: signIn('resend') â†’ signIn('nodemailer') provider ID mismatch, text-only email to bypass click tracking, @types/nodemailer for TS build, redirectTo:'/' after auth callback, DropdownMenuLabel Base UI error #31 (GroupLabel outside Menu.Group)"
     ],
     "last_touched": "2026-04-11T03:00:00.000Z"
   },
@@ -64,7 +64,7 @@
     "description": "ADMIN_EMAILS env var currently only supports a single email address. Need to parse comma-separated values so multiple admins can access /admin/queue.",
     "blockers": [],
     "notes": [
-      "Already implemented \u00e2\u20ac\u201d all 3 usage sites (proxy.ts, queue/page.tsx, admin.actions.ts) split on comma and trim",
+      "Already implemented â€” all 3 usage sites (proxy.ts, queue/page.tsx, admin.actions.ts) split on comma and trim",
       "No code change needed, just set ADMIN_EMAILS='a@x.com, b@x.com' in Vercel env vars to add more admins"
     ],
     "last_touched": "2026-04-11T04:30:00.000Z"
@@ -72,7 +72,7 @@
   {
     "id": "pj-s0.1-1",
     "sprint": "0.1",
-    "title": "Button touch targets \u00e2\u20ac\u201d 44px min on all interactive elements",
+    "title": "Button touch targets â€” 44px min on all interactive elements",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -87,7 +87,7 @@
   {
     "id": "pj-s0.1-2",
     "sprint": "0.1",
-    "title": "Know Jesus \u00e2\u20ac\u201d mobile access (nav link + homepage CTA)",
+    "title": "Know Jesus â€” mobile access (nav link + homepage CTA)",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -103,11 +103,11 @@
   {
     "id": "pj-s0.1-3",
     "sprint": "0.1",
-    "title": "Share page polish \u00e2\u20ac\u201d /p/[id] layout and copy",
+    "title": "Share page polish â€” /p/[id] layout and copy",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "description": "Polish the shared prayer page (/p/[id]) \u00e2\u20ac\u201d improve layout, copy, call-to-action buttons, and overall first-impression for people arriving from a shared link.",
+    "description": "Polish the shared prayer page (/p/[id]) â€” improve layout, copy, call-to-action buttons, and overall first-impression for people arriving from a shared link.",
     "files": [
       "src/app/(public)/p/[id]/page.tsx"
     ],
@@ -118,7 +118,7 @@
   {
     "id": "pj-s0.1-4",
     "sprint": "0.1",
-    "title": "Social proof counters \u00e2\u20ac\u201d animated stats on homepage",
+    "title": "Social proof counters â€” animated stats on homepage",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -134,11 +134,11 @@
   {
     "id": "pj-s0.1-5",
     "sprint": "0.1",
-    "title": "About page \u00e2\u20ac\u201d origin story",
+    "title": "About page â€” origin story",
     "status": "done",
     "assigned_to": "Copywriter",
     "priority": "medium",
-    "description": "Create an /about page with the origin story of Prayer Jar \u00e2\u20ac\u201d why it was built, the mission, and a personal touch to build trust with new users.",
+    "description": "Create an /about page with the origin story of Prayer Jar â€” why it was built, the mission, and a personal touch to build trust with new users.",
     "files": [
       "src/app/(public)/about/page.tsx"
     ],
@@ -149,7 +149,7 @@
   {
     "id": "pj-s0.1-6",
     "sprint": "0.1",
-    "title": "Trust center \u00e2\u20ac\u201d privacy, moderation, and data practices",
+    "title": "Trust center â€” privacy, moderation, and data practices",
     "status": "done",
     "assigned_to": "Legal",
     "priority": "medium",
@@ -164,7 +164,7 @@
   {
     "id": "pj-s0.1-7",
     "sprint": "0.1",
-    "title": "Empty state design \u00e2\u20ac\u201d all dashboard and list pages",
+    "title": "Empty state design â€” all dashboard and list pages",
     "status": "done",
     "assigned_to": "Designer",
     "priority": "low",
@@ -179,7 +179,7 @@
   {
     "id": "pj-s0.2-8",
     "sprint": "0.2",
-    "title": "Shareable prayer cards \u00e2\u20ac\u201d 4 OG image types",
+    "title": "Shareable prayer cards â€” 4 OG image types",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -195,7 +195,7 @@
   {
     "id": "pj-s0.2-9",
     "sprint": "0.2",
-    "title": "Prayer submission prompts \u00e2\u20ac\u201d guided copy in the form",
+    "title": "Prayer submission prompts â€” guided copy in the form",
     "status": "done",
     "assigned_to": "Copywriter",
     "priority": "medium",
@@ -210,7 +210,7 @@
   {
     "id": "pj-s0.2-10",
     "sprint": "0.2",
-    "title": "SEO landing pages \u00e2\u20ac\u201d metadata + structured data per category",
+    "title": "SEO landing pages â€” metadata + structured data per category",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
@@ -241,7 +241,7 @@
   {
     "id": "pj-s0.3-12",
     "sprint": "0.3",
-    "title": "Dark mode refinement \u00e2\u20ac\u201d OKLCH tuning",
+    "title": "Dark mode refinement â€” OKLCH tuning",
     "status": "done",
     "assigned_to": "Designer",
     "priority": "medium",
@@ -260,7 +260,7 @@
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "description": "Add subtle microanimations to guided prayer flow and prayer cards \u00e2\u20ac\u201d hover states, transitions, candle flicker, pray button feedback.",
+    "description": "Add subtle microanimations to guided prayer flow and prayer cards â€” hover states, transitions, candle flicker, pray button feedback.",
     "files": [
       "src/components/guided-prayer.tsx",
       "src/components/prayer-card.tsx"
@@ -272,7 +272,7 @@
   {
     "id": "pj-s0.3-14",
     "sprint": "0.3",
-    "title": "Scroll-triggered animations \u00e2\u20ac\u201d praise wall + homepage",
+    "title": "Scroll-triggered animations â€” praise wall + homepage",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -289,7 +289,7 @@
   {
     "id": "pj-s0.3-15",
     "sprint": "0.3",
-    "title": "Long prayer reading UX \u00e2\u20ac\u201d expandable text",
+    "title": "Long prayer reading UX â€” expandable text",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
@@ -319,7 +319,7 @@
   {
     "id": "pj-s0.3-17",
     "sprint": "0.3",
-    "title": "Rate limiting UX \u00e2\u20ac\u201d countdown feedback",
+    "title": "Rate limiting UX â€” countdown feedback",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -335,7 +335,7 @@
   {
     "id": "pj-s1.1-18",
     "sprint": "1.1",
-    "title": "PWA \u00e2\u20ac\u201d service worker + manifest + install prompt",
+    "title": "PWA â€” service worker + manifest + install prompt",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -353,7 +353,7 @@
   {
     "id": "pj-s1.1-19",
     "sprint": "1.1",
-    "title": "Push notifications \u00e2\u20ac\u201d Web Push subscription + send infrastructure",
+    "title": "Push notifications â€” Web Push subscription + send infrastructure",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
@@ -370,7 +370,7 @@
   {
     "id": "pj-s1.1-20",
     "sprint": "1.1",
-    "title": "Welcome email drip \u00e2\u20ac\u201d 3-email sequence over 3 days",
+    "title": "Welcome email drip â€” 3-email sequence over 3 days",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
@@ -388,7 +388,7 @@
   {
     "id": "pj-s1.1-21",
     "sprint": "1.1",
-    "title": "Notification preferences \u00e2\u20ac\u201d granular per-type controls",
+    "title": "Notification preferences â€” granular per-type controls",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -404,7 +404,7 @@
   {
     "id": "pj-s1.1-22",
     "sprint": "1.1",
-    "title": "Quiet hours \u00e2\u20ac\u201d time window to suppress notifications",
+    "title": "Quiet hours â€” time window to suppress notifications",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -421,7 +421,7 @@
   {
     "id": "pj-s1.2-23",
     "sprint": "1.2",
-    "title": "Onboarding flow \u00e2\u20ac\u201d multi-step overlay for new users",
+    "title": "Onboarding flow â€” multi-step overlay for new users",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -437,7 +437,7 @@
   {
     "id": "pj-s1.2-24",
     "sprint": "1.2",
-    "title": "Daily prayer brief \u00e2\u20ac\u201d morning email with curated prayers",
+    "title": "Daily prayer brief â€” morning email with curated prayers",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
@@ -448,14 +448,14 @@
     ],
     "blockers": [],
     "notes": [
-      "preferredCategories not in schema yet \u00e2\u20ac\u201d uses random fallback. Will update query when schema lands from task 23."
+      "preferredCategories not in schema yet â€” uses random fallback. Will update query when schema lands from task 23."
     ],
     "last_touched": "2026-04-11T13:49:41.561Z"
   },
   {
     "id": "pj-s1.2-25",
     "sprint": "1.2",
-    "title": "Prayer follow-ups \u00e2\u20ac\u201d 3-day nudge for unanswered prayers",
+    "title": "Prayer follow-ups â€” 3-day nudge for unanswered prayers",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
@@ -471,7 +471,7 @@
   {
     "id": "pj-s1.2-26",
     "sprint": "1.2",
-    "title": "Progressive disclosure \u00e2\u20ac\u201d surface features based on activity level",
+    "title": "Progressive disclosure â€” surface features based on activity level",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "low",
@@ -505,23 +505,23 @@
       "care.service.ts: getCheckInStatus(prayerId), saveCheckIn(prayerId, mood)",
       "check-in-pulse.tsx: shows 4 mood options, submits anonymously, shows thank-you state, hides if already submitted",
       "Component appears on /p/[id] page 7+ days after prayer creation for the submitter",
-      "API route POST /api/v1/check-ins saves to DB (no auth required \u2014 anonymous)"
+      "API route POST /api/v1/check-ins saves to DB (no auth required — anonymous)"
     ],
     "blockers": [],
     "notes": [
       "[DB] checkIns table added to src/db/schema.ts with checkInMoodEnum (struggling/okay/better/breakthrough). FK to prayers.id with cascade delete. Export type CheckIn added. Migration generated: src/db/migrations/0006_overconfident_lifeguard.sql. Remaining work for Backend + Frontend engineers.",
-      "[Backend] care.service.ts created: getCheckInStatus(prayerId) and saveCheckIn(prayerId, mood). POST /api/v1/check-ins route created with Zod validation \u2014 returns 201 on success, 409 if check-in already exists for that prayerId, 400 on validation failure. No auth required (anonymous). Frontend still needs check-in-pulse.tsx component.",
-      "[Frontend] check-in-pulse.tsx created. Client component \u2014 4 mood buttons (minH 56px, 2-col mobile / 4-col sm+). Only renders when Date.now() - prayerCreatedAt >= 7 days. localStorage key checkin_{prayerId} suppresses re-render on hydration. Handles 409 separately (duplicate message). Mounted in /p/[id]/page.tsx below PrayForButton. All acceptance criteria complete.",
-      "[QA] QA passed \u2014 2026-04-11. Criteria verified: checkIns schema (id/prayerId/mood enum/createdAt + cascade FK), migration documented (0006_overconfident_lifeguard.sql), care.service.ts getCheckInStatus+saveCheckIn, check-in-pulse.tsx 4 moods/thank-you/suppression (per Frontend notes), 7-day gate on /p/[id], POST /api/v1/check-ins anonymous with Zod validation + 201/409/400. Advisory: non-existent prayerId will hit a FK 500 (no 404 guard) \u2014 not a stated criterion, recommend a follow-up task.",
-      "Reviewed and approved \u2014 2026-04-11",
-      "Reviewed and approved \u2014 2026-04-11"
+      "[Backend] care.service.ts created: getCheckInStatus(prayerId) and saveCheckIn(prayerId, mood). POST /api/v1/check-ins route created with Zod validation — returns 201 on success, 409 if check-in already exists for that prayerId, 400 on validation failure. No auth required (anonymous). Frontend still needs check-in-pulse.tsx component.",
+      "[Frontend] check-in-pulse.tsx created. Client component — 4 mood buttons (minH 56px, 2-col mobile / 4-col sm+). Only renders when Date.now() - prayerCreatedAt >= 7 days. localStorage key checkin_{prayerId} suppresses re-render on hydration. Handles 409 separately (duplicate message). Mounted in /p/[id]/page.tsx below PrayForButton. All acceptance criteria complete.",
+      "[QA] QA passed — 2026-04-11. Criteria verified: checkIns schema (id/prayerId/mood enum/createdAt + cascade FK), migration documented (0006_overconfident_lifeguard.sql), care.service.ts getCheckInStatus+saveCheckIn, check-in-pulse.tsx 4 moods/thank-you/suppression (per Frontend notes), 7-day gate on /p/[id], POST /api/v1/check-ins anonymous with Zod validation + 201/409/400. Advisory: non-existent prayerId will hit a FK 500 (no 404 guard) — not a stated criterion, recommend a follow-up task.",
+      "Reviewed and approved — 2026-04-11",
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
   {
     "id": "pj-s1.3-28",
     "sprint": "1.3",
-    "title": "Care for the intercessor \u2014 thank-you email",
+    "title": "Care for the intercessor — thank-you email",
     "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
@@ -539,18 +539,18 @@
     ],
     "blockers": [],
     "notes": [
-      "[Backend] intercessor-thanks.tsx email created: warm thanks by name, prayer count this week, Isaiah 59:16 scripture, 'Keep praying' CTA to prayerjar.org. Cron route /api/cron/intercessor-care queries prayerInteractions grouped by userId for 5+ interactions in last 7 days. Dedup: uses a sentinel relatedPrayerId (00000000-0000-0000-0000-000000000001) in the notifications table to track sends \u2014 skips users where a matching notification exists within last 6 days. Note: prayerInteractions has no type field \u2014 all records are pray interactions, so count is correct. Registered in vercel.json at 0 9 * * *.",
-      "[QA] FAIL \u2014 2026-04-11. Criterion not met: 'Email sends via Resend through email.service.ts sendEmail()'. The cron route instantiates new Resend() directly and calls resend.emails.send() inline \u2014 email.service.ts is never imported or called. All other criteria pass: email template correct (name, count, Isaiah 59:16), query correct (5+ interactions in 7 days), dedup sentinel structurally sound (sentinel UUID 00000000-0000-0000-0000-000000000001 is distinguishable from real prayerIds; type=badge_earned with sentinel relatedPrayerId won't collide with real badge notifications since those reference real prayer UUIDs), registered in vercel.json. Rework required: route must send via email.service.ts sendEmail().",
-      "[Backend] Rework complete \u2014 replaced inline Resend with email.service.ts sendEmail(). Added sendIntercessorCareEmail() to email.service.ts following the same pattern as all other send functions; route now imports and calls it directly. Removed inline new Resend(), resend.emails.send(), render(), and related imports from the route.",
-      "QA re-check passed \u2014 2026-04-11",
-      "Reviewed and approved \u2014 2026-04-11"
+      "[Backend] intercessor-thanks.tsx email created: warm thanks by name, prayer count this week, Isaiah 59:16 scripture, 'Keep praying' CTA to prayerjar.org. Cron route /api/cron/intercessor-care queries prayerInteractions grouped by userId for 5+ interactions in last 7 days. Dedup: uses a sentinel relatedPrayerId (00000000-0000-0000-0000-000000000001) in the notifications table to track sends — skips users where a matching notification exists within last 6 days. Note: prayerInteractions has no type field — all records are pray interactions, so count is correct. Registered in vercel.json at 0 9 * * *.",
+      "[QA] FAIL — 2026-04-11. Criterion not met: 'Email sends via Resend through email.service.ts sendEmail()'. The cron route instantiates new Resend() directly and calls resend.emails.send() inline — email.service.ts is never imported or called. All other criteria pass: email template correct (name, count, Isaiah 59:16), query correct (5+ interactions in 7 days), dedup sentinel structurally sound (sentinel UUID 00000000-0000-0000-0000-000000000001 is distinguishable from real prayerIds; type=badge_earned with sentinel relatedPrayerId won't collide with real badge notifications since those reference real prayer UUIDs), registered in vercel.json. Rework required: route must send via email.service.ts sendEmail().",
+      "[Backend] Rework complete — replaced inline Resend with email.service.ts sendEmail(). Added sendIntercessorCareEmail() to email.service.ts following the same pattern as all other send functions; route now imports and calls it directly. Removed inline new Resend(), resend.emails.send(), render(), and related imports from the route.",
+      "QA re-check passed — 2026-04-11",
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T19:00:00.000Z"
   },
   {
     "id": "pj-s1.3-29",
     "sprint": "1.3",
-    "title": "Grief anniversaries \u2014 remembrance email",
+    "title": "Grief anniversaries — remembrance email",
     "status": "done",
     "assigned_to": "Database Engineer, Backend Engineer",
     "priority": "medium",
@@ -572,17 +572,17 @@
     "blockers": [],
     "notes": [
       "[DB] griefDates table added to src/db/schema.ts with fields: id, userId (FK users.id cascade), prayerId (FK prayers.id set null), label, anniversaryDate (date), lastSentYear (integer, for dedup logic), createdAt. Export type GriefDate added. Migration generated: src/db/migrations/0006_overconfident_lifeguard.sql. Remaining work for Backend engineer: cron route, email template, form date picker.",
-      "[Backend] grief-anniversary.tsx email created: compassionate tone, Psalm 34:18 scripture, optional 'Visit your prayer' CTA (only shown when prayerId exists), purple accent (#7c3aed) to visually distinguish from other emails. Cron route /api/cron/grief-anniversaries uses TO_CHAR(anniversaryDate::date, 'MM-DD') to match month+day regardless of year \u2014 handles leap year edge case naturally. Dedup: skips rows where lastSentYear = currentYear; updates lastSentYear after send. Registered in vercel.json at 0 8 * * *. Frontend still needs grief date picker on prayer submission form.",
-      "[QA] FAIL \u2014 2026-04-11. Criterion not met: 'Prayer submission form: if category=grief, show optional date picker with label field'. Backend notes explicitly state this is unbuilt. All other criteria pass: griefDates schema correct (id/userId/prayerId/label/anniversaryDate/createdAt), migration documented (0006_overconfident_lifeguard.sql), grief-anniversary.tsx has label/Psalm 34:18/conditional prayer CTA, TO_CHAR(anniversaryDate::date, 'MM-DD') cast is valid for Drizzle date() on Neon Postgres, lastSentYear dedup correct, registered in vercel.json. Rework: Frontend engineer must add grief date picker + label field to prayer submission form.",
-      "QA re-check passed \u2014 2026-04-11",
-      "Reviewed and approved \u2014 2026-04-11"
+      "[Backend] grief-anniversary.tsx email created: compassionate tone, Psalm 34:18 scripture, optional 'Visit your prayer' CTA (only shown when prayerId exists), purple accent (#7c3aed) to visually distinguish from other emails. Cron route /api/cron/grief-anniversaries uses TO_CHAR(anniversaryDate::date, 'MM-DD') to match month+day regardless of year — handles leap year edge case naturally. Dedup: skips rows where lastSentYear = currentYear; updates lastSentYear after send. Registered in vercel.json at 0 8 * * *. Frontend still needs grief date picker on prayer submission form.",
+      "[QA] FAIL — 2026-04-11. Criterion not met: 'Prayer submission form: if category=grief, show optional date picker with label field'. Backend notes explicitly state this is unbuilt. All other criteria pass: griefDates schema correct (id/userId/prayerId/label/anniversaryDate/createdAt), migration documented (0006_overconfident_lifeguard.sql), grief-anniversary.tsx has label/Psalm 34:18/conditional prayer CTA, TO_CHAR(anniversaryDate::date, 'MM-DD') cast is valid for Drizzle date() on Neon Postgres, lastSentYear dedup correct, registered in vercel.json. Rework: Frontend engineer must add grief date picker + label field to prayer submission form.",
+      "QA re-check passed — 2026-04-11",
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T19:00:00.000Z"
   },
   {
     "id": "pj-s1.3-30",
     "sprint": "1.3",
-    "title": "Scripture with encouragement \u2014 AI-generated in guided prayer",
+    "title": "Scripture with encouragement — AI-generated in guided prayer",
     "status": "done",
     "assigned_to": "AI Engineer, Backend Engineer, Frontend Engineer",
     "priority": "medium",
@@ -596,14 +596,14 @@
       "Prompt: warm, personal, 2-3 sentence encouragement affirming the intercessor and connecting to the verse already stored on the prayer",
       "guided-prayer.tsx: after the Amen step, display the encouragement text with the verse in a card",
       "Loading state shown while AI generates (skeleton or spinner)",
-      "If AI call fails, show a fallback static encouragement message \u2014 never block the UX",
-      "Model: claude-haiku-4.5 (fast, cheap \u2014 this is a micro-moment, not deep reasoning)"
+      "If AI call fails, show a fallback static encouragement message — never block the UX",
+      "Model: claude-haiku-4.5 (fast, cheap — this is a micro-moment, not deep reasoning)"
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-11] AI Engineer: generateEncouragement(prayerContent, verse) implemented in ai.service.ts. Uses plain generateText (not structured output) \u2014 encouragement is prose, not JSON. System prompt establishes role as compassionate Christian encourager speaking directly to the intercessor. User prompt includes prayer content truncated to 200 chars + the verse. Temperature 0.7 for warmth, maxTokens 150 for 2-3 sentence target. Fallback returns static message on any error so UX is never blocked. Frontend handoff pending: wire into guided-prayer.tsx after the Amen step.",
+      "[2026-04-11] AI Engineer: generateEncouragement(prayerContent, verse) implemented in ai.service.ts. Uses plain generateText (not structured output) — encouragement is prose, not JSON. System prompt establishes role as compassionate Christian encourager speaking directly to the intercessor. User prompt includes prayer content truncated to 200 chars + the verse. Temperature 0.7 for warmth, maxTokens 150 for 2-3 sentence target. Fallback returns static message on any error so UX is never blocked. Frontend handoff pending: wire into guided-prayer.tsx after the Amen step.",
       "[Frontend] Server action wrapper created at src/app/actions/ai.actions.ts (generateEncouragementAction). guided-prayer.tsx wired: useEffect fires on stage='done', calls server action, shows 3-row Skeleton while loading. Result displayed in warm amber card (bg-amber-50/70) with encouragement text + suggestedVerse in muted italic. Falls back to static message if AI returns error or verse is null. Card only renders when prayer.suggestedVerse is set. All acceptance criteria complete.",
-      "Reviewed and approved \u2014 2026-04-11"
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T18:00:00.000Z"
   },
@@ -633,13 +633,13 @@
     ],
     "blockers": [],
     "notes": [
-      "Schema added, migration generated (0007_aberrant_winter_soldier.sql) \u2014 Backend Engineer to complete partner.service.ts and cron route",
+      "Schema added, migration generated (0007_aberrant_winter_soldier.sql) — Backend Engineer to complete partner.service.ts and cron route",
       "partner.service.ts built: getActivePartnership, getPartnerHistory, endPartnership, createPartnership, scoreMatchPair (category overlap 40%, streak similarity 20%, timezone proximity via quietHoursStart 20%, never-matched bonus 20%)",
       "Cron route /api/cron/partner-matching built: CRON_SECRET auth, finds unmatched users, 90-day exclusion, greedy match by score descending",
       "vercel.json: cron entry added at 0 2 * * *",
       "Timezone note: schema has no notifHour column; used quietHoursStart as the nearest timezone proxy (integer hour). QA should verify this is acceptable or flag for schema addition.",
-      "QA passed \u2014 2026-04-11. Criteria verified: schema columns, migration, service functions (getActivePartnership/getPartnerHistory/endPartnership), scoring weights (40/20/20/20), cron eligibility logic, vercel.json cron schedule at 0 2 * * *, 90-day exclusion (matchedAt filter + sortedPairKey set lookup), odd-user leftover handled gracefully (no crash), cron secret auth. Design debt tracked: quietHoursStart used as timezone proxy (no notifHour column exists) \u2014 acceptable for sprint, schema has quietHoursTimezone for future precision.",
-      "Backend passed QA and Reviewer \u2014 2026-04-11"
+      "QA passed — 2026-04-11. Criteria verified: schema columns, migration, service functions (getActivePartnership/getPartnerHistory/endPartnership), scoring weights (40/20/20/20), cron eligibility logic, vercel.json cron schedule at 0 2 * * *, 90-day exclusion (matchedAt filter + sortedPairKey set lookup), odd-user leftover handled gracefully (no crash), cron secret auth. Design debt tracked: quietHoursStart used as timezone proxy (no notifHour column exists) — acceptable for sprint, schema has quietHoursTimezone for future precision.",
+      "Backend passed QA and Reviewer — 2026-04-11"
     ],
     "last_touched": "2026-04-11T20:00:00.000Z"
   },
@@ -661,19 +661,19 @@
     "acceptance_criteria": [
       "partnerMessages table: id, partnershipId (FK prayerPartnerships), senderId (FK users), content (text, max 500 chars), createdAt",
       "Migration generated",
-      "API: GET /api/v1/partner-messages?partnershipId= \u2014 returns messages for the partnership (auth required, must be a participant)",
-      "API: POST /api/v1/partner-messages \u2014 body: { partnershipId, content }, validates membership, 400 if content > 500 chars",
+      "API: GET /api/v1/partner-messages?partnershipId= — returns messages for the partnership (auth required, must be a participant)",
+      "API: POST /api/v1/partner-messages — body: { partnershipId, content }, validates membership, 400 if content > 500 chars",
       "message-thread.tsx: scrollable thread, sender name + avatar initial, timestamp, input + send button at bottom",
       "partner/page.tsx: shows current partner name, their recent prayers (last 3), the message thread, and partnership expiry date",
       "If no active partner: show a friendly waiting state explaining matching happens daily"
     ],
     "blockers": [],
     "notes": [
-      "Schema added, migration generated (0007_aberrant_winter_soldier.sql) \u2014 Backend+Frontend Engineers to complete API routes and UI components",
+      "Schema added, migration generated (0007_aberrant_winter_soldier.sql) — Backend+Frontend Engineers to complete API routes and UI components",
       "Backend complete: GET returns messages ASC by createdAt, participant-only (403); POST validates via Zod, 400 on >500 chars or inactive partnership, 201 on success",
       "Frontend complete (2026-04-11): partner/page.tsx server component fetches active partnership via getActivePartnership(), partner user record, and partner's last 3 active prayers server-side. message-thread.tsx client component: optimistic send, auto-scroll, 500-char counter, Enter-to-send, revert on error. Empty state shown when no partner.",
       "Nav: 'Prayer Partner' added to UserMenu dropdown; 'Partner' link with Users icon added to MobileNav.",
-      "Reviewed and approved \u2014 2026-04-11"
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
@@ -693,8 +693,8 @@
       "src/db/migrations/0008_little_vermin.sql"
     ],
     "acceptance_criteria": [
-      "API: POST /api/v1/partners/extend \u2014 extends expiresAt by 28 days, requires both partners to confirm (store extendRequestedBy, extend only when both have requested)",
-      "API: POST /api/v1/partners/end \u2014 sets status=ended, endedAt=now, endedBy=userId",
+      "API: POST /api/v1/partners/extend — extends expiresAt by 28 days, requires both partners to confirm (store extendRequestedBy, extend only when both have requested)",
+      "API: POST /api/v1/partners/end — sets status=ended, endedAt=now, endedBy=userId",
       "partner/page.tsx: if expiresAt is within 7 days, show extend banner with Extend / Let expire buttons",
       "partner/page.tsx: End partnership link always visible (with confirmation step)",
       "After ending: user enters the matching pool again on next cron run",
@@ -704,13 +704,13 @@
     "notes": [
       "extendRequestedBy (uuid, nullable, FK users set null) added to prayerPartnerships in schema.ts; migration 0008_little_vermin.sql generated",
       "POST /api/v1/partners/extend: first caller sets extendRequestedBy; second caller (the other partner) triggers 28-day extension and clears the field. Idempotent if same caller requests twice.",
-      "POST /api/v1/partners/end: sets status=ended, endedAt, endedBy; sends in-app notification to other partner via createNotification (type: message_received as proxy \u2014 a dedicated partnership_ended notification type should be added in a future sprint)",
+      "POST /api/v1/partners/end: sets status=ended, endedAt, endedBy; sends in-app notification to other partner via createNotification (type: message_received as proxy — a dedicated partnership_ended notification type should be added in a future sprint)",
       "Routes split into /partners/extend/route.ts and /partners/end/route.ts (separate files, cleaner than a single route with action param)",
       "Frontend complete (2026-04-11): ExtendBanner client component shows extend/let-expire buttons when <=7 days remain; handles all three states (neither requested / I requested / partner requested) with local optimistic state. EndPartnershipButton client component: confirmation Dialog, POSTs to /api/v1/partners/end, redirects to /dashboard?toast=partnership_ended on success.",
-      "REWORK REQUIRED (2026-04-11): (1) EndPartnershipButton redirects to /dashboard?toast=partnership_ended but no page exists at /dashboard in the (dashboard) route group, and no code anywhere reads that query param \u2014 the toast is silently dropped. Fix: either redirect to /partner?toast=partnership_ended and handle it there, or redirect to / with a sonner toast.success() call before navigating. Product decision needed on destination. (2) MobileNav now has 7 tap targets inside a 375px-wide h-14 bar \u2014 each item gets ~54px, which is at the minimum 44px touch target but leaves no breathing room and labels will clip on smaller devices. Recommend dropping the Church link from bottom nav (it is still discoverable via the UserMenu dropdown) and keeping the bar at 6 items.",
-      "QA \u2014 2026-04-11: Backend API criteria all PASS \u2014 mutual extend confirmation logic correct (first caller sets extendRequestedBy, second caller triggers 28-day extension and clears field, same-caller idempotent); 403 on non-participant verified in both extend and end routes; 400 on inactive partnership verified in extend route; end sets status=ended, endedAt, endedBy correctly; notification sent to other partner on end (message_received proxy, acknowledged as debt). Rework is frontend-only per Reviewer notes above.",
+      "REWORK REQUIRED (2026-04-11): (1) EndPartnershipButton redirects to /dashboard?toast=partnership_ended but no page exists at /dashboard in the (dashboard) route group, and no code anywhere reads that query param — the toast is silently dropped. Fix: either redirect to /partner?toast=partnership_ended and handle it there, or redirect to / with a sonner toast.success() call before navigating. Product decision needed on destination. (2) MobileNav now has 7 tap targets inside a 375px-wide h-14 bar — each item gets ~54px, which is at the minimum 44px touch target but leaves no breathing room and labels will clip on smaller devices. Recommend dropping the Church link from bottom nav (it is still discoverable via the UserMenu dropdown) and keeping the bar at 6 items.",
+      "QA — 2026-04-11: Backend API criteria all PASS — mutual extend confirmation logic correct (first caller sets extendRequestedBy, second caller triggers 28-day extension and clears field, same-caller idempotent); 403 on non-participant verified in both extend and end routes; 400 on inactive partnership verified in extend route; end sets status=ended, endedAt, endedBy correctly; notification sent to other partner on end (message_received proxy, acknowledged as debt). Rework is frontend-only per Reviewer notes above.",
       "Rework: fixed end redirect (sonner toast + /partner), removed Church from mobile nav",
-      "Reviewed and approved \u2014 2026-04-11"
+      "Reviewed and approved — 2026-04-11"
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
@@ -719,10 +719,10 @@
     "sprint": "2.2",
     "title": "Adopt a prayer",
     "status": "done",
-    "qa_note": "QA passed \u2014 2026-04-11. Criteria verified: POST idempotency via onConflictDoNothing (201 both times), DELETE non-existent silently succeeds (200), DELETE without auth returns 401, getAdoptionCount uses count() correctly, isAdopted uses .limit(1) + rows.length > 0.",
+    "qa_note": "QA passed — 2026-04-11. Criteria verified: POST idempotency via onConflictDoNothing (201 both times), DELETE non-existent silently succeeds (200), DELETE without auth returns 401, getAdoptionCount uses count() correctly, isAdopted uses .limit(1) + rows.length > 0.",
     "assigned_to": "Database Engineer, Backend Engineer, Frontend Engineer",
     "priority": "high",
-    "description": "Users can adopt a prayer request \u2014 committing to pray for it daily. Adopted prayers appear in their dashboard. Adoption count shown on prayer cards.",
+    "description": "Users can adopt a prayer request — committing to pray for it daily. Adopted prayers appear in their dashboard. Adoption count shown on prayer cards.",
     "files": [
       "src/db/schema.ts",
       "src/db/migrations/",
@@ -735,8 +735,8 @@
       "prayerAdoptions table: id, userId (FK users cascade), prayerId (FK prayers cascade), adoptedAt, unique constraint on (userId, prayerId)",
       "Migration generated",
       "adoption.service.ts: adoptPrayer(userId, prayerId), unadoptPrayer(userId, prayerId), getAdoptedPrayers(userId), getAdoptionCount(prayerId), isAdopted(userId, prayerId)",
-      "API: POST /api/v1/adoptions \u2014 auth required, body { prayerId }, idempotent (no error if already adopted)",
-      "API: DELETE /api/v1/adoptions?prayerId= \u2014 auth required, removes adoption",
+      "API: POST /api/v1/adoptions — auth required, body { prayerId }, idempotent (no error if already adopted)",
+      "API: DELETE /api/v1/adoptions?prayerId= — auth required, removes adoption",
       "adopt-prayer-button.tsx: toggle button showing adoption state, optimistic UI, shows adoption count",
       "Button appears on prayer cards and /p/[id] share page",
       "Dashboard page /adopted shows all adopted prayers for the current user, sorted by adoptedAt desc"
@@ -744,15 +744,15 @@
     "blockers": [],
     "notes": [
       "Schema added, migration 0009 generated (src/db/migrations/0009_chilly_brood.sql)",
-      "Backend: adoption.service.ts created \u2014 adoptPrayer (onConflictDoNothing for idempotency), unadoptPrayer, getAdoptedPrayers (inner join prayers, ordered by adoptedAt desc), getAdoptionCount, isAdopted",
-      "Backend: POST /api/v1/adoptions \u2014 auth-gated, Zod-validated { prayerId: uuid }, 201 on success",
-      "Backend: DELETE /api/v1/adoptions?prayerId= \u2014 auth-gated, 200 on success",
-      "Frontend: adopt-prayer-button.tsx \u2014 toggle button (Adopt/Adopted \u2713), amber warm styling, optimistic UI with revert on error, 401 shown as user-readable message, adoption count displayed",
-      "Frontend: /adopted dashboard page \u2014 server component, auth-gated redirect, uses getAdoptedPrayers service directly, PrayerCard grid, EmptyState with description matching spec",
-      "Frontend: AdoptPrayerButton added to prayer-card.tsx (active prayers only, optional isAdopted/adoptionCount props \u2014 existing callsites unaffected at defaults)",
-      "Frontend: AdoptPrayerButton + PrayerChain added to /p/[id] share page \u2014 server fetches adoptionCount, isAdopted, getChainByPrayer in parallel Promise.all",
-      "Frontend: 'Adopted' link added to user-menu.tsx dropdown (not mobile nav \u2014 mobile nav is at capacity)",
-      "Reviewed and approved \u2014 2026-04-11. Dashboard adoption state defaulting to false/0 is acceptable: /adopted page shows the source of truth; dashboard callsites require a batch query and were intentionally deferred."
+      "Backend: adoption.service.ts created — adoptPrayer (onConflictDoNothing for idempotency), unadoptPrayer, getAdoptedPrayers (inner join prayers, ordered by adoptedAt desc), getAdoptionCount, isAdopted",
+      "Backend: POST /api/v1/adoptions — auth-gated, Zod-validated { prayerId: uuid }, 201 on success",
+      "Backend: DELETE /api/v1/adoptions?prayerId= — auth-gated, 200 on success",
+      "Frontend: adopt-prayer-button.tsx — toggle button (Adopt/Adopted ✓), amber warm styling, optimistic UI with revert on error, 401 shown as user-readable message, adoption count displayed",
+      "Frontend: /adopted dashboard page — server component, auth-gated redirect, uses getAdoptedPrayers service directly, PrayerCard grid, EmptyState with description matching spec",
+      "Frontend: AdoptPrayerButton added to prayer-card.tsx (active prayers only, optional isAdopted/adoptionCount props — existing callsites unaffected at defaults)",
+      "Frontend: AdoptPrayerButton + PrayerChain added to /p/[id] share page — server fetches adoptionCount, isAdopted, getChainByPrayer in parallel Promise.all",
+      "Frontend: 'Adopted' link added to user-menu.tsx dropdown (not mobile nav — mobile nav is at capacity)",
+      "Reviewed and approved — 2026-04-11. Dashboard adoption state defaulting to false/0 is acceptable: /adopted page shows the source of truth; dashboard callsites require a batch query and were intentionally deferred."
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
@@ -761,8 +761,8 @@
     "sprint": "2.2",
     "title": "Prayer chains (24hr coverage)",
     "status": "done",
-    "qa_note": "QA re-check passed \u2014 2026-04-11. Fix 1 confirmed: getChainParticipants() maps rows with (row.nameInitial ?? '?').charAt(0).toUpperCase() \u2014 true single uppercase char. Fix 2 confirmed: participants route calls await auth() at top, returns 401 JSON if no session. All original passing criteria remain intact.",
-    "reviewer_note": "Reviewed and approved \u2014 2026-04-11. Fix is legible and minimal. Auth guard follows established project pattern. Frontend prayer-chain.tsx is a 'use client' component that fetches via browser fetch() \u2014 session cookies are sent automatically with same-origin requests, so the auth gate works correctly. No new security holes introduced.",
+    "qa_note": "QA re-check passed — 2026-04-11. Fix 1 confirmed: getChainParticipants() maps rows with (row.nameInitial ?? '?').charAt(0).toUpperCase() — true single uppercase char. Fix 2 confirmed: participants route calls await auth() at top, returns 401 JSON if no session. All original passing criteria remain intact.",
+    "reviewer_note": "Reviewed and approved — 2026-04-11. Fix is legible and minimal. Auth guard follows established project pattern. Frontend prayer-chain.tsx is a 'use client' component that fetches via browser fetch() — session cookies are sent automatically with same-origin requests, so the auth gate works correctly. No new security holes introduced.",
     "rework_note": "Rework: nameInitial truncated to single char, participants route requires auth",
     "assigned_to": "Database Engineer, Backend Engineer, Frontend Engineer",
     "priority": "high",
@@ -779,21 +779,21 @@
       "chainParticipants table: id, chainId (FK prayerChains cascade), userId (FK users cascade), slotHour (integer 0-23), unique constraint on (chainId, slotHour)",
       "Migration generated",
       "chain.service.ts: createChain(prayerId, createdBy, startsAt), joinChain(chainId, userId, slotHour), getChain(chainId), getChainParticipants(chainId), isSlotTaken(chainId, slotHour)",
-      "API: POST /api/v1/chains \u2014 auth required, creates chain for a prayer",
-      "API: POST /api/v1/chains/[id]/join \u2014 auth required, body { slotHour }, 409 if slot taken",
+      "API: POST /api/v1/chains — auth required, creates chain for a prayer",
+      "API: POST /api/v1/chains/[id]/join — auth required, body { slotHour }, 409 if slot taken",
       "prayer-chain.tsx: 24-slot grid (0-23 hours), filled slots shown with participant avatar initial, empty slots clickable to join, shows % coverage, shows complete state when all 24 filled",
       "prayer-chain.tsx appears on /p/[id] page below the prayer content"
     ],
     "blockers": [],
     "notes": [
       "Schema added, migration 0009 generated (src/db/migrations/0009_chilly_brood.sql)",
-      "Backend: chain.service.ts created \u2014 createChain (endsAt = startsAt + 24h via date-fns addHours), joinChain (throws SlotTakenError on conflict), getChain (with participant count), getChainParticipants (with user name for initial), isSlotTaken, getChainByPrayer (most recent active chain)",
-      "Backend: POST /api/v1/chains \u2014 auth-gated, Zod-validated { prayerId: uuid, startsAt: datetime }, 201",
-      "Backend: POST /api/v1/chains/[id]/join \u2014 auth-gated, Zod-validated { slotHour: int 0-23 }, 409 SlotTakenError, 201 on success",
-      "Frontend: prayer-chain.tsx \u2014 no-chain state shows 'Start a Prayer Chain' card with amber dashed border; chain state shows 24-slot grid (hours 0-23, labelled 12am/1am.../11pm), filled slots show name initial in amber circle, empty slots clickable with hover state, optimistic fill with revert on 409 (+ refetch) or error, progress bar with % coverage, celebration card when 24/24",
-      "Frontend: GET /api/v1/chains/[id]/participants added \u2014 public route returns slotHour + nameInitial for each participant",
+      "Backend: chain.service.ts created — createChain (endsAt = startsAt + 24h via date-fns addHours), joinChain (throws SlotTakenError on conflict), getChain (with participant count), getChainParticipants (with user name for initial), isSlotTaken, getChainByPrayer (most recent active chain)",
+      "Backend: POST /api/v1/chains — auth-gated, Zod-validated { prayerId: uuid, startsAt: datetime }, 201",
+      "Backend: POST /api/v1/chains/[id]/join — auth-gated, Zod-validated { slotHour: int 0-23 }, 409 SlotTakenError, 201 on success",
+      "Frontend: prayer-chain.tsx — no-chain state shows 'Start a Prayer Chain' card with amber dashed border; chain state shows 24-slot grid (hours 0-23, labelled 12am/1am.../11pm), filled slots show name initial in amber circle, empty slots clickable with hover state, optimistic fill with revert on 409 (+ refetch) or error, progress bar with % coverage, celebration card when 24/24",
+      "Frontend: GET /api/v1/chains/[id]/participants added — public route returns slotHour + nameInitial for each participant",
       "Frontend: PrayerChain placed on /p/[id] below CheckInPulse; chainId from getChainByPrayer (null if no active chain = Start Chain shown)",
-      "Reviewer confirmed rework \u2014 2026-04-11: chain.service.ts line 51 selects users.name aliased as nameInitial; participants route is public and returns this full name string verbatim. Fix: change to sql LEFT(users.name, 1) or users.name with .charAt(0) slice in the route before returning. Either layer is acceptable; Backend Engineer owns the service fix."
+      "Reviewer confirmed rework — 2026-04-11: chain.service.ts line 51 selects users.name aliased as nameInitial; participants route is public and returns this full name string verbatim. Fix: change to sql LEFT(users.name, 1) or users.name with .charAt(0) slice in the route before returning. Either layer is acceptable; Backend Engineer owns the service fix."
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
@@ -802,7 +802,7 @@
     "sprint": "2.2",
     "title": "Praying Now live counter",
     "status": "done",
-    "qa_note": "QA passed \u2014 2026-04-11. Criteria verified: force-dynamic export present, Content-Type text/event-stream set, SSE data format `data: {\"count\":N}\\n\\n` correct, abort signal clears interval and closes controller (no leak), count() imported from drizzle-orm.",
+    "qa_note": "QA passed — 2026-04-11. Criteria verified: force-dynamic export present, Content-Type text/event-stream set, SSE data format `data: {\"count\":N}\\n\\n` correct, abort signal clears interval and closes controller (no leak), count() imported from drizzle-orm.",
     "assigned_to": "Backend Engineer, Frontend Engineer",
     "priority": "medium",
     "description": "Real-time counter showing how many people are actively praying right now (prayerInteractions in the last 5 minutes). Displayed on the homepage and prayer wall.",
@@ -820,13 +820,13 @@
     ],
     "blockers": [],
     "notes": [
-      "Backend: SSE route GET /api/v1/sse/praying-now created \u2014 force-dynamic, streams { count } every 3s using ReadableStream + setInterval inside start()",
-      "prayerInteractions.createdAt confirmed present (timestamp, defaultNow) \u2014 no schema adaptation needed",
+      "Backend: SSE route GET /api/v1/sse/praying-now created — force-dynamic, streams { count } every 3s using ReadableStream + setInterval inside start()",
+      "prayerInteractions.createdAt confirmed present (timestamp, defaultNow) — no schema adaptation needed",
       "Uses count() + gte() from drizzle-orm, queries interactions in last 5 minutes",
-      "Frontend: Fixed SSE route \u2014 original return ()=>clearInterval() pattern does not fire in ReadableStream.start(); replaced with req.signal 'abort' event listener for proper cleanup on client disconnect (no interval leak)",
-      "Frontend: praying-now-counter.tsx \u2014 EventSource client, pulsing green dot when connected (grey when disconnected), useEffect number tween (600ms eased) on count change, retains last known count on disconnect, auto-reconnects after 5s",
+      "Frontend: Fixed SSE route — original return ()=>clearInterval() pattern does not fire in ReadableStream.start(); replaced with req.signal 'abort' event listener for proper cleanup on client disconnect (no interval leak)",
+      "Frontend: praying-now-counter.tsx — EventSource client, pulsing green dot when connected (grey when disconnected), useEffect number tween (600ms eased) on count change, retains last known count on disconnect, auto-reconnects after 5s",
       "Frontend: PrayingNowCounter placed in homepage stats section (A Community in Prayer card), below the AnimatedCounter grid",
-      "Reviewed and approved \u2014 2026-04-11. SSE on Vercel serverless is a known constraint: setInterval inside ReadableStream.start() requires Fluid Compute / Pro plan to hold the connection open. Current implementation is correct code \u2014 infra plan decision is for PM. Component degrades gracefully (last known count retained, auto-reconnect) so it is safe to ship on any plan."
+      "Reviewed and approved — 2026-04-11. SSE on Vercel serverless is a known constraint: setInterval inside ReadableStream.start() requires Fluid Compute / Pro plan to hold the connection open. Current implementation is correct code — infra plan decision is for PM. Component degrades gracefully (last known count retained, auto-reconnect) so it is safe to ship on any plan."
     ],
     "last_touched": "2026-04-11T00:00:00.000Z"
   },
@@ -868,8 +868,8 @@
       "[DB 2026-04-11] Schema complete: groupRoleEnum, groups table, groupMembers table (with unique+index) added. Migration 0010 generated.",
       "[BE 2026-04-11] group.service.ts created: generateInviteCode, createGroup, joinGroup, leaveGroup, getGroupsForUser, getGroupMembers, isGroupMember, deleteGroup. API routes: POST/GET /api/v1/groups, POST /api/v1/groups/join, DELETE /api/v1/groups/[id]. Typed errors: GroupNotFoundError, AlreadyMemberError, OwnerHasMembersError, NotOwnerError.",
       "[FE 2026-04-11] All dashboard pages built. groups/page.tsx: server component, auth-gated, lists user groups as cards with member counts, empty state, Create button, JoinGroupForm inline client component. groups/new/page.tsx: server shell + CreateGroupForm client component (name 50 chars, desc 200 chars, POST /api/v1/groups, redirect on success). groups/[id]/page.tsx: await params, membership-gated redirect, invite code with CopyButton, member list with role badges, GroupTabs with GroupWall + GroupActivity. Added GroupDetailActions (leave/delete with confirmation). Added POST /api/v1/groups/[id]/leave route. Added getGroupById + getGroupMembership to group.service.ts. Groups link added to user-menu.tsx dropdown.",
-      "QA passed \u2014 2026-04-11. Criteria verified: POST missing name \u2192 400 (Zod min(1)), POST /join bad code \u2192 404 (GroupNotFoundError), duplicate join \u2192 409 (AlreadyMemberError), DELETE non-owner \u2192 403 (NotOwnerError), leaveGroup owner with members \u2192 OwnerHasMembersError, all routes unauthenticated \u2192 401, createGroup inserts creator as owner role. Note: generateInviteCode uses crypto.randomBytes(4).toString('hex') (8 hex chars, ~4B combinations) with no DB uniqueness check \u2014 collision probability negligible at current scale.",
-      "Reviewed and approved \u2014 2026-04-11. All acceptance criteria met. isSoleOwner label branches both produce 'Delete group' (dead code, not a bug). Owner-delete-with-members results in a 403 that is surfaced in the UI \u2014 user is not left hanging, but the flow is not proactively guided. PM decision: add a pre-delete transfer-ownership warning or leave as-is. No blocker."
+      "QA passed — 2026-04-11. Criteria verified: POST missing name → 400 (Zod min(1)), POST /join bad code → 404 (GroupNotFoundError), duplicate join → 409 (AlreadyMemberError), DELETE non-owner → 403 (NotOwnerError), leaveGroup owner with members → OwnerHasMembersError, all routes unauthenticated → 401, createGroup inserts creator as owner role. Note: generateInviteCode uses crypto.randomBytes(4).toString('hex') (8 hex chars, ~4B combinations) with no DB uniqueness check — collision probability negligible at current scale.",
+      "Reviewed and approved — 2026-04-11. All acceptance criteria met. isSoleOwner label branches both produce 'Delete group' (dead code, not a bug). Owner-delete-with-members results in a 403 that is surfaced in the UI — user is not left hanging, but the flow is not proactively guided. PM decision: add a pre-delete transfer-ownership warning or leave as-is. No blocker."
     ],
     "last_touched": "2026-04-11T12:00:00.000Z"
   },
@@ -899,12 +899,12 @@
     ],
     "blockers": [],
     "notes": [
-      "[DB-IMPACT 2026-04-11] ALTER TABLE prayers ADD COLUMN group_id UUID REFERENCES groups(id) ON DELETE SET NULL: SAFE. Column is nullable \u2014 Postgres adds it with default NULL, no row rewrites, no table lock (uses only a brief metadata lock). Existing rows will have group_id = NULL, which is correct behavior (they are public/ungrouped prayers). No index added on group_id here; if query patterns warrant one, a CONCURRENTLY index can be added in a follow-up migration without downtime. onDelete: set null means group deletion nullifies the FK instead of cascading deletes \u2014 prayer data is preserved. Data impact: zero. Backfill: none required.",
+      "[DB-IMPACT 2026-04-11] ALTER TABLE prayers ADD COLUMN group_id UUID REFERENCES groups(id) ON DELETE SET NULL: SAFE. Column is nullable — Postgres adds it with default NULL, no row rewrites, no table lock (uses only a brief metadata lock). Existing rows will have group_id = NULL, which is correct behavior (they are public/ungrouped prayers). No index added on group_id here; if query patterns warrant one, a CONCURRENTLY index can be added in a follow-up migration without downtime. onDelete: set null means group deletion nullifies the FK instead of cascading deletes — prayer data is preserved. Data impact: zero. Backfill: none required.",
       "[DB 2026-04-11] Schema updated: groups table, groupMembers table, groupRoleEnum added; group_id nullable FK added to prayers. Migration 0010 generated.",
       "[BE 2026-04-11] getGroupPrayers and postGroupPrayer added to group.service.ts. API routes: GET/POST /api/v1/groups/[id]/prayers (both require auth + membership). Public feed fix: isNull(prayers.groupId) added to getRandomPrayer, searchPrayers, getAnsweredPrayers, getAnsweredPrayersFiltered in prayer.service.ts.",
-      "[FE 2026-04-11] group-wall.tsx built: client component, fetches from GET /api/v1/groups/[id]/prayers on mount, inline form with textarea + category select, POST on submit with server-confirmed prepend (not purely optimistic \u2014 waits for server prayer object to get proper id/timestamps), empty state, loading/error states. Uses existing PrayerCard.",
-      "QA passed \u2014 2026-04-11. Criteria verified: GET + POST /groups/[id]/prayers non-member \u2192 403 (isGroupMember guard), isNull(prayers.groupId) present in all 4 public prayer functions (getRandomPrayer, searchPrayers, getAnsweredPrayers, getAnsweredPrayersFiltered), POST category validated via z.enum(categoryEnum.enumValues), await params present in both GET and POST handlers.",
-      "Reviewed and approved \u2014 2026-04-11. All acceptance criteria met. postGroupPrayer bypasses content moderation \u2014 PM decision required on whether group prayers need the same moderation pipeline as public prayers; low urgency since group walls are private/member-only but worth tracking. currentUserId prop on GroupWall is passed but unused \u2014 acceptable placeholder, no consumer impact."
+      "[FE 2026-04-11] group-wall.tsx built: client component, fetches from GET /api/v1/groups/[id]/prayers on mount, inline form with textarea + category select, POST on submit with server-confirmed prepend (not purely optimistic — waits for server prayer object to get proper id/timestamps), empty state, loading/error states. Uses existing PrayerCard.",
+      "QA passed — 2026-04-11. Criteria verified: GET + POST /groups/[id]/prayers non-member → 403 (isGroupMember guard), isNull(prayers.groupId) present in all 4 public prayer functions (getRandomPrayer, searchPrayers, getAnsweredPrayers, getAnsweredPrayersFiltered), POST category validated via z.enum(categoryEnum.enumValues), await params present in both GET and POST handlers.",
+      "Reviewed and approved — 2026-04-11. All acceptance criteria met. postGroupPrayer bypasses content moderation — PM decision required on whether group prayers need the same moderation pipeline as public prayers; low urgency since group walls are private/member-only but worth tracking. currentUserId prop on GroupWall is passed but unused — acceptable placeholder, no consumer impact."
     ],
     "last_touched": "2026-04-12T00:42:49.042Z"
   },
@@ -929,10 +929,10 @@
     ],
     "blockers": [],
     "notes": [
-      "[BE 2026-04-11] getGroupActivity(groupId, limit=20) implemented in group.service.ts. Runs 3 parallel queries (Promise.all): recent group prayers, answered group prayers, recent member joins. Merges and sorts by date desc, slices to limit. Returns ActivityItem[] typed union. No new API route \u2014 called directly from server component.",
+      "[BE 2026-04-11] getGroupActivity(groupId, limit=20) implemented in group.service.ts. Runs 3 parallel queries (Promise.all): recent group prayers, answered group prayers, recent member joins. Merges and sorts by date desc, slices to limit. Returns ActivityItem[] typed union. No new API route — called directly from server component.",
       "[FE 2026-04-11] group-activity.tsx built: server component, receives pre-fetched ActivityItem[] prop from groups/[id]/page.tsx, renders timeline list with left border + dot icons, emoji per type, content snippets at 40 chars, formatDistanceToNow relative timestamps, empty state. getGroupActivity called server-side in detail page.",
-      "QA passed \u2014 2026-04-11. Criteria verified: all 3 item types returned (prayer_posted, prayer_answered, member_joined), items sorted by date desc (sort by b.date.getTime() - a.date.getTime()), null answeredAt falls back to new Date(0) (no crash), duplicate items acceptable \u2014 an answered prayer legitimately appears as both prayer_posted and prayer_answered representing distinct lifecycle events.",
-      "Reviewed and approved \u2014 2026-04-11. All acceptance criteria met. Criterion 4 ('Feed updates locally when user posts') is architecturally unmet: GroupActivity is a server-component prop \u2014 it does not update when GroupWall posts without a router.refresh() or navigation. Current behavior: activity tab reflects server state at page load. Risk: low \u2014 activity tab is secondary info and the pattern is consistent with this codebase's server-component approach. PM/Architect to decide if a router.refresh() call after GroupWall post is wanted in a follow-up. key={i} (index key) in the activity list is acceptable here since the list is static (no client-side reordering or insertion)."
+      "QA passed — 2026-04-11. Criteria verified: all 3 item types returned (prayer_posted, prayer_answered, member_joined), items sorted by date desc (sort by b.date.getTime() - a.date.getTime()), null answeredAt falls back to new Date(0) (no crash), duplicate items acceptable — an answered prayer legitimately appears as both prayer_posted and prayer_answered representing distinct lifecycle events.",
+      "Reviewed and approved — 2026-04-11. All acceptance criteria met. Criterion 4 ('Feed updates locally when user posts') is architecturally unmet: GroupActivity is a server-component prop — it does not update when GroupWall posts without a router.refresh() or navigation. Current behavior: activity tab reflects server state at page load. Risk: low — activity tab is secondary info and the pattern is consistent with this codebase's server-component approach. PM/Architect to decide if a router.refresh() call after GroupWall post is wanted in a follow-up. key={i} (index key) in the activity list is acceptable here since the list is static (no client-side reordering or insertion)."
     ],
     "last_touched": "2026-04-12T00:42:49.042Z"
   },
@@ -1211,7 +1211,7 @@
     "last_touched": "2026-04-12T00:14:37.767Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Task back-filled \u2014 work completed in sprint 3.3 session"
+      "[Dashboard sync] Task back-filled — work completed in sprint 3.3 session"
     ],
     "fast_lane": false
   },
@@ -1231,7 +1231,7 @@
     "last_touched": "2026-04-12T00:14:37.767Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Task back-filled \u2014 work completed in sprint 3.3 session"
+      "[Dashboard sync] Task back-filled — work completed in sprint 3.3 session"
     ],
     "fast_lane": false
   },
@@ -1251,7 +1251,7 @@
     "last_touched": "2026-04-12T00:14:37.767Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Task back-filled \u2014 work completed in sprint 3.3 session"
+      "[Dashboard sync] Task back-filled — work completed in sprint 3.3 session"
     ],
     "fast_lane": false
   },
@@ -1272,7 +1272,7 @@
     "last_touched": "2026-04-12T00:14:37.767Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Task back-filled \u2014 work completed in sprint 3.3 session"
+      "[Dashboard sync] Task back-filled — work completed in sprint 3.3 session"
     ],
     "fast_lane": false
   },
@@ -1280,7 +1280,7 @@
     "id": "pj-s3.3-50",
     "sprint": "3.3",
     "title": "Accessibility audit (WCAG 2.1 AA)",
-    "description": "Full accessibility pass across all components \u2014 contrast, ARIA labels, keyboard navigation, screen reader compatibility.",
+    "description": "Full accessibility pass across all components — contrast, ARIA labels, keyboard navigation, screen reader compatibility.",
     "acceptance_criteria": [
       "All interactive elements keyboard-accessible",
       "Colour contrast passes AA standard",
@@ -1293,7 +1293,7 @@
     "last_touched": "2026-04-12T00:14:37.767Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Task back-filled \u2014 work completed in sprint 3.3 session"
+      "[Dashboard sync] Task back-filled — work completed in sprint 3.3 session"
     ],
     "fast_lane": false
   },
@@ -1314,7 +1314,7 @@
     "last_touched": "2026-04-12T00:49:57.520Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1335,7 +1335,7 @@
     "last_touched": "2026-04-12T00:49:57.520Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1356,7 +1356,7 @@
     "last_touched": "2026-04-12T00:49:57.520Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1377,7 +1377,7 @@
     "last_touched": "2026-04-12T00:49:57.520Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1398,8 +1398,8 @@
     "last_touched": "2026-04-12T01:56:58.143Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 billing.service.ts verified present",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — billing.service.ts verified present",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1419,8 +1419,8 @@
     "last_touched": "2026-04-12T01:56:58.143Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 plans.ts not yet present, in progress",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — plans.ts not yet present, in progress",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1440,8 +1440,8 @@
     "last_touched": "2026-04-12T01:56:58.143Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 in progress",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — in progress",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1462,8 +1462,8 @@
     "last_touched": "2026-04-12T01:56:58.143Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 billing page not yet present, in progress",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — billing page not yet present, in progress",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1484,8 +1484,8 @@
     "last_touched": "2026-04-12T03:18:12.631Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 churches/churchId verified in schema.ts",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — churches/churchId verified in schema.ts",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1506,8 +1506,8 @@
     "last_touched": "2026-04-12T03:18:12.631Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 service not yet present",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — service not yet present",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1528,8 +1528,8 @@
     "last_touched": "2026-04-12T03:18:12.631Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 page not yet present",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — page not yet present",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1549,8 +1549,8 @@
     "last_touched": "2026-04-12T03:18:12.631Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 page not yet present",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — page not yet present",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1571,8 +1571,8 @@
     "last_touched": "2026-04-12T03:18:12.631Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 page not yet present",
-      "[Dashboard sync] Marked done \u2014 code verified present"
+      "[Dashboard sync] Back-filled — page not yet present",
+      "[Dashboard sync] Marked done — code verified present"
     ],
     "fast_lane": false
   },
@@ -1592,7 +1592,7 @@
     "last_touched": "2026-04-12T03:37:49.710Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.2 in progress"
+      "[Dashboard sync] Back-filled — sprint 5.2 in progress"
     ],
     "fast_lane": false
   },
@@ -1612,7 +1612,7 @@
     "last_touched": "2026-04-12T03:37:49.710Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.2 in progress"
+      "[Dashboard sync] Back-filled — sprint 5.2 in progress"
     ],
     "fast_lane": false
   },
@@ -1632,7 +1632,7 @@
     "last_touched": "2026-04-12T03:37:49.710Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.2 in progress"
+      "[Dashboard sync] Back-filled — sprint 5.2 in progress"
     ],
     "fast_lane": false
   },
@@ -1652,7 +1652,7 @@
     "last_touched": "2026-04-12T03:37:49.710Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.2 in progress"
+      "[Dashboard sync] Back-filled — sprint 5.2 in progress"
     ],
     "fast_lane": false
   },
@@ -1672,7 +1672,7 @@
     "last_touched": "2026-04-12T03:37:49.710Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.2 in progress"
+      "[Dashboard sync] Back-filled — sprint 5.2 in progress"
     ],
     "fast_lane": false
   },
@@ -1693,7 +1693,7 @@
     "last_touched": "2026-04-12T04:26:49.957Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.3 ready to start"
+      "[Dashboard sync] Back-filled — sprint 5.3 ready to start"
     ],
     "fast_lane": false
   },
@@ -1714,7 +1714,7 @@
     "last_touched": "2026-04-12T04:26:49.957Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.3 ready to start"
+      "[Dashboard sync] Back-filled — sprint 5.3 ready to start"
     ],
     "fast_lane": false
   },
@@ -1735,7 +1735,7 @@
     "last_touched": "2026-04-12T04:26:49.957Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.3 ready to start"
+      "[Dashboard sync] Back-filled — sprint 5.3 ready to start"
     ],
     "fast_lane": false
   },
@@ -1756,7 +1756,7 @@
     "last_touched": "2026-04-12T04:26:49.957Z",
     "blockers": [],
     "notes": [
-      "[Dashboard sync] Back-filled \u2014 sprint 5.3 ready to start"
+      "[Dashboard sync] Back-filled — sprint 5.3 ready to start"
     ],
     "fast_lane": false
   },
@@ -1876,7 +1876,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 5.5 complete"
+      "Back-filled — sprint 5.5 complete"
     ],
     "last_touched": "2026-04-12T12:52:48.969815Z"
   },
@@ -1894,7 +1894,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 5.5 complete"
+      "Back-filled — sprint 5.5 complete"
     ],
     "last_touched": "2026-04-12T12:52:48.969815Z"
   },
@@ -1912,7 +1912,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 5.5 complete"
+      "Back-filled — sprint 5.5 complete"
     ],
     "last_touched": "2026-04-12T12:52:48.969815Z"
   },
@@ -1966,7 +1966,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 6.2 complete"
+      "Back-filled — sprint 6.2 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
   },
@@ -1984,7 +1984,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 6.3 complete"
+      "Back-filled — sprint 6.3 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
   },
@@ -2002,7 +2002,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 6.3 complete"
+      "Back-filled — sprint 6.3 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
   },
@@ -2020,7 +2020,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 6.3 complete"
+      "Back-filled — sprint 6.3 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
   },
@@ -2038,7 +2038,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Back-filled \u2014 sprint 6.3 complete"
+      "Back-filled — sprint 6.3 complete"
     ],
     "last_touched": "2026-04-12T15:27:35.994281Z"
   },
@@ -2057,14 +2057,14 @@
     ],
     "blockers": [],
     "notes": [
-      "Fixed hello@prayerjar.app \u2192 hello@prayerjar.org in contact, privacy, terms pages"
+      "Fixed hello@prayerjar.app → hello@prayerjar.org in contact, privacy, terms pages"
     ],
     "last_touched": "2026-04-13T15:00:00.000Z"
   },
   {
     "id": "pj-s7.1-2",
     "sprint": "7.1",
-    "title": "Fix About page \u2014 remove outdated 'no premium tiers' copy",
+    "title": "Fix About page — remove outdated 'no premium tiers' copy",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -2081,7 +2081,7 @@
   {
     "id": "pj-s7.1-3",
     "sprint": "7.1",
-    "title": "Fix Press Kit \u2014 replace broken download links with contact CTA",
+    "title": "Fix Press Kit — replace broken download links with contact CTA",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -2098,7 +2098,7 @@
   {
     "id": "pj-s7.1-4",
     "sprint": "7.1",
-    "title": "Fix billing upgrade button \u2014 routes to /give instead of /for-churches",
+    "title": "Fix billing upgrade button — routes to /give instead of /for-churches",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -2115,7 +2115,7 @@
   {
     "id": "pj-s7.2-1",
     "sprint": "7.2",
-    "title": "Fix Find a Church page \u2014 respect theme instead of hardcoded dark mode",
+    "title": "Fix Find a Church page — respect theme instead of hardcoded dark mode",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -2165,7 +2165,7 @@
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "description": "Church leaders need to see platform value and plans without signing up. Create /for-churches page that leads with ministry value prop, shows features, plans grid at bottom. Footer link only \u2014 NOT in main nav. Keeps prayer-first feel.",
+    "description": "Church leaders need to see platform value and plans without signing up. Create /for-churches page that leads with ministry value prop, shows features, plans grid at bottom. Footer link only — NOT in main nav. Keeps prayer-first feel.",
     "files": [
       "src/app/(public)/for-churches/page.tsx",
       "src/app/layout.tsx"
@@ -2211,7 +2211,7 @@
   {
     "id": "pj-s7.2-7",
     "sprint": "7.2",
-    "title": "Fix profile page \u2014 show user avatar when image available",
+    "title": "Fix profile page — show user avatar when image available",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
@@ -2226,7 +2226,7 @@
   {
     "id": "pj-s7.2-8",
     "sprint": "7.2",
-    "title": "Improve homepage secondary CTAs \u2014 visual hierarchy",
+    "title": "Improve homepage secondary CTAs — visual hierarchy",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
@@ -2251,14 +2251,14 @@
     ],
     "blockers": [],
     "notes": [
-      "Changed bottom-6 to bottom-20 md:bottom-6 \u2014 clears 56px mobile nav"
+      "Changed bottom-6 to bottom-20 md:bottom-6 — clears 56px mobile nav"
     ],
     "last_touched": "2026-04-13T15:00:00.000Z"
   },
   {
     "id": "pj-s7.1-6",
     "sprint": "7.1",
-    "title": "Fix mobile nav \u2014 reduce to 5 items, center Know Jesus",
+    "title": "Fix mobile nav — reduce to 5 items, center Know Jesus",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
@@ -2269,7 +2269,7 @@
     ],
     "blockers": [],
     "notes": [
-      "Removed Partner from mobile nav (6\u21925 items). Added Partner link to profile activity list."
+      "Removed Partner from mobile nav (6→5 items). Added Partner link to profile activity list."
     ],
     "last_touched": "2026-04-13T15:00:00.000Z"
   },
@@ -2292,7 +2292,7 @@
   {
     "id": "pj-s7.2-10",
     "sprint": "7.2",
-    "title": "Press Kit \u2014 replace hardcoded stats with live DB queries",
+    "title": "Press Kit — replace hardcoded stats with live DB queries",
     "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
@@ -2357,182 +2357,172 @@
   {
     "id": "pj-s8.1-1",
     "title": "Sync production DB schema (db:push)",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.1",
     "assigned_to": "Database Engineer",
     "priority": "critical",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Tables from migrations 0018+ missing in prod. Profile, billing, church features all crash."
   },
   {
     "id": "pj-s8.1-2",
     "title": "Fix /profile crash (defensive churchMembers query)",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.1",
     "assigned_to": "Backend Engineer",
     "priority": "critical",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Wrap churchMembers query in try-catch so profile works even if table is missing."
   },
   {
     "id": "pj-s8.1-3",
     "title": "Fix /billing crash for non-church users",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.1",
     "assigned_to": "Backend Engineer",
     "priority": "critical",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Handle DB errors gracefully instead of showing 'something went wrong'."
   },
   {
     "id": "pj-s8.1-4",
     "title": "Fix church search 50-mile radius bug",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.1",
     "assigned_to": "Backend Engineer",
     "priority": "critical",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Google Places API max radius is 50000m (~31mi). 50mi sends 80467m, returns empty. Clamp API call and adjust UI."
   },
   {
     "id": "pj-s8.2-1",
     "title": "Add dynamic sitemap.xml",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.2",
     "assigned_to": "Backend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Next.js App Router sitemap route covering all public pages."
   },
   {
     "id": "pj-s8.2-2",
     "title": "Add robots.txt",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.2",
     "assigned_to": "Backend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Standard robots.txt allowing crawlers, pointing to sitemap."
   },
   {
     "id": "pj-s8.2-3",
     "title": "Add security headers",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.2",
     "assigned_to": "Backend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "CSP, HSTS, X-Frame-Options, X-Content-Type-Options in next.config.ts headers."
   },
   {
     "id": "pj-s8.3-1",
     "title": "Denomination filter on /find-a-church",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.3",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Data exists in church_recommendations. Add dropdown filter to search bar."
   },
   {
     "id": "pj-s8.3-2",
     "title": "Real contact form on /contact",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.3",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Replace mailto with server action form that sends via Resend."
   },
   {
     "id": "pj-s8.3-3",
     "title": "Add /give link to footer and nav",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Donate page exists at /give but is not discoverable."
   },
   {
     "id": "pj-s8.3-4",
     "title": "PWA install prompt",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.3",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Listen for beforeinstallprompt and show install banner."
   },
   {
     "id": "pj-s8.4-1",
     "title": "Visual docs overhaul: /docs, /docs/guide, /docs/features",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.4",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Replace text-heavy guides with illustrated step-by-step cards, flow diagrams, icon-driven layouts."
   },
   {
     "id": "pj-s8.4-2",
     "title": "Visual docs overhaul: /docs/churches, /docs/paid",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.4",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Visual feature showcases for church admins evaluating the platform."
   },
   {
     "id": "pj-s8.5-1",
     "title": "Church member invite flow",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.5",
     "assigned_to": "Full Stack",
     "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Email invite + shareable join link for church admins to invite congregation."
   },
   {
     "id": "pj-s8.5-2",
     "title": "Subscription tier feature gating",
-    "status": "proposed",
+    "status": "done",
     "sprint": "8.5",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
-    "last_touched": "2026-04-14T00:00:00Z",
+    "last_touched": "2026-04-14T00:00:00.000Z",
     "notes": "Check subscription tier before unlocking paid church features."
-  },
-  {
-    "id": "pj-s8.3-5",
-    "title": "User report button on prayer cards",
-    "status": "in-progress",
-    "sprint": "8.3",
-    "assigned_to": "Full Stack",
-    "priority": "critical",
-    "last_touched": "2026-04-14T00:00:00Z",
-    "notes": "Report button on prayer cards with reason categories (spam, inappropriate, not a prayer, harassment, other). Server action records reports. Defer ban system and audio moderation to Sprint 9."
-  },
-  {
-    "id": "pj-s8.5-3",
-    "title": "Cancel/upgrade subscription UI on /billing",
-    "status": "proposed",
-    "sprint": "8.5",
-    "assigned_to": "Full Stack",
-    "priority": "medium",
-    "last_touched": "2026-04-14T00:00:00Z",
-    "notes": "Stripe customer portal or custom cancel/upgrade buttons."
   },
   {
     "id": "pj-s8.3-5",
     "title": "User report button on prayer cards",
     "status": "done",
     "sprint": "8.3",
-    "assigned_to": "Frontend Engineer",
-    "priority": "high",
-    "last_touched": "2026-04-14T00:00:00Z",
-    "notes": "Already built in guided-prayer.tsx. Fixed Zod type error in report.actions.ts."
+    "assigned_to": "Full Stack",
+    "priority": "critical",
+    "last_touched": "2026-04-14T00:00:00.000Z",
+    "notes": "Report button on prayer cards with reason categories (spam, inappropriate, not a prayer, harassment, other). Server action records reports. Defer ban system and audio moderation to Sprint 9."
+  },
+  {
+    "id": "pj-s8.5-3",
+    "title": "Cancel/upgrade subscription UI on /billing",
+    "status": "done",
+    "sprint": "8.5",
+    "assigned_to": "Full Stack",
+    "priority": "medium",
+    "last_touched": "2026-04-14T00:00:00.000Z",
+    "notes": "Stripe customer portal or custom cancel/upgrade buttons."
   },
   {
     "id": "pj-s8.5-4",

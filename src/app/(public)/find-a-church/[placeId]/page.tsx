@@ -7,6 +7,7 @@ import { ClaimForm } from "@/components/church/claim-form";
 import { SaveChurchButton } from "@/components/church/save-church-button";
 import { ExternalLink, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "./BackButton";
 
 export async function generateMetadata({
   params,
@@ -44,9 +45,7 @@ export default async function ChurchDetailPage({
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-950 to-slate-800 px-6 py-6">
-        <a href="/find-a-church" className="text-slate-400 text-sm hover:text-slate-300 block mb-4">
-          ← Back to results
-        </a>
+        <BackButton />
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <h1 className="text-slate-100 text-2xl font-bold">{church.name}</h1>

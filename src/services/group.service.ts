@@ -128,14 +128,21 @@ export async function getGroupsForUser(userId: string) {
 }
 
 export async function getGroupMembers(groupId: string) {
-  return db
+  const rows = await db
     .select({
       member: groupMembers,
-      userName: users.name,
+      name: users.name,
+      email: users.email,
     })
     .from(groupMembers)
     .innerJoin(users, eq(users.id, groupMembers.userId))
     .where(eq(groupMembers.groupId, groupId));
+
+  return rows.map((r) => ({
+    member: r.member,
+    // Prefer display name; fall back to email username (before @)
+    userName: r.name ?? (r.email ? r.email.split('@')[0] : null),
+  }));
 }
 
 export async function isGroupMember(userId: string, groupId: string): Promise<boolean> {

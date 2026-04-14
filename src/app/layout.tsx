@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${inter.className} min-h-screen flex flex-col`}>
         <SessionProvider>
         <ThemeProvider>
-        <header className="border-b">
+        <header className="border-b relative z-10">
           <nav aria-label="Main navigation" className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-lg">
               <span aria-hidden="true">🫙</span> Prayer Jar
