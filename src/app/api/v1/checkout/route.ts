@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession, createSubscriptionCheckout, createEventLicenseCheckout } from '@/services/billing.service';
 import { auth } from '@/lib/auth';
+import { db } from '@/db';
+import { churchMembers } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 const schema = z.discriminatedUnion('type', [
   z.object({
@@ -57,8 +60,12 @@ export async function POST(req: NextRequest) {
       if (!userId) {
         return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
       }
+      const membership = await db.query.churchMembers.findFirst({
+        where: and(eq(churchMembers.userId, userId), eq(churchMembers.role, 'admin')),
+      });
       const url = await createSubscriptionCheckout({
         userId,
+        churchId: membership?.churchId ?? null,
         stripePriceId: data.stripePriceId,
         successUrl: `${origin}/billing?success=1`,
         cancelUrl: `${origin}/billing`,
