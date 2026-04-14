@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { prayers, users, type CategoryValue } from '@/db/schema';
-import { eq, and, sql, gt, isNull, isNotNull } from 'drizzle-orm';
+import { eq, and, sql, gt, isNull, isNotNull, ne } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 import { categorizePrayer, moderateContent } from './ai.service';
 
@@ -55,7 +55,7 @@ export async function createPrayer(input: CreatePrayerInput) {
   return prayer;
 }
 
-export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnly = false) {
+export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnly = false, excludeUserId?: string | null) {
   const now = new Date();
   const conditions = [
     eq(prayers.status, 'active'),
@@ -65,6 +65,7 @@ export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnl
 
   if (category !== 'any') conditions.push(eq(prayers.category, category));
   if (urgentOnly) conditions.push(eq(prayers.isUrgent, true));
+  if (excludeUserId) conditions.push(ne(prayers.authorId, excludeUserId));
 
   const results = await db
     .select()
