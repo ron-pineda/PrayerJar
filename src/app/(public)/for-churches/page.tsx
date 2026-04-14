@@ -69,7 +69,7 @@ export default function ForChurchesPage() {
           requests — and gives your pastoral team the tools to care for every person in it.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button size="lg" render={<Link href="/sign-in" />}>
+          <Button size="lg" render={<Link href="/church/create" />}>
             Get Started Free
           </Button>
           <Button size="lg" variant="outline" render={<a href="mailto:hello@prayerjar.org" />}>
@@ -188,11 +188,11 @@ export default function ForChurchesPage() {
                     Contact Us
                   </Button>
                 ) : isFree ? (
-                  <Button variant="outline" render={<Link href="/sign-in" />}>
+                  <Button variant="outline" render={<Link href="/church/create" />}>
                     Get Started
                   </Button>
                 ) : (
-                  <Button render={<Link href="/sign-in?callbackUrl=/billing" />}>
+                  <Button render={<Link href="/church/create" />}>
                     Get Started
                   </Button>
                 )}
@@ -245,7 +245,7 @@ export default function ForChurchesPage() {
           <p className="text-sm text-muted-foreground">
             Set up your church in minutes. Free tier, no card required.
           </p>
-          <Button size="lg" render={<Link href="/sign-in" />}>
+          <Button size="lg" render={<Link href="/church/create" />}>
             Create Your Church
           </Button>
         </div>
