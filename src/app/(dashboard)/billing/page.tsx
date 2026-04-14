@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
-import { subscriptions, donations, eventLicenses } from '@/db/schema';
+import { subscriptions, donations, eventLicenses, churchMembers } from '@/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { PLANS } from '@/lib/plans';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,17 @@ export default async function BillingPage() {
   const session = await auth();
   if (!session?.user?.id) redirect('/sign-in');
   const userId = session.user.id;
+
+  // Billing is for church admins/pastors only — regular users never see plan tiers
+  const churchRole = await db
+    .select({ role: churchMembers.role })
+    .from(churchMembers)
+    .where(eq(churchMembers.userId, userId))
+    .limit(1)
+    .then((r) => r[0]);
+
+  const isChurchAdmin = churchRole?.role === 'admin' || churchRole?.role === 'pastor';
+  if (!isChurchAdmin) redirect('/profile');
 
   const [subscription, donationHistory, licenses] = await Promise.all([
     db.query.subscriptions.findFirst({

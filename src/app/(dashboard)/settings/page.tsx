@@ -6,7 +6,6 @@ import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -16,6 +15,8 @@ import {
   updateQuietHoursAction,
 } from '@/app/actions/settings.actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { SettingsForm } from '@/components/settings-form';
+import { DeleteAccountDialog } from '@/components/delete-account-dialog';
 
 const TIMEZONES = [
   'America/New_York',
@@ -71,7 +72,7 @@ export default async function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={updateEmailPreferenceAction} className="space-y-4">
+          <SettingsForm action={updateEmailPreferenceAction} submitLabel="Save preferences">
             <div className="space-y-2">
               <Label htmlFor="emailPreference">Email frequency</Label>
               <Select name="emailPreference" defaultValue={user.emailPreference}>
@@ -86,8 +87,7 @@ export default async function SettingsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit">Save preferences</Button>
-          </form>
+          </SettingsForm>
         </CardContent>
       </Card>
 
@@ -99,7 +99,7 @@ export default async function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={updateNotificationTypesAction} className="space-y-5">
+          <SettingsForm action={updateNotificationTypesAction} submitLabel="Save preferences">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="notifyOnPrayed">Someone prays for your request</Label>
@@ -138,8 +138,7 @@ export default async function SettingsPage() {
                 />
               </div>
             </div>
-            <Button type="submit">Save preferences</Button>
-          </form>
+          </SettingsForm>
         </CardContent>
       </Card>
 
@@ -151,7 +150,7 @@ export default async function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={updateQuietHoursAction} className="space-y-5">
+          <SettingsForm action={updateQuietHoursAction} submitLabel="Save quiet hours">
             <div className="flex items-center justify-between">
               <Label htmlFor="quietHoursEnabled">Enable quiet hours</Label>
               <Switch
@@ -217,8 +216,19 @@ export default async function SettingsPage() {
                 </Select>
               </div>
             </div>
-            <Button type="submit">Save quiet hours</Button>
-          </form>
+          </SettingsForm>
+        </CardContent>
+      </Card>
+
+      <Card className="border-destructive/40">
+        <CardHeader>
+          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardDescription>
+            Permanently delete your account and all associated data. This cannot be undone.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DeleteAccountDialog />
         </CardContent>
       </Card>
     </main>

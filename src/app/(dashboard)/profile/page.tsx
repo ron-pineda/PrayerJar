@@ -1,13 +1,13 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
-import { users, prayers, prayerInteractions } from "@/db/schema";
+import { users, prayers, prayerInteractions, churchMembers } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { getBadgesForUser } from "@/services/badge.service";
 import { BadgeDisplay } from "@/components/badge-display";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Bell, Star, Church, Heart, Settings, Users } from "lucide-react";
+import { BookOpen, Bell, Star, Church, Heart, Settings, Users, CreditCard } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profile | The Prayer Jar" };
@@ -16,23 +16,30 @@ export default async function ProfilePage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/sign-in");
 
-  const [user, prayerCount, interactionCount, badges] = await Promise.all([
+  const [user, prayerCount, interactionCount, badges, churchRole] = await Promise.all([
     db.select().from(users).where(eq(users.id, session.user.id)).then((r) => r[0]),
     db.select({ count: sql<number>`count(*)` }).from(prayers).where(eq(prayers.authorId, session.user.id)).then((r) => Number(r[0]?.count ?? 0)),
     db.select({ count: sql<number>`count(*)` }).from(prayerInteractions).where(eq(prayerInteractions.userId, session.user.id)).then((r) => Number(r[0]?.count ?? 0)),
     getBadgesForUser(session.user.id),
+    db.select({ role: churchMembers.role }).from(churchMembers).where(eq(churchMembers.userId, session.user.id)).limit(1).then((r) => r[0]),
   ]);
 
   if (!user) redirect("/sign-in");
 
+  const isChurchAdmin = churchRole?.role === 'admin' || churchRole?.role === 'pastor';
   const recentBadges = badges.slice(0, 4);
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex items-center gap-4 mb-10">
-        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">
-          🙏
+        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
+          {user.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.image} alt={user.name ?? 'Profile'} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+          ) : (
+            <span aria-hidden="true">🙏</span>
+          )}
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{user.name ?? "Intercessor"}</h1>
@@ -86,6 +93,7 @@ export default async function ProfilePage() {
             { href: "/notifications", icon: Bell, label: "Notifications", description: "Updates on your prayer requests" },
             { href: "/badges", icon: Star, label: "Badges & Streak", description: "Your milestones and progress" },
             { href: "/settings", icon: Settings, label: "Settings", description: "Email notification preferences" },
+            ...(isChurchAdmin ? [{ href: "/billing", icon: CreditCard, label: "Billing", description: "Manage your church subscription" }] : []),
           ].map(({ href, icon: Icon, label, description }) => (
             <Link
               key={href}

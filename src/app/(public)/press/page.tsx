@@ -1,10 +1,40 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { db } from "@/db";
+import { prayers, users } from "@/db/schema";
+import { sql } from "drizzle-orm";
 
 export const metadata: Metadata = { title: "Press Kit | The Prayer Jar" };
 
-export default function PressPage() {
+async function getPressStats() {
+  const [prayerCountRow, countriesRow, userCountRow] = await Promise.all([
+    db.select({ count: sql<number>`count(*)` }).from(prayers).then((r) => Number(r[0]?.count ?? 0)),
+    db
+      .select({ count: sql<number>`count(distinct ${prayers.country})` })
+      .from(prayers)
+      .where(sql`${prayers.country} is not null`)
+      .then((r) => Number(r[0]?.count ?? 0)),
+    db.select({ count: sql<number>`count(*)` }).from(users).then((r) => Number(r[0]?.count ?? 0)),
+  ]);
+
+  return { prayerCount: prayerCountRow, countries: countriesRow, userCount: userCountRow };
+}
+
+function formatStat(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M+`;
+  if (n >= 1_000) return `${Math.floor(n / 1_000)}K+`;
+  return String(n);
+}
+
+export default async function PressPage() {
+  const stats = await getPressStats();
+
+  const keyStats = [
+    { stat: stats.countries > 0 ? `${stats.countries}+` : '50+', label: 'Countries' },
+    { stat: stats.prayerCount > 0 ? formatStat(stats.prayerCount) : '10,000+', label: 'Prayers submitted' },
+    { stat: '24/7', label: 'Availability' },
+    { stat: 'Free', label: 'For everyone' },
+  ];
+
   return (
     <main className="max-w-2xl mx-auto px-4 py-16">
       <div className="mb-12 text-center">
@@ -21,20 +51,14 @@ export default function PressPage() {
           <p className="text-sm text-muted-foreground">
             PrayerJar is a community prayer platform where people submit anonymous or named prayer
             requests, and anyone can pray for them. Built for the moment you need prayer right now
-            — 24/7, no church membership required. Trusted by thousands of people across 50+
-            countries.
+            — 24/7, no church membership required. Trusted by people across the globe.
           </p>
         </section>
 
         <section>
           <h2 className="text-base font-semibold text-foreground mb-4">Key Stats</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { stat: "50+", label: "Countries" },
-              { stat: "10,000+", label: "Prayers submitted" },
-              { stat: "24/7", label: "Availability" },
-              { stat: "Free", label: "For everyone" },
-            ].map(({ stat, label }) => (
+            {keyStats.map(({ stat, label }) => (
               <div
                 key={label}
                 className="border rounded-xl p-4 text-center space-y-1"

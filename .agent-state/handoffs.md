@@ -79,3 +79,5 @@
 [2026-04-13T12:00:00Z] PM → Architect: UX audit complete. 12 tasks created across Sprint 7.1 (4 critical fixes) and Sprint 7.2 (8 UX improvements). Plan at .claude/plans/2026-04-13-ux-audit-fixes.md. All tasks proposed, awaiting approval.
 [2026-04-13T13:00:00Z] PM: Plan revised — /pricing renamed to /for-churches (footer-only, ministry-first framing). Added 2 tasks: feedback widget overlap fix (pj-s7.1-5) and mobile nav 5-item rebalance (pj-s7.1-6). Sprint 7.1 now has 6 tasks.
 [2026-04-13T14:00:00Z] PM: Added 2 more tasks after ministry-tone review — pj-s7.2-9 (hide billing from non-church users) and pj-s7.2-10 (press kit live stats). Total: 16 tasks across 7.1 and 7.2.
+
+[2026-04-13T21:56:56.198Z] Dashboard sync — 0 fix(es): 

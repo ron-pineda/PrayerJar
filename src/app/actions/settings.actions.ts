@@ -12,15 +12,14 @@ const prefsSchema = z.object({
   emailPreference: z.enum(['off', 'realtime', 'daily', 'weekly']),
 });
 
-export async function updateEmailPreferenceAction(formData: FormData): Promise<void> {
+export async function updateEmailPreferenceAction(_prev: unknown, formData: FormData): Promise<{ success: boolean }> {
   const session = await auth();
   if (!session?.user?.id) {
     redirect('/sign-in');
-    return;
   }
 
   const parsed = prefsSchema.safeParse({ emailPreference: formData.get('emailPreference') });
-  if (!parsed.success) return;
+  if (!parsed.success) return { success: false };
 
   await db
     .update(users)
@@ -28,6 +27,7 @@ export async function updateEmailPreferenceAction(formData: FormData): Promise<v
     .where(eq(users.id, session.user.id));
 
   revalidatePath('/settings');
+  return { success: true };
 }
 
 const notifTypesSchema = z.object({
@@ -37,11 +37,10 @@ const notifTypesSchema = z.object({
   notifyOnDigest: z.boolean(),
 });
 
-export async function updateNotificationTypesAction(formData: FormData): Promise<void> {
+export async function updateNotificationTypesAction(_prev: unknown, formData: FormData): Promise<{ success: boolean }> {
   const session = await auth();
   if (!session?.user?.id) {
     redirect('/sign-in');
-    return;
   }
 
   const parsed = notifTypesSchema.safeParse({
@@ -50,7 +49,7 @@ export async function updateNotificationTypesAction(formData: FormData): Promise
     notifyOnBadge: formData.get('notifyOnBadge') === 'on',
     notifyOnDigest: formData.get('notifyOnDigest') === 'on',
   });
-  if (!parsed.success) return;
+  if (!parsed.success) return { success: false };
 
   await db
     .update(users)
@@ -58,6 +57,7 @@ export async function updateNotificationTypesAction(formData: FormData): Promise
     .where(eq(users.id, session.user.id));
 
   revalidatePath('/settings');
+  return { success: true };
 }
 
 const quietHoursSchema = z.object({
@@ -67,11 +67,10 @@ const quietHoursSchema = z.object({
   quietHoursTimezone: z.string().nullable(),
 });
 
-export async function updateQuietHoursAction(formData: FormData): Promise<void> {
+export async function updateQuietHoursAction(_prev: unknown, formData: FormData): Promise<{ success: boolean }> {
   const session = await auth();
   if (!session?.user?.id) {
     redirect('/sign-in');
-    return;
   }
 
   const enabled = formData.get('quietHoursEnabled') === 'on';
@@ -81,7 +80,7 @@ export async function updateQuietHoursAction(formData: FormData): Promise<void> 
     quietHoursEnd: enabled ? parseInt(formData.get('quietHoursEnd') as string, 10) : null,
     quietHoursTimezone: enabled ? (formData.get('quietHoursTimezone') as string) || null : null,
   });
-  if (!parsed.success) return;
+  if (!parsed.success) return { success: false };
 
   await db
     .update(users)
@@ -93,4 +92,5 @@ export async function updateQuietHoursAction(formData: FormData): Promise<void> 
     .where(eq(users.id, session.user.id));
 
   revalidatePath('/settings');
+  return { success: true };
 }

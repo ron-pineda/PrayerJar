@@ -95,6 +95,46 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* How it works */}
+      <ScrollReveal>
+        <section className="pb-12 px-4">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-8">
+              How It Works
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                  🫙
+                </div>
+                <h3 className="font-semibold text-sm">Share Your Heart</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Write a prayer request — as specific or as simple as you need. You choose who sees it.
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                  🙏
+                </div>
+                <h3 className="font-semibold text-sm">The Community Intercedes</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Others around the world pray for your request. You receive a notification each time someone intercedes.
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                  ✨
+                </div>
+                <h3 className="font-semibold text-sm">Release a Light</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  When your prayer is answered, mark it as a testimony. A light joins the Lights Released wall for all to celebrate.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
       {/* Stats */}
       <ScrollReveal>
         <section className="pb-12 px-4">
@@ -116,12 +156,33 @@ export default async function HomePage() {
 
       {/* Secondary CTAs */}
       <ScrollReveal delay={120}>
-        <section className="pb-20 px-4 text-center">
-          <div className="border-t max-w-xs mx-auto mb-8" />
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="ghost" render={<Link href="/praise-wall" />}>View Lights Released</Button>
-            <Button variant="ghost" render={<Link href="/find-a-church" />}>Find a Church</Button>
-            <Button variant="ghost" render={<Link href="/know-jesus" />}>Know Jesus</Button>
+        <section className="pb-20 px-4">
+          <div className="border-t max-w-xs mx-auto mb-10" />
+          <div className="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            <Link
+              href="/know-jesus"
+              className="group rounded-xl border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 px-5 py-5 transition-colors"
+            >
+              <p className="text-lg mb-1">✝️</p>
+              <p className="font-semibold text-sm text-primary">Know Jesus</p>
+              <p className="text-xs text-muted-foreground mt-1">Start your faith journey</p>
+            </Link>
+            <Link
+              href="/praise-wall"
+              className="group rounded-xl border hover:bg-accent/50 px-5 py-5 transition-colors"
+            >
+              <p className="text-lg mb-1">✨</p>
+              <p className="font-semibold text-sm">Lights Released</p>
+              <p className="text-xs text-muted-foreground mt-1">Celebrate answered prayers</p>
+            </Link>
+            <Link
+              href="/find-a-church"
+              className="group rounded-xl border hover:bg-accent/50 px-5 py-5 transition-colors"
+            >
+              <p className="text-lg mb-1">⛪</p>
+              <p className="font-semibold text-sm">Find a Church</p>
+              <p className="text-xs text-muted-foreground mt-1">Connect with a local community</p>
+            </Link>
           </div>
         </section>
       </ScrollReveal>

@@ -85,8 +85,9 @@ export default function TrustPage() {
               removed from the public feed. You do not need to remember to take it down.
             </p>
             <p>
-              To delete your account and all associated data, email us and we will handle it
-              promptly. There is no retention period after a deletion request.
+              To delete your account and all associated data, go to{' '}
+              <a href="/settings" className="underline underline-offset-4">Settings → Danger Zone</a>.
+              Your data is removed immediately. If you need assistance, email hello@prayerjar.org.
             </p>
           </div>
         </section>

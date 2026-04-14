@@ -63,7 +63,7 @@ export default function FindAChurchPage() {
   const paginated = sorted.slice(0, (page + 1) * PAGE_SIZE);
 
   return (
-    <div className="flex flex-col h-screen bg-slate-900">
+    <div className="flex flex-col min-h-screen bg-background">
       <ChurchSearchBar
         onSearch={handleSearch}
         loading={loading}
@@ -73,12 +73,12 @@ export default function FindAChurchPage() {
 
       {/* Sort + count bar */}
       {searched && (
-        <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800 text-xs text-slate-400">
+        <div className="flex items-center justify-between px-4 py-2 bg-background border-b border-border text-xs text-muted-foreground">
           <span>{results.length} churches found</span>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortOption)}
-            className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-slate-300"
+            className="bg-muted border border-border rounded px-2 py-1 text-foreground"
           >
             <option value="distance">Sort: Distance</option>
             <option value="verified">Sort: Community Verified First</option>
@@ -88,15 +88,15 @@ export default function FindAChurchPage() {
 
       {/* Mobile tab toggle */}
       {searched && (
-        <div className="flex border-b border-slate-800 md:hidden">
+        <div className="flex border-b border-border md:hidden">
           {(["list", "map"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`flex-1 py-2.5 text-sm capitalize ${
                 activeTab === tab
-                  ? "text-blue-400 border-b-2 border-blue-400"
-                  : "text-slate-500"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-muted-foreground"
               }`}
             >
               {tab === "list" ? `List (${results.length})` : "Map"}
@@ -107,14 +107,14 @@ export default function FindAChurchPage() {
 
       {/* Error message */}
       {error && (
-        <div className="px-4 py-3 text-sm text-red-400 bg-red-950/30 border border-red-900 rounded-lg mx-4 mt-2">
+        <div className="px-4 py-3 text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg mx-4 mt-2">
           {error}
         </div>
       )}
 
       {/* Results area */}
       {!searched ? (
-        <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
+        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
           Search for churches above to get started.
         </div>
       ) : (
@@ -127,14 +127,14 @@ export default function FindAChurchPage() {
           >
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-slate-800 rounded-xl h-28 animate-pulse" />
+                <div key={i} className="bg-muted rounded-xl h-28 animate-pulse" />
               ))
             ) : sorted.length === 0 ? (
-              <div className="text-center py-12 text-slate-400 text-sm">
+              <div className="text-center py-12 text-muted-foreground text-sm">
                 <p className="mb-3">No churches found in this area.</p>
                 <button
                   onClick={() => handleSearch({ lat: searchCoords!.lat, lng: searchCoords!.lng, radiusMiles: 50, formattedAddress: searchAddress })}
-                  className="text-blue-400 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Try expanding to 50 miles
                 </button>
@@ -154,7 +154,7 @@ export default function FindAChurchPage() {
                 {paginated.length < sorted.length && (
                   <button
                     onClick={() => setPage((p) => p + 1)}
-                    className="w-full py-3 text-sm text-blue-400 hover:text-blue-300 border border-slate-700 rounded-xl"
+                    className="w-full py-3 text-sm text-primary hover:text-primary/80 border border-border rounded-xl"
                   >
                     Show more ({sorted.length - paginated.length} remaining)
                   </button>
@@ -168,7 +168,7 @@ export default function FindAChurchPage() {
             className={`flex-1 md:block ${activeTab === "list" ? "hidden md:block" : ""}`}
           >
             {searchCoords && (
-              <Suspense fallback={<div className="h-full bg-slate-800 animate-pulse" />}>
+              <Suspense fallback={<div className="h-full bg-muted animate-pulse" />}>
                 <ChurchMap
                   churches={sorted}
                   userLat={searchCoords.lat}
