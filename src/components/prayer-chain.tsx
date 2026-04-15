@@ -8,6 +8,7 @@ import { Clock, CheckCircle2 } from 'lucide-react';
 type Participant = {
   slotHour: number;
   nameInitial: string | null;
+  isMine?: boolean;
 };
 
 type Props = {
@@ -76,13 +77,40 @@ export function PrayerChain({ prayerId, chainId: initialChainId }: Props) {
     }
   }
 
+  async function handleLeaveSlot(slotHour: number) {
+    if (!chainId || pendingSlot !== null) return;
+    setError('');
+    setPendingSlot(slotHour);
+    const snapshot = participants;
+    setParticipants((prev) => prev.filter((p) => p.slotHour !== slotHour));
+
+    try {
+      const res = await fetch(`/api/v1/chains/${chainId}/join`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slotHour }),
+      });
+      if (!res.ok) {
+        setParticipants(snapshot);
+        setError('Could not release slot. Please try again.');
+      } else {
+        await fetchParticipants(chainId);
+      }
+    } catch {
+      setParticipants(snapshot);
+      setError('Could not release slot. Please try again.');
+    } finally {
+      setPendingSlot(null);
+    }
+  }
+
   async function handleJoinSlot(slotHour: number) {
     if (!chainId || pendingSlot !== null) return;
     setError('');
     setPendingSlot(slotHour);
 
     // Optimistic fill with a placeholder initial
-    const optimisticParticipant: Participant = { slotHour, nameInitial: 'You' };
+    const optimisticParticipant: Participant = { slotHour, nameInitial: 'You', isMine: true };
     setParticipants((prev) => [...prev, optimisticParticipant]);
 
     try {
@@ -205,6 +233,25 @@ export function PrayerChain({ prayerId, chainId: initialChainId }: Props) {
             const initial = participant?.nameInitial?.charAt(0).toUpperCase() ?? '';
 
             if (isFilled) {
+              if (participant?.isMine) {
+                return (
+                  <button
+                    key={hour}
+                    onClick={() => handleLeaveSlot(hour)}
+                    disabled={isPending || pendingSlot !== null}
+                    title={`Release your ${formatHour(hour)} slot`}
+                    className="flex flex-col items-center gap-0.5 group disabled:opacity-40"
+                    aria-label={`Release ${formatHour(hour)} slot`}
+                  >
+                    <div className="h-9 w-9 rounded-full bg-amber-500 flex items-center justify-center text-xs font-semibold text-white shadow-sm ring-2 ring-amber-300 group-hover:bg-rose-500 group-hover:ring-rose-300 transition-colors">
+                      {isPending ? '…' : initial || 'Y'}
+                    </div>
+                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-medium leading-none">
+                      {formatHour(hour)}
+                    </span>
+                  </button>
+                );
+              }
               return (
                 <div
                   key={hour}
@@ -256,7 +303,7 @@ export function PrayerChain({ prayerId, chainId: initialChainId }: Props) {
         {error && <p className="text-xs text-destructive">{error}</p>}
 
         <p className="text-xs text-muted-foreground text-center">
-          Tap an empty slot to commit to praying during that hour.
+          Tap an empty slot to commit, or tap your own slot to release it.
         </p>
       </CardContent>
     </Card>

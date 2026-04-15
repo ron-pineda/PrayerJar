@@ -60,6 +60,20 @@ export async function getChainParticipants(chainId: string) {
   }));
 }
 
+export async function leaveChain(chainId: string, userId: string, slotHour: number): Promise<boolean> {
+  const result = await db
+    .delete(chainParticipants)
+    .where(
+      and(
+        eq(chainParticipants.chainId, chainId),
+        eq(chainParticipants.userId, userId),
+        eq(chainParticipants.slotHour, slotHour),
+      ),
+    )
+    .returning({ id: chainParticipants.id });
+  return result.length > 0;
+}
+
 export async function isSlotTaken(chainId: string, slotHour: number): Promise<boolean> {
   const rows = await db
     .select({ id: chainParticipants.id })

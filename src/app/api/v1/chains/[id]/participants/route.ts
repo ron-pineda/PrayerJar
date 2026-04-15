@@ -14,9 +14,11 @@ export async function GET(
   const { id: chainId } = await params;
 
   const rows = await getChainParticipants(chainId);
+  const userId = session.user?.id;
   const participants = rows.map((r) => ({
     slotHour: r.participant.slotHour,
     nameInitial: r.nameInitial ?? null,
+    isMine: !!userId && r.participant.userId === userId,
   }));
 
   return NextResponse.json({ participants });

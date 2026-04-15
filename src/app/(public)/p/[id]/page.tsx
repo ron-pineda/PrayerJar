@@ -50,6 +50,7 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
   if (!prayer || prayer.status === 'expired') notFound();
 
   const userId = session?.user?.id;
+  const isOwner = !!userId && userId === prayer.authorId;
   const [adoptionCount, userAdopted, chain] = await Promise.all([
     getAdoptionCount(prayer.id),
     userId ? isAdopted(userId, prayer.id) : Promise.resolve(false),
@@ -99,20 +100,36 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
         </CardContent>
       </Card>
 
-      <PrayForButton prayerId={prayer.id} initialCount={prayer.prayerCount} />
+      {isOwner ? (
+        <Card className="border-amber-300/60 bg-amber-50/40 dark:bg-amber-950/20 dark:border-amber-700/40">
+          <CardContent className="pt-6 pb-6 space-y-3 text-center">
+            <p className="font-semibold text-foreground">This is your prayer</p>
+            <p className="text-sm text-muted-foreground">
+              You submitted this request. Share the link above so others can pray for you.
+            </p>
+            <Button size="sm" variant="outline" render={<Link href="/my-prayers" />}>
+              Manage in My Prayers
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <PrayForButton prayerId={prayer.id} initialCount={prayer.prayerCount} />
 
-      <div className="space-y-2">
-        <p className="text-sm font-medium text-muted-foreground">Commit to pray for this daily</p>
-        <AdoptPrayerButton
-          prayerId={prayer.id}
-          initialAdopted={userAdopted}
-          initialCount={adoptionCount}
-        />
-      </div>
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Commit to pray for this daily</p>
+            <AdoptPrayerButton
+              prayerId={prayer.id}
+              initialAdopted={userAdopted}
+              initialCount={adoptionCount}
+            />
+          </div>
 
-      <CheckInPulse prayerId={prayer.id} prayerCreatedAt={prayer.createdAt} />
+          <CheckInPulse prayerId={prayer.id} prayerCreatedAt={prayer.createdAt} />
 
-      <PrayerChain prayerId={prayer.id} chainId={chain?.id} />
+          <PrayerChain prayerId={prayer.id} chainId={chain?.id} />
+        </>
+      )}
 
       <div className="space-y-3">
         <Button

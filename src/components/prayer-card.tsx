@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { markAnsweredAction, renewPrayerAction, deletePrayerAction, updatePrayerAction } from '@/app/actions/lifecycle.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
-import { Share2 } from 'lucide-react';
+import { Share2, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 import { PhotoUpload } from './photo-upload';
 import { VideoRecorder } from './video-recorder';
 import { CelebrationAnimation } from './celebration-animation';
@@ -247,6 +248,10 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
             >
               <Share2 className="h-4 w-4 mr-1" />
               Share Link
+            </Button>
+            <Button size="sm" variant="ghost" render={<Link href={`/p/${prayer.id}`} />}>
+              <ExternalLink className="h-4 w-4 mr-1" />
+              View
             </Button>
             {showDelete && (
               confirmDelete ? (
