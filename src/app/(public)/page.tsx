@@ -9,14 +9,23 @@ import { PrayingNowCounter } from '@/components/praying-now-counter';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
 import { prayers, prayerInteractions, users } from '@/db/schema';
-import { eq, and, gt, sql } from 'drizzle-orm';
+import { eq, and, gt, ne, isNull, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 
-async function getStats() {
+async function getStats(viewerUserId?: string | null) {
+  // Mirror /pray's getRandomPrayer filters so "prayers waiting" reflects what
+  // the viewer can actually intercede for: active, non-group, not their own.
+  const activeConditions = [
+    eq(prayers.status, 'active'),
+    gt(prayers.expiresAt, new Date()),
+    isNull(prayers.groupId),
+  ];
+  if (viewerUserId) activeConditions.push(ne(prayers.authorId, viewerUserId));
+
   const [totalRow] = await db
     .select({ count: sql<number>`count(*)` })
     .from(prayers)
-    .where(and(eq(prayers.status, 'active'), gt(prayers.expiresAt, new Date())));
+    .where(and(...activeConditions));
 
   const [answeredRow] = await db
     .select({ count: sql<number>`count(*)` })
@@ -44,7 +53,8 @@ async function getUserOnboardingState(userId: string) {
 }
 
 export default async function HomePage() {
-  const [stats, session] = await Promise.all([getStats(), auth()]);
+  const session = await auth();
+  const stats = await getStats(session?.user?.id);
   const verse = getDailyVerse();
 
   const needsOnboarding =
