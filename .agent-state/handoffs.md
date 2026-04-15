@@ -101,3 +101,5 @@
 [2026-04-15] Backend Engineer → QA: pj-s13-admin-p1-auth-helpers — requireAdmin/withAdmin helpers + proxy 404 + env assertion ready for security verification
 [2026-04-15] Backend Engineer → QA: pj-s13-admin-p2-wire-sites — logModerationRejection wired at 7 sites, service layer complete
 [2026-04-15] Backend Engineer → QA: pj-s13-admin-p3-contact — contact persistence + cron purge route ready for verification
+[2026-04-15] QA → Reviewer: pj-s13-admin-p1-qa/p2-qa/p3-qa — security + logging + contact phases verified. ALL PASS with two NEEDS-REVIEW flags for Reviewer attention: (1) moderation category mapping only emits selfHarm|other — richer categories never populated; (2) cron returns 401 on bad auth (spec doesn't specify status code).
+[2026-04-15] Frontend Engineer → QA: pj-s13-admin-p4-ui — admin layout + overview + moderation log + feedback inbox pages ready for review

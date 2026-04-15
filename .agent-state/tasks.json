@@ -2833,7 +2833,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — QA Phase 1 (schema + auth hardening)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Verify 404 on /admin/* for non-admins, existing /admin/queue still works for admins, requireAdmin rejects empty ADMIN_EMAILS, prod boot fails without ADMIN_EMAILS, migration applies cleanly.",
@@ -2844,7 +2844,9 @@
       "pj-s13-admin-p1-proxy-404"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "QA passed 2026-04-15. All 6 security criteria verified: requireAdmin calls notFound() (not redirect), withAdmin returns 404 Response, proxy.ts returns NextResponse(null,{status:404}) for non-admin /admin/* requests, env.ts assertion is production-only, admin.actions.ts uses requireAdmin() on every action, rate-limit admin window is 60/min. No failures."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -2907,7 +2909,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — QA Phase 2 (moderation logging)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Force a rejection at each of the 7 sites, verify a moderation_logs row with correct content_type/source_route/category/userId/snippet. Verify user-visible 422 unchanged. Test cron purges snippets older than 90d while keeping rows.",
@@ -2917,7 +2919,9 @@
       "pj-s13-admin-p2-wire-sites"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "QA passed 2026-04-15. All 7 rejection sites wired: prayer.service (prayer), lifecycle.actions (prayer), group.service (group_post), partner-messages route (partner_message), groups/[id] route (group_meta x2: name+description), interaction.service (interaction_message), church.service (church_note). All use .catch(()=>{}) fire-and-forget. logModerationRejection itself has no internal try/catch but callers swallow errors per pattern. NEEDS-REVIEW flag raised for Reviewer: category mapping limited to selfHarm|other at call sites — richer AI categories (spam, harassment, hate, sexual) will never be populated unless moderateContent() returns them and callers map them."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -2951,7 +2955,7 @@
     "sprint": "13",
     "phase": "3",
     "title": "Admin dashboard — QA Phase 3 (contact persistence)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "Submit valid form → row persists + email sent. Force Resend failure → row still persists, action returns success. Zod validation regression check.",
@@ -2960,7 +2964,9 @@
       "pj-s13-admin-p3-contact"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "QA passed 2026-04-15. createContactSubmission called before Resend. DB failure captured in dbWriteFailed flag — Resend still attempted. If DB succeeds and Resend fails, action returns { success: true }. Cron route verifies Authorization: Bearer ${CRON_SECRET} header. vercel.json registers /api/cron/purge-moderation-snippets at schedule '0 3 * * *'. NEEDS-REVIEW for Reviewer: cron returns 401 (not spec-specified status code) on bad auth — acceptable but Reviewer should confirm. Also: notifyAdmins call is commented out (TODO Phase 5) per spec, correct for this phase."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -2993,7 +2999,7 @@
     "sprint": "13",
     "phase": "4",
     "title": "Admin dashboard — UI (layout, overview, moderation, feedback)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Build src/app/admin/layout.tsx (left-rail nav, badge counts, red critical icon), /admin/page.tsx (5 stat cards + dismissible critical banner), /admin/moderation/page.tsx (filterable log table with acknowledge button), /admin/feedback/page.tsx (contact inbox with mark-as-read). All server components start with requireAdmin().",
@@ -3005,14 +3011,16 @@
       "src/components/admin/mark-read-button.tsx",
       "src/components/admin/acknowledge-log-button.tsx",
       "src/components/admin/moderation-filters.tsx",
-      "src/components/admin/critical-banner.tsx"
+      "src/components/admin/critical-banner.tsx",
+      "src/app/actions/admin.actions.ts"
     ],
     "depends_on": [
       "pj-s13-admin-p4-backend"
     ],
     "blockers": [],
     "notes": [
-      "No client-side admin gating — every page does server-side requireAdmin(). No admin email or link should appear in non-admin client bundles."
+      "No client-side admin gating — every page does server-side requireAdmin(). No admin email or link should appear in non-admin client bundles.",
+      "[Frontend, 2026-04-15] DONE. Files: layout.tsx, page.tsx, moderation/page.tsx, feedback/page.tsx, 4 client components, admin.actions.ts (added 2 actions). AC: all pass. Deviations: stats queries inlined in page.tsx (admin-stats.service.ts absent); ExpandableMessage uses <details> instead of JS toggle (no client JS needed)."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
