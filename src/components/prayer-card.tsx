@@ -103,6 +103,9 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
           {prayer.isUrgent && (
             <Badge variant="destructive" className="text-xs">Urgent</Badge>
           )}
+          {prayer.isAnonymous && (
+            <Badge variant="outline" className="text-xs text-muted-foreground">Anonymous</Badge>
+          )}
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[localStatus]}`}>
             {localStatus}
           </span>
