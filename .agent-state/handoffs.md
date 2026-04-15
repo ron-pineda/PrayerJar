@@ -1,3 +1,4 @@
+[2026-04-15] Database Engineer → Backend Engineer: pj-s13-admin-p1-schema — 3 tables (moderation_logs, admin_actions, contact_submissions) + enums added to src/db/schema.ts, migration 0025_oval_quasar.sql generated. Backend can now implement auth helpers and service layer.
 [2026-04-15] PM → Planning: Sprint 12 planned — 5 proposed tasks: fix-double-interaction (high), fix-sse-polling (high), prayer-deletion (medium), fire-forget-side-effects (medium), claim-link (medium, moved from s11, held)
 [2026-04-15] Backend → Done: pj-s11-fix-moderation-timeout, pj-s11-fix-browse-own-prayers, pj-s11-fix-pray-for-another-loop, pj-s11-fix-google-oauth-createuser — four prod bug fixes committed c6b7a4b + db01d5e, all deployed
 [2026-04-14] Full Stack → Done: pj-s8.5-4 — Church member invite flow — join page, server action, copy-link component, team page invite section all complete
@@ -84,3 +85,16 @@
 [2026-04-13T14:00:00Z] PM: Added 2 more tasks after ministry-tone review — pj-s7.2-9 (hide billing from non-church users) and pj-s7.2-10 (press kit live stats). Total: 16 tasks across 7.1 and 7.2.
 
 [2026-04-13T21:56:56.198Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-15] Architect → PM: Sprint 13 planned — Platform Admin Dashboard, 16 tasks across 5 phases, plan at docs/superpowers/plans/2026-04-15-admin-dashboard-plan.md. 3 open questions flagged (moderation-site scope, cron path, enum additions). Awaiting PM approval.
+[2026-04-15] Architect → Database Engineer: pj-s13-admin-p1-schema Phase 1 — add 3 tables + enums to src/db/schema.ts, generate migration 0025_admin_dashboard.sql. Recommended kickoff task.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p1-auth-helpers Phase 1 — extract requireAdmin to src/lib/admin-auth.ts (notFound not throw) + src/lib/env.ts startup assertion.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p1-proxy-404 Phase 1 — src/proxy.ts 404 instead of redirect + admin rate-limit window.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p2-service Phase 2 — moderation-log.service + snippet-purge cron.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p2-wire-sites Phase 2 — wire logModerationRejection into 7 rejection sites (spec listed 5; grep found 7).
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p3-contact Phase 3 — persist contact submissions before Resend send.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p4-backend Phase 4 — admin read helpers + audit-log existing report actions + new admin actions.
+[2026-04-15] Architect → Frontend Engineer: pj-s13-admin-p4-ui Phase 4 — admin layout + overview + moderation + feedback pages.
+[2026-04-15] Architect → Backend Engineer: pj-s13-admin-p5-notify Phase 5 — notifyAdmins helper + 3 triggers (selfHarm, harassment, contact).
+[2026-04-15] Architect → QA: pj-s13-admin-p1-qa through pj-s13-admin-p5-qa — phase-gated QA, one per phase.
+[2026-04-15] Architect → Reviewer: pj-s13-admin-reviewer — final cross-phase review.

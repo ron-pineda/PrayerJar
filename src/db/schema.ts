@@ -1,7 +1,8 @@
 import {
   pgTable, pgEnum, uuid, text, boolean, integer, serial,
-  timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb, index,
+  timestamp, date, primaryKey, doublePrecision, uniqueIndex, jsonb, index, numeric,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 import type { AdapterAccountType } from 'next-auth/adapters';
 
 export const categoryEnum = pgEnum('category', [
@@ -706,3 +707,74 @@ export const apiKeys = pgTable('api_keys', {
 });
 
 export type ApiKey = typeof apiKeys.$inferSelect;
+
+// --- Platform Admin Dashboard (pj-s13) ---
+
+export const moderationContentTypeEnum = pgEnum('moderation_content_type', [
+  'prayer', 'testimony', 'partner_message', 'group_post', 'group_meta',
+  'interaction_message', 'church_note',
+]);
+
+export const moderationCategoryEnum = pgEnum('moderation_category', [
+  'selfHarm', 'spam', 'harassment', 'hate', 'sexual', 'other',
+]);
+
+export const moderationLogs = pgTable('moderation_logs', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+  contentType: moderationContentTypeEnum('content_type').notNull(),
+  contentSnippet: text('content_snippet'),
+  category: moderationCategoryEnum('category').notNull(),
+  aiConfidence: numeric('ai_confidence'),
+  sourceRoute: text('source_route').notNull(),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+  resolvedBy: text('resolved_by'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('moderation_logs_category_created_idx').on(t.category, t.createdAt),
+  index('moderation_logs_resolved_at_null_idx').on(t.resolvedAt).where(sql`${t.resolvedAt} IS NULL`),
+]);
+
+export type ModerationLog = typeof moderationLogs.$inferSelect;
+export type NewModerationLog = typeof moderationLogs.$inferInsert;
+
+export const adminActionTypeEnum = pgEnum('admin_action_type', [
+  'hide_prayer', 'unhide_prayer', 'delete_prayer', 'resolve_report', 'dismiss_report',
+  'mark_feedback_read', 'acknowledge_moderation_log', 'purge_user',
+]);
+
+export const adminActions = pgTable('admin_actions', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  adminEmail: text('admin_email').notNull(),
+  action: adminActionTypeEnum('action').notNull(),
+  targetType: text('target_type').notNull(),
+  targetId: uuid('target_id').notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('admin_actions_created_idx').on(t.createdAt),
+]);
+
+export type AdminAction = typeof adminActions.$inferSelect;
+export type NewAdminAction = typeof adminActions.$inferInsert;
+
+export const contactSubjectEnum = pgEnum('contact_subject', [
+  'General', 'Church Partnership', 'Feedback', 'Bug Report', 'Other',
+]);
+
+export const contactSubmissions = pgTable('contact_submissions', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  subject: contactSubjectEnum('subject').notNull(),
+  message: text('message').notNull(),
+  readAt: timestamp('read_at', { withTimezone: true }),
+  readBy: text('read_by'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('contact_submissions_read_at_null_idx').on(t.readAt).where(sql`${t.readAt} IS NULL`),
+  index('contact_submissions_created_idx').on(t.createdAt),
+]);
+
+export type ContactSubmission = typeof contactSubmissions.$inferSelect;
+export type NewContactSubmission = typeof contactSubmissions.$inferInsert;

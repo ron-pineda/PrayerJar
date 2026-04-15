@@ -2753,5 +2753,347 @@
       "Bundle with the double-interaction fix - adjacent code."
     ],
     "last_touched": "2026-04-15T17:54:55.000Z"
+  },
+  {
+    "id": "pj-s13-admin-p1-schema",
+    "sprint": "13",
+    "phase": "1",
+    "title": "Admin dashboard — schema + migration (moderation_logs, admin_actions, contact_submissions)",
+    "status": "review",
+    "assigned_to": "Database Engineer",
+    "priority": "high",
+    "description": "Add three new tables plus enums to src/db/schema.ts and generate migration 0025_admin_dashboard.sql. Indexes per spec §3. No data migration needed.",
+    "files": [
+      "src/db/schema.ts",
+      "src/db/migrations/0025_oval_quasar.sql"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "Spec uses path 'drizzle/schema.ts' but the project uses src/db/schema.ts — plan corrects this.",
+      "Last migration applied is 0024_zippy_rockslide.sql; next is 0025.",
+      "content_type enum includes interaction_message and church_note per plan §7 recommendation (both confirmed by architect as needed for the 7 rejection sites).",
+      "Schema + migration generated. Awaiting Backend Engineer review.",
+      "Migration filename: 0025_oval_quasar.sql (drizzle-kit auto-names; starts with 0025_ as required).",
+      "Data impact: additive only — 3 new tables, 4 new enums. No existing tables or rows affected. Rollback: DROP TABLE moderation_logs, admin_actions, contact_submissions; DROP TYPE moderation_content_type, moderation_category, admin_action_type, contact_subject.",
+      "ai_confidence column uses numeric (SQL NUMERIC) per spec; existing schema uses doublePrecision for floats but numeric is available and more appropriate for a confidence score stored as a decimal."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p1-auth-helpers",
+    "sprint": "13",
+    "phase": "1",
+    "title": "Admin dashboard — requireAdmin/withAdmin + env startup assertion",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create src/lib/admin-auth.ts (requireAdmin with notFound(), withAdmin wrapper) and src/lib/env.ts (prod-only ADMIN_EMAILS assertion, imported from src/lib/auth.ts). Refactor src/app/actions/admin.actions.ts to use the extracted helper.",
+    "files": [
+      "src/lib/admin-auth.ts",
+      "src/lib/env.ts",
+      "src/lib/auth.ts",
+      "src/app/actions/admin.actions.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "Existing requireAdmin in admin.actions.ts throws — replace with notFound() for disclosure-minimizing behavior.",
+      "env.ts must be imported from auth.ts as bare side-effect import so it is never tree-shaken."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p1-proxy-404",
+    "sprint": "13",
+    "phase": "1",
+    "title": "Admin dashboard — middleware 404 + admin rate-limit window",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Change src/proxy.ts /admin/* non-admin branch to return 404 instead of redirect to /sign-in. Add 'admin' window (60/min) to src/lib/rate-limit.ts.",
+    "files": [
+      "src/proxy.ts",
+      "src/lib/rate-limit.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "Protected-prefix redirect for non-admin non-auth users must remain unchanged."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p1-qa",
+    "sprint": "13",
+    "phase": "1",
+    "title": "Admin dashboard — QA Phase 1 (schema + auth hardening)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Verify 404 on /admin/* for non-admins, existing /admin/queue still works for admins, requireAdmin rejects empty ADMIN_EMAILS, prod boot fails without ADMIN_EMAILS, migration applies cleanly.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p1-schema",
+      "pj-s13-admin-p1-auth-helpers",
+      "pj-s13-admin-p1-proxy-404"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p2-service",
+    "sprint": "13",
+    "phase": "2",
+    "title": "Admin dashboard — moderation-log.service + snippet-purge cron",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create src/services/moderation-log.service.ts with logModerationRejection/listModerationLogs/acknowledgeLog. Add /api/cron/purge-moderation-snippets/route.ts and register in vercel.json at 0 3 * * *. No notifications yet — Phase 5 wires those.",
+    "files": [
+      "src/services/moderation-log.service.ts",
+      "src/app/api/cron/purge-moderation-snippets/route.ts",
+      "vercel.json"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p1-schema",
+      "pj-s13-admin-p1-auth-helpers"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p2-wire-sites",
+    "sprint": "13",
+    "phase": "2",
+    "title": "Admin dashboard — wire logModerationRejection into 7 rejection sites",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Call logModerationRejection before the existing throw at 7 sites: lifecycle.actions updatePrayer, group.service postGroupPrayer, /api/v1/partner-messages, /api/v1/groups/[id] (name + description), prayer.service createPrayer, interaction.service prayForRequest, church.service submitChurchRecommendation. Log must not affect user-visible 422.",
+    "files": [
+      "src/app/actions/lifecycle.actions.ts",
+      "src/services/group.service.ts",
+      "src/app/api/v1/partner-messages/route.ts",
+      "src/app/api/v1/groups/[id]/route.ts",
+      "src/services/prayer.service.ts",
+      "src/services/interaction.service.ts",
+      "src/services/church.service.ts"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p2-service"
+    ],
+    "blockers": [],
+    "notes": [
+      "Spec §6.1 listed only 5 sites; codebase grep found 7. Architect recommends wiring all 7 — confirm with PM before starting."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p2-qa",
+    "sprint": "13",
+    "phase": "2",
+    "title": "Admin dashboard — QA Phase 2 (moderation logging)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Force a rejection at each of the 7 sites, verify a moderation_logs row with correct content_type/source_route/category/userId/snippet. Verify user-visible 422 unchanged. Test cron purges snippets older than 90d while keeping rows.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p2-service",
+      "pj-s13-admin-p2-wire-sites"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p3-contact",
+    "sprint": "13",
+    "phase": "3",
+    "title": "Admin dashboard — contact form persistence",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "Create src/services/contact.service.ts (create/list/markRead). Edit src/app/actions/contact.actions.ts to persist BEFORE Resend so outages don't drop submissions. Resend failure must not fail the action once row is persisted.",
+    "files": [
+      "src/services/contact.service.ts",
+      "src/app/actions/contact.actions.ts",
+      "src/db/schema.ts"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p1-schema"
+    ],
+    "blockers": [],
+    "notes": [
+      "Keep Zod subject enum and DB enum defined from a single shared constant to avoid drift."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p3-qa",
+    "sprint": "13",
+    "phase": "3",
+    "title": "Admin dashboard — QA Phase 3 (contact persistence)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "medium",
+    "description": "Submit valid form → row persists + email sent. Force Resend failure → row still persists, action returns success. Zod validation regression check.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p3-contact"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p4-backend",
+    "sprint": "13",
+    "phase": "4",
+    "title": "Admin dashboard — backend read helpers + audit-log on existing actions",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "Create src/services/admin-stats.service.ts (getOverviewStats, getCriticalItems). Add list queries to moderation-log.service and contact.service. Add server actions markFeedbackReadAction + acknowledgeModerationLogAction, and add admin_actions audit writes to the existing approve/reject/dismiss report actions. All gated by requireAdmin + admin rate limit.",
+    "files": [
+      "src/services/admin-stats.service.ts",
+      "src/services/moderation-log.service.ts",
+      "src/services/contact.service.ts",
+      "src/app/actions/admin.actions.ts"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p2-service",
+      "pj-s13-admin-p3-contact"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p4-ui",
+    "sprint": "13",
+    "phase": "4",
+    "title": "Admin dashboard — UI (layout, overview, moderation, feedback)",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Build src/app/admin/layout.tsx (left-rail nav, badge counts, red critical icon), /admin/page.tsx (5 stat cards + dismissible critical banner), /admin/moderation/page.tsx (filterable log table with acknowledge button), /admin/feedback/page.tsx (contact inbox with mark-as-read). All server components start with requireAdmin().",
+    "files": [
+      "src/app/admin/layout.tsx",
+      "src/app/admin/page.tsx",
+      "src/app/admin/moderation/page.tsx",
+      "src/app/admin/feedback/page.tsx",
+      "src/components/admin/mark-read-button.tsx",
+      "src/components/admin/acknowledge-log-button.tsx",
+      "src/components/admin/moderation-filters.tsx",
+      "src/components/admin/critical-banner.tsx"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p4-backend"
+    ],
+    "blockers": [],
+    "notes": [
+      "No client-side admin gating — every page does server-side requireAdmin(). No admin email or link should appear in non-admin client bundles."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p4-qa",
+    "sprint": "13",
+    "phase": "4",
+    "title": "Admin dashboard — QA Phase 4 (UI + admin actions)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "medium",
+    "description": "Non-admin gets 404 on every /admin/* route. Admin sees stat cards, banner appears/disappears on criteria. markFeedbackRead + acknowledgeLog mutate state, revalidate, write admin_actions. Rate limit: 61st action in a minute returns 429.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p4-backend",
+      "pj-s13-admin-p4-ui"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p5-notify",
+    "sprint": "13",
+    "phase": "5",
+    "title": "Admin dashboard — push notifications (notifyAdmins helper + 3 triggers)",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "Create src/lib/admin-notify.ts (fire-and-forget Resend to every ADMIN_EMAILS entry). Wire triggers: selfHarm inside logModerationRejection, harassment report creation, new contact submission. Email body must NOT contain content_snippet — only category + deep link.",
+    "files": [
+      "src/lib/admin-notify.ts",
+      "src/services/moderation-log.service.ts",
+      "src/services/report.service.ts",
+      "src/app/actions/contact.actions.ts"
+    ],
+    "depends_on": [
+      "pj-s13-admin-p2-service",
+      "pj-s13-admin-p3-contact"
+    ],
+    "blockers": [],
+    "notes": [
+      "Verify exact report creation file during implementation — grep for report insert site."
+    ],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-p5-qa",
+    "sprint": "13",
+    "phase": "5",
+    "title": "Admin dashboard — QA Phase 5 (notifications)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "medium",
+    "description": "Trigger each of 3 paths, verify Resend send to every ADMIN_EMAILS. Force Resend failure — originating action still succeeds. Non-trigger categories do not page. Emails contain no sensitive snippet text.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p5-notify"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
+  },
+  {
+    "id": "pj-s13-admin-reviewer",
+    "sprint": "13",
+    "phase": "all",
+    "title": "Admin dashboard — final review across all 5 phases",
+    "status": "proposed",
+    "assigned_to": "Reviewer",
+    "priority": "medium",
+    "description": "Final pass: no admin route bypasses requireAdmin/withAdmin; every admin mutation writes to admin_actions; no sensitive content leaks to client beyond 90d window; no client-side gating; cron is idempotent.",
+    "files": [],
+    "depends_on": [
+      "pj-s13-admin-p1-qa",
+      "pj-s13-admin-p2-qa",
+      "pj-s13-admin-p3-qa",
+      "pj-s13-admin-p4-qa",
+      "pj-s13-admin-p5-qa"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-15",
+    "last_touched": "2026-04-15"
   }
 ]
