@@ -2733,29 +2733,31 @@
     "id": "pj-s12-prayer-deletion",
     "sprint": "12",
     "title": "Add prayer deletion from My Prayers",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": null,
     "priority": "medium",
     "description": "Users can renew and mark answered but cannot delete a prayer they submitted. Add a delete button on the PrayerCard (visible in My Prayers only) with a confirmation step, plus a deletePrayerAction that verifies authorId === session.user.id before deleting.",
     "notes": [
       "Should also clean up related prayerInteractions + notifications via ON DELETE CASCADE (verify schema).",
-      "Consider soft-delete vs hard-delete - for MVP a hard delete is fine, but think about whether testimonies should ever be recoverable."
+      "Consider soft-delete vs hard-delete - for MVP a hard delete is fine, but think about whether testimonies should ever be recoverable.",
+      "Already fully implemented — showDelete=true wired in my-prayers, deletePrayerAction exists. Verified in code review."
     ],
-    "last_touched": "2026-04-15T17:54:55.000Z"
+    "last_touched": "2026-04-15"
   },
   {
     "id": "pj-s12-fire-forget-side-effects",
     "sprint": "12",
     "title": "Move updateStreak + evaluateBadgesForUser to fire-and-forget in prayForRequest",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": null,
     "priority": "medium",
     "description": "Both are currently awaited inside prayForRequest. Same stuck-button class of bug as the moderation timeout we just fixed - if either hangs, user UI sits on Sending... Switch to .catch(() => {}) pattern matching notifyPrayerAuthor. Streak/badge awards are best-effort, not user-blocking.",
     "notes": [
       "File: src/services/interaction.service.ts lines 49-52.",
-      "Bundle with the double-interaction fix - adjacent code."
+      "Bundle with the double-interaction fix - adjacent code.",
+      "Already implemented — updateStreak and evaluateBadgesForUser both called with .catch(() => {}) without await in interaction.service.ts."
     ],
-    "last_touched": "2026-04-15T17:54:55.000Z"
+    "last_touched": "2026-04-15"
   },
   {
     "id": "pj-s13-admin-p1-schema",
