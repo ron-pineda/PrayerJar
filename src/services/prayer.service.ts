@@ -126,6 +126,19 @@ export async function markPrayerAnswered(
   return updated ?? null;
 }
 
+export async function updatePrayer(
+  id: string,
+  authorId: string,
+  fields: { content: string; isUrgent: boolean; isAnonymous: boolean },
+) {
+  const [updated] = await db
+    .update(prayers)
+    .set(fields)
+    .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
+    .returning();
+  return updated ?? null;
+}
+
 export async function deletePrayer(id: string, authorId: string): Promise<boolean> {
   const result = await db
     .delete(prayers)

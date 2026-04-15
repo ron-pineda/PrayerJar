@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { Bell, Heart, Users, UserMinus, Link2, Users2, BookOpen } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 
 export const metadata: Metadata = { title: 'Notifications | The Prayer Jar' };
 
@@ -22,7 +23,7 @@ const TYPE_CONFIG: Record<string, { label: string; icon: ReactNode; href?: strin
   testimony_posted: { label: 'A new testimony was shared', icon: <BookOpen className="h-4 w-4 text-amber-500" /> },
 };
 
-type NotificationItem = { id: string; type: string; read: boolean; createdAt: Date | string };
+type NotificationItem = { id: string; type: string; read: boolean; createdAt: Date | string; relatedPrayerId?: string | null };
 
 function groupByDate(notifications: NotificationItem[]) {
   const now = new Date();
@@ -107,7 +108,7 @@ function NotificationGroup({
   items,
 }: {
   label: string;
-  items: Array<{ id: string; type: string; read: boolean; createdAt: Date | string }>;
+  items: NotificationItem[];
 }) {
   return (
     <section>
@@ -117,13 +118,9 @@ function NotificationGroup({
       <ul className="divide-y rounded-xl border overflow-hidden">
         {items.map((n) => {
           const config = TYPE_CONFIG[n.type];
-          return (
-            <li
-              key={n.id}
-              className={`flex items-start gap-3 px-4 py-3 ${
-                n.read ? 'bg-card' : 'bg-accent/40'
-              }`}
-            >
+          const href = n.relatedPrayerId ? `/p/${n.relatedPrayerId}` : null;
+          const inner = (
+            <>
               <span className="mt-0.5 shrink-0">
                 {config?.icon ?? <Bell className="h-4 w-4 text-muted-foreground" />}
               </span>
@@ -137,6 +134,16 @@ function NotificationGroup({
               </div>
               {!n.read && (
                 <span className="h-2 w-2 mt-1.5 rounded-full bg-primary shrink-0" />
+              )}
+            </>
+          );
+          const cls = `flex items-start gap-3 px-4 py-3 ${n.read ? 'bg-card' : 'bg-accent/40'} ${href ? 'hover:bg-accent/70 transition-colors' : ''}`;
+          return (
+            <li key={n.id}>
+              {href ? (
+                <Link href={href} className={cls}>{inner}</Link>
+              ) : (
+                <div className={cls}>{inner}</div>
               )}
             </li>
           );

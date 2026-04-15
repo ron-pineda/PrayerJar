@@ -43,7 +43,11 @@ export async function NotificationBell() {
           </DropdownMenuItem>
         ) : (
           notifications.map((n) => (
-            <DropdownMenuItem key={n.id} className={n.read ? 'opacity-60' : 'font-medium'}>
+            <DropdownMenuItem
+              key={n.id}
+              className={n.read ? 'opacity-60' : 'font-medium'}
+              render={n.relatedPrayerId ? <Link href={`/p/${n.relatedPrayerId}`} /> : undefined}
+            >
               {TYPE_LABELS[n.type] ?? n.type}
             </DropdownMenuItem>
           ))

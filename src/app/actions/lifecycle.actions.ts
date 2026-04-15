@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/lib/auth';
-import { markPrayerAnswered, renewPrayer, deletePrayer } from '@/services/prayer.service';
+import { markPrayerAnswered, renewPrayer, deletePrayer, updatePrayer } from '@/services/prayer.service';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -74,6 +74,36 @@ export async function renewPrayerAction(formData: FormData): Promise<LifecycleRe
   if (!updated) {
     return { success: false, error: 'Prayer not found or you do not own it.' };
   }
+
+  revalidatePath('/my-prayers');
+  return { success: true };
+}
+
+export async function updatePrayerAction(formData: FormData): Promise<LifecycleResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: 'You must be signed in.' };
+
+  const parsed = z.object({
+    prayerId: z.string().uuid(),
+    content: z.string().min(10).max(1000),
+    isUrgent: z.boolean(),
+    isAnonymous: z.boolean(),
+  }).safeParse({
+    prayerId: formData.get('prayerId'),
+    content: formData.get('content'),
+    isUrgent: formData.get('isUrgent') === 'true',
+    isAnonymous: formData.get('isAnonymous') === 'true',
+  });
+
+  if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
+
+  const updated = await updatePrayer(parsed.data.prayerId, session.user.id, {
+    content: parsed.data.content,
+    isUrgent: parsed.data.isUrgent,
+    isAnonymous: parsed.data.isAnonymous,
+  });
+
+  if (!updated) return { success: false, error: 'Prayer not found or you do not own it.' };
 
   revalidatePath('/my-prayers');
   return { success: true };

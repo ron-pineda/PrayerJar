@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { markAnsweredAction, renewPrayerAction, deletePrayerAction } from '@/app/actions/lifecycle.actions';
+import { markAnsweredAction, renewPrayerAction, deletePrayerAction, updatePrayerAction } from '@/app/actions/lifecycle.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
@@ -49,6 +49,10 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
   const [countKey, setCountKey] = useState(0);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [editContent, setEditContent] = useState(prayer.content);
+  const [editUrgent, setEditUrgent] = useState(prayer.isUrgent);
+  const [editAnonymous, setEditAnonymous] = useState(prayer.isAnonymous);
   const prevCountRef = useRef(prayer.prayerCount);
 
   useEffect(() => {
@@ -80,6 +84,20 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
     } else {
       setError(result.error);
     }
+  }
+
+  async function handleEditSave() {
+    setPending(true);
+    setError('');
+    const formData = new FormData();
+    formData.set('prayerId', prayer.id);
+    formData.set('content', editContent);
+    formData.set('isUrgent', String(editUrgent));
+    formData.set('isAnonymous', String(editAnonymous));
+    const result = await updatePrayerAction(formData);
+    setPending(false);
+    if (result.success) setShowEdit(false);
+    else setError(result.error);
   }
 
   async function handleDelete() {
@@ -166,6 +184,36 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
           />
         )}
 
+        {showEdit && localStatus === 'active' && (
+          <div className="space-y-2 pt-1">
+            <Textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              rows={4}
+              maxLength={1000}
+            />
+            <div className="flex flex-wrap gap-4 text-sm">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={editUrgent} onChange={(e) => setEditUrgent(e.target.checked)} />
+                Urgent
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={editAnonymous} onChange={(e) => setEditAnonymous(e.target.checked)} />
+                Anonymous
+              </label>
+            </div>
+            {error && <p className="text-xs text-destructive">{error}</p>}
+            <div className="flex gap-2">
+              <Button size="sm" onClick={handleEditSave} disabled={pending}>
+                {pending ? 'Saving…' : 'Save'}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => { setShowEdit(false); setEditContent(prayer.content); setEditUrgent(prayer.isUrgent); setEditAnonymous(prayer.isAnonymous); }} disabled={pending}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+
         {localStatus === 'active' && (
           <div className="flex gap-2 flex-wrap pt-1">
             <Button
@@ -174,6 +222,13 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
               onClick={() => setShowTestimony((v) => !v)}
             >
               Mark as Answered
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowEdit((v) => !v)}
+            >
+              Edit
             </Button>
             <Button
               size="sm"
