@@ -1,6 +1,6 @@
 import { db } from '@/db';
-import { prayers, users, type CategoryValue } from '@/db/schema';
-import { eq, and, or, sql, gt, isNull, isNotNull, ne } from 'drizzle-orm';
+import { prayers, prayerInteractions, users, type CategoryValue } from '@/db/schema';
+import { eq, and, or, sql, gt, isNull, isNotNull, ne, notInArray } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 import { categorizePrayer, moderateContent } from './ai.service';
 
@@ -71,6 +71,13 @@ export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnl
     conditions.push(
       or(isNull(prayers.authorId), ne(prayers.authorId, excludeUserId))!,
     );
+    // Also exclude prayers this user has already prayed for — otherwise with
+    // a small active set, "Pray for Another" loops back to the same prayer.
+    const alreadyPrayed = db
+      .select({ id: prayerInteractions.prayerId })
+      .from(prayerInteractions)
+      .where(eq(prayerInteractions.userId, excludeUserId));
+    conditions.push(notInArray(prayers.id, alreadyPrayed));
   }
 
   const results = await db
@@ -153,8 +160,9 @@ export async function searchPrayers(opts: {
   urgentOnly?: boolean;
   limit?: number;
   offset?: number;
+  excludeUserId?: string | null;
 }) {
-  const { query, category, urgentOnly, limit = 20, offset = 0 } = opts;
+  const { query, category, urgentOnly, limit = 20, offset = 0, excludeUserId } = opts;
   const now = new Date();
 
   const conditions = [
@@ -171,6 +179,13 @@ export async function searchPrayers(opts: {
   }
   if (query && query.trim().length > 0) {
     conditions.push(sql`content ILIKE ${'%' + query.trim() + '%'}`);
+  }
+  // authorId is nullable — NULL != x evaluates to NULL in SQL, so we must
+  // explicitly allow anonymous (NULL-authored) prayers through.
+  if (excludeUserId) {
+    conditions.push(
+      or(isNull(prayers.authorId), ne(prayers.authorId, excludeUserId))!,
+    );
   }
 
   return db

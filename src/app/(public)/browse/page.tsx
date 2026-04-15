@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookMarked } from "lucide-react";
 import { getPublishedCollections, getCategoryCounts } from "@/services/collections.service";
+import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Browse Prayers | The Prayer Jar" };
 
@@ -39,9 +40,16 @@ export default async function BrowsePage({
       ? (category as CategoryValue)
       : "any";
   const urgentOnly = urgent === "1";
+  const session = await auth();
 
   const [results, collections, categoryCounts] = await Promise.all([
-    searchPrayers({ query: q, category: activeCategory, urgentOnly, limit: 20 }),
+    searchPrayers({
+      query: q,
+      category: activeCategory,
+      urgentOnly,
+      limit: 20,
+      excludeUserId: session?.user?.id,
+    }),
     getPublishedCollections(),
     getCategoryCounts(),
   ]);

@@ -45,8 +45,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     async createUser({ user }) {
+      // NEVER let a welcome-email failure break signup. Resend can reject for
+      // unverified domains, rate limits, or recipient issues — when that
+      // throws inside a NextAuth event, the user sees a Configuration error
+      // and can't sign in at all. The drip job can recover missing sends.
       if (user.id && user.email) {
-        await sendWelcome1Email(user.id, user.email);
+        try {
+          await sendWelcome1Email(user.id, user.email);
+        } catch (err) {
+          console.error('[auth.createUser] welcome email failed:', err);
+        }
       }
     },
   },
