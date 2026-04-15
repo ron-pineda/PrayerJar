@@ -1,3 +1,4 @@
+[2026-04-15] Backend Engineer → Reviewer: pj-s13-admin-p4-backend — audit log writes added to 3 report actions per rework request
 [2026-04-15] Database Engineer → Backend Engineer: pj-s13-admin-p1-schema — 3 tables (moderation_logs, admin_actions, contact_submissions) + enums added to src/db/schema.ts, migration 0025_oval_quasar.sql generated. Backend can now implement auth helpers and service layer.
 [2026-04-15] PM → Planning: Sprint 12 planned — 5 proposed tasks: fix-double-interaction (high), fix-sse-polling (high), prayer-deletion (medium), fire-forget-side-effects (medium), claim-link (medium, moved from s11, held)
 [2026-04-15] Backend → Done: pj-s11-fix-moderation-timeout, pj-s11-fix-browse-own-prayers, pj-s11-fix-pray-for-another-loop, pj-s11-fix-google-oauth-createuser — four prod bug fixes committed c6b7a4b + db01d5e, all deployed
@@ -103,3 +104,4 @@
 [2026-04-15] Backend Engineer → QA: pj-s13-admin-p3-contact — contact persistence + cron purge route ready for verification
 [2026-04-15] QA → Reviewer: pj-s13-admin-p1-qa/p2-qa/p3-qa — security + logging + contact phases verified. ALL PASS with two NEEDS-REVIEW flags for Reviewer attention: (1) moderation category mapping only emits selfHarm|other — richer categories never populated; (2) cron returns 401 on bad auth (spec doesn't specify status code).
 [2026-04-15] Frontend Engineer → QA: pj-s13-admin-p4-ui — admin layout + overview + moderation log + feedback inbox pages ready for review
+[2026-04-15] Reviewer → PM: pj-s13-admin-reviewer — Phases 1–3 APPROVED, Phase 4 NEEDS-REWORK. The 3 existing report actions (approve/reject/dismiss) never write audit rows to admin_actions — spec §6.3 requirement missed. pj-s13-admin-p4-backend flagged needs-rework; Backend Engineer must add audit log writes to those 3 actions. Inline fix applied: proxy.ts filter(Boolean) added. Phase 5 (notifications) not yet started.

@@ -2759,7 +2759,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — schema + migration (moderation_logs, admin_actions, contact_submissions)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Database Engineer",
     "priority": "high",
     "description": "Add three new tables plus enums to src/db/schema.ts and generate migration 0025_admin_dashboard.sql. Indexes per spec §3. No data migration needed.",
@@ -2776,7 +2776,8 @@
       "Schema + migration generated. Awaiting Backend Engineer review.",
       "Migration filename: 0025_oval_quasar.sql (drizzle-kit auto-names; starts with 0025_ as required).",
       "Data impact: additive only — 3 new tables, 4 new enums. No existing tables or rows affected. Rollback: DROP TABLE moderation_logs, admin_actions, contact_submissions; DROP TYPE moderation_content_type, moderation_category, admin_action_type, contact_subject.",
-      "ai_confidence column uses numeric (SQL NUMERIC) per spec; existing schema uses doublePrecision for floats but numeric is available and more appropriate for a confidence score stored as a decimal."
+      "ai_confidence column uses numeric (SQL NUMERIC) per spec; existing schema uses doublePrecision for floats but numeric is available and more appropriate for a confidence score stored as a decimal.",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2786,7 +2787,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — requireAdmin/withAdmin + env startup assertion",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Create src/lib/admin-auth.ts (requireAdmin with notFound(), withAdmin wrapper) and src/lib/env.ts (prod-only ADMIN_EMAILS assertion, imported from src/lib/auth.ts). Refactor src/app/actions/admin.actions.ts to use the extracted helper.",
@@ -2801,7 +2802,8 @@
     "notes": [
       "Existing requireAdmin in admin.actions.ts throws — replace with notFound() for disclosure-minimizing behavior.",
       "env.ts must be imported from auth.ts as bare side-effect import so it is never tree-shaken.",
-      "requireAdmin, withAdmin, proxy 404, env assertion implemented."
+      "requireAdmin, withAdmin, proxy 404, env assertion implemented.",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2811,7 +2813,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — middleware 404 + admin rate-limit window",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Change src/proxy.ts /admin/* non-admin branch to return 404 instead of redirect to /sign-in. Add 'admin' window (60/min) to src/lib/rate-limit.ts.",
@@ -2823,7 +2825,9 @@
     "blockers": [],
     "notes": [
       "Protected-prefix redirect for non-admin non-auth users must remain unchanged.",
-      "proxy.ts updated — admin 404 instead of redirect."
+      "proxy.ts updated — admin 404 instead of redirect.",
+      "Reviewer fixed inline 2026-04-15: added .filter(Boolean) to adminEmails split (proxy.ts line 12) to match admin-auth.ts — trailing comma in ADMIN_EMAILS env var would have produced an empty string entry.",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2833,7 +2837,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — QA Phase 1 (schema + auth hardening)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Verify 404 on /admin/* for non-admins, existing /admin/queue still works for admins, requireAdmin rejects empty ADMIN_EMAILS, prod boot fails without ADMIN_EMAILS, migration applies cleanly.",
@@ -2855,7 +2859,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — moderation-log.service + snippet-purge cron",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Create src/services/moderation-log.service.ts with logModerationRejection/listModerationLogs/acknowledgeLog. Add /api/cron/purge-moderation-snippets/route.ts and register in vercel.json at 0 3 * * *. No notifications yet — Phase 5 wires those.",
@@ -2870,7 +2874,8 @@
     ],
     "blockers": [],
     "notes": [
-      "moderation-log.service.ts created with logModerationRejection, listModerationLogs, acknowledgeLog."
+      "moderation-log.service.ts created with logModerationRejection, listModerationLogs, acknowledgeLog.",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2880,7 +2885,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — wire logModerationRejection into 7 rejection sites",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Call logModerationRejection before the existing throw at 7 sites: lifecycle.actions updatePrayer, group.service postGroupPrayer, /api/v1/partner-messages, /api/v1/groups/[id] (name + description), prayer.service createPrayer, interaction.service prayForRequest, church.service submitChurchRecommendation. Log must not affect user-visible 422.",
@@ -2899,7 +2904,9 @@
     "blockers": [],
     "notes": [
       "Spec §6.1 listed only 5 sites; codebase grep found 7. Architect recommends wiring all 7 — confirm with PM before starting.",
-      "logModerationRejection wired into all 7 rejection sites."
+      "logModerationRejection wired into all 7 rejection sites.",
+      "Reviewer category-mapping finding 2026-04-15: moderateContent() returns { safe, selfHarm } only — no richer category field. The selfHarm|other mapping is therefore complete given the current AI service contract. When moderateContent is extended to return spam/harassment/hate/sexual, callers must be updated. aiConfidence is always null (acceptable v1 scope — AI service does not return a confidence value).",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2909,7 +2916,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — QA Phase 2 (moderation logging)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Force a rejection at each of the 7 sites, verify a moderation_logs row with correct content_type/source_route/category/userId/snippet. Verify user-visible 422 unchanged. Test cron purges snippets older than 90d while keeping rows.",
@@ -2930,7 +2937,7 @@
     "sprint": "13",
     "phase": "3",
     "title": "Admin dashboard — contact form persistence",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/services/contact.service.ts (create/list/markRead). Edit src/app/actions/contact.actions.ts to persist BEFORE Resend so outages don't drop submissions. Resend failure must not fail the action once row is persisted.",
@@ -2945,7 +2952,8 @@
     "blockers": [],
     "notes": [
       "Keep Zod subject enum and DB enum defined from a single shared constant to avoid drift.",
-      "contact.service.ts created, contact.actions.ts updated to persist before Resend, cron route + vercel.json added."
+      "contact.service.ts created, contact.actions.ts updated to persist before Resend, cron route + vercel.json added.",
+      "Reviewer approved 2026-04-15."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2955,7 +2963,7 @@
     "sprint": "13",
     "phase": "3",
     "title": "Admin dashboard — QA Phase 3 (contact persistence)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "Submit valid form → row persists + email sent. Force Resend failure → row still persists, action returns success. Zod validation regression check.",
@@ -2975,7 +2983,7 @@
     "sprint": "13",
     "phase": "4",
     "title": "Admin dashboard — backend read helpers + audit-log on existing actions",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/services/admin-stats.service.ts (getOverviewStats, getCriticalItems). Add list queries to moderation-log.service and contact.service. Add server actions markFeedbackReadAction + acknowledgeModerationLogAction, and add admin_actions audit writes to the existing approve/reject/dismiss report actions. All gated by requireAdmin + admin rate limit.",
@@ -2990,7 +2998,10 @@
       "pj-s13-admin-p3-contact"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "NEEDS-REWORK (Reviewer, 2026-04-15): The 3 existing report actions (approveReportAction, rejectContentAction, dismissReportAction) in src/app/actions/admin.actions.ts call requireAdmin() but discard the returned email — no audit row is written to admin_actions for any report resolution. Spec §6.3 explicitly requires: 'Existing report resolve/dismiss actions get the audit-log write added.' Fix: (1) capture { email } from requireAdmin() in all 3 actions; (2) call db.insert(adminActions) with the appropriate action type (resolve_report or dismiss_report) inside a try/catch per the pattern in acknowledgeLog and markContactRead. Note: markFeedbackReadAction and acknowledgeModerationLogAction are correctly implemented and DO write audit rows.",
+      "Audit log writes added to approveReportAction, rejectContentAction, dismissReportAction. Each now captures { email } from requireAdmin() and inserts into adminActions inside a try/catch — audit failure logs to console.error but does not block the user-facing action. approveReportAction uses 'resolve_report'; rejectContentAction and dismissReportAction both use 'dismiss_report'. Pattern matches acknowledgeLog and markContactRead exactly."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -2999,7 +3010,7 @@
     "sprint": "13",
     "phase": "4",
     "title": "Admin dashboard — UI (layout, overview, moderation, feedback)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Build src/app/admin/layout.tsx (left-rail nav, badge counts, red critical icon), /admin/page.tsx (5 stat cards + dismissible critical banner), /admin/moderation/page.tsx (filterable log table with acknowledge button), /admin/feedback/page.tsx (contact inbox with mark-as-read). All server components start with requireAdmin().",
@@ -3020,7 +3031,8 @@
     "blockers": [],
     "notes": [
       "No client-side admin gating — every page does server-side requireAdmin(). No admin email or link should appear in non-admin client bundles.",
-      "[Frontend, 2026-04-15] DONE. Files: layout.tsx, page.tsx, moderation/page.tsx, feedback/page.tsx, 4 client components, admin.actions.ts (added 2 actions). AC: all pass. Deviations: stats queries inlined in page.tsx (admin-stats.service.ts absent); ExpandableMessage uses <details> instead of JS toggle (no client JS needed)."
+      "[Frontend, 2026-04-15] DONE. Files: layout.tsx, page.tsx, moderation/page.tsx, feedback/page.tsx, 4 client components, admin.actions.ts (added 2 actions). AC: all pass. Deviations: stats queries inlined in page.tsx (admin-stats.service.ts absent); ExpandableMessage uses <details> instead of JS toggle (no client JS needed).",
+      "Reviewer approved UI 2026-04-15. All 4 pages call requireAdmin() first. No PII beyond user_id fragment (first 8 chars of UUID shown). client components are 'use client' button wrappers only — no sensitive data. No client-side gating. Critical banner is server-computed. ModerationFilters exposes no data, only updates URL params. ExpandableMessage is a pure server component."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -3093,7 +3105,7 @@
     "sprint": "13",
     "phase": "all",
     "title": "Admin dashboard — final review across all 5 phases",
-    "status": "proposed",
+    "status": "needs-rework",
     "assigned_to": "Reviewer",
     "priority": "medium",
     "description": "Final pass: no admin route bypasses requireAdmin/withAdmin; every admin mutation writes to admin_actions; no sensitive content leaks to client beyond 90d window; no client-side gating; cron is idempotent.",
@@ -3106,7 +3118,9 @@
       "pj-s13-admin-p5-qa"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "Reviewer ran 2026-04-15. Phases 1-3 APPROVED. Phase 4 NEEDS-REWORK (see pj-s13-admin-p4-backend). Phase 5 not yet implemented. Inline fix applied: proxy.ts filter(Boolean) added. Re-review required after pj-s13-admin-p4-backend rework is complete."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   }
