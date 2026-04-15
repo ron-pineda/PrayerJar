@@ -1,3 +1,4 @@
+import '@/lib/env'; // production startup assertions (ADMIN_EMAILS guard)
 import NextAuth from 'next-auth';
 import Resend from 'next-auth/providers/resend';
 import Google from 'next-auth/providers/google';

@@ -3,6 +3,7 @@
 import { auth } from '@/lib/auth';
 import { markPrayerAnswered, renewPrayer, deletePrayer, updatePrayer } from '@/services/prayer.service';
 import { moderateContent } from '@/services/ai.service';
+import { logModerationRejection } from '@/services/moderation-log.service';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -99,8 +100,26 @@ export async function updatePrayerAction(formData: FormData): Promise<LifecycleR
   if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
 
   const moderation = await moderateContent(parsed.data.content);
-  if (moderation.selfHarm) return { success: false, error: 'selfHarm' };
-  if (!moderation.safe) return { success: false, error: 'Your message was flagged by our content filter. Please revise and try again.' };
+  if (moderation.selfHarm) {
+    logModerationRejection({
+      userId: session.user.id,
+      contentType: 'prayer',
+      contentSnippet: parsed.data.content,
+      category: 'selfHarm',
+      sourceRoute: 'actions/lifecycle.updatePrayer',
+    }).catch(() => {});
+    return { success: false, error: 'selfHarm' };
+  }
+  if (!moderation.safe) {
+    logModerationRejection({
+      userId: session.user.id,
+      contentType: 'prayer',
+      contentSnippet: parsed.data.content,
+      category: 'other',
+      sourceRoute: 'actions/lifecycle.updatePrayer',
+    }).catch(() => {});
+    return { success: false, error: 'Your message was flagged by our content filter. Please revise and try again.' };
+  }
 
   const updated = await updatePrayer(parsed.data.prayerId, session.user.id, {
     content: parsed.data.content,

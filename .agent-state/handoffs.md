@@ -98,3 +98,6 @@
 [2026-04-15] Architect → Backend Engineer: pj-s13-admin-p5-notify Phase 5 — notifyAdmins helper + 3 triggers (selfHarm, harassment, contact).
 [2026-04-15] Architect → QA: pj-s13-admin-p1-qa through pj-s13-admin-p5-qa — phase-gated QA, one per phase.
 [2026-04-15] Architect → Reviewer: pj-s13-admin-reviewer — final cross-phase review.
+[2026-04-15] Backend Engineer → QA: pj-s13-admin-p1-auth-helpers — requireAdmin/withAdmin helpers + proxy 404 + env assertion ready for security verification
+[2026-04-15] Backend Engineer → QA: pj-s13-admin-p2-wire-sites — logModerationRejection wired at 7 sites, service layer complete
+[2026-04-15] Backend Engineer → QA: pj-s13-admin-p3-contact — contact persistence + cron purge route ready for verification

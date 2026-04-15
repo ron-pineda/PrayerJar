@@ -5,6 +5,7 @@ import { partnerMessages, prayerPartnerships } from '@/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { moderateContent } from '@/services/ai.service';
+import { logModerationRejection } from '@/services/moderation-log.service';
 
 // ---------------------------------------------------------------------------
 // GET /api/v1/partner-messages?partnershipId=<id>
@@ -97,6 +98,13 @@ export async function POST(req: NextRequest) {
 
   const moderation = await moderateContent(content);
   if (!moderation.safe) {
+    logModerationRejection({
+      userId: callerId,
+      contentType: 'partner_message',
+      contentSnippet: content,
+      category: moderation.selfHarm ? 'selfHarm' : 'other',
+      sourceRoute: '/api/v1/partner-messages',
+    }).catch(() => {});
     return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
   }
 

@@ -1,17 +1,8 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { requireAdmin } from '@/lib/admin-auth';
 import { approveReport, rejectContent, dismissReport } from '@/services/moderation.service';
 import { revalidatePath } from 'next/cache';
-
-async function requireAdmin() {
-  const session = await auth();
-  const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim());
-  if (!session?.user?.email || !adminEmails.includes(session.user.email)) {
-    throw new Error('Unauthorized');
-  }
-  return session;
-}
 
 export async function approveReportAction(formData: FormData) {
   await requireAdmin();

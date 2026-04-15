@@ -3,6 +3,7 @@ import { prayers, prayerInteractions, users, type CategoryValue } from '@/db/sch
 import { eq, and, or, sql, gt, isNull, isNotNull, ne, notInArray } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 import { categorizePrayer, moderateContent } from './ai.service';
+import { logModerationRejection } from './moderation-log.service';
 
 export type CreatePrayerInput = {
   content: string;
@@ -30,6 +31,13 @@ export async function createPrayer(input: CreatePrayerInput) {
   ]);
 
   if (!moderation.safe) {
+    logModerationRejection({
+      userId: input.authorId ?? null,
+      contentType: 'prayer',
+      contentSnippet: input.content,
+      category: moderation.selfHarm ? 'selfHarm' : 'other',
+      sourceRoute: 'services/prayer.createPrayer',
+    }).catch(() => {});
     throw new ModerationError(
       moderation.selfHarm ? 'selfHarm' : 'moderation',
       moderation.selfHarm

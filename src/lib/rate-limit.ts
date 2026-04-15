@@ -13,6 +13,7 @@ const WINDOWS: Record<string, { limit: number; windowMs: number }> = {
   church_claim_verify: { limit: 10, windowMs: 60 * 60 * 1000 },
   contact: { limit: 3, windowMs: 60 * 60 * 1000 },
   report: { limit: 10, windowMs: 60 * 60 * 1000 },
+  admin: { limit: 60, windowMs: 60 * 1000 },
 };
 
 // Global daily cap for Google Places API calls to stay within free tier.

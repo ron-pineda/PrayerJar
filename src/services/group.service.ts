@@ -9,6 +9,7 @@ import { addDays } from 'date-fns';
 import type { CategoryValue } from '@/db/schema';
 import { moderateContent } from './ai.service';
 import { ModerationError } from './prayer.service';
+import { logModerationRejection } from './moderation-log.service';
 
 // ---------------------------------------------------------------------------
 // Errors
@@ -245,6 +246,13 @@ export async function postGroupPrayer(
 ) {
   const moderation = await moderateContent(content);
   if (!moderation.safe) {
+    logModerationRejection({
+      userId,
+      contentType: 'group_post',
+      contentSnippet: content,
+      category: moderation.selfHarm ? 'selfHarm' : 'other',
+      sourceRoute: 'services/group.postGroupPrayer',
+    }).catch(() => {});
     throw new ModerationError(
       moderation.selfHarm ? 'selfHarm' : 'moderation',
       moderation.selfHarm,

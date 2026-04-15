@@ -11,7 +11,8 @@ export default auth((req: NextRequest & { auth?: { user?: { email?: string | nul
   if (ADMIN_PREFIXES.some((p) => pathname.startsWith(p))) {
     const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim());
     if (!req.auth?.user?.email || !adminEmails.includes(req.auth.user.email)) {
-      return NextResponse.redirect(new URL('/sign-in', req.url));
+      // Return 404 (not redirect) to avoid disclosing that this route exists.
+      return new NextResponse(null, { status: 404 });
     }
   }
 

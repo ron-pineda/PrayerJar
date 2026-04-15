@@ -2786,7 +2786,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — requireAdmin/withAdmin + env startup assertion",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Create src/lib/admin-auth.ts (requireAdmin with notFound(), withAdmin wrapper) and src/lib/env.ts (prod-only ADMIN_EMAILS assertion, imported from src/lib/auth.ts). Refactor src/app/actions/admin.actions.ts to use the extracted helper.",
@@ -2800,7 +2800,8 @@
     "blockers": [],
     "notes": [
       "Existing requireAdmin in admin.actions.ts throws — replace with notFound() for disclosure-minimizing behavior.",
-      "env.ts must be imported from auth.ts as bare side-effect import so it is never tree-shaken."
+      "env.ts must be imported from auth.ts as bare side-effect import so it is never tree-shaken.",
+      "requireAdmin, withAdmin, proxy 404, env assertion implemented."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2810,7 +2811,7 @@
     "sprint": "13",
     "phase": "1",
     "title": "Admin dashboard — middleware 404 + admin rate-limit window",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Change src/proxy.ts /admin/* non-admin branch to return 404 instead of redirect to /sign-in. Add 'admin' window (60/min) to src/lib/rate-limit.ts.",
@@ -2821,7 +2822,8 @@
     "depends_on": [],
     "blockers": [],
     "notes": [
-      "Protected-prefix redirect for non-admin non-auth users must remain unchanged."
+      "Protected-prefix redirect for non-admin non-auth users must remain unchanged.",
+      "proxy.ts updated — admin 404 instead of redirect."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2851,7 +2853,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — moderation-log.service + snippet-purge cron",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Create src/services/moderation-log.service.ts with logModerationRejection/listModerationLogs/acknowledgeLog. Add /api/cron/purge-moderation-snippets/route.ts and register in vercel.json at 0 3 * * *. No notifications yet — Phase 5 wires those.",
@@ -2865,7 +2867,9 @@
       "pj-s13-admin-p1-auth-helpers"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "moderation-log.service.ts created with logModerationRejection, listModerationLogs, acknowledgeLog."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -2874,7 +2878,7 @@
     "sprint": "13",
     "phase": "2",
     "title": "Admin dashboard — wire logModerationRejection into 7 rejection sites",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Call logModerationRejection before the existing throw at 7 sites: lifecycle.actions updatePrayer, group.service postGroupPrayer, /api/v1/partner-messages, /api/v1/groups/[id] (name + description), prayer.service createPrayer, interaction.service prayForRequest, church.service submitChurchRecommendation. Log must not affect user-visible 422.",
@@ -2892,7 +2896,8 @@
     ],
     "blockers": [],
     "notes": [
-      "Spec §6.1 listed only 5 sites; codebase grep found 7. Architect recommends wiring all 7 — confirm with PM before starting."
+      "Spec §6.1 listed only 5 sites; codebase grep found 7. Architect recommends wiring all 7 — confirm with PM before starting.",
+      "logModerationRejection wired into all 7 rejection sites."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -2921,7 +2926,7 @@
     "sprint": "13",
     "phase": "3",
     "title": "Admin dashboard — contact form persistence",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/services/contact.service.ts (create/list/markRead). Edit src/app/actions/contact.actions.ts to persist BEFORE Resend so outages don't drop submissions. Resend failure must not fail the action once row is persisted.",
@@ -2935,7 +2940,8 @@
     ],
     "blockers": [],
     "notes": [
-      "Keep Zod subject enum and DB enum defined from a single shared constant to avoid drift."
+      "Keep Zod subject enum and DB enum defined from a single shared constant to avoid drift.",
+      "contact.service.ts created, contact.actions.ts updated to persist before Resend, cron route + vercel.json added."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"

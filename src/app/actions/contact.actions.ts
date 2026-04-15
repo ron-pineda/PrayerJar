@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
+import { createContactSubmission } from '@/services/contact.service';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
 const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
@@ -42,6 +43,16 @@ export async function submitContactAction(
 
   const { name, email, subject, message } = parsed.data;
 
+  // Persist the submission to DB first — a Resend outage must not lose the message.
+  let dbWriteFailed = false;
+  try {
+    await createContactSubmission({ name, email, subject, message });
+    // TODO Phase 5: notifyAdmins({ subject: 'New contact form submission', body: `From: ${name} <${email}>\nSubject: ${subject}`, link: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/feedback` })
+  } catch (err) {
+    console.error('[submitContactAction] DB write failed:', err);
+    dbWriteFailed = true;
+  }
+
   try {
     await resend.emails.send({
       from: FROM,
@@ -53,7 +64,9 @@ export async function submitContactAction(
 
     return { success: true };
   } catch (err) {
-    console.error('[submitContactAction]', err);
+    console.error('[submitContactAction] Resend failed:', err);
+    // If we persisted to DB, treat as success — the message is not lost.
+    if (!dbWriteFailed) return { success: true };
     return { error: 'Something went wrong. Please try again.' };
   }
 }

@@ -2,6 +2,7 @@ import { db } from '@/db';
 import { prayerInteractions, prayers } from '@/db/schema';
 import { eq, sql, desc } from 'drizzle-orm';
 import { moderateContent } from './ai.service';
+import { logModerationRejection } from './moderation-log.service';
 import { notifyPrayerAuthor, notifyMessageReceived } from './notification.service';
 import { evaluateBadgesForUser, updateStreak } from './badge.service';
 
@@ -25,7 +26,16 @@ export class ModerationError extends Error {
 export async function prayForRequest(input: PrayForInput) {
   if (input.message) {
     const moderation = await moderateContent(input.message);
-    if (!moderation.safe) throw new ModerationError('moderation');
+    if (!moderation.safe) {
+      logModerationRejection({
+        userId: input.userId ?? null,
+        contentType: 'interaction_message',
+        contentSnippet: input.message,
+        category: moderation.selfHarm ? 'selfHarm' : 'other',
+        sourceRoute: 'services/interaction.prayForRequest',
+      }).catch(() => {});
+      throw new ModerationError('moderation');
+    }
   }
 
   const [interaction] = await db

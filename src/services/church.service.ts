@@ -8,6 +8,7 @@ import {
 } from "@/db/schema";
 import { and, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { moderateContent } from "@/services/ai.service";
+import { logModerationRejection } from "@/services/moderation-log.service";
 import { sendClaimVerificationEmail } from "@/services/email.service";
 
 export type GooglePlace = {
@@ -286,7 +287,16 @@ export async function submitRecommendation({
   newcomerFriendly: boolean;
 }): Promise<void> {
   const result = await moderateContent(note);
-  if (!result.safe) throw new Error("flagged");
+  if (!result.safe) {
+    logModerationRejection({
+      userId,
+      contentType: 'church_note',
+      contentSnippet: note,
+      category: result.selfHarm ? 'selfHarm' : 'other',
+      sourceRoute: 'services/church.submitChurchRecommendation',
+    }).catch(() => {});
+    throw new Error("flagged");
+  }
 
   await db
     .insert(churchRecommendations)

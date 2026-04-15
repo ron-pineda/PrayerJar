@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { deleteGroup, renameGroup, NotOwnerError } from '@/services/group.service';
 import { moderateContent } from '@/services/ai.service';
+import { logModerationRejection } from '@/services/moderation-log.service';
 
 export async function PATCH(
   req: NextRequest,
@@ -23,12 +24,26 @@ export async function PATCH(
 
   const nameModeration = await moderateContent(name);
   if (!nameModeration.safe) {
+    logModerationRejection({
+      userId: session.user.id,
+      contentType: 'group_meta',
+      contentSnippet: name,
+      category: nameModeration.selfHarm ? 'selfHarm' : 'other',
+      sourceRoute: '/api/v1/groups/[id]#name',
+    }).catch(() => {});
     return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
   }
 
   if (description !== undefined) {
     const descModeration = await moderateContent(description);
     if (!descModeration.safe) {
+      logModerationRejection({
+        userId: session.user.id,
+        contentType: 'group_meta',
+        contentSnippet: description,
+        category: descModeration.selfHarm ? 'selfHarm' : 'other',
+        sourceRoute: '/api/v1/groups/[id]#description',
+      }).catch(() => {});
       return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
     }
   }
