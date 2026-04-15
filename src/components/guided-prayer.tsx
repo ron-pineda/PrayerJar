@@ -61,25 +61,28 @@ export function GuidedPrayer({
     setReported(true);
   }
 
-  async function handlePrayed() {
-    setPending(true);
-    const formData = new FormData();
-    formData.set('prayerId', prayer.id);
-    formData.set('isAnonymous', String(isAnonymous));
-    const result = await prayForRequestAction(formData);
-    setPending(false);
-
-    if (result.success) {
-      setStage('message');
-    } else {
-      setError(result.error);
-    }
+  // "I Prayed" is a local-only state change — no server call yet.
+  // The interaction is created exactly once on the final submit (with or without a message).
+  function handlePrayed() {
+    setStage('message');
   }
 
   async function handleMessageSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
     const formData = new FormData(e.currentTarget);
+    formData.set('prayerId', prayer.id);
+    formData.set('isAnonymous', String(isAnonymous));
+    const result = await prayForRequestAction(formData);
+    setPending(false);
+
+    if (result.success) setStage('done');
+    else setError(result.error);
+  }
+
+  async function handleSkip() {
+    setPending(true);
+    const formData = new FormData();
     formData.set('prayerId', prayer.id);
     formData.set('isAnonymous', String(isAnonymous));
     const result = await prayForRequestAction(formData);
@@ -216,8 +219,8 @@ export function GuidedPrayer({
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <Button onClick={handlePrayed} disabled={pending} size="lg" className="mt-4 active:animate-pray-ripple hover:animate-pray-ring transition-shadow">
-            {pending ? 'Recording...' : 'I Prayed for This 🙏'}
+          <Button onClick={handlePrayed} size="lg" className="mt-4 active:animate-pray-ripple hover:animate-pray-ring transition-shadow">
+            I Prayed for This 🙏
           </Button>
         </div>
       )}
@@ -249,9 +252,10 @@ export function GuidedPrayer({
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => setStage('done')}
+                disabled={pending}
+                onClick={handleSkip}
               >
-                Skip
+                {pending ? 'Saving...' : 'Skip'}
               </Button>
             </div>
           </form>

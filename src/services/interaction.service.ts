@@ -46,9 +46,11 @@ export async function prayForRequest(input: PrayForInput) {
     .set({ prayerCount: sql`prayer_count + 1` })
     .where(eq(prayers.id, input.prayerId));
 
+  // Non-blocking — streak and badge awards are best-effort side effects;
+  // awaiting them would hang the user's button if either service is slow.
   if (input.userId) {
-    await updateStreak(input.userId);
-    await evaluateBadgesForUser(input.userId);
+    updateStreak(input.userId).catch(() => {});
+    evaluateBadgesForUser(input.userId).catch(() => {});
   }
 
   // Notify prayer author (non-blocking)

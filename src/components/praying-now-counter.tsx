@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+const POLL_INTERVAL_MS = 30_000;
+
 export function PrayingNowCounter() {
   const [count, setCount] = useState<number>(0);
-  const [connected, setConnected] = useState(false);
   const [displayed, setDisplayed] = useState<number>(0);
-  const lastKnown = useRef<number>(0);
-  const retryTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const esRef = useRef<EventSource | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Tween displayed value when count changes
   useEffect(() => {
@@ -31,50 +30,29 @@ export function PrayingNowCounter() {
   }, [count]);
 
   useEffect(() => {
-    function connect() {
-      const es = new EventSource('/api/v1/sse/praying-now');
-      esRef.current = es;
-
-      es.onopen = () => setConnected(true);
-
-      es.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data) as { count: number };
-          lastKnown.current = data.count;
+    async function poll() {
+      try {
+        const res = await fetch('/api/v1/praying-now', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json() as { count: number };
           setCount(data.count);
-        } catch {
-          // Ignore malformed frames
         }
-      };
-
-      es.onerror = () => {
-        setConnected(false);
-        es.close();
-        esRef.current = null;
-        // Keep showing last known count, reconnect after 5s
-        retryTimeout.current = setTimeout(connect, 5000);
-      };
+      } catch {
+        // Keep last known count on network error
+      }
     }
 
-    connect();
+    poll();
+    intervalRef.current = setInterval(poll, POLL_INTERVAL_MS);
 
     return () => {
-      if (retryTimeout.current) clearTimeout(retryTimeout.current);
-      esRef.current?.close();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
 
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <span
-        className={[
-          'h-2 w-2 rounded-full flex-shrink-0',
-          connected
-            ? 'bg-green-500 animate-pulse'
-            : 'bg-muted-foreground/40',
-        ].join(' ')}
-        aria-hidden="true"
-      />
+      <span className="h-2 w-2 rounded-full flex-shrink-0 bg-green-500 animate-pulse" aria-hidden="true" />
       <span>
         <span className="font-semibold tabular-nums text-foreground">{displayed}</span>
         {' '}
