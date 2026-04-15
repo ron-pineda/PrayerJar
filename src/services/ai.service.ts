@@ -40,19 +40,35 @@ export async function moderateContent(content: string): Promise<{
   reason?: string;
   selfHarm: boolean;
 }> {
-  const { output } = await generateText({
-    model: MODEL,
-    output: Output.object({ schema: moderationSchema }),
-    prompt: `Review this content for a Christian prayer website. Most prayer requests are genuine and should be marked safe.
+  // Fail open after 8s: we'd rather let a borderline message through than
+  // hang the user's UI when the AI gateway is slow or unreachable. Reports
+  // and post-moderation handle anything we miss.
+  try {
+    const { output } = await Promise.race([
+      generateText({
+        model: MODEL,
+        output: Output.object({ schema: moderationSchema }),
+        prompt: `Review this content for a Christian prayer website. Most prayer requests are genuine and should be marked safe.
 
 Flag as unsafe only if the content contains: spam/advertisements, hate speech, explicit sexual content, harassment targeting a specific person, or content unrelated to prayer/faith.
 
 Set selfHarm: true if the content suggests the person may be in crisis or considering self-harm (so we can show crisis resources).
 
 Content: "${content}"`,
-  });
-  if (!output) throw new Error('AI moderation returned no output');
-  return output;
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('moderation timeout')), 8000),
+      ),
+    ]);
+    if (!output) {
+      console.warn('[moderateContent] AI returned no output, failing open');
+      return { safe: true, selfHarm: false };
+    }
+    return output;
+  } catch (err) {
+    console.warn('[moderateContent] failed, failing open:', err);
+    return { safe: true, selfHarm: false };
+  }
 }
 
 export async function generateEncouragement(
