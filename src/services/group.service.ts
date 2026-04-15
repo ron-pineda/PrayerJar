@@ -7,6 +7,8 @@ import { eq, and, sql, desc, isNull, count } from 'drizzle-orm';
 import crypto from 'crypto';
 import { addDays } from 'date-fns';
 import type { CategoryValue } from '@/db/schema';
+import { moderateContent } from './ai.service';
+import { ModerationError } from './prayer.service';
 
 // ---------------------------------------------------------------------------
 // Errors
@@ -241,6 +243,14 @@ export async function postGroupPrayer(
   content: string,
   category: CategoryValue,
 ) {
+  const moderation = await moderateContent(content);
+  if (!moderation.safe) {
+    throw new ModerationError(
+      moderation.selfHarm ? 'selfHarm' : 'moderation',
+      moderation.selfHarm,
+    );
+  }
+
   const [prayer] = await db
     .insert(prayers)
     .values({

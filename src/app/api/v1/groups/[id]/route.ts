@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { deleteGroup, renameGroup, NotOwnerError } from '@/services/group.service';
+import { moderateContent } from '@/services/ai.service';
 
 export async function PATCH(
   req: NextRequest,
@@ -18,6 +19,18 @@ export async function PATCH(
 
   if (!name || name.length > 80) {
     return NextResponse.json({ error: 'Name is required and must be under 80 characters.' }, { status: 400 });
+  }
+
+  const nameModeration = await moderateContent(name);
+  if (!nameModeration.safe) {
+    return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
+  }
+
+  if (description !== undefined) {
+    const descModeration = await moderateContent(description);
+    if (!descModeration.safe) {
+      return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
+    }
   }
 
   try {

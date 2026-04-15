@@ -4,6 +4,7 @@ import { db } from '@/db';
 import { partnerMessages, prayerPartnerships } from '@/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
+import { moderateContent } from '@/services/ai.service';
 
 // ---------------------------------------------------------------------------
 // GET /api/v1/partner-messages?partnershipId=<id>
@@ -92,6 +93,11 @@ export async function POST(req: NextRequest) {
 
   if (partnership.status !== 'active') {
     return NextResponse.json({ error: 'Partnership is no longer active' }, { status: 400 });
+  }
+
+  const moderation = await moderateContent(content);
+  if (!moderation.safe) {
+    return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
   }
 
   const [message] = await db

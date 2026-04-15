@@ -21,10 +21,14 @@ export function ShareButtons({ url, text, variant = 'inline' }: ShareButtonsProp
   const encodedUrl = encodeURIComponent(fullUrl);
   const encodedText = encodeURIComponent(text);
 
-  function handleCopy() {
-    navigator.clipboard.writeText(fullUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt('Copy this link:', fullUrl);
+    }
   }
 
   const buttons = (

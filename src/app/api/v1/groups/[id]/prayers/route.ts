@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { isGroupMember, getGroupPrayers, postGroupPrayer } from '@/services/group.service';
+import { ModerationError } from '@/services/prayer.service';
 import { z } from 'zod';
 import { categoryEnum } from '@/db/schema';
 
@@ -51,11 +52,18 @@ export async function POST(
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
   }
 
-  const prayer = await postGroupPrayer(
-    session.user.id,
-    groupId,
-    parsed.data.content,
-    parsed.data.category,
-  );
-  return NextResponse.json({ prayer }, { status: 201 });
+  try {
+    const prayer = await postGroupPrayer(
+      session.user.id,
+      groupId,
+      parsed.data.content,
+      parsed.data.category,
+    );
+    return NextResponse.json({ prayer }, { status: 201 });
+  } catch (err) {
+    if (err instanceof ModerationError) {
+      return NextResponse.json({ error: 'content_flagged' }, { status: 422 });
+    }
+    throw err;
+  }
 }

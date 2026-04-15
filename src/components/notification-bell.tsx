@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator, DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { NotificationItem } from '@/components/notification-item';
 
 const TYPE_LABELS: Record<string, string> = {
   someone_prayed: 'Someone prayed for your request',
@@ -43,13 +44,13 @@ export async function NotificationBell() {
           </DropdownMenuItem>
         ) : (
           notifications.map((n) => (
-            <DropdownMenuItem
+            <NotificationItem
               key={n.id}
-              className={n.read ? 'opacity-60' : 'font-medium'}
-              render={n.relatedPrayerId ? <Link href={`/p/${n.relatedPrayerId}`} /> : undefined}
-            >
-              {TYPE_LABELS[n.type] ?? n.type}
-            </DropdownMenuItem>
+              id={n.id}
+              label={TYPE_LABELS[n.type] ?? n.type}
+              read={n.read}
+              relatedPrayerId={n.relatedPrayerId ?? null}
+            />
           ))
         )}
         <DropdownMenuSeparator />
