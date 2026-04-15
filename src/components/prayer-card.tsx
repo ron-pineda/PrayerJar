@@ -33,9 +33,10 @@ interface PrayerCardProps {
   isAdopted?: boolean;
   adoptionCount?: number;
   showDelete?: boolean;
+  isOwnPrayer?: boolean;
 }
 
-export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showDelete = false }: PrayerCardProps) {
+export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showDelete = false, isOwnPrayer = false }: PrayerCardProps) {
   const icon = CATEGORY_ICONS[prayer.category] ?? '📖';
   const ago = formatDistanceToNow(new Date(prayer.createdAt), { addSuffix: true });
 
@@ -54,6 +55,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
   const [editContent, setEditContent] = useState(prayer.content);
   const [editUrgent, setEditUrgent] = useState(prayer.isUrgent);
   const [editAnonymous, setEditAnonymous] = useState(prayer.isAnonymous);
+  const [copied, setCopied] = useState(false);
+  const [renewedAt, setRenewedAt] = useState<Date | null>(null);
   const prevCountRef = useRef(prayer.prayerCount);
 
   useEffect(() => {
@@ -119,7 +122,22 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
     formData.set('prayerId', prayer.id);
     const result = await renewPrayerAction(formData);
     setPending(false);
-    if (!result.success) setError(result.error);
+    if (result.success) {
+      setRenewedAt(new Date());
+      setTimeout(() => setRenewedAt(null), 4000);
+    } else {
+      setError(result.error);
+    }
+  }
+
+  async function handleCopyLink() {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/p/${prayer.id}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError('Could not copy link. Try long-pressing Share.');
+    }
   }
 
   if (deleted) return null;
@@ -177,7 +195,13 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
 
         {error && <p className="text-xs text-destructive">{error}</p>}
 
-        {localStatus === 'active' && (
+        {renewedAt && (
+          <p className="text-xs text-amber-700 dark:text-amber-400">
+            ✓ Renewed — expires in 30 days
+          </p>
+        )}
+
+        {localStatus === 'active' && !isOwnPrayer && (
           <AdoptPrayerButton
             prayerId={prayer.id}
             initialAdopted={isAdopted}
@@ -239,20 +263,16 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
             >
               {pending ? 'Renewing...' : 'Renew (30 days)'}
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/p/${prayer.id}`);
-              }}
-            >
+            <Button size="sm" variant="ghost" onClick={handleCopyLink}>
               <Share2 className="h-4 w-4 mr-1" />
-              Share Link
+              {copied ? 'Copied!' : 'Share Link'}
             </Button>
-            <Button size="sm" variant="ghost" render={<Link href={`/p/${prayer.id}`} />}>
-              <ExternalLink className="h-4 w-4 mr-1" />
-              View
-            </Button>
+            {!isOwnPrayer && (
+              <Button size="sm" variant="ghost" render={<Link href={`/p/${prayer.id}`} />}>
+                <ExternalLink className="h-4 w-4 mr-1" />
+                View
+              </Button>
+            )}
             {showDelete && (
               confirmDelete ? (
                 <>

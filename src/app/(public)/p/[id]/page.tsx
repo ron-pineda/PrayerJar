@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { ShareButtons } from '@/components/share-buttons';
 import { PrayForButton } from '@/components/pray-for-button';
@@ -59,8 +60,19 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
 
   const categoryLabel = PRAYER_CATEGORIES.find((c) => c.value === prayer.category)?.label;
 
+  const backHref = isOwner ? '/my-prayers' : '/browse';
+  const backLabel = isOwner ? 'Back to My Prayers' : 'Back to Browse';
+
   return (
     <main className="max-w-lg mx-auto px-4 py-10 space-y-8">
+
+      <Link
+        href={backHref}
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {backLabel}
+      </Link>
 
       <div className="text-center space-y-2">
         <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">

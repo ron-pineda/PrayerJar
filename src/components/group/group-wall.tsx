@@ -144,7 +144,7 @@ export function GroupWall({ groupId, currentUserId }: GroupWallProps) {
       ) : (
         <div className="grid gap-4">
           {prayers.map((prayer) => (
-            <PrayerCard key={prayer.id} prayer={prayer} />
+            <PrayerCard key={prayer.id} prayer={prayer} isOwnPrayer={prayer.authorId === currentUserId} />
           ))}
         </div>
       )}

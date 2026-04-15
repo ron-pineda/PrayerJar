@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { prayerInteractions, prayers } from '@/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, desc } from 'drizzle-orm';
 import { moderateContent } from './ai.service';
 import { notifyPrayerAuthor, notifyMessageReceived } from './notification.service';
 import { evaluateBadgesForUser, updateStreak } from './badge.service';
@@ -76,4 +76,20 @@ export async function getInteractionsByUser(userId: string) {
     .from(prayerInteractions)
     .where(eq(prayerInteractions.userId, userId))
     .orderBy(prayerInteractions.createdAt);
+}
+
+export async function getPrayersUserPrayedFor(userId: string, limit = 50) {
+  const rows = await db
+    .select({
+      prayer: prayers,
+      lastPrayedAt: sql<Date>`max(${prayerInteractions.createdAt})`.as('last_prayed_at'),
+    })
+    .from(prayerInteractions)
+    .innerJoin(prayers, eq(prayers.id, prayerInteractions.prayerId))
+    .where(eq(prayerInteractions.userId, userId))
+    .groupBy(prayers.id)
+    .orderBy(desc(sql`max(${prayerInteractions.createdAt})`))
+    .limit(limit);
+
+  return rows.map((r) => ({ ...r.prayer, lastPrayedAt: r.lastPrayedAt }));
 }

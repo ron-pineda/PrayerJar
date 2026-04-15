@@ -38,6 +38,9 @@ export function UserMenu({ userName, signOutSlot, myChurch }: UserMenuProps) {
         <DropdownMenuItem render={<Link href="/my-prayers" />}>
           My Prayers
         </DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/prayed-for" />}>
+          Prayed For
+        </DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/adopted" />}>
           Adopted Prayers
         </DropdownMenuItem>

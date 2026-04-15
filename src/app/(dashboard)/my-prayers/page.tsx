@@ -62,7 +62,7 @@ export default async function MyPrayersPage() {
               </h2>
               <div className="grid gap-4">
                 {active.map((prayer) => (
-                  <PrayerCard key={prayer.id} prayer={prayer} showDelete />
+                  <PrayerCard key={prayer.id} prayer={prayer} showDelete isOwnPrayer />
                 ))}
               </div>
             </section>
@@ -75,7 +75,7 @@ export default async function MyPrayersPage() {
               </h2>
               <div className="grid gap-4">
                 {answered.map((prayer) => (
-                  <PrayerCard key={prayer.id} prayer={prayer} />
+                  <PrayerCard key={prayer.id} prayer={prayer} isOwnPrayer />
                 ))}
               </div>
             </section>
@@ -88,7 +88,7 @@ export default async function MyPrayersPage() {
               </h2>
               <div className="grid gap-4">
                 {expired.map((prayer) => (
-                  <PrayerCard key={prayer.id} prayer={prayer} showDelete />
+                  <PrayerCard key={prayer.id} prayer={prayer} showDelete isOwnPrayer />
                 ))}
               </div>
             </section>
