@@ -209,7 +209,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
           />
         )}
 
-        {showEdit && localStatus === 'active' && (
+        {showEdit && localStatus === 'active' && isOwnPrayer && (
           <div className="space-y-2 pt-1">
             <Textarea
               value={editContent}
@@ -241,28 +241,32 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
 
         {localStatus === 'active' && (
           <div className="flex gap-2 flex-wrap pt-1">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setShowTestimony((v) => !v)}
-            >
-              Mark as Answered
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setShowEdit((v) => !v)}
-            >
-              Edit
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={handleRenew}
-              disabled={pending}
-            >
-              {pending ? 'Renewing...' : 'Renew (30 days)'}
-            </Button>
+            {isOwnPrayer && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowTestimony((v) => !v)}
+                >
+                  Mark as Answered
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowEdit((v) => !v)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleRenew}
+                  disabled={pending}
+                >
+                  {pending ? 'Renewing...' : 'Renew (30 days)'}
+                </Button>
+              </>
+            )}
             <Button size="sm" variant="ghost" onClick={handleCopyLink}>
               <Share2 className="h-4 w-4 mr-1" />
               {copied ? 'Copied!' : 'Share Link'}
@@ -273,7 +277,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
                 View
               </Button>
             )}
-            {showDelete && (
+            {showDelete && isOwnPrayer && (
               confirmDelete ? (
                 <>
                   <Button size="sm" variant="destructive" onClick={handleDelete} disabled={pending}>
@@ -292,7 +296,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
           </div>
         )}
 
-        {showTestimony && localStatus === 'active' && (
+        {showTestimony && localStatus === 'active' && isOwnPrayer && (
           <form onSubmit={handleMarkAnswered} className="space-y-2 pt-1">
             <input type="hidden" name="prayerId" value={prayer.id} />
             <Textarea
