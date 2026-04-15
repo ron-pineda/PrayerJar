@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/lib/auth';
-import { markPrayerAnswered, renewPrayer } from '@/services/prayer.service';
+import { markPrayerAnswered, renewPrayer, deletePrayer } from '@/services/prayer.service';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -72,6 +72,26 @@ export async function renewPrayerAction(formData: FormData): Promise<LifecycleRe
   const updated = await renewPrayer(parsed.data.prayerId, session.user.id);
 
   if (!updated) {
+    return { success: false, error: 'Prayer not found or you do not own it.' };
+  }
+
+  revalidatePath('/my-prayers');
+  return { success: true };
+}
+
+export async function deletePrayerAction(formData: FormData): Promise<LifecycleResult> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: 'You must be signed in.' };
+  }
+
+  const prayerId = formData.get('prayerId');
+  if (typeof prayerId !== 'string' || !prayerId) {
+    return { success: false, error: 'Invalid prayer ID.' };
+  }
+
+  const deleted = await deletePrayer(prayerId, session.user.id);
+  if (!deleted) {
     return { success: false, error: 'Prayer not found or you do not own it.' };
   }
 

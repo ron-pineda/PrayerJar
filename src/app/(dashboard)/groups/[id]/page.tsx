@@ -13,6 +13,7 @@ import { GroupActivity } from '@/components/group/group-activity';
 import { GroupDetailActions } from '@/components/group/group-detail-actions';
 import { GroupTabs } from '@/components/group/group-tabs';
 import { CopyButton } from '@/components/group/copy-button';
+import { GroupRenameForm } from '@/components/group/group-rename-form';
 import { Users } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Group | The Prayer Jar' };
@@ -59,6 +60,15 @@ export default async function GroupDetailPage({
           <h1 className="text-3xl font-bold tracking-tight">{group.name}</h1>
           {group.description && (
             <p className="text-muted-foreground mt-1">{group.description}</p>
+          )}
+          {isOwner && (
+            <div className="mt-2">
+              <GroupRenameForm
+                groupId={id}
+                initialName={group.name}
+                initialDescription={group.description}
+              />
+            </div>
           )}
         </div>
         <GroupDetailActions

@@ -126,6 +126,14 @@ export async function markPrayerAnswered(
   return updated ?? null;
 }
 
+export async function deletePrayer(id: string, authorId: string): Promise<boolean> {
+  const result = await db
+    .delete(prayers)
+    .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
+    .returning({ id: prayers.id });
+  return result.length > 0;
+}
+
 export async function renewPrayer(id: string, authorId: string) {
   const [updated] = await db
     .update(prayers)

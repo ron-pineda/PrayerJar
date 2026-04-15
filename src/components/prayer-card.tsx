@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { markAnsweredAction, renewPrayerAction } from '@/app/actions/lifecycle.actions';
+import { markAnsweredAction, renewPrayerAction, deletePrayerAction } from '@/app/actions/lifecycle.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2 } from 'lucide-react';
@@ -31,9 +31,10 @@ interface PrayerCardProps {
   prayer: Prayer;
   isAdopted?: boolean;
   adoptionCount?: number;
+  showDelete?: boolean;
 }
 
-export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: PrayerCardProps) {
+export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showDelete = false }: PrayerCardProps) {
   const icon = CATEGORY_ICONS[prayer.category] ?? '📖';
   const ago = formatDistanceToNow(new Date(prayer.createdAt), { addSuffix: true });
 
@@ -46,6 +47,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
   const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [countKey, setCountKey] = useState(0);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const prevCountRef = useRef(prayer.prayerCount);
 
   useEffect(() => {
@@ -79,6 +82,17 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
     }
   }
 
+  async function handleDelete() {
+    if (!confirmDelete) { setConfirmDelete(true); return; }
+    setPending(true);
+    const formData = new FormData();
+    formData.set('prayerId', prayer.id);
+    const result = await deletePrayerAction(formData);
+    setPending(false);
+    if (result.success) setDeleted(true);
+    else { setError(result.error); setConfirmDelete(false); }
+  }
+
   async function handleRenew() {
     setPending(true);
     setError('');
@@ -88,6 +102,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
     setPending(false);
     if (!result.success) setError(result.error);
   }
+
+  if (deleted) return null;
 
   return (
     <Card className="relative animate-card-entry transition-shadow duration-300 hover:shadow-amber-500/10 hover:shadow-lg">
@@ -177,6 +193,22 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0 }: Pra
               <Share2 className="h-4 w-4 mr-1" />
               Share Link
             </Button>
+            {showDelete && (
+              confirmDelete ? (
+                <>
+                  <Button size="sm" variant="destructive" onClick={handleDelete} disabled={pending}>
+                    {pending ? 'Deleting…' : 'Confirm delete'}
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} disabled={pending}>
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={handleDelete}>
+                  Delete
+                </Button>
+              )
+            )}
           </div>
         )}
 

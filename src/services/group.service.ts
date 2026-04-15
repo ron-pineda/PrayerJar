@@ -175,6 +175,35 @@ export async function getGroupMembership(
   return membership ?? null;
 }
 
+export async function renameGroup(
+  groupId: string,
+  requestingUserId: string,
+  name: string,
+  description?: string,
+): Promise<Group> {
+  const [membership] = await db
+    .select()
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, requestingUserId),
+        eq(groupMembers.role, 'owner'),
+      )
+    )
+    .limit(1);
+
+  if (!membership) throw new NotOwnerError();
+
+  const [updated] = await db
+    .update(groups)
+    .set({ name, description: description ?? null })
+    .where(eq(groups.id, groupId))
+    .returning();
+
+  return updated;
+}
+
 export async function deleteGroup(groupId: string, requestingUserId: string): Promise<void> {
   const [membership] = await db
     .select()
