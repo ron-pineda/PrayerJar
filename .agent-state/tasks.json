@@ -2578,5 +2578,122 @@
     "description": "Add not-found.tsx and error.tsx to replace Next.js generic defaults. On-brand design with navigation back to home.",
     "notes": [],
     "last_touched": "2026-04-14T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s10.1-1",
+    "sprint": "10.1",
+    "title": "Dynamic church entries in sitemap.xml",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "Query churches table and emit one <url> entry per registered church at /church/{slug}. Wrapped in try/catch so a DB error can't nuke the whole sitemap.",
+    "notes": [
+      "Verified live on commit 4ace997. Returns static routes + zero churches (DB empty on prod at time of deploy).",
+      "Once a church is created via /church/create, it appears in the sitemap on the next request (server-rendered fresh, no revalidation needed)."
+    ],
+    "last_touched": "2026-04-14T19:30:00.000Z"
+  },
+  {
+    "id": "pj-s10.2-1",
+    "sprint": "10.2",
+    "title": "Add 'pray for someone' step to onboarding overlay",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Insert a new step between category-picker and submit-a-prayer. Fetches a real prayer (biased to first selected category) via /api/v1/prayers/random, 🙏 button POSTs to the existing pray endpoint and flips to green ✓ before advancing. Creates an immediate win and starts the user's prayer streak before asking them to contribute their own.",
+    "notes": [
+      "4-step flow now: welcome → categories → pray-for-someone → submit.",
+      "All steps skippable; random-prayer fetch failure falls back gracefully with 'continue anyway' card.",
+      "File: src/components/onboarding-overlay.tsx"
+    ],
+    "last_touched": "2026-04-14T19:30:00.000Z"
+  },
+  {
+    "id": "pj-s11-claim-link",
+    "sprint": "11",
+    "title": "Link find-a-church claims to platform churches",
+    "status": "proposed",
+    "assigned_to": null,
+    "priority": "medium",
+    "description": "Today churchClaims (Google Places claim badge) and churches (full platform) are two disconnected systems. Add churchClaims.claimedChurchId → churches.id FK. During the claim verification flow, match by admin email to an existing churches row — or offer a 'Create platform profile' button that creates one and links. Once linked, /find-a-church cards can deep-link to /church/{slug} and show 'View prayer wall →'.",
+    "notes": [
+      "Schema delta: churchClaims.claimedChurchId uuid references churches.id on delete set null.",
+      "UX delta: after claim verification, show a card 'This church has a prayer wall on Prayer Jar — view it →' when linked, or 'Create a prayer wall for this church' CTA when not linked.",
+      "Wait until there are a handful of real claims and created churches in the DB to see actual overlap patterns before designing."
+    ],
+    "last_touched": "2026-04-14T19:30:00.000Z"
+  },
+  {
+    "id": "pj-s14-wildcard-subdomains",
+    "sprint": "14",
+    "title": "Custom church subdomains (e.g. takeheartchurch.prayerjar.org)",
+    "status": "proposed",
+    "assigned_to": null,
+    "priority": "low",
+    "description": "Give each paying church its own vanity subdomain mapped to their public church page and wall. Uses Vercel wildcard domains + middleware rewrite — no per-church DNS config needed. churches.subdomain column already exists on the schema.",
+    "notes": [
+      "Step 1: add wildcard DNS *.prayerjar.org → Vercel (one-time).",
+      "Step 2: add *.prayerjar.org in Vercel project domains — Vercel provisions wildcard SSL automatically.",
+      "Step 3: src/middleware.ts reads Host header, extracts subdomain, rewrites /wall → /church/{subdomain}/wall internally. User sees pretty URL; app serves normal routes.",
+      "Step 4: wire up the existing churches.subdomain column — add pick/validate UI on dashboard settings.",
+      "Reserved subdomains: www, api, app, admin, mail, blog, help, docs, status, support, billing — maintain a blocklist.",
+      "Validation: 3–63 chars, a-z0-9-, DNS-safe, must start/end with alphanumeric.",
+      "Auth: set NextAuth cookie domain to .prayerjar.org so session works across subdomains.",
+      "Canonical: decide between /church/{slug} 301→ subdomain, or both coexist with rel=canonical.",
+      "Gate behind a paid tier (nice upsell lever). Build when 20+ churches and custom branding becomes a real ask."
+    ],
+    "last_touched": "2026-04-14T19:30:00.000Z"
+  },
+  {
+    "id": "pj-s11-fix-moderation-timeout",
+    "sprint": "11",
+    "title": "Fix stuck Sending button — moderation timeout",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "moderateContent had no timeout; AI gateway slowness hung the UI indefinitely. Added 8s Promise.race timeout with fail-open behavior so users are never blocked by AI outages.",
+    "notes": [
+      "Committed db01d5e. Fails open (safe:true, selfHarm:false) on timeout/error, logs a warning."
+    ],
+    "last_touched": "2026-04-15T16:21:27.000Z"
+  },
+  {
+    "id": "pj-s11-fix-browse-own-prayers",
+    "sprint": "11",
+    "title": "Fix own prayers visible in /browse",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "searchPrayers had no excludeUserId filter. /browse showed the signed-in user their own prayers. Added nullable-safe or(isNull, ne) filter matching /pray and home counter behavior.",
+    "notes": [
+      "Committed c6b7a4b. Same 3VL fix pattern as getRandomPrayer."
+    ],
+    "last_touched": "2026-04-15T16:21:27.000Z"
+  },
+  {
+    "id": "pj-s11-fix-pray-for-another-loop",
+    "sprint": "11",
+    "title": "Fix Pray for Another looping to same prayer",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "medium",
+    "description": "getRandomPrayer excluded own prayers but not already-prayed ones. With a small active set the same card re-appeared. Added subquery join against prayerInteractions to exclude already-prayed prayers.",
+    "notes": [
+      "Committed c6b7a4b. Uses Drizzle subquery with notInArray."
+    ],
+    "last_touched": "2026-04-15T16:21:27.000Z"
+  },
+  {
+    "id": "pj-s11-fix-google-oauth-createuser",
+    "sprint": "11",
+    "title": "Fix Google OAuth Configuration error on new user signup",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "NextAuth createUser event called sendWelcome1Email without try/catch. Any Resend failure (rate limit, unverified recipient) surfaced as a Configuration error blocking signin entirely. Wrapped in try/catch — drip job handles recovery.",
+    "notes": [
+      "Committed c6b7a4b. Error now logged but non-fatal."
+    ],
+    "last_touched": "2026-04-15T16:21:27.000Z"
   }
 ]

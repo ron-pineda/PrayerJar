@@ -1,3 +1,4 @@
+[2026-04-15] Backend → Done: pj-s11-fix-moderation-timeout, pj-s11-fix-browse-own-prayers, pj-s11-fix-pray-for-another-loop, pj-s11-fix-google-oauth-createuser — four prod bug fixes committed c6b7a4b + db01d5e, all deployed
 [2026-04-14] Full Stack → Done: pj-s8.5-4 — Church member invite flow — join page, server action, copy-link component, team page invite section all complete
 [2026-04-11] Frontend → Reviewer: pj-s2.3-37 + pj-s2.3-38 + pj-s2.3-39 -- groups pages, group wall, activity feed
 [2026-04-11] Backend → QA: pj-s2.2-35 — rework complete, ready for re-QA
