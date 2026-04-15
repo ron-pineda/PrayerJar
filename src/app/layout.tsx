@@ -11,6 +11,7 @@ import { MobileNav } from '@/components/mobile-nav';
 import { UserMenu } from '@/components/user-menu';
 import { SignOutButton } from '@/components/sign-out-button';
 import { SessionProvider } from '@/components/session-provider';
+import { getChurchForUser } from '@/services/church-platform.service';
 import { Analytics } from '@vercel/analytics/next';
 import { FeedbackWidget } from '@/components/feedback-widget';
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt';
@@ -42,6 +43,14 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
+  const userChurch = session?.user?.id
+    ? await getChurchForUser(session.user.id).catch(() => null)
+    : null;
+
+  const myChurch = userChurch
+    ? { slug: userChurch.church.slug, name: userChurch.church.name, role: userChurch.role }
+    : null;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -72,6 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <UserMenu
                     userName={session.user?.name}
                     signOutSlot={<SignOutButton />}
+                    myChurch={myChurch}
                   />
                 </>
               ) : (
@@ -88,6 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <UserMenu
                     userName={session.user?.name}
                     signOutSlot={<SignOutButton />}
+                    myChurch={myChurch}
                   />
                 </>
               ) : (

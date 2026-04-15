@@ -15,9 +15,12 @@ import { User } from "lucide-react";
 interface UserMenuProps {
   userName?: string | null;
   signOutSlot: React.ReactNode;
+  myChurch?: { slug: string; name: string; role: string } | null;
 }
 
-export function UserMenu({ userName, signOutSlot }: UserMenuProps) {
+export function UserMenu({ userName, signOutSlot, myChurch }: UserMenuProps) {
+  const isAdminOrPastor =
+    myChurch?.role === 'admin' || myChurch?.role === 'pastor';
   return (
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button variant="ghost" size="sm" className="gap-1.5" />}>
@@ -47,6 +50,22 @@ export function UserMenu({ userName, signOutSlot }: UserMenuProps) {
         <DropdownMenuItem render={<Link href="/saved-churches" />}>
           Saved Churches
         </DropdownMenuItem>
+        {myChurch && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+              {myChurch.name}
+            </DropdownMenuLabel>
+            <DropdownMenuItem render={<Link href={`/church/${myChurch.slug}`} />}>
+              View Church Page
+            </DropdownMenuItem>
+            {isAdminOrPastor && (
+              <DropdownMenuItem render={<Link href={`/church/${myChurch.slug}/dashboard`} />}>
+                Church Dashboard
+              </DropdownMenuItem>
+            )}
+          </>
+        )}
         <DropdownMenuSeparator />
         {signOutSlot}
       </DropdownMenuContent>
