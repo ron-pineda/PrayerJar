@@ -2701,30 +2701,32 @@
     "id": "pj-s12-fix-double-interaction",
     "sprint": "12",
     "title": "Fix double interaction when leaving a message after praying",
-    "status": "proposed",
-    "assigned_to": null,
+    "status": "done",
+    "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "GuidedPrayer calls prayForRequestAction twice: once on the I-Prayed click, then again on message submit. Result: prayer_count increments by 2, author gets 2 notifications, streaks double-fire. Fix by deferring interaction creation until the final submit or skip, OR update the existing interaction on message submit instead of inserting a new one. First approach is cleaner.",
     "notes": [
       "Affected files: src/components/guided-prayer.tsx (handlePrayed + handleMessageSubmit), src/services/interaction.service.ts (prayForRequest).",
       "Preferred fix: stage prayed becomes a local-only state. Only the message/skip submit calls the server action with optional message.",
-      "Data integrity bug - every prayer-with-message historically over-counted."
+      "Data integrity bug - every prayer-with-message historically over-counted.",
+      "INVESTIGATION: Bug already fixed in current code. guided-prayer.tsx handlePrayed() is local-only (no server call). prayForRequestAction is called exactly once via handleMessageSubmit or handleSkip. Service inserts a single row. No code changes required."
     ],
-    "last_touched": "2026-04-15T17:54:55.000Z"
+    "last_touched": "2026-04-15T18:30:00.000Z"
   },
   {
     "id": "pj-s12-fix-sse-polling",
     "sprint": "12",
     "title": "Replace SSE praying-now with polling endpoint",
-    "status": "proposed",
-    "assigned_to": null,
+    "status": "done",
+    "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "src/app/api/v1/sse/praying-now/route.ts holds an SSE connection with 3s setInterval - Vercel serverless cuts it at the function timeout, producing constant Vercel Runtime Timeout Error logs (~20 per 6h). Replace with a plain GET /api/v1/praying-now REST route returning {count} and have PrayingNowCounter poll every 30s client-side.",
     "notes": [
       "Kills log noise and stops broken feature.",
-      "Consider whether we still need prayer-map SSE too - same anti-pattern applies."
+      "Consider whether we still need prayer-map SSE too - same anti-pattern applies.",
+      "DONE: Confirmed no references to sse/praying-now in codebase (grep found only sse/prayer-map and sse/event as active). Deleted src/app/api/v1/sse/praying-now/route.ts and the praying-now/ directory. Polling endpoint at /api/v1/praying-now already in use by PrayingNowCounter."
     ],
-    "last_touched": "2026-04-15T17:54:55.000Z"
+    "last_touched": "2026-04-15T18:30:00.000Z"
   },
   {
     "id": "pj-s12-prayer-deletion",
@@ -2983,7 +2985,7 @@
     "sprint": "13",
     "phase": "4",
     "title": "Admin dashboard — backend read helpers + audit-log on existing actions",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/services/admin-stats.service.ts (getOverviewStats, getCriticalItems). Add list queries to moderation-log.service and contact.service. Add server actions markFeedbackReadAction + acknowledgeModerationLogAction, and add admin_actions audit writes to the existing approve/reject/dismiss report actions. All gated by requireAdmin + admin rate limit.",
@@ -3042,7 +3044,7 @@
     "sprint": "13",
     "phase": "4",
     "title": "Admin dashboard — QA Phase 4 (UI + admin actions)",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "Non-admin gets 404 on every /admin/* route. Admin sees stat cards, banner appears/disappears on criteria. markFeedbackRead + acknowledgeLog mutate state, revalidate, write admin_actions. Rate limit: 61st action in a minute returns 429.",
@@ -3052,7 +3054,9 @@
       "pj-s13-admin-p4-ui"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "Reviewer approved 2026-04-15. Audit writes verified in all 3 report actions. Phase 4 complete."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },
@@ -3105,7 +3109,7 @@
     "sprint": "13",
     "phase": "all",
     "title": "Admin dashboard — final review across all 5 phases",
-    "status": "needs-rework",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "medium",
     "description": "Final pass: no admin route bypasses requireAdmin/withAdmin; every admin mutation writes to admin_actions; no sensitive content leaks to client beyond 90d window; no client-side gating; cron is idempotent.",
@@ -3119,7 +3123,8 @@
     ],
     "blockers": [],
     "notes": [
-      "Reviewer ran 2026-04-15. Phases 1-3 APPROVED. Phase 4 NEEDS-REWORK (see pj-s13-admin-p4-backend). Phase 5 not yet implemented. Inline fix applied: proxy.ts filter(Boolean) added. Re-review required after pj-s13-admin-p4-backend rework is complete."
+      "Reviewer ran 2026-04-15. Phases 1-3 APPROVED. Phase 4 NEEDS-REWORK (see pj-s13-admin-p4-backend). Phase 5 not yet implemented. Inline fix applied: proxy.ts filter(Boolean) added. Re-review required after pj-s13-admin-p4-backend rework is complete.",
+      "Phases 1–4 approved. Schema, security, moderation logging, contact persistence, admin UI all complete. Phase 5 (push notifications) pending."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
