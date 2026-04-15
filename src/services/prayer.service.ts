@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { prayers, users, type CategoryValue } from '@/db/schema';
-import { eq, and, sql, gt, isNull, isNotNull, ne } from 'drizzle-orm';
+import { eq, and, or, sql, gt, isNull, isNotNull, ne } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 import { categorizePrayer, moderateContent } from './ai.service';
 
@@ -65,7 +65,13 @@ export async function getRandomPrayer(category: CategoryValue | 'any', urgentOnl
 
   if (category !== 'any') conditions.push(eq(prayers.category, category));
   if (urgentOnly) conditions.push(eq(prayers.isUrgent, true));
-  if (excludeUserId) conditions.push(ne(prayers.authorId, excludeUserId));
+  // authorId is nullable (anonymous prayers), and `NULL != x` evaluates to NULL
+  // not TRUE in SQL — so we must explicitly allow NULL through.
+  if (excludeUserId) {
+    conditions.push(
+      or(isNull(prayers.authorId), ne(prayers.authorId, excludeUserId))!,
+    );
+  }
 
   const results = await db
     .select()

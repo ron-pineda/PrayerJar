@@ -9,7 +9,7 @@ import { PrayingNowCounter } from '@/components/praying-now-counter';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
 import { prayers, prayerInteractions, users } from '@/db/schema';
-import { eq, and, gt, ne, isNull, sql } from 'drizzle-orm';
+import { eq, and, gt, ne, or, isNull, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 
 async function getStats(viewerUserId?: string | null) {
@@ -20,7 +20,13 @@ async function getStats(viewerUserId?: string | null) {
     gt(prayers.expiresAt, new Date()),
     isNull(prayers.groupId),
   ];
-  if (viewerUserId) activeConditions.push(ne(prayers.authorId, viewerUserId));
+  // authorId is nullable (anonymous prayers) — `NULL != x` is NULL not TRUE
+  // in SQL, so we must explicitly allow NULL-authored prayers through.
+  if (viewerUserId) {
+    activeConditions.push(
+      or(isNull(prayers.authorId), ne(prayers.authorId, viewerUserId))!,
+    );
+  }
 
   const [totalRow] = await db
     .select({ count: sql<number>`count(*)` })
