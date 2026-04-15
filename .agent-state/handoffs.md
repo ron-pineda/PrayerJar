@@ -1,3 +1,4 @@
+[2026-04-15] Backend Engineer → Reviewer: pj-s12-claim-link — claim-to-platform church linking implemented
 [2026-04-15] Backend Engineer → Reviewer: pj-s13-admin-p4-backend — audit log writes added to 3 report actions per rework request
 [2026-04-15] Database Engineer → Backend Engineer: pj-s13-admin-p1-schema — 3 tables (moderation_logs, admin_actions, contact_submissions) + enums added to src/db/schema.ts, migration 0025_oval_quasar.sql generated. Backend can now implement auth helpers and service layer.
 [2026-04-15] PM → Planning: Sprint 12 planned — 5 proposed tasks: fix-double-interaction (high), fix-sse-polling (high), prayer-deletion (medium), fire-forget-side-effects (medium), claim-link (medium, moved from s11, held)

@@ -103,6 +103,23 @@ export async function getChurchForUser(
   return { church: row.church, role: row.role };
 }
 
+// Get the platform church administered by a specific user (by userId).
+// Used to link a Google Places claim to a platform church via the claimer's
+// userId — the user who claimed the Google Places listing is expected to
+// also be an admin of the corresponding platform church.
+export async function getChurchByAdminUserId(
+  userId: string,
+): Promise<Church | null> {
+  const [row] = await db
+    .select({ church: churches })
+    .from(churchMembers)
+    .innerJoin(churches, eq(churches.id, churchMembers.churchId))
+    .where(and(eq(churchMembers.userId, userId), eq(churchMembers.role, 'admin')))
+    .limit(1);
+
+  return row?.church ?? null;
+}
+
 // Add a user to a church (default role: 'member'). No-op if already a member.
 export async function addChurchMember(
   churchId: string,

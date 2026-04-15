@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { getChurchDetail } from "@/services/church.service";
+import { getChurchDetail, getPlatformChurchForPlace } from "@/services/church.service";
 import { RecommendForm } from "@/components/church/recommend-form";
 import { ClaimForm } from "@/components/church/claim-form";
 import { SaveChurchButton } from "@/components/church/save-church-button";
 import { ExternalLink, MapPin, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BackButton } from "./BackButton";
+import Link from "next/link";
 
 export async function generateMetadata({
   params,
@@ -28,7 +29,10 @@ export default async function ChurchDetailPage({
 }) {
   const { placeId } = await params;
   const session = await auth();
-  const church = await getChurchDetail(placeId, session?.user?.id ?? null);
+  const [church, platformChurch] = await Promise.all([
+    getChurchDetail(placeId, session?.user?.id ?? null),
+    getPlatformChurchForPlace(placeId),
+  ]);
   if (!church) notFound();
 
   const isVerified = church.claim?.verified === true;
@@ -103,6 +107,28 @@ export default async function ChurchDetailPage({
           )}
         </div>
       </div>
+
+      {/* Platform Church Link — shown when a verified claim is linked to a PrayerJar church */}
+      {platformChurch && (
+        <div className="border-b border-emerald-900 bg-emerald-950/30 px-6 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                On PrayerJar
+              </p>
+              <p className="text-slate-200 text-sm">
+                {platformChurch.name} has a Prayer Jar page — join their prayer community.
+              </p>
+            </div>
+            <Link
+              href={`/church/${platformChurch.slug}`}
+              className="shrink-0 inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+            >
+              Visit Page <ExternalLink className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Service Times */}
       {church.claim?.serviceTimes && church.claim.serviceTimes.length > 0 && (

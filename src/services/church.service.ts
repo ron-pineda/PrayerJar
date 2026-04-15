@@ -10,6 +10,8 @@ import { and, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { moderateContent } from "@/services/ai.service";
 import { logModerationRejection } from "@/services/moderation-log.service";
 import { sendClaimVerificationEmail } from "@/services/email.service";
+import { getChurchByAdminUserId } from "@/services/church-platform.service";
+import type { Church } from "@/db/schema";
 
 export type GooglePlace = {
   placeId: string;
@@ -405,4 +407,31 @@ export async function verifyClaim(token: string): Promise<boolean> {
     .where(eq(churchClaims.id, claim[0].id));
 
   return true;
+}
+
+// ──────────────────────────────────────────────
+// getPlatformChurchForPlace
+// ──────────────────────────────────────────────
+// Returns the platform church linked to a Google Places church, if one exists.
+// The link is made through the verified claim: the user who verified the claim
+// is expected to also be an admin of the corresponding platform church.
+// Returns null if no verified claim exists or no platform church is found.
+
+export async function getPlatformChurchForPlace(
+  googlePlaceId: string
+): Promise<Church | null> {
+  const [claim] = await db
+    .select()
+    .from(churchClaims)
+    .where(
+      and(
+        eq(churchClaims.googlePlaceId, googlePlaceId),
+        eq(churchClaims.verified, true)
+      )
+    )
+    .limit(1);
+
+  if (!claim) return null;
+
+  return getChurchByAdminUserId(claim.claimedByUserId);
 }

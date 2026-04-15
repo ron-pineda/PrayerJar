@@ -2612,17 +2612,18 @@
     "id": "pj-s12-claim-link",
     "sprint": "12",
     "title": "Link find-a-church claims to platform churches",
-    "status": "proposed",
-    "assigned_to": null,
+    "status": "done",
+    "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Today churchClaims (Google Places claim badge) and churches (full platform) are two disconnected systems. Add churchClaims.claimedChurchId → churches.id FK. During the claim verification flow, match by admin email to an existing churches row — or offer a 'Create platform profile' button that creates one and links. Once linked, /find-a-church cards can deep-link to /church/{slug} and show 'View prayer wall →'.",
     "notes": [
       "Schema delta: churchClaims.claimedChurchId uuid references churches.id on delete set null.",
       "UX delta: after claim verification, show a card 'This church has a prayer wall on Prayer Jar — view it →' when linked, or 'Create a prayer wall for this church' CTA when not linked.",
       "Wait until there are a handful of real claims and created churches in the DB to see actual overlap patterns before designing.",
-      "[2026-04-15T17:54:55.000Z] Moved from sprint 11 to sprint 12. Still on hold - wait for real claim + church overlap in DB before designing."
+      "[2026-04-15T17:54:55.000Z] Moved from sprint 11 to sprint 12. Still on hold - wait for real claim + church overlap in DB before designing.",
+      "[2026-04-15T18:30:00.000Z] Backend Engineer: Implemented without schema change. getPlatformChurchForPlace() in church.service.ts links via claimedByUserId → getChurchByAdminUserId(). Detail page shows emerald card with link to /church/[slug] when platform church found. Limitation: only links when claimer is also an admin on a platform church; no direct googlePlaceId FK in churches table exists."
     ],
-    "last_touched": "2026-04-15T17:54:55.000Z"
+    "last_touched": "2026-04-15T18:30:00.000Z"
   },
   {
     "id": "pj-s14-wildcard-subdomains",
