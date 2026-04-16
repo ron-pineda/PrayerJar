@@ -1,10 +1,8 @@
 import { auth } from '@/lib/auth';
 import { getPrayersByAuthor } from '@/services/prayer.service';
 import { PrayerCard } from '@/components/prayer-card';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { EmptyState } from '@/components/empty-state';
+import { PrayerDialog } from '@/components/prayer-dialog';
 import { Heart } from 'lucide-react';
 import { db } from '@/db';
 import { users } from '@/db/schema';
@@ -43,16 +41,18 @@ export default async function MyPrayersPage() {
             Your prayer requests and testimonies.
           </p>
         </div>
-        <Button render={<Link href="/" />}>Add a Prayer</Button>
+        <PrayerDialog />
       </div>
 
       {prayers.length === 0 ? (
-        <EmptyState
-          icon={<Heart size={24} />}
-          title="No prayers yet"
-          description="When you submit a prayer, it will appear here."
-          action={{ label: "Submit a Prayer", href: "/" }}
-        />
+        <div className="flex flex-col items-center justify-center py-20 text-center px-4">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <Heart size={24} />
+          </div>
+          <h3 className="mb-1 text-base font-semibold">No prayers yet</h3>
+          <p className="mb-5 max-w-xs text-sm text-muted-foreground">When you submit a prayer, it will appear here.</p>
+          <PrayerDialog />
+        </div>
       ) : (
         <div className="space-y-10">
           {active.length > 0 && (
