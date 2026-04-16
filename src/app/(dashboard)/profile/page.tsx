@@ -1,13 +1,11 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
-import { users, prayers, prayerInteractions, churchMembers } from "@/db/schema";
+import { users, prayers, prayerInteractions } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { getBadgesForUser } from "@/services/badge.service";
 import { BadgeDisplay } from "@/components/badge-display";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { BookOpen, Bell, Star, Church, Heart, Settings, Users, CreditCard } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profile | The Prayer Jar" };
@@ -23,16 +21,8 @@ export default async function ProfilePage() {
     getBadgesForUser(session.user.id),
   ]);
 
-  let churchRole: { role: string } | undefined;
-  try {
-    churchRole = await db.select({ role: churchMembers.role }).from(churchMembers).where(eq(churchMembers.userId, session.user.id)).limit(1).then((r) => r[0]);
-  } catch {
-    // church_members table may not exist yet
-  }
-
   if (!user) redirect("/sign-in");
 
-  const isChurchAdmin = churchRole?.role === 'admin' || churchRole?.role === 'pastor';
   const recentBadges = badges.slice(0, 4);
 
   return (
@@ -87,34 +77,6 @@ export default async function ProfilePage() {
         </section>
       )}
 
-      {/* Dashboard links */}
-      <section>
-        <h2 className="text-base font-semibold mb-4">Your Activity</h2>
-        <div className="space-y-2">
-          {[
-            { href: "/my-prayers", icon: Heart, label: "My Prayers", description: "Your prayer requests and testimonies" },
-            { href: "/partner", icon: Users, label: "Prayer Partner", description: "Your matched prayer partner" },
-            { href: "/journal", icon: BookOpen, label: "Prayer Journal", description: "Prayers you've interceded for" },
-            { href: "/saved-churches", icon: Church, label: "Saved Churches", description: "Churches you've bookmarked" },
-            { href: "/notifications", icon: Bell, label: "Notifications", description: "Updates on your prayer requests" },
-            { href: "/badges", icon: Star, label: "Badges & Streak", description: "Your milestones and progress" },
-            { href: "/settings", icon: Settings, label: "Settings", description: "Email notification preferences" },
-            ...(isChurchAdmin ? [{ href: "/billing", icon: CreditCard, label: "Billing", description: "Manage your church subscription" }] : []),
-          ].map(({ href, icon: Icon, label, description }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-4 p-4 rounded-xl border bg-card hover:bg-accent/50 transition-colors"
-            >
-              <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-              <div>
-                <p className="font-medium text-sm">{label}</p>
-                <p className="text-xs text-muted-foreground">{description}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
     </main>
   );
 }
