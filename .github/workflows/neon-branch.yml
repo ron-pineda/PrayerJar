@@ -1,0 +1,35 @@
+# Neon preview DB — branch per PR
+#
+# Required GitHub Actions secrets:
+#   NEON_PROJECT_ID — your Neon project ID (find it in the Neon console)
+#   NEON_API_KEY    — a Neon API key with branch create/delete permissions
+#
+# Add both under: GitHub repo → Settings → Secrets and variables → Actions
+
+name: Neon preview DB
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+jobs:
+  create:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: neondatabase/create-branch-action@v5
+        id: branch
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          branch_name: pr-${{ github.event.number }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+      - run: echo "PR=${{ github.event.number }} DB=${{ steps.branch.outputs.db_url_with_pooler }}"
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ secrets.NEON_PROJECT_ID }}
+          branch: pr-${{ github.event.number }}
+          api_key: ${{ secrets.NEON_API_KEY }}
