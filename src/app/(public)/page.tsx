@@ -149,20 +149,20 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Daily verse */}
-          <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
-            <p className="text-sm italic text-muted-foreground leading-relaxed">
-              &ldquo;{verse.text}&rdquo;
-            </p>
-            <p className="text-xs text-primary mt-2">{verse.reference}</p>
-          </div>
-
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <PrayerDialog />
             <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
           </div>
         </section>
       )}
+
+      {/* Daily verse — visible to all users */}
+      <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
+        <p className="text-sm italic text-muted-foreground leading-relaxed">
+          &ldquo;{verse.text}&rdquo;
+        </p>
+        <p className="text-xs text-primary mt-2">{verse.reference}</p>
+      </div>
 
       {/* How it works — signed-out users only */}
       {!session?.user && (
