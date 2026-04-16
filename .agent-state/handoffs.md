@@ -1,3 +1,6 @@
+[2026-04-16] Backend Engineer → QA: pj-s15-observability — Sentry configs committed, debug endpoint live, Better Stack + alert runbooks written. Human action needed: add Sentry env vars to Vercel + configure Better Stack Vercel integration + create Sentry alert rule (see runbooks).
+[2026-04-16] Architect → Backend/Frontend/Database Engineers: pj-s15-archaeology done — bug archaeology matrix committed, 6 failure buckets confirmed, workstreams B-E may proceed in parallel.
+[2026-04-16] PM → Architect: Sprint 15 kickoff — 6 tasks (pj-s15-archaeology through pj-s15-reviewer-proof) created as approved; archaeology in-progress.
 [2026-04-16] PM → Deploy: Sprint 14 complete — 19 commits pushed to feature/prayer-jar, Vercel redeploy triggered
 [2026-04-16] QA → Reviewer: task-11-verify-prayer-card-render-sites — all 5 render sites verified (my-prayers, prayed-for, adopted, group-wall, og-card); no broken props, no removed props passed, TypeScript clean
 [2026-04-16] Frontend Engineer → Reviewer: task-10-prayer-card-refactor — PrayerCard refactored: 17→11 useState, inline forms removed, PrayerCardMenu+3 dialogs wired, committed 7140b54
