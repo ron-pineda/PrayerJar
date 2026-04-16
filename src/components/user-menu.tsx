@@ -30,7 +30,6 @@ export function UserMenu({ userName, signOutSlot, myChurch }: UserMenuProps) {
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/profile" />}>
           Profile

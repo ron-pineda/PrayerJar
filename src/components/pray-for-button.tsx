@@ -60,7 +60,7 @@ export function PrayForButton({ prayerId, initialCount }: Props) {
       <div className="flex flex-col items-center gap-2">
         <Button size="lg" className="w-full" disabled>
           <Check className="h-5 w-5 mr-2" aria-hidden="true" />
-          Prayer Sent
+          I Prayed for This
         </Button>
         <p className="text-sm text-muted-foreground">
           {count} {count === 1 ? 'person has' : 'people have'} prayed for this

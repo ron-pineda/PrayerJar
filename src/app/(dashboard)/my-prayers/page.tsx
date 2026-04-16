@@ -35,15 +35,15 @@ export default async function MyPrayersPage() {
             <h1 className="text-3xl font-bold tracking-tight">My Prayers</h1>
             {userRecord?.activityLevel === 'power' && (
               <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-                Power Intercessor
+                Faithful Intercessor
               </span>
             )}
           </div>
           <p className="text-muted-foreground">
-            Manage your prayer requests and share testimonies.
+            Your prayer requests and testimonies.
           </p>
         </div>
-        <Button render={<Link href="/" />}>+ New Request</Button>
+        <Button render={<Link href="/" />}>Add a Prayer</Button>
       </div>
 
       {prayers.length === 0 ? (

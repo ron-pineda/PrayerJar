@@ -188,7 +188,7 @@ export default async function HomePage() {
               className="group rounded-xl border hover:bg-accent/50 px-5 py-5 transition-colors"
             >
               <p className="text-lg mb-1">✨</p>
-              <p className="font-semibold text-sm">Lights Released</p>
+              <p className="font-semibold text-sm">Answered Prayers</p>
               <p className="text-xs text-muted-foreground mt-1">Celebrate answered prayers</p>
             </Link>
             <Link

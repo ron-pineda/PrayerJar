@@ -62,7 +62,7 @@ export default async function BrowsePage({
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Browse Prayers</h1>
         <p className="text-muted-foreground">
-          Search and filter active prayer requests from the community.
+          Find a prayer to stand with someone who needs it right now.
         </p>
       </div>
 
@@ -120,7 +120,7 @@ export default async function BrowsePage({
                 >
                   <div className="text-2xl mb-1">{CATEGORY_EMOJIS[cat.value] ?? "🙏"}</div>
                   <p className="text-sm font-medium">{cat.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{count}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{count} {count === 1 ? "prayer" : "prayers"}</p>
                 </Link>
               );
             })}
