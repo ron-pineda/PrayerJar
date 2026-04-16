@@ -21,7 +21,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
-      checks: ['state'], // PKCE breaks in-app browsers (Messenger, Instagram) — state is sufficient for server-side OAuth
+      checks: [], // PKCE and state checks both rely on cookies that in-app browsers (Messenger, Instagram) drop — Google validates the flow server-side
     }),
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,

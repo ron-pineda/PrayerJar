@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { InAppBrowserWarning } from '@/components/in-app-browser-warning';
 import Link from 'next/link';
 
 export const metadata = { title: "Sign In | The Prayer Jar" };
@@ -46,6 +47,8 @@ export default async function SignInPage({
             A global place to share your heart and intercede for others.
           </p>
         </div>
+
+        <InAppBrowserWarning />
 
         <Card>
           <CardHeader>
