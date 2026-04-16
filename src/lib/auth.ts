@@ -10,6 +10,7 @@ import SignInEmail from '@/emails/sign-in';
 import { sendWelcome1Email } from '@/services/email.service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   adapter: DrizzleAdapter(db, {
     usersTable: schema.users,
     accountsTable: schema.accounts,
@@ -21,7 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
-      checks: [], // PKCE and state checks both rely on cookies that in-app browsers (Messenger, Instagram) drop — Google validates the flow server-side
+      checks: ['state'], // state-only (not PKCE) for in-app browser cookie compatibility
     }),
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
