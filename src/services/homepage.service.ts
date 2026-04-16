@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { prayers, prayerInteractions } from '@/db/schema';
-import { eq, and, gt, lt, or, isNull, ne, sql, count } from 'drizzle-orm';
+import { eq, and, gt, lt, or, isNull, ne, sql, count, inArray } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 
 // Count of interactions on the user's prayers in the last 7 days
@@ -19,7 +19,7 @@ export async function getPrayedForMeCount(userId: string): Promise<number> {
     .where(
       and(
         // interaction is on one of the user's prayers
-        sql`${prayerInteractions.prayerId} IN (${userPrayers})`,
+        inArray(prayerInteractions.prayerId, userPrayers),
         gt(prayerInteractions.createdAt, sevenDaysAgo),
       ),
     );
@@ -77,6 +77,7 @@ export async function getCommunityPrayerSnippet(userId: string): Promise<{ id: s
         eq(prayers.status, 'active'),
         gt(prayers.expiresAt, now),
         isNull(prayers.groupId),
+        isNull(prayers.churchId),
         // authorId is nullable — NULL != x evaluates to NULL in SQL, so we must
         // explicitly allow anonymous (NULL-authored) prayers through.
         or(isNull(prayers.authorId), ne(prayers.authorId, userId))!,
