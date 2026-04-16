@@ -2,12 +2,17 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const isIntegration = process.env.VITEST_MODE === 'integration';
+
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
+    environment: isIntegration ? 'node' : 'jsdom',
     globals: true,
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: isIntegration ? ['./src/test/integration/setup.ts'] : ['./src/test/setup.ts'],
+    include: isIntegration
+      ? ['src/**/*.integration.test.{ts,tsx}']
+      : ['src/**/*.test.{ts,tsx}', '!src/**/*.integration.test.{ts,tsx}'],
     server: {
       deps: {
         inline: ['stripe'],
