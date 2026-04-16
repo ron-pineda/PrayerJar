@@ -142,7 +142,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
             <Badge variant="outline" className="text-xs text-muted-foreground">Anonymous</Badge>
           )}
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[localStatus]}`}>
-            {localStatus}
+            {localStatus === 'active' ? 'Active' : localStatus === 'answered' ? 'Answered' : 'Expired'}
           </span>
         </div>
         <span className="text-xs text-muted-foreground shrink-0">{ago}</span>

@@ -68,17 +68,16 @@ function getTimeOfDay() {
 
 export default async function HomePage() {
   const session = await auth();
-  const stats = await getStats(session?.user?.id);
+  const userId = session?.user?.id ?? null;
   const verse = getDailyVerse();
 
-  const homepageData = session?.user
-    ? await getHomepageData(session.user.id)
-    : null;
+  const [stats, homepageData, onboardingCompleted] = await Promise.all([
+    getStats(userId),
+    userId ? getHomepageData(userId) : Promise.resolve(null),
+    userId ? getUserOnboardingState(userId) : Promise.resolve(true),
+  ]);
 
-  const needsOnboarding =
-    session?.user?.id
-      ? !(await getUserOnboardingState(session.user.id))
-      : false;
+  const needsOnboarding = userId ? !onboardingCompleted : false;
 
   return (
     <main className="min-h-screen">
