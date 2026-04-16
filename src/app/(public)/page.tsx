@@ -11,6 +11,7 @@ import { db } from '@/db';
 import { prayers, prayerInteractions, users } from '@/db/schema';
 import { eq, and, gt, ne, or, isNull, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
+import { getHomepageData } from '@/services/homepage.service';
 
 async function getStats(viewerUserId?: string | null) {
   // Mirror /pray's getRandomPrayer filters so "prayers waiting" reflects what
@@ -58,10 +59,21 @@ async function getUserOnboardingState(userId: string) {
   return row?.onboardingCompleted ?? true;
 }
 
+function getTimeOfDay() {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'morning';
+  if (hour < 17) return 'afternoon';
+  return 'evening';
+}
+
 export default async function HomePage() {
   const session = await auth();
   const stats = await getStats(session?.user?.id);
   const verse = getDailyVerse();
+
+  const homepageData = session?.user
+    ? await getHomepageData(session.user.id)
+    : null;
 
   const needsOnboarding =
     session?.user?.id
@@ -71,85 +83,128 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen">
       <OnboardingOverlay showOnboarding={needsOnboarding} />
-      {/* Hero */}
-      <section className="py-20 px-4 text-center max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">
-          The Prayer Jar
-        </h1>
-        <p className="text-lg text-muted-foreground mb-8">
-          A global place to share your heart and intercede for others.
-          Every prayer matters. Every name is known by God.
-        </p>
-
-        <div className="flex justify-center mb-6">
-          <PrayerJar count={stats.active} />
-        </div>
-
-        <div className="flex justify-center gap-8 mb-6">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-primary">{stats.active}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">prayers waiting</p>
-          </div>
-          <div className="w-px bg-border" aria-hidden="true" />
-          <div className="text-center">
-            <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{stats.answered}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">lights released <span aria-hidden="true">✨</span></p>
-          </div>
-        </div>
-
-        {/* Daily verse */}
-        <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
-          <p className="text-sm italic text-muted-foreground leading-relaxed">
-            &ldquo;{verse.text}&rdquo;
-          </p>
-          <p className="text-xs text-primary mt-2">{verse.reference}</p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <PrayerDialog />
-          <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <ScrollReveal>
-        <section className="pb-12 px-4">
-          <div className="max-w-2xl mx-auto">
-            <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-8">
-              How It Works
+      {/* Personalized greeting — signed-in users only */}
+      {session?.user && homepageData ? (
+        <>
+          <div className="text-center space-y-2 py-8 px-4">
+            <h1 className="text-2xl font-bold">
+              Good {getTimeOfDay()}, {session.user.name?.split(' ')[0] ?? 'friend'} 🙏
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {homepageData.prayedForMeCount > 0
+                ? `${homepageData.prayedForMeCount} ${homepageData.prayedForMeCount === 1 ? 'person' : 'people'} prayed for your requests this week`
+                : 'Your prayers are with the community'}
+              {homepageData.expiringCount > 0 && ` · ${homepageData.expiringCount} ${homepageData.expiringCount === 1 ? 'prayer needs' : 'prayers need'} renewal`}
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
-                  🫙
-                </div>
-                <h3 className="font-semibold text-sm">Share Your Heart</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Write a prayer request — as specific or as simple as you need. You choose who sees it.
-                </p>
-              </div>
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
-                  🙏
-                </div>
-                <h3 className="font-semibold text-sm">The Community Intercedes</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Others around the world pray for your request. You receive a notification each time someone intercedes.
-                </p>
-              </div>
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
-                  ✨
-                </div>
-                <h3 className="font-semibold text-sm">Release a Light</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  When your prayer is answered, mark it as a testimony. A light joins the Lights Released wall for all to celebrate.
-                </p>
-              </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 max-w-2xl mx-auto px-4 mt-6">
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <h3 className="font-semibold">Someone needs prayer</h3>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {homepageData.communityPrayer?.content ?? 'There are prayers waiting for your intercession.'}
+              </p>
+              <a href="/pray" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
+                Pray for Them →
+              </a>
+            </div>
+            <div className="rounded-lg border bg-card p-6 space-y-3">
+              <h3 className="font-semibold">Your prayers</h3>
+              <p className="text-sm text-muted-foreground">
+                {homepageData.activePrayerCount} active
+                {homepageData.expiringCount > 0 ? ` · ${homepageData.expiringCount} expiring soon` : ' · all healthy'}
+              </p>
+              <a href="/my-prayers" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
+                View My Prayers →
+              </a>
             </div>
           </div>
+        </>
+      ) : null}
+
+      {/* Hero — signed-out users only */}
+      {!session?.user && (
+        <section className="py-20 px-4 text-center max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold tracking-tight mb-4">
+            The Prayer Jar
+          </h1>
+          <p className="text-lg text-muted-foreground mb-8">
+            A global place to share your heart and intercede for others.
+            Every prayer matters. Every name is known by God.
+          </p>
+
+          <div className="flex justify-center mb-6">
+            <PrayerJar count={stats.active} />
+          </div>
+
+          <div className="flex justify-center gap-8 mb-6">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-primary">{stats.active}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">prayers waiting</p>
+            </div>
+            <div className="w-px bg-border" aria-hidden="true" />
+            <div className="text-center">
+              <p className="text-2xl font-bold text-amber-500 dark:text-amber-400">{stats.answered}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">lights released <span aria-hidden="true">✨</span></p>
+            </div>
+          </div>
+
+          {/* Daily verse */}
+          <div className="border-t border-b py-4 mb-8 max-w-md mx-auto">
+            <p className="text-sm italic text-muted-foreground leading-relaxed">
+              &ldquo;{verse.text}&rdquo;
+            </p>
+            <p className="text-xs text-primary mt-2">{verse.reference}</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <PrayerDialog />
+            <Button size="lg" variant="outline" render={<Link href="/pray" />}>Pray for Someone</Button>
+          </div>
         </section>
-      </ScrollReveal>
+      )}
+
+      {/* How it works — signed-out users only */}
+      {!session?.user && (
+        <ScrollReveal>
+          <section className="pb-12 px-4">
+            <div className="max-w-2xl mx-auto">
+              <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-8">
+                How It Works
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                    🫙
+                  </div>
+                  <h3 className="font-semibold text-sm">Share Your Heart</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Write a prayer request — as specific or as simple as you need. You choose who sees it.
+                  </p>
+                </div>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                    🙏
+                  </div>
+                  <h3 className="font-semibold text-sm">The Community Intercedes</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Others around the world pray for your request. You receive a notification each time someone intercedes.
+                  </p>
+                </div>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
+                    ✨
+                  </div>
+                  <h3 className="font-semibold text-sm">Release a Light</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    When your prayer is answered, mark it as a testimony. A light joins the Lights Released wall for all to celebrate.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </ScrollReveal>
+      )}
 
       {/* Stats */}
       <ScrollReveal>
