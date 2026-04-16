@@ -3233,22 +3233,32 @@
     "id": "pj-s15-integration",
     "sprint": "15",
     "title": "Workstream D: Integration tests (Neon branch)",
-    "status": "approved",
-    "assigned_to": "Backend Engineer",
+    "status": "review",
+    "assigned_to": "QA",
     "owner": "Backend Engineer + Database Engineer",
     "priority": "high",
     "description": "Integration suite hitting a real Neon preview branch per PR. Covers: driver-quirks (inArray vs sql ANY, 3VL nulls, NaN params) for bucket 2; single-fire invariant on prayer interactions + moderation timeout fail-open for bucket 5; service-layer authz (non-owner / wrong-church / expired / null-token / unauth uploads) + admin audit-row writes for bucket 6. An intentionally regressed commit must prove the suite catches the breakage.",
-    "files": [],
+    "files": [
+      ".github/workflows/neon-branch.yml",
+      "src/test/integration/setup.ts",
+      "src/test/integration/driver-quirks.integration.test.ts",
+      "src/services/interaction.single-fire.integration.test.ts",
+      "src/services/prayer.authz.integration.test.ts",
+      "vitest.config.ts",
+      "package.json"
+    ],
     "depends_on": [
       "pj-s15-archaeology"
     ],
     "blockers": [],
     "notes": [
       "[2026-04-16] Architect: created as approved.",
-      "Owns safety-net proof for archaeology buckets 2 (driver-data), 5 (interaction-side-effect), and 6 (authz-moderation)."
+      "Owns safety-net proof for archaeology buckets 2 (driver-data), 5 (interaction-side-effect), and 6 (authz-moderation).",
+      "[2026-04-16] Backend Engineer: starting implementation — schema verified (prayers.content, expiresAt required), interaction.service prayForRequest signature verified, prayer.service updatePrayer/deletePrayer return null/false (not throw) for non-owner.",
+      "[2026-04-16] Backend Engineer: DONE — 4 commits: ci neon-branch workflow, integration harness + driver-quirks (bucket #2), single-fire invariant (bucket #5), prayer authz (bucket #6). Key findings: (1) prayerInteractions has NO unique constraint on (prayerId, userId) — double-fire invariant test documents current silent-allow behaviour; (2) updatePrayer/deletePrayer return null/false for non-owner (not throw) — authz tests use resolves.toBeNull/toBe(false); (3) vitest config now excludes *.integration.test.* from jsdom unit run. Integration tests require DATABASE_URL env var."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16"
+    "last_touched": "2026-04-16T10:30:00.000Z"
   },
   {
     "id": "pj-s15-ci-gates",
