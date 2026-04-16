@@ -4,17 +4,19 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { markAnsweredAction, renewPrayerAction, deletePrayerAction, updatePrayerAction } from '@/app/actions/lifecycle.actions';
+import { submitReportAction } from '@/app/actions/report.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { Share2, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
-import { PhotoUpload } from './photo-upload';
-import { VideoRecorder } from './video-recorder';
 import { CelebrationAnimation } from './celebration-animation';
 import { ExpandableText } from './expandable-text';
 import { AdoptPrayerButton } from './adopt-prayer-button';
+import { PrayerCardMenu } from './prayer-card-menu';
+import { PrayerEditDialog } from './prayer-edit-dialog';
+import { PrayerTestimonyDialog } from './prayer-testimony-dialog';
+import { PrayerDeleteDialog } from './prayer-delete-dialog';
 
 const CATEGORY_ICONS: Record<string, string> = {
   health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
@@ -40,24 +42,25 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
   const icon = CATEGORY_ICONS[prayer.category] ?? '📖';
   const ago = formatDistanceToNow(new Date(prayer.createdAt), { addSuffix: true });
 
-  const [showTestimony, setShowTestimony] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [localStatus, setLocalStatus] = useState<Prayer['status']>(prayer.status);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [countKey, setCountKey] = useState(0);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleted, setDeleted] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
-  const [editContent, setEditContent] = useState(prayer.content);
-  const [editUrgent, setEditUrgent] = useState(prayer.isUrgent);
-  const [editAnonymous, setEditAnonymous] = useState(prayer.isAnonymous);
   const [copied, setCopied] = useState(false);
   const [renewedAt, setRenewedAt] = useState<Date | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [testimonyDialogOpen, setTestimonyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const prevCountRef = useRef(prayer.prayerCount);
+
+  // Compute days left from expiresAt
+  const daysLeft = Math.max(
+    0,
+    Math.ceil((new Date(prayer.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  );
 
   useEffect(() => {
     if (prayer.prayerCount !== prevCountRef.current) {
@@ -65,55 +68,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
       setCountKey((k) => k + 1);
     }
   }, [prayer.prayerCount]);
-
-  async function handleMarkAnswered(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setPending(true);
-    setError('');
-    const formData = new FormData(e.currentTarget);
-    if (imageUrl) formData.set('imageUrl', imageUrl);
-    if (videoUrl) {
-      formData.set('videoUrl', videoUrl);
-      formData.set('videoDurationSeconds', String(videoDurationSeconds ?? 0));
-    }
-    const result = await markAnsweredAction(formData);
-    setPending(false);
-    if (result.success) {
-      setLocalStatus('answered');
-      setShowTestimony(false);
-      setImageUrl(null);
-      setVideoUrl(null);
-      setVideoDurationSeconds(null);
-      setShowCelebration(true);
-    } else {
-      setError(result.error);
-    }
-  }
-
-  async function handleEditSave() {
-    setPending(true);
-    setError('');
-    const formData = new FormData();
-    formData.set('prayerId', prayer.id);
-    formData.set('content', editContent);
-    formData.set('isUrgent', String(editUrgent));
-    formData.set('isAnonymous', String(editAnonymous));
-    const result = await updatePrayerAction(formData);
-    setPending(false);
-    if (result.success) setShowEdit(false);
-    else setError(result.error);
-  }
-
-  async function handleDelete() {
-    if (!confirmDelete) { setConfirmDelete(true); return; }
-    setPending(true);
-    const formData = new FormData();
-    formData.set('prayerId', prayer.id);
-    const result = await deletePrayerAction(formData);
-    setPending(false);
-    if (result.success) setDeleted(true);
-    else { setError(result.error); setConfirmDelete(false); }
-  }
 
   async function handleRenew() {
     setPending(true);
@@ -128,6 +82,28 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
     } else {
       setError(result.error);
     }
+  }
+
+  async function handleAdopt() {
+    try {
+      const res = await fetch('/api/v1/adoptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prayerId: prayer.id }),
+      });
+      if (!res.ok && res.status !== 409) {
+        setError('Could not adopt this prayer. Please try again.');
+      }
+    } catch {
+      setError('Could not adopt this prayer. Please try again.');
+    }
+  }
+
+  async function handleReport() {
+    const formData = new FormData();
+    formData.set('prayerId', prayer.id);
+    formData.set('reason', 'inappropriate');
+    await submitReportAction(formData);
   }
 
   async function handleCopyLink() {
@@ -201,132 +177,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
           </p>
         )}
 
-        {localStatus === 'active' && !isOwnPrayer && (
-          <AdoptPrayerButton
-            prayerId={prayer.id}
-            initialAdopted={isAdopted}
-            initialCount={adoptionCount}
-          />
-        )}
-
-        {showEdit && localStatus === 'active' && isOwnPrayer && (
-          <div className="space-y-2 pt-1">
-            <Textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={4}
-              maxLength={1000}
-            />
-            <div className="flex flex-wrap gap-4 text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editUrgent} onChange={(e) => setEditUrgent(e.target.checked)} />
-                Urgent
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editAnonymous} onChange={(e) => setEditAnonymous(e.target.checked)} />
-                Anonymous
-              </label>
-            </div>
-            {error && <p className="text-xs text-destructive">{error}</p>}
-            <div className="flex gap-2">
-              <Button size="sm" onClick={handleEditSave} disabled={pending}>
-                {pending ? 'Saving…' : 'Save'}
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => { setShowEdit(false); setEditContent(prayer.content); setEditUrgent(prayer.isUrgent); setEditAnonymous(prayer.isAnonymous); }} disabled={pending}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {localStatus === 'active' && (
-          <div className="flex gap-2 flex-wrap pt-1">
-            {isOwnPrayer && (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowTestimony((v) => !v)}
-                >
-                  Mark as Answered
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setShowEdit((v) => !v)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleRenew}
-                  disabled={pending}
-                >
-                  {pending ? 'Renewing...' : 'Renew (30 days)'}
-                </Button>
-              </>
-            )}
-            <Button size="sm" variant="ghost" onClick={handleCopyLink}>
-              <Share2 className="h-4 w-4 mr-1" />
-              {copied ? 'Copied!' : 'Share Link'}
-            </Button>
-            {!isOwnPrayer && (
-              <Button size="sm" variant="ghost" render={<Link href={`/p/${prayer.id}`} />}>
-                <ExternalLink className="h-4 w-4 mr-1" />
-                View
-              </Button>
-            )}
-            {showDelete && isOwnPrayer && (
-              confirmDelete ? (
-                <>
-                  <Button size="sm" variant="destructive" onClick={handleDelete} disabled={pending}>
-                    {pending ? 'Deleting…' : 'Confirm delete'}
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} disabled={pending}>
-                    Cancel
-                  </Button>
-                </>
-              ) : (
-                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={handleDelete}>
-                  Delete
-                </Button>
-              )
-            )}
-          </div>
-        )}
-
-        {showTestimony && localStatus === 'active' && isOwnPrayer && (
-          <form onSubmit={handleMarkAnswered} className="space-y-2 pt-1">
-            <input type="hidden" name="prayerId" value={prayer.id} />
-            <Textarea
-              name="testimony"
-              placeholder="Share how God answered this prayer... (optional)"
-              rows={3}
-              maxLength={2000}
-            />
-            <PhotoUpload url={imageUrl} onUpload={setImageUrl} onRemove={() => setImageUrl(null)} variant="warm" />
-            <VideoRecorder
-              url={videoUrl}
-              onUpload={(url, secs) => { setVideoUrl(url); setVideoDurationSeconds(secs); }}
-              onRemove={() => { setVideoUrl(null); setVideoDurationSeconds(null); }}
-            />
-            <div className="flex gap-2">
-              <Button type="submit" size="sm" disabled={pending}>
-                {pending ? 'Saving...' : 'Confirm Answered'}
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowTestimony(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        )}
-
         {localStatus === 'answered' && prayer.testimony && (
           <div className="border-l-4 border-amber-400 pl-3">
             <p className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-1">Testimony</p>
@@ -340,6 +190,124 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
               />
             )}
           </div>
+        )}
+
+        {/* Own prayer card action area */}
+        {isOwnPrayer && (
+          <div className="flex items-center justify-between mt-4">
+            <span className="text-sm text-muted-foreground">
+              {localStatus === 'answered'
+                ? 'Answered ✨'
+                : localStatus === 'expired'
+                ? 'Expired'
+                : `Active · ${daysLeft} days left`}
+            </span>
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="ghost" onClick={handleCopyLink} className="px-2">
+                <Share2 className="h-4 w-4" />
+                <span className="sr-only">{copied ? 'Copied!' : 'Share Link'}</span>
+              </Button>
+              <PrayerCardMenu
+                variant="own"
+                onEdit={() => setEditDialogOpen(true)}
+                onRenew={localStatus === 'active' ? handleRenew : undefined}
+                onMarkAnswered={localStatus === 'active' ? () => setTestimonyDialogOpen(true) : undefined}
+                onDelete={showDelete ? () => setDeleteDialogOpen(true) : undefined}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Community prayer card action area */}
+        {!isOwnPrayer && (
+          <>
+            {localStatus === 'active' && (
+              <AdoptPrayerButton
+                prayerId={prayer.id}
+                initialAdopted={isAdopted}
+                initialCount={adoptionCount}
+              />
+            )}
+            <div className="flex items-center gap-2 mt-4">
+              <div className="flex-1" />
+              <Button size="sm" variant="ghost" onClick={handleCopyLink} className="px-2">
+                <Share2 className="h-4 w-4" />
+                <span className="sr-only">{copied ? 'Copied!' : 'Share Link'}</span>
+              </Button>
+              <Button size="sm" variant="ghost" className="px-2" render={<Link href={`/p/${prayer.id}`} />}>
+                <ExternalLink className="h-4 w-4" />
+                <span className="sr-only">View</span>
+              </Button>
+              <PrayerCardMenu
+                variant="community"
+                onAdopt={handleAdopt}
+                onReport={handleReport}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Dialogs — own prayer only */}
+        {isOwnPrayer && (
+          <>
+            <PrayerEditDialog
+              prayer={{
+                content: prayer.content,
+                isUrgent: prayer.isUrgent ?? false,
+                isAnonymous: prayer.isAnonymous ?? false,
+              }}
+              open={editDialogOpen}
+              onOpenChange={setEditDialogOpen}
+              onSave={async (data) => {
+                const fd = new FormData();
+                fd.set('prayerId', prayer.id);
+                fd.set('content', data.content);
+                fd.set('isUrgent', String(data.urgent));
+                fd.set('isAnonymous', String(data.anonymous));
+                const result = await updatePrayerAction(fd);
+                if (!result.success) throw new Error(result.error);
+                setEditDialogOpen(false);
+              }}
+            />
+            <PrayerTestimonyDialog
+              prayerId={prayer.id}
+              open={testimonyDialogOpen}
+              onOpenChange={setTestimonyDialogOpen}
+              onConfirm={async (data) => {
+                const fd = new FormData();
+                fd.set('prayerId', prayer.id);
+                if (data.testimony) fd.set('testimony', data.testimony);
+                if (data.imageUrl) fd.set('imageUrl', data.imageUrl);
+                if (data.videoUrl) {
+                  fd.set('videoUrl', data.videoUrl);
+                  if (data.videoDurationSeconds != null) {
+                    fd.set('videoDurationSeconds', String(data.videoDurationSeconds));
+                  }
+                }
+                const result = await markAnsweredAction(fd);
+                if (!result.success) throw new Error(result.error);
+                setLocalStatus('answered');
+                setTestimonyDialogOpen(false);
+                setShowCelebration(true);
+              }}
+            />
+            {showDelete && (
+              <PrayerDeleteDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                onConfirm={async () => {
+                  const fd = new FormData();
+                  fd.set('prayerId', prayer.id);
+                  const result = await deletePrayerAction(fd);
+                  if (!result.success) {
+                    setError(result.error);
+                    throw new Error(result.error);
+                  }
+                  setDeleted(true);
+                }}
+              />
+            )}
+          </>
         )}
       </CardContent>
     </Card>
