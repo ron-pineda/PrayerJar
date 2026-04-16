@@ -87,6 +87,9 @@ export default async function HomePage() {
       {session?.user && homepageData ? (
         <>
           <div className="text-center space-y-2 py-8 px-4">
+            <div className="flex justify-center mb-4">
+              <PrayerJar count={stats.active} />
+            </div>
             <h1 className="text-2xl font-bold">
               Good {getTimeOfDay()}, {session.user.name?.split(' ')[0] ?? 'friend'} 🙏
             </h1>
