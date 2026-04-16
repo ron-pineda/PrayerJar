@@ -1,3 +1,4 @@
+[2026-04-15] Copywriter → Designer: copy-audit-2026-04-15 — full copy audit complete, 10 priority fixes identified
 [2026-04-15] Backend Engineer → QA: pj-s13-admin-p5-notify — notifyAdmins wired at selfHarm flag, harassment report, contact submission
 [2026-04-15] QA → Reviewer: pj-s13-admin-p5-qa — Phase 5 notifications passed all 8 checks. No throws, correct env vars, ADMIN_EMAILS parsed correctly, all 3 triggers conditional and fire-and-forget, no user content in emails.
 [2026-04-15] Reviewer → PM: Sprint 13 COMPLETE — all 16 tasks done. Admin dashboard fully shipped: schema, security, moderation logging, contact persistence, UI, push notifications.
