@@ -131,7 +131,7 @@ export default function FindAChurchPage() {
           <div className="flex items-center gap-2">
             {denominations.length > 0 && (
               <Select value={denomination} onValueChange={(v) => { setDenomination(v ?? "all"); setPage(0); }}>
-                <SelectTrigger className="h-7 text-xs px-2">
+                <SelectTrigger className="h-7 text-xs px-2" aria-label="Filter by denomination">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,7 +143,7 @@ export default function FindAChurchPage() {
               </Select>
             )}
             <Select value={sort} onValueChange={(v) => setSort((v ?? "distance") as SortOption)}>
-              <SelectTrigger className="h-7 text-xs px-2">
+              <SelectTrigger className="h-7 text-xs px-2" aria-label="Sort order">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
