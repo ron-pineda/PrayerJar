@@ -116,7 +116,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
             <span>© {new Date().getFullYear()} The Prayer Jar</span>
             <nav aria-label="Footer navigation">
-              <div className="flex gap-4">
+              <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
                 <Link href="/for-churches" className="hover:text-foreground transition-colors">For Churches</Link>
                 <Link href="/docs" className="hover:text-foreground transition-colors">Docs</Link>
