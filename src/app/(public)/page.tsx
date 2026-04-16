@@ -98,6 +98,9 @@ export default async function HomePage() {
                 : 'Your prayers are with the community'}
               {homepageData.expiringCount > 0 && ` · ${homepageData.expiringCount} ${homepageData.expiringCount === 1 ? 'prayer needs' : 'prayers need'} renewal`}
             </p>
+            <div className="mt-4">
+              <PrayerDialog />
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 max-w-2xl mx-auto px-4 mt-6">
