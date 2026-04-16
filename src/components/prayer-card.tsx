@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,7 +50,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
   const [countKey, setCountKey] = useState(0);
   const [deleted, setDeleted] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [renewedAt, setRenewedAt] = useState<Date | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [testimonyDialogOpen, setTestimonyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -77,8 +77,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
     const result = await renewPrayerAction(formData);
     setPending(false);
     if (result.success) {
-      setRenewedAt(new Date());
-      setTimeout(() => setRenewedAt(null), 4000);
+      toast('Renewed — expires in 30 days');
     } else {
       setError(result.error);
     }
@@ -93,6 +92,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
       });
       if (!res.ok && res.status !== 409) {
         setError('Could not adopt this prayer. Please try again.');
+      } else {
+        toast('Added to your adopted prayers');
       }
     } catch {
       setError('Could not adopt this prayer. Please try again.');
@@ -170,12 +171,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
         </p>
 
         {error && <p className="text-xs text-destructive">{error}</p>}
-
-        {renewedAt && (
-          <p className="text-xs text-amber-700 dark:text-amber-400">
-            ✓ Renewed — expires in 30 days
-          </p>
-        )}
 
         {localStatus === 'answered' && prayer.testimony && (
           <div className="border-l-4 border-amber-400 pl-3">
