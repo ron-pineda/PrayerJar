@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { ChurchSearchBar, type SearchParams } from "@/components/church/church-search-bar";
 import { ChurchCard } from "@/components/church/church-card";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ChurchResult } from "@/services/church.service";
 
 const ChurchMap = lazy(() =>
@@ -129,25 +130,27 @@ export default function FindAChurchPage() {
           <span>{filtered.length} churches found</span>
           <div className="flex items-center gap-2">
             {denominations.length > 0 && (
-              <select
-                value={denomination}
-                onChange={(e) => { setDenomination(e.target.value); setPage(0); }}
-                className="bg-muted border border-border rounded px-2 py-1 text-foreground"
-              >
-                <option value="all">Denomination: All</option>
-                {denominations.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
+              <Select value={denomination} onValueChange={(v) => { setDenomination(v ?? "all"); setPage(0); }}>
+                <SelectTrigger className="h-7 text-xs px-2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Denomination: All</SelectItem>
+                  {denominations.map((d) => (
+                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortOption)}
-              className="bg-muted border border-border rounded px-2 py-1 text-foreground"
-            >
-              <option value="distance">Sort: Distance</option>
-              <option value="verified">Sort: Community Verified First</option>
-            </select>
+            <Select value={sort} onValueChange={(v) => setSort((v ?? "distance") as SortOption)}>
+              <SelectTrigger className="h-7 text-xs px-2">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="distance">Sort: Distance</SelectItem>
+                <SelectItem value="verified">Sort: Community Verified First</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       )}

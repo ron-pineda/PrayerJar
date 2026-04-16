@@ -7,6 +7,7 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -76,14 +77,13 @@ export default async function SettingsPage() {
           <SettingsForm action={updateDisplayNameAction} submitLabel="Save name">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="name">Name</Label>
-              <input
+              <Input
                 id="name"
                 name="name"
                 type="text"
                 defaultValue={user.name ?? ''}
                 maxLength={50}
                 placeholder="Your display name"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </SettingsForm>
