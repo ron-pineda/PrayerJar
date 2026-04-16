@@ -9,7 +9,7 @@ export default auth((req: NextRequest & { auth?: { user?: { email?: string | nul
   const { pathname } = req.nextUrl;
 
   if (ADMIN_PREFIXES.some((p) => pathname.startsWith(p))) {
-    const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim());
+    const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map((e) => e.trim()).filter(Boolean);
     if (!req.auth?.user?.email || !adminEmails.includes(req.auth.user.email)) {
       // Return 404 (not redirect) to avoid disclosing that this route exists.
       return new NextResponse(null, { status: 404 });

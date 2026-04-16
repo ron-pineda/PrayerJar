@@ -3071,7 +3071,7 @@
     "sprint": "13",
     "phase": "5",
     "title": "Admin dashboard — push notifications (notifyAdmins helper + 3 triggers)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/lib/admin-notify.ts (fire-and-forget Resend to every ADMIN_EMAILS entry). Wire triggers: selfHarm inside logModerationRejection, harassment report creation, new contact submission. Email body must NOT contain content_snippet — only category + deep link.",
@@ -3088,7 +3088,8 @@
     "blockers": [],
     "notes": [
       "Verify exact report creation file during implementation — grep for report insert site.",
-      "notifyAdmins helper + 3 triggers (selfHarm, harassment, contact) implemented. Trigger sites: logModerationRejection (selfHarm check after DB insert), submitReportAction (harassment check after DB insert), submitContactAction (after createContactSubmission succeeds). All fire-and-forget with .catch(() => {}). Emails contain no user-submitted content."
+      "notifyAdmins helper + 3 triggers (selfHarm, harassment, contact) implemented. Trigger sites: logModerationRejection (selfHarm check after DB insert), submitReportAction (harassment check after DB insert), submitContactAction (after createContactSubmission succeeds). All fire-and-forget with .catch(() => {}). Emails contain no user-submitted content.",
+      "Reviewed and approved — 2026-04-15. All 8 QA criteria verified: no-throw, env vars, ADMIN_EMAILS parsing, correct trigger conditions, fire-and-forget pattern, non-blocking, no user content in email bodies."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
@@ -3098,7 +3099,7 @@
     "sprint": "13",
     "phase": "5",
     "title": "Admin dashboard — QA Phase 5 (notifications)",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "Trigger each of 3 paths, verify Resend send to every ADMIN_EMAILS. Force Resend failure — originating action still succeeds. Non-trigger categories do not page. Emails contain no sensitive snippet text.",
@@ -3107,7 +3108,9 @@
       "pj-s13-admin-p5-notify"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "QA passed — 2026-04-15. Criteria verified: (1) notifyAdmins never throws (try/catch + console.error), (2) AUTH_RESEND_KEY + AUTH_EMAIL_FROM from env, (3) ADMIN_EMAILS split/trim/filter(Boolean), (4) selfHarm trigger conditional on category==='selfHarm' + fire-and-forget, (5) harassment trigger conditional on reason==='harassment' + fire-and-forget, (6) contact trigger fires after createContactSubmission succeeds + fire-and-forget, (7) no trigger blocks user-facing response, (8) no user-submitted content in any email body."
+    ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
   },

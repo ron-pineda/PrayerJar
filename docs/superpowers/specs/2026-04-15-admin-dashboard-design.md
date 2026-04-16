@@ -1,7 +1,7 @@
 # Platform Admin Dashboard — Design Spec
 
 **Date:** 2026-04-15
-**Status:** Approved (pending user review of this doc)
+**Status:** Approved — corrections applied 2026-04-15
 **Scope:** Platform-admin only (gated by `ADMIN_EMAILS`). Not church-admin.
 
 ---
@@ -60,7 +60,7 @@ No charts. No trends. If we want trends later, add sparklines from the existing 
 
 ## 3. Database schema
 
-Three new tables in `drizzle/schema.ts`, one migration `00XX_admin_dashboard.sql`.
+Three new tables in `src/db/schema.ts`, one migration `src/db/migrations/0025_admin_dashboard.sql`.
 
 ### 3.1 `moderation_logs`
 Logs every `moderateContent` rejection.
@@ -69,7 +69,7 @@ Logs every `moderateContent` rejection.
 |-------------------|-----------------------------------|------------------------------------------------|
 | id                | uuid pk                           |                                                |
 | user_id           | uuid fk users, nullable           | null for anonymous submissions                 |
-| content_type      | enum                              | prayer / testimony / partner_message / group_post / group_meta |
+| content_type      | enum                              | prayer / testimony / partner_message / group_post / group_meta / interaction_message / church_note |
 | content_snippet   | text, nullable                    | NULLed after 90 days by cron                   |
 | category          | enum                              | selfHarm / spam / harassment / hate / sexual / other |
 | ai_confidence     | numeric, nullable                 |                                                |
@@ -113,7 +113,7 @@ Index: `(read_at)` partial where null, `(created_at desc)`.
 
 ### 3.4 Retention
 
-Daily cron at 03:00 UTC (in `vercel.ts`):
+Daily cron at 03:00 UTC (in `vercel.json`, path `/api/cron/purge-moderation-snippets`):
 ```sql
 UPDATE moderation_logs
 SET content_snippet = NULL
@@ -217,12 +217,14 @@ No digesting, no dedupe in v1. If volume bites, batch into hourly digest.
 - `listModerationLogs({ category?, resolved?, limit, cursor })` — paginated query.
 - `acknowledgeLog(id, adminEmail)` — set `resolved_at`, write `admin_actions` row.
 
-Wire into the **5 existing rejection sites** (no behavior change for users — the 422 still goes back, we just log first):
-1. `src/app/actions/lifecycle.actions.ts` — `updatePrayerAction`
-2. `src/services/group.service.ts` — `postGroupPrayer`
-3. `src/app/api/v1/partner-messages/route.ts`
-4. `src/app/api/v1/groups/[id]/route.ts` — PATCH (name + description)
-5. Prayer create flow (verify exact path during implementation)
+Wire into the **7 existing rejection sites** (no behavior change for users — the 422 still goes back, we just log first):
+1. `src/services/prayer.service.ts` — `createPrayer`
+2. `src/app/actions/lifecycle.actions.ts` — `updatePrayerAction`
+3. `src/services/group.service.ts` — `postGroupPrayer`
+4. `src/app/api/v1/partner-messages/route.ts`
+5. `src/app/api/v1/groups/[id]/route.ts` — PATCH (name + description)
+6. `src/services/interaction.service.ts` — prayer-message moderation
+7. `src/services/church.service.ts` — church-recommendation note
 
 ### 6.2 `src/services/contact.service.ts`
 - `createContactSubmission(input)` — insert and return the row.
@@ -242,8 +244,8 @@ New server actions, each gated by `requireAdmin()` and writing to `admin_actions
 ## 7. File plan
 
 ### Database Engineer
-- `drizzle/schema.ts` — three new tables + enums
-- `drizzle/migrations/00XX_admin_dashboard.sql`
+- `src/db/schema.ts` — three new tables + enums
+- `src/db/migrations/0025_admin_dashboard.sql`
 
 ### Backend Engineer
 - `src/lib/admin-auth.ts` — `requireAdmin`, `withAdmin`
@@ -251,10 +253,10 @@ New server actions, each gated by `requireAdmin()` and writing to `admin_actions
 - `src/lib/env.ts` — startup assertion
 - `src/services/moderation-log.service.ts`
 - `src/services/contact.service.ts`
-- 5 existing reject sites — call `logModerationRejection`
-- `src/app/actions/contact.actions.ts` — persist before Resend, call `notifyAdmins`
-- `src/app/actions/admin.actions.ts` — new actions + audit-log writes on existing
-- `vercel.ts` — daily snippet-purge cron
+- 7 existing reject sites — call `logModerationRejection`
+- `src/app/actions/contact.actions.ts` — persist before Resend, call `notifyAdmins` (file exists, edit only)
+- `src/app/actions/admin.actions.ts` — new actions + audit-log writes on existing (file exists, edit only)
+- `vercel.json` — daily snippet-purge cron at `/api/cron/purge-moderation-snippets`
 - `src/proxy.ts` — admin 404 instead of redirect
 
 ### Frontend Engineer
@@ -287,7 +289,7 @@ New server actions, each gated by `requireAdmin()` and writing to `admin_actions
 One PR per phase. Each is independently shippable.
 
 1. **Schema + auth helpers + middleware hardening** — `requireAdmin`, `withAdmin`, 404 middleware, startup assertion, three migrations. No UI.
-2. **Moderation log wiring** — `logModerationRejection` called from 5 sites. Logging starts.
+2. **Moderation log wiring** — `logModerationRejection` called from 7 sites. Logging starts.
 3. **Contact form persistence** — `createContactSubmission` + write before Resend.
 4. **Admin UI** — layout, overview, moderation page, feedback page.
 5. **Push notifications** — `notifyAdmins` triggers wired to selfHarm/harassment/contact.
