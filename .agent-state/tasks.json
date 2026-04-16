@@ -3164,7 +3164,7 @@
     "id": "pj-s15-observability",
     "sprint": "15",
     "title": "Workstream B: Sentry + Better Stack + alerts",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "owner": "Backend Engineer",
     "priority": "high",
@@ -3187,16 +3187,17 @@
     "notes": [
       "[2026-04-16] Architect: created as approved — plan is approved by PM.",
       "[2026-04-16] Backend Engineer: starting implementation — Sentry configs, debug endpoint, runbooks, unit test.",
-      "[2026-04-16] Backend Engineer: DONE — @sentry/nextjs@10.49.0 installed; client/server/edge configs written; instrumentation.ts conditionally imports by NEXT_RUNTIME; next.config.ts wrapped with withSentryConfig (security headers preserved); /api/debug/sentry debug endpoint committed; Better Stack + Sentry alert runbooks written; sentry.server.config.test.ts passes. Human action needed: add env vars to Vercel (NEXT_PUBLIC_SENTRY_DSN, SENTRY_DSN, SENTRY_ORG, SENTRY_PROJECT, SENTRY_AUTH_TOKEN, SENTRY_DEBUG_TOKEN); install Better Stack Vercel integration; create Sentry auth-error-rate alert rule."
+      "[2026-04-16] Backend Engineer: DONE — @sentry/nextjs@10.49.0 installed; client/server/edge configs written; instrumentation.ts conditionally imports by NEXT_RUNTIME; next.config.ts wrapped with withSentryConfig (security headers preserved); /api/debug/sentry debug endpoint committed; Better Stack + Sentry alert runbooks written; sentry.server.config.test.ts passes. Human action needed: add env vars to Vercel (NEXT_PUBLIC_SENTRY_DSN, SENTRY_DSN, SENTRY_ORG, SENTRY_PROJECT, SENTRY_AUTH_TOKEN, SENTRY_DEBUG_TOKEN); install Better Stack Vercel integration; create Sentry auth-error-rate alert rule.",
+      "[2026-04-16] Reviewer: APPROVED — Sentry config + runbooks + debug endpoint verified. Sprint 15 close: done."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16T00:05:00.000Z"
+    "last_touched": "2026-04-16T15:00:00.000Z"
   },
   {
     "id": "pj-s15-e2e",
     "sprint": "15",
     "title": "Workstream C: Playwright E2E suite",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "owner": "Frontend Engineer",
     "priority": "high",
@@ -3224,16 +3225,17 @@
       "[2026-04-16] Architect: created as approved.",
       "Owns safety-net proof for archaeology buckets 1 (oauth-cookie) and 4 (dialog-state).",
       "[2026-04-16] Frontend Engineer: starting implementation — schema verified (prayers.content not .text; shareId = prayers.id; no separate share column), selectors verified from source.",
-      "[2026-04-16] Frontend Engineer: DONE — 8 e2e specs committed across 8 files. Key schema/UI findings: prayers.content (not .text), no shareId column (public URL uses prayers.id), button labels verified. magic-link test skipped unless SENTRY_DEBUG_TOKEN set. authedPage fixture tests require SENTRY_DEBUG_TOKEN for global-setup to populate .auth/user.json. Debug endpoints gated (404 in production + bearer token check). Share UI uses clipboard copy button, not overflow menu."
+      "[2026-04-16] Frontend Engineer: DONE — 8 e2e specs committed across 8 files. Key schema/UI findings: prayers.content (not .text), no shareId column (public URL uses prayers.id), button labels verified. magic-link test skipped unless SENTRY_DEBUG_TOKEN set. authedPage fixture tests require SENTRY_DEBUG_TOKEN for global-setup to populate .auth/user.json. Debug endpoints gated (404 in production + bearer token check). Share UI uses clipboard copy button, not overflow menu.",
+      "[2026-04-16] Reviewer: APPROVED — Bucket #1 (oauth-redirect) and Bucket #4 (add-prayer homepage+my-prayers) proofs verified by inspection: test assertions map exactly to the regression bug patterns. Sprint 15 close: done."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16T09:00:00.000Z"
+    "last_touched": "2026-04-16T15:00:00.000Z"
   },
   {
     "id": "pj-s15-integration",
     "sprint": "15",
     "title": "Workstream D: Integration tests (Neon branch)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "QA",
     "owner": "Backend Engineer + Database Engineer",
     "priority": "high",
@@ -3255,16 +3257,17 @@
       "[2026-04-16] Architect: created as approved.",
       "Owns safety-net proof for archaeology buckets 2 (driver-data), 5 (interaction-side-effect), and 6 (authz-moderation).",
       "[2026-04-16] Backend Engineer: starting implementation — schema verified (prayers.content, expiresAt required), interaction.service prayForRequest signature verified, prayer.service updatePrayer/deletePrayer return null/false (not throw) for non-owner.",
-      "[2026-04-16] Backend Engineer: DONE — 4 commits: ci neon-branch workflow, integration harness + driver-quirks (bucket #2), single-fire invariant (bucket #5), prayer authz (bucket #6). Key findings: (1) prayerInteractions has NO unique constraint on (prayerId, userId) — double-fire invariant test documents current silent-allow behaviour; (2) updatePrayer/deletePrayer return null/false for non-owner (not throw) — authz tests use resolves.toBeNull/toBe(false); (3) vitest config now excludes *.integration.test.* from jsdom unit run. Integration tests require DATABASE_URL env var."
+      "[2026-04-16] Backend Engineer: DONE — 4 commits: ci neon-branch workflow, integration harness + driver-quirks (bucket #2), single-fire invariant (bucket #5), prayer authz (bucket #6). Key findings: (1) prayerInteractions has NO unique constraint on (prayerId, userId) — double-fire invariant test documents current silent-allow behaviour; (2) updatePrayer/deletePrayer return null/false for non-owner (not throw) — authz tests use resolves.toBeNull/toBe(false); (3) vitest config now excludes *.integration.test.* from jsdom unit run. Integration tests require DATABASE_URL env var.",
+      "[2026-04-16] Reviewer: APPROVED — Bucket #2 AST guard regex validated against historical commit 6da8544 pattern; Bucket #6 authz WHERE clause confirmed in prayer.service.ts (lines 137-156). Bucket #5 limitation logged: integration test is documentation-only (no unique constraint); primary control is e2e/pray-for.spec.ts POST-count assertion. Sprint 15 close: done."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16T10:30:00.000Z"
+    "last_touched": "2026-04-16T15:00:00.000Z"
   },
   {
     "id": "pj-s15-ci-gates",
     "sprint": "15",
     "title": "Workstream E: CI pipeline + post-deploy smoke",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Reviewer",
     "owner": "Backend Engineer",
     "priority": "high",
@@ -3285,16 +3288,17 @@
       "[2026-04-16] Architect: created as approved.",
       "Owns safety-net proof for archaeology bucket 3 (prod-drift).",
       "[2026-04-16] Backend Engineer: starting implementation — ci.yml, lighthouserc.json, post-deploy-smoke.mjs, post-deploy-smoke.yml, Sentry release step.",
-      "[2026-04-16] Backend Engineer: complete. Smoke test ran locally — all 18 routes returned 200. GitHub secrets needed: NEON_INTEGRATION_DB_URL, E2E_BASE_URL, SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT."
+      "[2026-04-16] Backend Engineer: complete. Smoke test ran locally — all 18 routes returned 200. GitHub secrets needed: NEON_INTEGRATION_DB_URL, E2E_BASE_URL, SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT.",
+      "[2026-04-16] Reviewer: APPROVED — Bucket #3 (prod-drift) safety-net verified: live smoke against prayerjar.org returned 200 for all 18 routes; simulated 404 injection exits non-zero with 'Smoke FAILED'. Green/red/green behaviour proven. Sprint 15 close: done."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16T12:30:00.000Z"
+    "last_touched": "2026-04-16T15:00:00.000Z"
   },
   {
     "id": "pj-s15-reviewer-proof",
     "sprint": "15",
     "title": "Workstream F: Archaeology proof + sprint close",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Reviewer",
     "owner": "Reviewer",
     "priority": "high",
@@ -3309,9 +3313,10 @@
     "blockers": [],
     "notes": [
       "[2026-04-16] Architect: created as approved.",
-      "Six required proofs — one per archaeology bucket. See docs/superpowers/specs/2026-04-16-sprint-15-bug-archaeology.md §4."
+      "Six required proofs — one per archaeology bucket. See docs/superpowers/specs/2026-04-16-sprint-15-bug-archaeology.md §4.",
+      "[2026-04-16] Reviewer: DONE — all 6 buckets verified. Bucket #1 (oauth-cookie) VERIFIED via e2e/sign-in-oauth-redirect.spec.ts; #2 (driver-data) VERIFIED via AST guard + inArray integration test; #3 (prod-drift) VERIFIED via live smoke (18/18 green) + 404-injection failure simulation; #4 (dialog-state) VERIFIED via add-prayer-homepage + add-prayer-my-prayers specs with dialog visibility + URL assertions; #5 (interaction-side-effect) LIMITATION NOTED — integration test is documentation-only (no unique constraint exists on prayerInteractions), primary control is e2e/pray-for.spec.ts POST-count assertion; #6 (authz-moderation) VERIFIED via prayer.authz.integration.test.ts asserting null/false returns from updatePrayer/deletePrayer WHERE clauses. Sprint 15 CLOSED. Retrospective committed at docs/superpowers/specs/2026-04-16-sprint-15-retrospective.md."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16"
+    "last_touched": "2026-04-16T15:00:00.000Z"
   }
 ]
