@@ -3196,22 +3196,38 @@
     "id": "pj-s15-e2e",
     "sprint": "15",
     "title": "Workstream C: Playwright E2E suite",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "owner": "Frontend Engineer",
     "priority": "high",
     "description": "Playwright suite covering sign-in on Chromium-desktop + mobile-Safari + Messenger/Instagram WebView UAs (bucket 1); add-prayer from homepage + My Prayers, PrayerCard overflow menu, pray-for, share, renew/adopt, onboarding overlay, group-wall filters (bucket 4). Happy + cancel/error paths. Green suite in CI. An intentionally regressed commit must prove the suite catches the breakage (archaeology proof).",
-    "files": [],
+    "files": [
+      "playwright.config.ts",
+      "e2e/sign-in-oauth-redirect.spec.ts",
+      "e2e/sign-in-magic-link.spec.ts",
+      "e2e/fixtures/auth.ts",
+      "e2e/global-setup.ts",
+      "e2e/add-prayer-homepage.spec.ts",
+      "e2e/add-prayer-my-prayers.spec.ts",
+      "e2e/pray-for.spec.ts",
+      "e2e/share-prayer.spec.ts",
+      "e2e/prayer-card-overflow.spec.ts",
+      "e2e/helpers/seed-prayer.ts",
+      "src/app/api/debug/magic-link/route.ts",
+      "src/app/api/debug/seed-prayer/route.ts"
+    ],
     "depends_on": [
       "pj-s15-archaeology"
     ],
     "blockers": [],
     "notes": [
       "[2026-04-16] Architect: created as approved.",
-      "Owns safety-net proof for archaeology buckets 1 (oauth-cookie) and 4 (dialog-state)."
+      "Owns safety-net proof for archaeology buckets 1 (oauth-cookie) and 4 (dialog-state).",
+      "[2026-04-16] Frontend Engineer: starting implementation — schema verified (prayers.content not .text; shareId = prayers.id; no separate share column), selectors verified from source.",
+      "[2026-04-16] Frontend Engineer: DONE — 8 e2e specs committed across 8 files. Key schema/UI findings: prayers.content (not .text), no shareId column (public URL uses prayers.id), button labels verified. magic-link test skipped unless SENTRY_DEBUG_TOKEN set. authedPage fixture tests require SENTRY_DEBUG_TOKEN for global-setup to populate .auth/user.json. Debug endpoints gated (404 in production + bearer token check). Share UI uses clipboard copy button, not overflow menu."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16"
+    "last_touched": "2026-04-16T09:00:00.000Z"
   },
   {
     "id": "pj-s15-integration",
