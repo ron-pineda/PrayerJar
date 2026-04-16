@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
 import { createContactSubmission } from '@/services/contact.service';
+import { notifyAdmins } from '@/lib/admin-notify';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
 const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
@@ -47,7 +48,11 @@ export async function submitContactAction(
   let dbWriteFailed = false;
   try {
     await createContactSubmission({ name, email, subject, message });
-    // TODO Phase 5: notifyAdmins({ subject: 'New contact form submission', body: `From: ${name} <${email}>\nSubject: ${subject}`, link: `${process.env.NEXT_PUBLIC_BASE_URL}/admin/feedback` })
+    notifyAdmins({
+      subject: 'New contact form submission',
+      body: `A new contact form submission was received.\n\nSubject category: ${subject}\n\nReview it in the admin feedback panel.`,
+      link: 'https://prayerjar.org/admin/feedback',
+    }).catch(() => {});
   } catch (err) {
     console.error('[submitContactAction] DB write failed:', err);
     dbWriteFailed = true;

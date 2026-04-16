@@ -5,6 +5,7 @@ import {
   type ModerationLog,
 } from '@/db/schema';
 import { eq, isNull, isNotNull, desc, lt } from 'drizzle-orm';
+import { notifyAdmins } from '@/lib/admin-notify';
 
 // Derive types from the schema enums so they stay in sync automatically.
 type ModerationContentType = ModerationLog['contentType'];
@@ -35,6 +36,14 @@ export async function logModerationRejection(
     aiConfidence: input.aiConfidence != null ? String(input.aiConfidence) : null,
     sourceRoute: input.sourceRoute,
   });
+
+  if (input.category === 'selfHarm') {
+    notifyAdmins({
+      subject: '[URGENT] Self-harm content flagged',
+      body: `The AI moderation system flagged a ${input.contentType} submission as self-harm (category: selfHarm).\n\nSource route: ${input.sourceRoute}\n\nReview immediately in the admin moderation panel.`,
+      link: 'https://prayerjar.org/admin/moderation?category=selfHarm',
+    }).catch(() => {});
+  }
 }
 
 export type ListModerationLogsOptions = {

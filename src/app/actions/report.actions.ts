@@ -7,6 +7,7 @@ import { checkRateLimit } from '@/lib/rate-limit';
 import { headers } from 'next/headers';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { notifyAdmins } from '@/lib/admin-notify';
 
 const VALID_REASONS = ['spam', 'inappropriate', 'not_a_prayer', 'harassment', 'other'] as const;
 
@@ -58,6 +59,14 @@ export async function submitReportAction(formData: FormData): Promise<SubmitRepo
     reason,
     status: 'pending',
   });
+
+  if (reason === 'harassment') {
+    notifyAdmins({
+      subject: '[Admin] Harassment report submitted',
+      body: `A user submitted a harassment report against prayer ID: ${prayerId}.\n\nReview it in the admin report queue.`,
+      link: 'https://prayerjar.org/admin/queue',
+    }).catch(() => {});
+  }
 
   return { success: true };
 }

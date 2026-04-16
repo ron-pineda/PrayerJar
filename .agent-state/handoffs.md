@@ -1,3 +1,4 @@
+[2026-04-15] Backend Engineer → QA: pj-s13-admin-p5-notify — notifyAdmins wired at selfHarm flag, harassment report, contact submission
 [2026-04-15] Backend Engineer → Reviewer: pj-s12-claim-link — claim-to-platform church linking implemented
 [2026-04-15] Backend Engineer → Reviewer: pj-s13-admin-p4-backend — audit log writes added to 3 report actions per rework request
 [2026-04-15] Database Engineer → Backend Engineer: pj-s13-admin-p1-schema — 3 tables (moderation_logs, admin_actions, contact_submissions) + enums added to src/db/schema.ts, migration 0025_oval_quasar.sql generated. Backend can now implement auth helpers and service layer.
@@ -108,3 +109,4 @@
 [2026-04-15] Reviewer → PM: pj-s13-admin-reviewer — Phases 1–3 APPROVED, Phase 4 NEEDS-REWORK. The 3 existing report actions (approve/reject/dismiss) never write audit rows to admin_actions — spec §6.3 requirement missed. pj-s13-admin-p4-backend flagged needs-rework; Backend Engineer must add audit log writes to those 3 actions. Inline fix applied: proxy.ts filter(Boolean) added. Phase 5 (notifications) not yet started.
 [2026-04-15] Reviewer → PM: pj-s13-admin-reviewer — Phases 1–4 APPROVED. Schema, security, moderation logging, contact persistence, admin UI all complete. Phase 5 (push notifications) remains.
 [2026-04-15] Backend Engineer → Reviewer: pj-s12-fix-sse-polling + pj-s12-fix-double-interaction — SSE praying-now route deleted (no references found, polling already in use); double-interaction already fixed in current code (handlePrayed is local-only, action called once)
+[2026-04-15] Reviewer → PM: Sprint 12 complete — all 5 tasks done. pj-s12-fix-sse-polling, pj-s12-fix-double-interaction, pj-s12-claim-link approved. pj-s12-prayer-deletion and pj-s12-fire-forget-side-effects confirmed already implemented.

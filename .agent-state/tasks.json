@@ -2621,9 +2621,10 @@
       "UX delta: after claim verification, show a card 'This church has a prayer wall on Prayer Jar — view it →' when linked, or 'Create a prayer wall for this church' CTA when not linked.",
       "Wait until there are a handful of real claims and created churches in the DB to see actual overlap patterns before designing.",
       "[2026-04-15T17:54:55.000Z] Moved from sprint 11 to sprint 12. Still on hold - wait for real claim + church overlap in DB before designing.",
-      "[2026-04-15T18:30:00.000Z] Backend Engineer: Implemented without schema change. getPlatformChurchForPlace() in church.service.ts links via claimedByUserId → getChurchByAdminUserId(). Detail page shows emerald card with link to /church/[slug] when platform church found. Limitation: only links when claimer is also an admin on a platform church; no direct googlePlaceId FK in churches table exists."
+      "[2026-04-15T18:30:00.000Z] Backend Engineer: Implemented without schema change. getPlatformChurchForPlace() in church.service.ts links via claimedByUserId → getChurchByAdminUserId(). Detail page shows emerald card with link to /church/[slug] when platform church found. Limitation: only links when claimer is also an admin on a platform church; no direct googlePlaceId FK in churches table exists.",
+      "[2026-04-15] Reviewed and approved — pj-s12-claim-link. Service layer is null-safe (returns null at two points before rendering). Link goes to /church/[slug] via Next.js Link. Detail page renders link card inside a platformChurch && guard. Defensive throughout."
     ],
-    "last_touched": "2026-04-15T18:30:00.000Z"
+    "last_touched": "2026-04-15T19:00:00.000Z"
   },
   {
     "id": "pj-s14-wildcard-subdomains",
@@ -2710,9 +2711,10 @@
       "Affected files: src/components/guided-prayer.tsx (handlePrayed + handleMessageSubmit), src/services/interaction.service.ts (prayForRequest).",
       "Preferred fix: stage prayed becomes a local-only state. Only the message/skip submit calls the server action with optional message.",
       "Data integrity bug - every prayer-with-message historically over-counted.",
-      "INVESTIGATION: Bug already fixed in current code. guided-prayer.tsx handlePrayed() is local-only (no server call). prayForRequestAction is called exactly once via handleMessageSubmit or handleSkip. Service inserts a single row. No code changes required."
+      "INVESTIGATION: Bug already fixed in current code. guided-prayer.tsx handlePrayed() is local-only (no server call). prayForRequestAction is called exactly once via handleMessageSubmit or handleSkip. Service inserts a single row. No code changes required.",
+      "[2026-04-15] Reviewed and approved — pj-s12-fix-double-interaction. Confirmed handlePrayed() is setStage('message') only — zero server calls. prayForRequestAction called in handleMessageSubmit and handleSkip only, never both in the same flow. Single-interaction guarantee holds."
     ],
-    "last_touched": "2026-04-15T18:30:00.000Z"
+    "last_touched": "2026-04-15T19:00:00.000Z"
   },
   {
     "id": "pj-s12-fix-sse-polling",
@@ -2725,9 +2727,10 @@
     "notes": [
       "Kills log noise and stops broken feature.",
       "Consider whether we still need prayer-map SSE too - same anti-pattern applies.",
-      "DONE: Confirmed no references to sse/praying-now in codebase (grep found only sse/prayer-map and sse/event as active). Deleted src/app/api/v1/sse/praying-now/route.ts and the praying-now/ directory. Polling endpoint at /api/v1/praying-now already in use by PrayingNowCounter."
+      "DONE: Confirmed no references to sse/praying-now in codebase (grep found only sse/prayer-map and sse/event as active). Deleted src/app/api/v1/sse/praying-now/route.ts and the praying-now/ directory. Polling endpoint at /api/v1/praying-now already in use by PrayingNowCounter.",
+      "[2026-04-15] Reviewed and approved — pj-s12-fix-sse-polling. SSE route file confirmed absent. Polling route confirmed present. PrayingNowCounter fetches /api/v1/praying-now every 30s with no-store cache, cleans up interval on unmount. Tween animation is a clean bonus."
     ],
-    "last_touched": "2026-04-15T18:30:00.000Z"
+    "last_touched": "2026-04-15T19:00:00.000Z"
   },
   {
     "id": "pj-s12-prayer-deletion",
@@ -3068,14 +3071,14 @@
     "sprint": "13",
     "phase": "5",
     "title": "Admin dashboard — push notifications (notifyAdmins helper + 3 triggers)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "medium",
     "description": "Create src/lib/admin-notify.ts (fire-and-forget Resend to every ADMIN_EMAILS entry). Wire triggers: selfHarm inside logModerationRejection, harassment report creation, new contact submission. Email body must NOT contain content_snippet — only category + deep link.",
     "files": [
       "src/lib/admin-notify.ts",
       "src/services/moderation-log.service.ts",
-      "src/services/report.service.ts",
+      "src/app/actions/report.actions.ts",
       "src/app/actions/contact.actions.ts"
     ],
     "depends_on": [
@@ -3084,7 +3087,8 @@
     ],
     "blockers": [],
     "notes": [
-      "Verify exact report creation file during implementation — grep for report insert site."
+      "Verify exact report creation file during implementation — grep for report insert site.",
+      "notifyAdmins helper + 3 triggers (selfHarm, harassment, contact) implemented. Trigger sites: logModerationRejection (selfHarm check after DB insert), submitReportAction (harassment check after DB insert), submitContactAction (after createContactSubmission succeeds). All fire-and-forget with .catch(() => {}). Emails contain no user-submitted content."
     ],
     "created_at": "2026-04-15",
     "last_touched": "2026-04-15"
