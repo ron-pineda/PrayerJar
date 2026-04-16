@@ -50,8 +50,10 @@ export function PrayerEditDialog({
     setError('');
     try {
       await onSave({ content, urgent, anonymous });
-    } catch {
-      setError('Failed to save. Please try again.');
+      setPending(false);
+      onOpenChange(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to save. Please try again.');
       setPending(false);
     }
   }

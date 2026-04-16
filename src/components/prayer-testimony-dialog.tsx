@@ -54,6 +54,8 @@ export function PrayerTestimonyDialog({
     setError('');
     try {
       await onConfirm({ testimony, imageUrl, videoUrl, videoDurationSeconds });
+      setPending(false);
+      onOpenChange(false);
     } catch {
       setError('Failed to save testimony. Please try again.');
       setPending(false);

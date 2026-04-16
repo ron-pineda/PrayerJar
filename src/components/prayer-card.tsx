@@ -84,6 +84,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
   }
 
   async function handleAdopt() {
+    if (pending) return;
+    setPending(true);
     try {
       const res = await fetch('/api/v1/adoptions', {
         method: 'POST',
@@ -97,6 +99,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
       }
     } catch {
       setError('Could not adopt this prayer. Please try again.');
+    } finally {
+      setPending(false);
     }
   }
 
@@ -105,6 +109,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
     formData.set('prayerId', prayer.id);
     formData.set('reason', 'inappropriate');
     await submitReportAction(formData);
+    toast('Report submitted — thank you');
   }
 
   async function handleCopyLink() {
@@ -261,7 +266,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
                 fd.set('isAnonymous', String(data.anonymous));
                 const result = await updatePrayerAction(fd);
                 if (!result.success) throw new Error(result.error);
-                setEditDialogOpen(false);
               }}
             />
             <PrayerTestimonyDialog
@@ -282,7 +286,6 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
                 const result = await markAnsweredAction(fd);
                 if (!result.success) throw new Error(result.error);
                 setLocalStatus('answered');
-                setTestimonyDialogOpen(false);
                 setShowCelebration(true);
               }}
             />

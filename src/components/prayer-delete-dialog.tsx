@@ -19,12 +19,18 @@ interface PrayerDeleteDialogProps {
 
 export function PrayerDeleteDialog({ open, onOpenChange, onConfirm }: PrayerDeleteDialogProps) {
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleDelete() {
     setPending(true);
-    await onConfirm();
-    setPending(false);
-    onOpenChange(false);
+    setError('');
+    try {
+      await onConfirm();
+      onOpenChange(false);
+    } catch {
+      setError('Could not delete. Please try again.');
+      setPending(false);
+    }
   }
 
   return (
@@ -34,6 +40,7 @@ export function PrayerDeleteDialog({ open, onOpenChange, onConfirm }: PrayerDele
           <DialogTitle>Delete prayer request</DialogTitle>
           <DialogDescription>Are you sure? This can&apos;t be undone.</DialogDescription>
         </DialogHeader>
+        {error && <p className="text-sm text-destructive">{error}</p>}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={pending}>
             Cancel
