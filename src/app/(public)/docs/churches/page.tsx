@@ -291,11 +291,9 @@ export default function ChurchAdminGuidePage() {
       {/* ═══════════════════════════════════════════════════════
           HERO
       ═══════════════════════════════════════════════════════ */}
-      <div className="relative rounded-2xl border bg-gradient-to-br from-primary/5 via-card to-card p-8 sm:p-12 mb-12 overflow-hidden text-center">
-        <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-primary/5 blur-2xl" />
-        <div className="absolute -bottom-12 -left-12 h-36 w-36 rounded-full bg-violet-500/5 blur-2xl" />
-        <div className="relative space-y-4">
-          <div className="text-6xl leading-none">⛪</div>
+      <div className="rounded-2xl border bg-card p-8 sm:p-12 mb-12 text-center">
+        <div className="space-y-4">
+          <div className="text-3xl leading-none">⛪</div>
           <h1 className="text-4xl font-bold tracking-tight">Church Admin Guide</h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Everything pastors and administrators need to set up and run a church community on PrayerJar.
@@ -306,7 +304,7 @@ export default function ChurchAdminGuidePage() {
       {/* ═══════════════════════════════════════════════════════
           PLAN CALLOUT
       ═══════════════════════════════════════════════════════ */}
-      <div className="rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/5 to-violet-500/5 p-6 mb-14">
+      <div className="rounded-2xl border bg-card p-6 mb-14">
         <div className="flex items-start gap-4">
           <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
           <div>
@@ -345,7 +343,7 @@ export default function ChurchAdminGuidePage() {
             { num: 3, emoji: '📧', title: 'Invite Members', desc: 'Send invite links or add emails from the Team tab' },
             { num: 4, emoji: '🎭', title: 'Assign Roles', desc: 'Set Admin, Pastor, and Member permissions' },
           ].map(({ num, emoji, title, desc }) => (
-            <div key={num} className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/3 p-6 space-y-3">
+            <div key={num} className="rounded-lg border bg-card p-6 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-base font-black flex-shrink-0">
                   {num}
@@ -369,7 +367,7 @@ export default function ChurchAdminGuidePage() {
             <a
               key={s.id}
               href={`#${s.id}`}
-              className={`group relative rounded-xl border ${s.border} bg-card hover:bg-accent/30 transition-all p-4 flex flex-col items-center text-center gap-2.5`}
+              className="group relative rounded-xl border bg-card hover:bg-accent/30 transition-all p-4 flex flex-col items-center text-center gap-2.5"
             >
               <span className="text-3xl leading-none">{s.emoji}</span>
               <span className="text-xs font-semibold leading-tight">{s.title}</span>
@@ -391,7 +389,7 @@ export default function ChurchAdminGuidePage() {
           <section key={section.id} id={section.id} className="scroll-mt-8">
 
             {/* Section header */}
-            <div className={`rounded-2xl border ${section.border} bg-gradient-to-r ${section.headerBg} p-6 mb-6 flex items-start gap-5`}>
+            <div className="rounded-2xl border bg-card p-6 mb-6 flex items-start gap-5">
               <div className="text-5xl leading-none flex-shrink-0">{section.emoji}</div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap mb-1">
@@ -405,8 +403,8 @@ export default function ChurchAdminGuidePage() {
             {/* Step cards */}
             <div className="space-y-3">
               {section.steps.map((step, i) => (
-                <div key={i} className={`rounded-xl border ${section.border} bg-card hover:bg-accent/20 transition-colors p-5 flex gap-5`}>
-                  <div className={`w-10 h-10 rounded-full ${section.numBg} text-white flex items-center justify-center text-base font-black flex-shrink-0`}>
+                <div key={i} className="rounded-xl border bg-card hover:bg-accent/20 transition-colors p-5 flex gap-5">
+                  <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-base font-black flex-shrink-0">
                     {i + 1}
                   </div>
                   <div className="pt-1.5">
@@ -425,7 +423,7 @@ export default function ChurchAdminGuidePage() {
       ═══════════════════════════════════════════════════════ */}
       <div className="mt-16 pt-8 border-t space-y-6">
 
-        <div className="rounded-2xl border bg-gradient-to-r from-primary/5 to-transparent p-6 flex items-start gap-4">
+        <div className="rounded-2xl border bg-card p-6 flex items-start gap-4">
           <div className="text-3xl leading-none flex-shrink-0">✉️</div>
           <div>
             <p className="font-semibold text-sm mb-1">Have a question not covered here?</p>

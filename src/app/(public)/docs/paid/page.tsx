@@ -218,11 +218,8 @@ export default function PaidFeaturesPage() {
       </Link>
 
       {/* ---- Hero ---- */}
-      <div className="relative rounded-2xl border bg-gradient-to-br from-violet-500/5 via-card to-primary/5 p-8 sm:p-12 mb-12 overflow-hidden">
-        <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-violet-500/5 blur-2xl" />
-        <div className="absolute -bottom-12 -left-12 h-36 w-36 rounded-full bg-primary/5 blur-2xl" />
-
-        <div className="relative flex flex-col sm:flex-row items-start gap-6">
+      <div className="rounded-2xl border bg-card p-8 sm:p-12 mb-12">
+        <div className="flex flex-col sm:flex-row items-start gap-6">
           <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
             <Crown className="h-8 w-8 text-primary" />
           </div>
@@ -238,7 +235,7 @@ export default function PaidFeaturesPage() {
       </div>
 
       {/* ---- Ministry note ---- */}
-      <div className="rounded-xl border bg-gradient-to-r from-primary/5 to-transparent p-6 mb-14 flex items-start gap-4">
+      <div className="rounded-xl border bg-card p-6 mb-14 flex items-start gap-4">
         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
           <Heart className="h-5 w-5 text-primary" />
         </div>
@@ -268,8 +265,8 @@ export default function PaidFeaturesPage() {
                 key={plan.tier}
                 className={`relative rounded-xl border-2 p-6 space-y-5 transition-shadow hover:shadow-lg ${
                   isPopular
-                    ? 'border-primary ring-2 ring-primary/10 bg-gradient-to-b from-primary/5 to-card'
-                    : `${style.border} bg-card`
+                    ? 'border-primary ring-2 ring-primary/10 bg-card'
+                    : 'border bg-card'
                 }`}
               >
                 {isPopular && (
@@ -385,7 +382,7 @@ export default function PaidFeaturesPage() {
           {FEATURE_DEEP_DIVES.map(({ icon: Icon, title, plan, color, bg, border, body, planDetail }) => (
             <div
               key={title}
-              className={`rounded-xl border-2 ${border} bg-gradient-to-br ${TIER_STYLES[plan.toLowerCase()]?.gradient ?? 'from-violet-500/5 to-transparent'} p-6 space-y-4 hover:shadow-md transition-shadow`}
+              className="rounded-xl border bg-card p-6 space-y-4 hover:shadow-md transition-shadow"
             >
               {/* Header */}
               <div className="flex items-start gap-4">
@@ -429,7 +426,7 @@ export default function PaidFeaturesPage() {
       </section>
 
       {/* ---- CTA Footer ---- */}
-      <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-card to-violet-500/5 p-8 sm:p-10 text-center">
+      <div className="rounded-2xl border bg-card p-8 sm:p-10 text-center">
         <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-5">
           <Church className="h-7 w-7 text-primary" />
         </div>

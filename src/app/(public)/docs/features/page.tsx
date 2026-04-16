@@ -242,7 +242,7 @@ export default function FeaturesPage() {
         </Link>
 
         <div className="mt-8 text-center space-y-4">
-          <div className="text-6xl leading-none">✅</div>
+          <div className="text-3xl leading-none">✅</div>
           <h1 className="text-4xl font-bold tracking-tight">Full Feature Guide</h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Every feature available in PrayerJar V2 —{' '}
@@ -256,14 +256,14 @@ export default function FeaturesPage() {
       {/* ═══════════════════════════════════════════════════════
           CATEGORY QUICK-NAV
       ═══════════════════════════════════════════════════════ */}
-      <nav className="rounded-2xl border bg-gradient-to-br from-muted/40 to-muted/10 p-5 mb-14" aria-label="Feature categories">
+      <nav className="rounded-2xl border bg-card p-5 mb-14" aria-label="Feature categories">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4 text-center">Jump to Category</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {FEATURES.map((cat) => (
             <a
               key={cat.category}
               href={`#${cat.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
-              className={`flex items-center gap-2.5 rounded-xl border ${cat.borderColor} bg-card hover:bg-accent/50 transition-colors px-3 py-2.5`}
+              className="flex items-center gap-2.5 rounded-xl border bg-card hover:bg-accent/50 transition-colors px-3 py-2.5"
             >
               <span className="text-xl leading-none flex-shrink-0">{cat.emoji}</span>
               <div className="min-w-0">
@@ -286,7 +286,7 @@ export default function FeaturesPage() {
             className="scroll-mt-8"
           >
             {/* Category header */}
-            <div className={`rounded-2xl border ${cat.borderColor} bg-gradient-to-r from-muted/20 to-transparent p-6 mb-5 flex items-start gap-5`}>
+            <div className="rounded-2xl border bg-card p-6 mb-5 flex items-start gap-5">
               <div className="text-5xl leading-none flex-shrink-0">{cat.emoji}</div>
               <div>
                 <div className="flex items-center gap-3 flex-wrap mb-1">
@@ -304,7 +304,7 @@ export default function FeaturesPage() {
               {cat.items.map((item) => (
                 <div
                   key={item.name}
-                  className={`rounded-xl border ${cat.borderColor} bg-card hover:bg-accent/20 transition-colors p-4 flex gap-3`}
+                  className="rounded-xl border bg-card hover:bg-accent/20 transition-colors p-4 flex gap-3"
                 >
                   <div className={`w-7 h-7 rounded-full ${cat.numBg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                     <span className={`text-xs font-black ${cat.numText}`}>✓</span>
@@ -324,7 +324,7 @@ export default function FeaturesPage() {
           FOOTER CTA
       ═══════════════════════════════════════════════════════ */}
       <div className="mt-16 pt-8 border-t">
-        <div className="rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent p-8 text-center space-y-5">
+        <div className="rounded-2xl border bg-card p-8 text-center space-y-5">
           <div className="text-5xl leading-none">🚀</div>
           <p className="text-xl font-bold">Ready to explore?</p>
           <p className="text-sm text-muted-foreground">Start praying for others or dive deeper into the docs.</p>

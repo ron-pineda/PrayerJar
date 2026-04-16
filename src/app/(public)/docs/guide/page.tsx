@@ -281,7 +281,7 @@ export default function UserGuidePage() {
         </Link>
 
         <div className="mt-8 text-center space-y-4">
-          <div className="text-6xl leading-none">📖</div>
+          <div className="text-3xl leading-none">📖</div>
           <h1 className="text-4xl font-bold tracking-tight">User Guide</h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             A step-by-step visual guide to using The Prayer Jar — from your first visit to advanced features.
@@ -292,14 +292,14 @@ export default function UserGuidePage() {
       {/* ═══════════════════════════════════════════════════════
           QUICK-START OVERVIEW CARDS (top-level flow)
       ═══════════════════════════════════════════════════════ */}
-      <div className="rounded-2xl border bg-gradient-to-br from-primary/5 to-transparent p-6 mb-14">
+      <div className="rounded-2xl border bg-card p-6 mb-14">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-5 text-center">The Journey at a Glance</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {SECTIONS.map((s, i) => (
             <a
               key={s.id}
               href={`#${s.id}`}
-              className={`group rounded-xl border ${s.accentBorder} bg-card hover:bg-accent/50 transition-all p-4 flex flex-col items-center text-center gap-2`}
+              className="group rounded-xl border bg-card hover:bg-accent/50 transition-all p-4 flex flex-col items-center text-center gap-2"
             >
               <div className="text-2xl leading-none">{s.emoji}</div>
               <div className="flex items-center gap-1.5">
@@ -340,10 +340,10 @@ export default function UserGuidePage() {
               {section.steps.map((step, i) => (
                 <div
                   key={i}
-                  className={`rounded-xl border ${section.accentBorder} bg-card hover:bg-accent/20 transition-colors p-5 flex gap-5`}
+                  className="rounded-xl border bg-card hover:bg-accent/20 transition-colors p-5 flex gap-5"
                 >
                   {/* Big step number */}
-                  <div className={`w-10 h-10 rounded-full ${section.accentNum} text-white flex items-center justify-center text-base font-black flex-shrink-0`}>
+                  <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-base font-black flex-shrink-0">
                     {i + 1}
                   </div>
                   {/* Content */}
