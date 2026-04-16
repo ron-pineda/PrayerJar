@@ -3264,12 +3264,18 @@
     "id": "pj-s15-ci-gates",
     "sprint": "15",
     "title": "Workstream E: CI pipeline + post-deploy smoke",
-    "status": "approved",
-    "assigned_to": "Backend Engineer",
+    "status": "review",
+    "assigned_to": "Reviewer",
     "owner": "Backend Engineer",
     "priority": "high",
     "description": "GitHub Actions pipeline that blocks merge on test failure, typecheck, and a Lighthouse budget. Post-deploy smoke job runs after every Vercel production deploy — hits every top-level route (signed-out + signed-in fixture) asserting 200 + expected landmark content; checks drizzle migration drift; alerts on non-200. Static AST guard bans sql=ANY() patterns in service-layer code. Owns safety-net proof for archaeology bucket 3 (prod-drift) and supplements bucket 2.",
-    "files": [],
+    "files": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/post-deploy-smoke.yml",
+      ".github/workflows/deploy.yml",
+      "lighthouserc.json",
+      "scripts/post-deploy-smoke.mjs"
+    ],
     "depends_on": [
       "pj-s15-observability",
       "pj-s15-e2e"
@@ -3277,10 +3283,12 @@
     "blockers": [],
     "notes": [
       "[2026-04-16] Architect: created as approved.",
-      "Owns safety-net proof for archaeology bucket 3 (prod-drift)."
+      "Owns safety-net proof for archaeology bucket 3 (prod-drift).",
+      "[2026-04-16] Backend Engineer: starting implementation — ci.yml, lighthouserc.json, post-deploy-smoke.mjs, post-deploy-smoke.yml, Sentry release step.",
+      "[2026-04-16] Backend Engineer: complete. Smoke test ran locally — all 18 routes returned 200. GitHub secrets needed: NEON_INTEGRATION_DB_URL, E2E_BASE_URL, SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT."
     ],
     "created_at": "2026-04-16",
-    "last_touched": "2026-04-16"
+    "last_touched": "2026-04-16T12:30:00.000Z"
   },
   {
     "id": "pj-s15-reviewer-proof",
