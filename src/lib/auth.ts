@@ -11,41 +11,18 @@ import { sendWelcome1Email } from '@/services/email.service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  debug: process.env.NODE_ENV !== 'production',
   adapter: DrizzleAdapter(db, {
     usersTable: schema.users,
     accountsTable: schema.accounts,
     sessionsTable: schema.sessions,
     verificationTokensTable: schema.verificationTokens,
   }),
-  cookies: {
-    state: {
-      name: 'authjs.state',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-        maxAge: 60 * 15,
-      },
-    },
-    pkceCodeVerifier: {
-      name: 'authjs.pkce.code_verifier',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: true,
-        maxAge: 60 * 15,
-      },
-    },
-  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
-      checks: ['state'],
+      checks: [],
     }),
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
