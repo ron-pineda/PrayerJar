@@ -3415,6 +3415,14 @@
     "assigned_to": "Research",
     "priority": "high",
     "description": "Gather real pricing, tier limits, and feature lists for the top 4–6 church/ministry software competitors. Deliver a comparison matrix (cost, member cap, ChMS integrations, pastoral tools, moderation, analytics, support SLA) plus a short narrative on where PrayerJar is above/below market. Purpose: unblock the Strategist — we cannot redesign tiers without real numbers. Audit finding #6.",
+    "acceptance_criteria": [
+      "docs/strategy/competitor-pricing-2026-04.md exists and is committed to the repo.",
+      "Document contains pricing + tier data for at least 4 of the listed competitors (Praytell, Pushpray, Subsplash, Tithely, PrayerMate); any skipped competitor has a 1-line note explaining why.",
+      "For each competitor the matrix shows: monthly price per tier, member cap per tier, ChMS integrations list, pastoral-care tools, moderation capability, analytics surface, and stated support SLA (or 'none').",
+      "Each numeric price/cap includes a source URL and the date it was observed.",
+      "Narrative section ends with an explicit list of where PrayerJar is above market, at market, and below market on price and on features.",
+      "File is linked from the Sprint 17 handoff entry so pj-s17-tier-redesign can consume it."
+    ],
     "files": [
       "docs/strategy/competitor-pricing-2026-04.md"
     ],
@@ -3434,6 +3442,16 @@
     "assigned_to": "Strategist",
     "priority": "high",
     "description": "Decision task. Outputs: (1) final feature-to-tier mapping that reconciles `src/lib/plans.ts` with the marketing page (audit finding #1 — Pastoral Dashboard is advertised as Starter but gated at Pro); (2) Free/Starter member caps — today's 25-member Free is too small for most small churches (audit finding #2), recommend new cap and/or a 30-day Starter trial; (3) whether Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval, and Small Groups (audit finding #3) are Starter, Pro, or Enterprise; (4) enterprise anchor price + demo flow recommendation (audit finding #5). Writes to docs/strategy/pricing-prayerjar-2026-04.md. Must make a recommendation, not a menu.",
+    "acceptance_criteria": [
+      "docs/strategy/pricing-prayerjar-2026-04.md exists and is committed.",
+      "Document declares a final, unambiguous tier list (name + monthly price + annual price + member cap) with annual discount set to 15% (not 17%), Starter held at $19, and an 'Starting at $199/mo' Enterprise anchor.",
+      "Document maps each of these features to exactly one tier: Pastoral Dashboard, Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, Small Groups — resolving the plans.ts vs /for-churches vs FAQ mismatch.",
+      "Document states a final decision on Free member cap and on whether a 30-day Starter trial is offered (yes/no with trigger + expiry behavior).",
+      "Document states enterprise demo qualification triggers (member count or feature requirement that routes users to demo flow rather than self-serve).",
+      "Document uses the tier-name convention from the brand guide (Free / Small Church / Growing Church / Network) OR explicitly justifies deviating from it.",
+      "Document ends with a 'Recommendation' section that is one set of choices, not a menu of options.",
+      "PM has signed off in the task notes before any downstream task (plans-gating-fix, for-churches-rewrite, for-churches-build, enterprise-demo-flow) starts."
+    ],
     "files": [
       "docs/strategy/pricing-prayerjar-2026-04.md"
     ],
@@ -3457,6 +3475,14 @@
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Execute the gating change decided in pj-s17-tier-redesign. Update `src/lib/plans.ts` feature flags, member caps, and any related guards (middleware, server actions that check plan level) so the code matches the approved marketing page. Includes unit coverage for the gating predicates. Small mechanical change — blocked on Strategist sign-off, not technically hard.",
+    "acceptance_criteria": [
+      "src/lib/plans.ts tier names, monthly prices, annual prices, and member caps match the approved tier map in docs/strategy/pricing-prayerjar-2026-04.md verbatim.",
+      "Every feature flag in plans.ts for Pastoral Dashboard, Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, and Small Groups resolves to exactly the tier named in the pricing doc.",
+      "A grep of the codebase finds no remaining hard-coded plan checks that bypass plans.ts (all server actions, middleware, and dashboard gates call the plans.ts predicate).",
+      "Unit tests exist for each gating predicate (one positive + one negative case per feature) and all pass in the repo's standard test command.",
+      "Annual discount computation in plans.ts yields 15% off monthly × 12 (within $0.01).",
+      "Code review confirms plans.ts exports are consumed by both server-side gating and the pricing calculator component (single source of truth)."
+    ],
     "files": [
       "src/lib/plans.ts"
     ],
@@ -3480,6 +3506,15 @@
     "assigned_to": "Copywriter",
     "priority": "high",
     "description": "Rewrite the marketing page copy to match the approved tier map (audit findings #1, #3). Specifically: (a) correctly attribute Pastoral Dashboard to its actual tier, (b) surface the hidden features — Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, Small Groups — with short benefit-led descriptions, (c) add the new Free/Starter member caps, (d) add a pricing FAQ covering trial, overages, and migration. Strategist reviews voice/positioning before Frontend implements.",
+    "acceptance_criteria": [
+      "Copy deliverable exists (either inline PR against src/app/(public)/for-churches/page.tsx or a docs/copy/for-churches-v2.md handed to Frontend) and is committed.",
+      "Each tier listed in plans.ts has a block of copy: name, price, member cap, 4–7 feature bullets — and Pastoral Dashboard appears under the tier named in docs/strategy/pricing-prayerjar-2026-04.md.",
+      "Copy includes benefit-led descriptions for Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, and Small Groups (each at least one sentence, explicit feature name).",
+      "Pricing FAQ section contains answers for: trial existence + length, member-cap overage behavior, migration/import from other tools, annual discount = 15%, cancellation/refund policy.",
+      "Every claim that required a hotfix (AI-Flagged Care, SSO/SAML/SLA/custom-subdomain, Pastoral Dashboard tier) uses the exact phrasing approved in its corresponding hotfix decision doc — verify by cross-reference, not paraphrase.",
+      "Copy reviewer confirms voice matches docs/brand/brand-guide.md (pj-s17-brand-guide-v1) and that no banned phrases from the guide appear.",
+      "BLOCK: this task cannot move to done until pj-s17-hotfix-ai-claim, pj-s17-hotfix-enterprise-claims, and pj-s17-hotfix-pastoral-consistency are all status=done — Reviewer must verify those three IDs before approving."
+    ],
     "files": [
       "src/app/(public)/for-churches/page.tsx"
     ],
@@ -3503,6 +3538,16 @@
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Ship the rewritten /for-churches page with: (1) corrected tier cards, (2) a new sections for Pastoral Care / Prayer Team / Testimony Approval / Small Groups, (3) a pricing calculator (member count -> recommended tier -> price) whose logic matches `src/lib/plans.ts`, (4) pricing FAQ accordion. Structure owned by Strategist; build owned by Frontend. Must match approved tier map exactly.",
+    "acceptance_criteria": [
+      "src/app/(public)/for-churches/page.tsx renders the rewritten copy from pj-s17-for-churches-rewrite with tier cards, feature sections, pricing calculator, and FAQ accordion visible on desktop and mobile breakpoints.",
+      "src/components/pricing-calculator.tsx imports tier data from src/lib/plans.ts (no duplicated tier names, prices, or caps in the component) — verified by reading the import line.",
+      "Pricing calculator accepts a member-count input and returns the lowest tier whose cap covers that count; manual test cases (1, 25, 49, 50, 150, 500, 1000 members) return the expected tier.",
+      "Pricing calculator displays monthly price and 15%-off annual price sourced from plans.ts.",
+      "FAQ accordion is keyboard-accessible (tab + enter toggles items) and each item has an aria-expanded attribute.",
+      "Lighthouse accessibility score on the page is >= 95 on a local run.",
+      "Tests exist for the calculator's tier-selection logic and pass.",
+      "BLOCK: this task cannot move to done until pj-s17-plans-gating-fix and pj-s17-for-churches-rewrite are status=done."
+    ],
     "files": [
       "src/app/(public)/for-churches/page.tsx",
       "src/components/pricing-calculator.tsx"
@@ -3529,6 +3574,14 @@
     "assigned_to": "Sales",
     "priority": "medium",
     "description": "Design the enterprise qualification flow (audit finding #5): (a) 'starting at' price anchor on the marketing page, (b) lead-capture form (church size, ChMS in use, timeline, denomination), (c) Calendly or similar demo booking, (d) automated follow-up sequence. Sales owns the sequence, qualification fields, and rep-facing brief. Frontend ships the form and booking widget in a paired task.",
+    "acceptance_criteria": [
+      "docs/sales/enterprise-demo-flow.md exists and is committed.",
+      "Document specifies the exact 'starting at' price anchor string that must appear on /for-churches for Enterprise (must match the anchor in docs/strategy/pricing-prayerjar-2026-04.md — 'Starting at $199/mo' as of the brief).",
+      "Document lists the qualification fields for the lead form with field type + required/optional marker for each (at minimum: church size, ChMS in use, timeline, denomination, contact name, contact email, contact phone).",
+      "Document names the demo-booking tool (Calendly or alternative) and the calendar account the bookings route to.",
+      "Document defines the automated follow-up sequence: trigger event, cadence, and message body for each touch (at least 3 touches over 14 days).",
+      "Document includes a rep-facing brief: qualification rubric, disqualification triggers, handoff-to-Sales SLA in hours."
+    ],
     "files": [
       "docs/sales/enterprise-demo-flow.md"
     ],
@@ -3552,6 +3605,15 @@
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Implement the UI for the enterprise demo flow defined by Sales: lead-capture form with validation, submit server action that writes to a `church_enterprise_leads` table (or sends to CRM/Resend), Calendly (or equivalent) embed on the thank-you step. Must send a notification to ADMIN_EMAILS on submit. Paired with pj-s17-enterprise-demo-flow.",
+    "acceptance_criteria": [
+      "src/app/(public)/for-churches/demo/page.tsx renders a lead-capture form containing every field listed in docs/sales/enterprise-demo-flow.md with correct required/optional markers.",
+      "src/app/(public)/for-churches/demo/actions.ts exposes a server action that validates inputs (required fields, email format, church size numeric) and rejects invalid submissions with a user-visible error.",
+      "Valid submissions persist to a church_enterprise_leads row (new table migrated via drizzle) OR to the CRM integration defined in the Sales doc — choice documented in the task notes.",
+      "Successful submit sends an email to ADMIN_EMAILS via Resend containing all submitted fields.",
+      "Thank-you step embeds the demo-booking tool named in docs/sales/enterprise-demo-flow.md.",
+      "Funnel event demo_requested (from pj-s17-funnel-instrumentation spec) fires on successful submit.",
+      "Tests cover the server action: one valid submission success path, one invalid submission rejection path — both pass."
+    ],
     "files": [
       "src/app/(public)/for-churches/demo/page.tsx",
       "src/app/(public)/for-churches/demo/actions.ts"
@@ -3576,6 +3638,13 @@
     "assigned_to": "Integrations",
     "priority": "medium",
     "description": "Audit finding #4. Produce a short spec per ChMS: auth model (OAuth vs API key), member-sync endpoints, rate limits, webhook support, sandbox availability, and the minimum viable integration scope for PrayerJar (import members, sync small groups, push prayer summary back). Output: docs/integrations/chms-landscape.md + a ranked recommendation on which 1–2 to build first.",
+    "acceptance_criteria": [
+      "docs/integrations/chms-landscape.md exists and is committed.",
+      "Document contains a per-ChMS spec section for at least Planning Center, Elvanto, ChurchTrac, and Breeze.",
+      "Each section lists: auth model (OAuth / API key / other), member-list/member-get endpoint URLs with method, rate limit (requests per window), webhook support (yes/no + event list), sandbox availability (yes/no + signup URL), and minimum-viable scope for PrayerJar (import members, sync small groups, push prayer summary).",
+      "Each endpoint URL, rate limit, and auth claim is paired with a source link from the provider's public docs.",
+      "Document ends with a ranked recommendation naming the top 1–2 ChMSes to build first with a one-paragraph justification (market share, API quality, customer pull)."
+    ],
     "files": [
       "docs/integrations/chms-landscape.md"
     ],
@@ -3595,6 +3664,15 @@
     "assigned_to": "Architect",
     "priority": "medium",
     "description": "Design the integration surface so we can add ChMS providers without forking core sync logic. Outputs: adapter interface, job/webhook model, error-handling and retry strategy, data-mapping contract (church -> PrayerJar members + groups), env-var and secret-storage conventions. No code yet — handoff spec for Backend + Integrations to implement in Sprint 18. Audit finding #4.",
+    "acceptance_criteria": [
+      "docs/architecture/chms-integration-layer.md exists and is committed.",
+      "Document defines a TypeScript-style adapter interface (method signatures for connect, disconnect, listMembers, listGroups, pushPrayerSummary, handleWebhook) that every ChMS provider must implement.",
+      "Document specifies the job model: sync trigger types (manual, scheduled, webhook), queue/processor choice, and backoff/retry policy for transient failures (with retry count + delay numbers).",
+      "Document defines the data-mapping contract: how a ChMS church row maps to PrayerJar churches, ChMS member to PrayerJar user/member, ChMS small group to PrayerJar group — with field-level mapping tables.",
+      "Document specifies env-var naming convention (e.g. CHMS_{PROVIDER}_CLIENT_ID) and where secrets live (Vercel env vars vs per-church DB rows) with reasoning.",
+      "Document names the top-1 ChMS from pj-s17-chms-integration-survey as the reference implementation target for Sprint 18 and lists the concrete handoff tasks to create.",
+      "No application code is committed under src/ for this task — spec only."
+    ],
     "files": [
       "docs/architecture/chms-integration-layer.md"
     ],
@@ -3618,6 +3696,14 @@
     "assigned_to": "Analytics",
     "priority": "high",
     "description": "Audit finding #7. Define the church-funnel event spec: for-churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested. Pick the tool (Vercel Analytics + PostHog is already in stack — verify) and write the event dictionary. Analytics owns the spec + dashboard; Frontend fires the events in a paired task. Also produce the weekly funnel review template.",
+    "acceptance_criteria": [
+      "docs/analytics/church-funnel-spec.md exists and is committed.",
+      "Document names the analytics tool(s) chosen and confirms (with file-path citations) which are already installed in the codebase vs need installation.",
+      "Document lists each of these events with: event name (snake_case, finalized), trigger location (page or server action), required properties, and property value types — for_churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested.",
+      "Document marks plan_activated and plan_upgraded as server-side events (fired from webhook handler, not client).",
+      "Document includes a weekly funnel review template: which metrics to pull, the conversion ratios to compute, and the format of the weekly summary.",
+      "Document includes the dashboard definition (queries or saved views) that Finance and PM will check."
+    ],
     "files": [
       "docs/analytics/church-funnel-spec.md"
     ],
@@ -3637,6 +3723,15 @@
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Implement the events defined in pj-s17-funnel-instrumentation across the church acquisition flow: pageview, calculator interactions, signup steps, plan activation/upgrade in the church dashboard. Server-side events for plan_activated and plan_upgraded (webhook-driven — do not rely on client).",
+    "acceptance_criteria": [
+      "Every event named in docs/analytics/church-funnel-spec.md is fired from a matching code location: for_churches_view on /for-churches mount, pricing_view on tier-card visibility, calculator_interacted on calculator input change, signup_start/signup_complete in the signup flow, plan_activated/plan_upgraded from the Stripe webhook handler server-side, demo_requested in the enterprise demo submit action.",
+      "Each event emits the required properties listed in the spec (verified by log or analytics dashboard inspection).",
+      "plan_activated and plan_upgraded are emitted from server code (webhook handler), not from client components — verified by file-path grep.",
+      "src/lib/analytics.ts exposes a typed wrapper for event emission so event names cannot be misspelled.",
+      "Manual QA walkthrough (visit /for-churches → calculator → signup → plan activation) produces one of each expected event in the analytics dashboard.",
+      "Tests cover the analytics wrapper's event-name enforcement and pass.",
+      "BLOCK: this task cannot move to done until pj-s17-funnel-instrumentation is status=done."
+    ],
     "files": [
       "src/app/(public)/for-churches/page.tsx",
       "src/app/(church)/church/[slug]/dashboard/**",
@@ -3662,6 +3757,15 @@
     "assigned_to": "Customer Success",
     "priority": "medium",
     "description": "Audit finding #8. Walk a pastor through signup -> first login -> first useful action today. Document what they actually see (empty dashboard? sample data? guided checklist?). Produce: (1) friction log, (2) proposed guided-setup checklist with success criteria per step, (3) suggested first-run sample content strategy. Designer pairs on the UI sketch; build is Sprint 18 scope. Hand off a concrete spec, not open questions.",
+    "acceptance_criteria": [
+      "docs/users/church-onboarding-audit.md exists and is committed.",
+      "Document contains a step-by-step walkthrough of today's church signup-to-first-action flow with screenshots or screen references for each step.",
+      "Document includes a numbered friction log where each friction point cites the specific screen and the specific issue.",
+      "Document proposes a guided-setup checklist with at least 5 steps; each step has an explicit success criterion (e.g. 'invited >= 3 members', 'created first prayer post').",
+      "Document proposes a first-run sample content strategy with concrete content examples (sample prayers, sample groups) and a mechanism to dismiss/clear them.",
+      "Document includes a Designer-paired wireframe or wireframe link for the proposed onboarding UI.",
+      "Document ends with a list of discrete Sprint 18 implementation tasks (titles only, ready for Architect to create)."
+    ],
     "files": [
       "docs/users/church-onboarding-audit.md"
     ],
@@ -3681,6 +3785,14 @@
     "assigned_to": "Growth",
     "priority": "low",
     "description": "Optimize /for-churches and related pages for search acquisition: keyword research ('prayer software for churches', 'church prayer request app', etc.), title/meta/OG tuning, internal link structure from /blog and /about, schema.org Product markup for pricing, comparison landing pages for top competitors ('PrayerJar vs Pushpray'). Produces a Growth brief with prioritized content + on-page changes. Frontend executes the on-page changes; content tasks land in Sprint 18.",
+    "acceptance_criteria": [
+      "docs/growth/for-churches-seo-brief.md exists and is committed.",
+      "Document includes a keyword list with search volume and difficulty for at least 15 target terms relevant to church prayer software.",
+      "Document specifies final title tag, meta description, and OG image/text for /for-churches (within standard length limits: title <= 60 chars, description <= 155 chars).",
+      "Document lists a prioritized set of on-page changes (H1/H2 structure, internal links from /about and /blog, schema.org Product JSON-LD) with file paths for Frontend to execute.",
+      "Document lists the top 3 'PrayerJar vs [competitor]' comparison-page targets with URL slug, competitor name, and 1-paragraph angle per page — ready to hand to Content in Sprint 18.",
+      "Document includes a baseline measurement: current organic impressions/clicks for /for-churches (from Search Console or equivalent) so Sprint 18 can measure lift."
+    ],
     "files": [
       "docs/growth/for-churches-seo-brief.md"
     ],
@@ -3693,6 +3805,256 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs after the rewrite so we are not re-doing meta tags twice."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-hotfix-ai-claim",
+    "sprint": "17",
+    "title": "HOTFIX: reconcile 'AI-Flagged Care' marketing claim with reality",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "critical",
+    "description": "AIEngineer + Legal both flagged: /for-churches and pricing advertise 'AI-Flagged Care' / pastoral crisis surfacing, but `flagPrayer()` is never called in production code, the `prayer_flags` table is never populated, and self-harm prayers are REJECTED via ModerationError in src/services/prayer.service.ts:41-45 instead of being surfaced. Pro-tier 'Flagged Prayers' dashboard is permanently empty. This is FTC §5 deceptive-practice territory plus self-harm liability exposure. Architect decides the path: (a) immediately remove/soften the claim on marketing pages, OR (b) wire flagPrayer() insertion + surface in dashboard before any claim stays up. Output: decision doc + handoff task(s) to Copywriter (path a) or AIEngineer+Backend (path b). Must land before Sprint 17 marketing rewrite ships.",
+    "acceptance_criteria": [
+      "docs/decisions/ai-flagged-care-claim-2026-04.md exists and is committed.",
+      "Decision doc explicitly picks path a (remove/soften claim) or path b (build the feature) — not both, not undecided.",
+      "If path a: doc specifies the exact replacement phrasing (or removal) for every occurrence of 'AI-Flagged Care' or equivalent crisis-surfacing claim across marketing surfaces, and lists the files where each occurrence lives (verified by codebase grep included in the doc).",
+      "If path a: doc specifies the plan for self-harm prayer handling going forward (e.g., keep current rejection + surface a crisis-resource page to the submitter) and confirms no user-visible behavior change is required beyond copy.",
+      "If path b: doc specifies acceptance of pj-s17-ai-flag-wiring as the execution task and states that pj-s17-ai-flag-wiring must be status=done before any marketing claim is re-published.",
+      "Legal sign-off is captured in the task notes (short note from Legal confirming the chosen path resolves the FTC §5 concern).",
+      "BLOCK: pj-s17-for-churches-rewrite and pj-s17-for-churches-build cannot move to done until this task is status=done — Reviewer must verify this task ID on those rewrites.",
+      "If path a is chosen, all occurrences of the old claim are REMOVED in the same PR or in a follow-up task created before this one closes — no stale claim remains on a deployed page."
+    ],
+    "files": [
+      "docs/decisions/ai-flagged-care-claim-2026-04.md",
+      "src/app/(public)/for-churches/page.tsx",
+      "src/services/prayer.service.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: hotfix surfaced by AIEngineer + Legal specialist pass. Blocks Sprint 17 marketing rewrite — cannot re-publish the claim."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-hotfix-enterprise-claims",
+    "sprint": "17",
+    "title": "HOTFIX: remove or qualify SSO/SAML/SLA/custom-subdomain Enterprise claims",
+    "status": "proposed",
+    "assigned_to": "Security",
+    "priority": "critical",
+    "description": "Security audit: Enterprise tier advertises SSO/SAML, 99.9% SLA, dedicated support, and custom subdomain — all with zero backing code. src/lib/auth.ts has only Google OAuth + Resend. `churches.subdomain` is a text column with no middleware routing. 'SLA' and 'dedicated support' have no runbook, no on-call rotation, no support contract. Deceptive advertising if sold to a church today. Security owns the reconciliation: produce a 'real vs advertised' matrix, decide which items get removed vs labeled 'coming soon' vs kept with a defensible definition, then hand the copy changes to Copywriter. Must land before /for-churches rewrite.",
+    "acceptance_criteria": [
+      "docs/decisions/enterprise-claims-2026-04.md exists and is committed.",
+      "Document contains a 'real vs advertised' matrix with one row per contested claim: SSO, SAML, 99.9% SLA, dedicated support, custom subdomain, plus any other Enterprise-tier feature currently on /for-churches.",
+      "Each matrix row states: (a) what the marketing claim is today (verbatim), (b) what the code actually supports today (with file:line citation), (c) the chosen resolution — REMOVE, LABEL 'COMING SOON' WITH ETA, or KEEP WITH TIGHTENED DEFINITION.",
+      "For any claim kept, the document gives the defensible definition that will appear on /for-churches and names the code or operational backing (runbook path, on-call rotation doc, contract template).",
+      "Document specifies the exact replacement copy for each row and the files/lines in /for-churches to edit.",
+      "For SSO/SAML/custom-subdomain items labeled 'coming soon', Architect is asked to create Sprint-18-or-later tasks in the decision doc's handoff list.",
+      "Legal sign-off is captured in the task notes confirming the chosen resolutions resolve the deceptive-advertising exposure.",
+      "BLOCK: pj-s17-for-churches-rewrite and pj-s17-for-churches-build cannot move to done until this task is status=done — Reviewer must verify this task ID on those rewrites."
+    ],
+    "files": [
+      "docs/decisions/enterprise-claims-2026-04.md",
+      "src/app/(public)/for-churches/page.tsx"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: hotfix from Security specialist pass. Same blocker pattern as hotfix-ai-claim — rewrite cannot ship with current claims."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-hotfix-pastoral-consistency",
+    "sprint": "17",
+    "title": "HOTFIX: reconcile Pastoral Dashboard tier across plans.ts, FAQ, and gating code",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "critical",
+    "description": "Legal flagged: `src/lib/plans.ts`, the public FAQ, and the actual server-side gating disagree on which tier gets the Pastoral Dashboard. A paying church could argue FTC §5 deceptive practice. Pick one truth (coordinate with Strategist if the tier assignment is in flux — but reconcile the three sources today even if the eventual tier changes later in Sprint 17). Small mechanical fix once the decision is made. Add a test that asserts plans.ts and FAQ copy stay in sync.",
+    "acceptance_criteria": [
+      "src/lib/plans.ts, src/app/(public)/for-churches/page.tsx, and src/app/(public)/faq/page.tsx all name the SAME tier for the Pastoral Dashboard — verified by grep for 'Pastoral Dashboard' across the three files showing only one tier string.",
+      "plans.ts is treated as the source of truth: the for-churches page and the FAQ page import tier-to-feature mapping from plans.ts rather than hard-coding the tier name.",
+      "A test file (e.g. tests/consistency/pastoral-dashboard-tier.test.ts) asserts that the tier string shown on the for-churches page and the FAQ page both derive from the plans.ts export and match each other. Test passes.",
+      "The server-side gating predicate that controls access to the Pastoral Dashboard reads from plans.ts and matches the advertised tier (no hard-coded Plan.Pro or equivalent that bypasses plans.ts).",
+      "If the final tier assignment is expected to change later in Sprint 17 (via pj-s17-tier-redesign), a note in the commit and in this task's notes states that the downstream change is a one-line plans.ts edit because the FAQ and marketing page will auto-update via import.",
+      "Legal sign-off in the task notes confirming the inconsistency is resolved.",
+      "BLOCK: pj-s17-for-churches-rewrite and pj-s17-for-churches-build cannot move to done until this task is status=done."
+    ],
+    "files": [
+      "src/lib/plans.ts",
+      "src/app/(public)/for-churches/page.tsx",
+      "src/app/(public)/faq/page.tsx"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: hotfix from Legal specialist pass. This is load-bearing for the whole tier-redesign task — if we don't fix the inconsistency NOW, the rewrite will re-ship the same lie."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-mrr-dashboard",
+    "sprint": "17",
+    "title": "MRR / churn / acquisition-attribution dashboard (internal)",
+    "status": "proposed",
+    "assigned_to": "Finance",
+    "priority": "high",
+    "description": "Finance audit: we have zero visibility into MRR, net revenue retention, churn, or which acquisition channel a paying church came from. We cannot measure whether the Sprint 17 repricing helped or hurt. Must ship before the new prices go live. Scope: (1) MRR + new/expansion/churn breakdown pulled from Stripe + church table, (2) church-level acquisition source tagging (UTM capture at signup, stored on churches row), (3) churn detection — downgrades + cancellations, (4) simple internal dashboard at /admin/finance. Finance owns the spec + dashboard; Backend + Database implement.",
+    "acceptance_criteria": [
+      "docs/finance/mrr-dashboard-spec.md exists and is committed; defines MRR, new MRR, expansion MRR, contraction MRR, churned MRR, and net revenue retention with explicit formulas.",
+      "src/lib/finance/mrr.ts exists and exports functions that compute each metric from Stripe subscription data + the churches table for a given time window.",
+      "churches table (via drizzle migration) has columns for acquisition_source, utm_source, utm_medium, utm_campaign, first_paid_at, current_plan, previous_plan — captured at signup and updated on plan change.",
+      "UTM parameters present on the signup URL are persisted to the churches row at signup — verified by a test that simulates a signup with UTMs and asserts the row values.",
+      "/admin/finance page renders current MRR, 30-day and 90-day new/expansion/churn breakdown, churn count, and a per-acquisition-source table. Access is restricted to ADMIN_EMAILS.",
+      "A churn detection path fires on downgrade or Stripe cancellation webhook and updates the churches row + emits the churn event to analytics.",
+      "Tests exist for MRR, new MRR, and churn calculations with at least one fixture scenario each and pass.",
+      "BLOCK: pj-s17-tier-redesign cannot move from decision to live pricing change in plans.ts/Stripe until this task is status=done — Reviewer must confirm /admin/finance is live and reading real data before approving the price cutover."
+    ],
+    "files": [
+      "docs/finance/mrr-dashboard-spec.md",
+      "src/app/(admin)/admin/finance/page.tsx",
+      "src/lib/finance/mrr.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed by Finance specialist pass. Must ship before pj-s17-tier-redesign goes live or we'll reprice blind."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-ai-flag-wiring",
+    "sprint": "17",
+    "title": "Wire flagPrayer() into production + surface in pastoral dashboard (CONDITIONAL on hotfix-ai-claim path b)",
+    "status": "proposed",
+    "assigned_to": "AI Engineer",
+    "priority": "high",
+    "description": "ONLY BUILD IF pj-s17-hotfix-ai-claim decision = path b (keep claim, build the thing). Otherwise delete this task. Scope: (1) call flagPrayer() on every new prayer submission with a small concurrency guard, (2) ensure `prayer_flags` is populated with classifier output + confidence, (3) surface flagged items in the Pro-tier Pastoral Dashboard with severity bucket, (4) move self-harm handling from hard-reject to flag+surface (requires UX sign-off — crisis-resource link, not silent rejection), (5) add confidence field + basic eval harness against a 20-prayer golden set.",
+    "acceptance_criteria": [
+      "GATE: if pj-s17-hotfix-ai-claim resolved to path a (remove claim), this task is DELETED from tasks.json and acceptance criteria below are N/A. Architect + PM must explicitly check the hotfix decision doc before engineers start.",
+      "If path b: flagPrayer() in src/services/ai.service.ts is called on every new prayer submission from src/services/prayer.service.ts with a concurrency guard so a single user cannot trigger >N parallel classifier calls (N documented in code).",
+      "If path b: prayer_flags rows are inserted for every submission where the classifier returns a non-null flag, including classifier label, severity bucket, and confidence score (0.0–1.0).",
+      "If path b: the self-harm branch at src/services/prayer.service.ts:41-45 is changed from ModerationError rejection to flag+surface — the prayer is stored, a flag is written, and the submitter sees a crisis-resource page/link (copy approved by UX and referenced in the task notes).",
+      "If path b: the Pro-tier Pastoral Dashboard at src/app/(church)/church/[slug]/dashboard/flagged/page.tsx lists flagged prayers grouped by severity bucket, with prayer preview, flag label, confidence, and timestamp.",
+      "If path b: tests/ai/crisis-classifier-eval.test.ts exists, runs the classifier against a 20-prayer labeled golden set, and asserts a minimum precision + recall threshold documented in the test. Test passes.",
+      "If path b: a concurrency/load test or fixture-based test verifies flagPrayer() does not block prayer submission on failure (classifier error → prayer saved, flag skipped + error logged)."
+    ],
+    "files": [
+      "src/services/prayer.service.ts",
+      "src/services/ai.service.ts",
+      "src/app/(church)/church/[slug]/dashboard/flagged/page.tsx",
+      "tests/ai/crisis-classifier-eval.test.ts"
+    ],
+    "depends_on": [
+      "pj-s17-hotfix-ai-claim"
+    ],
+    "blockers": [
+      "pj-s17-hotfix-ai-claim"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed by AIEngineer specialist pass. Conditional — depends on which path the hotfix decision takes."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-audit-log",
+    "sprint": "17",
+    "title": "Church audit log — capture admin + pastoral actions",
+    "status": "proposed",
+    "assigned_to": "Security",
+    "priority": "high",
+    "description": "Security audit: no audit logs anywhere in the codebase. Any enterprise church will ask for them during procurement. Scope: (1) `audit_events` table keyed by church_id + actor_user_id + action + target_type + target_id + metadata + timestamp, (2) write-points for member add/remove, role change, prayer delete, plan change, (3) read-only admin view at /church/{slug}/admin/audit, (4) 90-day retention on Starter, 1-year on Pro, 3-year on Enterprise (tie to plans.ts).",
+    "acceptance_criteria": [
+      "A drizzle migration creates an audit_events table with columns: id, church_id (FK), actor_user_id (FK), action (text/enum), target_type (text), target_id (text), metadata (jsonb), created_at (timestamptz). Indexes on church_id and created_at exist.",
+      "src/db/schema.ts exports the audit_events table definition matching the migration.",
+      "src/lib/audit.ts exports a typed logEvent() helper that inserts an audit row and is called at the following write-points: member add, member remove, role change, prayer delete, plan change — verified by grep.",
+      "Read-only admin page at src/app/(church)/church/[slug]/admin/audit/page.tsx lists events for the current church with filter by action and by date range, paginated.",
+      "Access to the audit page is gated to church admins (not regular members) and the gate is enforced server-side.",
+      "Retention policy is implemented: a scheduled job (or documented manual query) deletes audit rows older than the retention window for the church's tier, with the window sourced from plans.ts (Starter 90d, Pro 1y, Enterprise 3y, or whatever plans.ts says after pj-s17-plans-gating-fix lands — retention must not be hardcoded to the values in this description if plans.ts names different tiers).",
+      "Tests cover logEvent() happy path and retention-window lookup per tier, and pass.",
+      "Task notes explicitly flag that retention tier names must track any renames from pj-s17-tier-redesign (Free / Small Church / Growing Church / Network)."
+    ],
+    "files": [
+      "drizzle/migrations/00XX_audit_events.sql",
+      "src/db/schema.ts",
+      "src/lib/audit.ts",
+      "src/app/(church)/church/[slug]/admin/audit/page.tsx"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed by Security specialist pass. Foundational for enterprise-tier credibility."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-dpa-subprocessor",
+    "sprint": "17",
+    "title": "Data Processing Addendum + sub-processor list (public page)",
+    "status": "proposed",
+    "assigned_to": "Legal",
+    "priority": "high",
+    "description": "Legal audit: current ToS is a 4-paragraph consumer ToS. No DPA, no sub-processor disclosure, no 501(c)(3) handling. Any church >100 members or any church's lawyer will ask for all three. Deliverables: (1) DPA template at /legal/dpa (click-through accept, stored per-church), (2) public sub-processor list at /legal/subprocessors (Vercel, Resend, Anthropic, Neon/Supabase, Stripe, etc. — with purpose + data categories), (3) `church_legal_acceptances` table, (4) 501(c)(3) verification flow on enterprise signup (upload determination letter, Admin approves).",
+    "acceptance_criteria": [
+      "docs/legal/dpa-template.md contains the finalized Data Processing Addendum text covering: parties, definitions, scope of processing, sub-processor list reference, data subject rights, security measures, breach notification SLA, data deletion on termination, governing law. Legal signs off in the task notes.",
+      "/legal/dpa page renders the DPA template and has a click-through accept button; accepting stores a row in church_legal_acceptances with church_id, user_id, document_type='dpa', document_version, accepted_at, ip_address.",
+      "/legal/subprocessors page publicly lists every third-party sub-processor: Vercel, Resend, Anthropic, the database provider (Neon or Supabase — whichever is actually in use, verified by env config), Stripe, plus any others in production dependency list. Each row shows name, purpose, data categories processed, and region.",
+      "A drizzle migration creates church_legal_acceptances with the columns above plus an index on church_id.",
+      "A 501(c)(3) verification flow is available to churches on the enterprise signup path: upload determination letter (stored in blob storage), Admin review queue visible at /admin/legal-verifications, status (pending/approved/rejected) surfaced on the church admin dashboard.",
+      "/legal/subprocessors page is linked from the footer and from the DPA text.",
+      "Sub-processor list page contains a 'last updated' date that reads from a constant in source so Reviewer can verify it matches the current dependency list.",
+      "Tests cover: DPA acceptance insert, subprocessor page renders, 501(c)(3) upload accepts PDF — all pass."
+    ],
+    "files": [
+      "src/app/(public)/legal/dpa/page.tsx",
+      "src/app/(public)/legal/subprocessors/page.tsx",
+      "docs/legal/dpa-template.md",
+      "drizzle/migrations/00XX_church_legal.sql"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed by Legal specialist pass. Gate for any church >100 members."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-brand-guide-v1",
+    "sprint": "17",
+    "title": "PrayerJar brand guide v1 — voice, tone, motifs, do/don'ts",
+    "status": "proposed",
+    "assigned_to": "Brand",
+    "priority": "medium",
+    "description": "Brand audit: no docs/brand/brand-guide.md exists. Churches page sounds like a ChMS vendor, not PrayerJar — voice drift will happen on every new page without a written standard. Scope: (1) brand promise + positioning sentence, (2) voice attributes with do/don't examples, (3) jar motif + amber accent + verse-strip visual conventions, (4) tier-naming convention (Free / Small Church / Growing Church / Network per proposal), (5) 'Most Popular' → 'Best for churches 150–500' language rule, (6) banned phrases list. Deliverable: docs/brand/brand-guide.md + reference examples.",
+    "acceptance_criteria": [
+      "docs/brand/brand-guide.md exists and is committed.",
+      "Document contains a single-sentence brand promise and a single-sentence positioning statement.",
+      "Document lists at least 4 voice attributes, each with a do/don't example pair (e.g. 'warm, not clinical' — do: …, don't: …).",
+      "Document describes the visual system: jar motif usage rules, amber accent hex code + usage guidance, verse-strip convention + sample — with references to the component(s) that implement each.",
+      "Document fixes tier-naming convention (proposed: Free / Small Church / Growing Church / Network) and states that pj-s17-tier-redesign must adopt these names or explicitly justify deviation.",
+      "Document replaces generic 'Most Popular' labels with descriptive labels of the form 'Best for churches X–Y members' and gives 2 worked examples.",
+      "Document includes a banned-phrases list (at least 10 entries) with rationale per phrase — e.g. vendor-speak, deceptive-marketing, tone-breaking.",
+      "Document provides at least 3 reference copy examples: hero, tier-card, feature description — each showing the correct voice applied."
+    ],
+    "files": [
+      "docs/brand/brand-guide.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed by Brand specialist pass. Unblocks consistent copy across pj-s17-for-churches-rewrite and every future marketing surface."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
