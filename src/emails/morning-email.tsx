@@ -1,5 +1,5 @@
 import {
-  Html, Head, Preview, Body, Container, Heading, Text, Button, Hr, Section, Row, Column,
+  Html, Head, Preview, Body, Container, Heading, Text, Button, Hr, Section, Row, Column, Link,
 } from '@react-email/components';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -35,7 +35,7 @@ export default function MorningEmail({ userName, date, verse, activity, prayers 
   const hasActivity = activity.prayersReceived > 0 || activity.encouragements > 0 || activity.streak > 0;
 
   return (
-    <Html>
+    <Html lang="en">
       <Head />
       <Preview>Your morning verse — {date}</Preview>
       <Body style={{ backgroundColor: '#f9fafb', fontFamily: 'sans-serif' }}>
@@ -72,33 +72,39 @@ export default function MorningEmail({ userName, date, verse, activity, prayers 
               </Text>
               <Row>
                 {activity.prayersReceived > 0 && (
-                  <Column style={{ flex: '1', backgroundColor: '#f0fdf4', borderRadius: '8px', padding: '12px', textAlign: 'center', marginRight: '8px' }}>
-                    <Text style={{ fontSize: '24px', fontWeight: '700', color: '#16a34a', margin: '0 0 4px' }}>
-                      {activity.prayersReceived}
-                    </Text>
-                    <Text style={{ fontSize: '11px', color: '#166534', margin: '0' }}>
-                      people prayed for you
-                    </Text>
+                  <Column width="33%">
+                    <div style={{ backgroundColor: '#f0fdf4', borderRadius: '8px', padding: '12px', textAlign: 'center', paddingRight: '8px' }}>
+                      <Text style={{ fontSize: '24px', fontWeight: '700', color: '#16a34a', margin: '0 0 4px' }}>
+                        {activity.prayersReceived}
+                      </Text>
+                      <Text style={{ fontSize: '11px', color: '#166534', margin: '0' }}>
+                        people prayed for you
+                      </Text>
+                    </div>
                   </Column>
                 )}
                 {activity.encouragements > 0 && (
-                  <Column style={{ flex: '1', backgroundColor: '#eff6ff', borderRadius: '8px', padding: '12px', textAlign: 'center', marginRight: '8px' }}>
-                    <Text style={{ fontSize: '24px', fontWeight: '700', color: '#2563eb', margin: '0 0 4px' }}>
-                      {activity.encouragements}
-                    </Text>
-                    <Text style={{ fontSize: '11px', color: '#1e40af', margin: '0' }}>
-                      encouragements received
-                    </Text>
+                  <Column width="33%">
+                    <div style={{ backgroundColor: '#eff6ff', borderRadius: '8px', padding: '12px', textAlign: 'center', paddingRight: '8px' }}>
+                      <Text style={{ fontSize: '24px', fontWeight: '700', color: '#2563eb', margin: '0 0 4px' }}>
+                        {activity.encouragements}
+                      </Text>
+                      <Text style={{ fontSize: '11px', color: '#1e40af', margin: '0' }}>
+                        encouragements received
+                      </Text>
+                    </div>
                   </Column>
                 )}
                 {activity.streak > 0 && (
-                  <Column style={{ flex: '1', backgroundColor: '#fff7ed', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
-                    <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ea580c', margin: '0 0 4px' }}>
-                      🔥 {activity.streak}
-                    </Text>
-                    <Text style={{ fontSize: '11px', color: '#9a3412', margin: '0' }}>
-                      day streak
-                    </Text>
+                  <Column width="33%">
+                    <div style={{ backgroundColor: '#fff7ed', borderRadius: '8px', padding: '12px', textAlign: 'center' }}>
+                      <Text style={{ fontSize: '24px', fontWeight: '700', color: '#ea580c', margin: '0 0 4px' }}>
+                        🔥 {activity.streak}
+                      </Text>
+                      <Text style={{ fontSize: '11px', color: '#9a3412', margin: '0' }}>
+                        day streak
+                      </Text>
+                    </div>
                   </Column>
                 )}
               </Row>
@@ -138,9 +144,9 @@ export default function MorningEmail({ userName, date, verse, activity, prayers 
             })}
 
             <Text style={{ textAlign: 'center', margin: '16px 0 0' }}>
-              <a href="https://prayerjar.org/browse" style={{ fontSize: '13px', color: '#6b7280', textDecoration: 'none' }}>
+              <Link href="https://prayerjar.org/browse" style={{ fontSize: '13px', color: '#6b7280', textDecoration: 'none' }}>
                 Browse all prayers →
-              </a>
+              </Link>
             </Text>
           </Section>
 
@@ -149,9 +155,9 @@ export default function MorningEmail({ userName, date, verse, activity, prayers 
           <Section style={{ padding: '16px 32px', backgroundColor: '#f9fafb' }}>
             <Text style={{ fontSize: '11px', color: '#9ca3af', textAlign: 'center', margin: '0' }}>
               You&apos;re receiving this because you have morning emails enabled.{' '}
-              <a href="https://prayerjar.org/settings/notifications" style={{ color: '#6b7280' }}>
+              <Link href="https://prayerjar.org/settings/notifications" style={{ color: '#6b7280' }}>
                 Unsubscribe
-              </a>
+              </Link>
             </Text>
           </Section>
         </Container>
