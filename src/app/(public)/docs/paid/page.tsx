@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { PLANS } from '@/lib/plans';
 import {
   ClipboardList,
-  ShieldAlert,
   Radio,
   Palette,
   BarChart3,
@@ -87,7 +86,6 @@ const FEATURE_COMPARISON = [
   { feature: 'Basic analytics', free: false, starter: true, pro: true, enterprise: true },
   { feature: 'Live event prayer walls', free: false, starter: '2/yr', pro: '12/yr', enterprise: 'Unlimited' },
   { feature: 'Pastoral dashboard', free: false, starter: false, pro: true, enterprise: true },
-  { feature: 'AI-flagged care alerts', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Pastoral notes & assignments', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Custom branding', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Advanced analytics & PDF reports', free: false, starter: false, pro: true, enterprise: true },
@@ -109,16 +107,7 @@ const FEATURE_DEEP_DIVES = [
     color: 'text-violet-500',
     bg: 'bg-violet-500/10',
     border: 'border-violet-500/20',
-    body: 'The pastoral dashboard gives admins and pastors a real-time overview of church prayer activity. See active requests, recent volume trends, member engagement, and a queue of requests flagged for pastoral care. All in one screen \u2014 no digging through individual submissions.',
-  },
-  {
-    icon: ShieldAlert,
-    title: 'AI-Flagged Care Alerts',
-    plan: 'Pro',
-    color: 'text-rose-500',
-    bg: 'bg-rose-500/10',
-    border: 'border-rose-500/20',
-    body: "Every prayer submitted to your private wall is screened for language indicating crisis, self-harm, acute grief, or mental health distress. Flagged requests are surfaced in the pastoral dashboard immediately. Pastors can add private notes and assign follow-up \u2014 so no one falls through the cracks.",
+    body: 'The pastoral dashboard gives admins and pastors a real-time overview of church prayer activity. See active requests, recent volume trends, and member engagement. All in one screen \u2014 no digging through individual submissions.',
   },
   {
     icon: Radio,

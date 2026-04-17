@@ -3859,7 +3859,15 @@
     "notes": [
       "[2026-04-17] PM: hotfix surfaced by AIEngineer + Legal specialist pass. Blocks Sprint 17 marketing rewrite — cannot re-publish the claim.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off — dispatched to specialist agent."
+      "[2026-04-17] PM: kicked off — dispatched to specialist agent.",
+      "[2026-04-17] Architect: DECISION — path (a) kill the claim. Decision doc committed at docs/decisions/ai-flagged-care-claim-2026-04.md. Rationale: shipping path (b) as a hotfix without eval harness + Sonnet-tier model + UX review + fail-open alerting creates WORSE FTC §5 exposure than removing the claim — a missed self-harm case on a marketed feature is direct-harm liability. Path (b) is a 1–2 sprint project, not a hotfix.",
+      "[2026-04-17] Architect: changes applied in this commit — (1) removed 'AI-Flagged Care' feature card from src/app/(public)/for-churches/page.tsx (replaced with 'Pastoral Notes & Assignments'); (2) updated for-churches 'pastoral dashboard' FAQ to drop 'AI-flagged care items'; (3) removed 'AI-flagged care alerts' row from docs/paid feature-comparison table + removed FEATURE_DEEP_DIVES 'AI-Flagged Care Alerts' card (ShieldAlert import pruned); (4) removed AI-flagged steps from docs/churches/page.tsx pastoral-dashboard section and 'AI-flagged care alerts' from teaser footer; (5) replaced 'AI-flagged prayer care' bullet in src/lib/plans.ts Pro features with 'Pastoral notes & assignments'; (6) removed 'AI-flagged care alerts' item from docs/features/page.tsx; (7) reworded help/page.tsx moderation FAQ to accurately describe current screening + crisis-resources UX without promising pastoral-team surfacing; (8) reworded help/page.tsx church-features FAQ to drop 'AI-flagged care alerts'.",
+      "[2026-04-17] Architect: prayer.service.ts:41-45 intentionally unchanged — current behavior (reject selfHarm submission + show CrisisResources dialog with 988/Crisis Text Line/IASP/NAMI via prayer-form.tsx:84-85) is the documented user-safety path for path (a). Any change from reject→flag requires UX review and belongs in the future-sprint crisis-classifier task.",
+      "[2026-04-17] Architect: coordinated with concurrent hotfixes — pj-s17-hotfix-pastoral-consistency (Backend, completed while this ran) added PASTORAL_DASHBOARD_TIER_NAME / hasPastoralDashboard helpers to plans.ts and edited the same marketing files; re-applied my plans.ts edit after their write touched that file. pj-s17-hotfix-enterprise-claims (Security) also touched for-churches/page.tsx, plans.ts, docs/paid/page.tsx — no semantic collision on text I edited.",
+      "[2026-04-17] Architect: in-app tip at src/components/church/pastor-tips.tsx still mentions 'flagged prayers dashboard' — left in place as a lower-priority follow-up; not a public marketing promise. The dashboard page itself still exists and reads the (empty) prayer_flags table. Noted in decision doc.",
+      "[2026-04-17] Architect: pj-s17-ai-flag-wiring DELETED from tasks.json per its GATE acceptance criterion. Real-build work belongs in a future-sprint task scoped with AIEngineer + UX + eval harness.",
+      "[2026-04-17] Architect: ⚠ ACCEPTANCE-CRITERION #6 OPEN — 'Legal sign-off in task notes'. Architect cannot self-sign as Legal. PM must route the decision doc to Legal agent for an explicit pass before Reviewer closes. Placeholder noted in decision doc §4.",
+      "[2026-04-17] Architect → PM/Reviewer: ready for review. Verification steps: (a) grep src/ for 'AI-Flagged|AI-flagged|falls through the cracks|automatically.*surfaced' — should return zero hits outside in-app pastor-tips.tsx; (b) visit /for-churches — 'AI-Flagged Care' card gone, 'Pastoral Notes & Assignments' card present; (c) visit /docs/paid — feature-comparison row 'AI-flagged care alerts' gone, FEATURE_DEEP_DIVES card gone; (d) visit /help — moderation FAQ reworded, church-features FAQ reworded; (e) /lib/plans.ts Pro features bullet list reads 'Pastoral notes & assignments', not 'AI-flagged prayer care'."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3968,42 +3976,6 @@
     "notes": [
       "[2026-04-17] PM: proposed by Finance specialist pass. Must ship before pj-s17-tier-redesign goes live or we'll reprice blind.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
-    ],
-    "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
-  },
-  {
-    "id": "pj-s17-ai-flag-wiring",
-    "sprint": "17",
-    "title": "Wire flagPrayer() into production + surface in pastoral dashboard (CONDITIONAL on hotfix-ai-claim path b)",
-    "status": "blocked",
-    "assigned_to": "AI Engineer",
-    "priority": "high",
-    "description": "ONLY BUILD IF pj-s17-hotfix-ai-claim decision = path b (keep claim, build the thing). Otherwise delete this task. Scope: (1) call flagPrayer() on every new prayer submission with a small concurrency guard, (2) ensure `prayer_flags` is populated with classifier output + confidence, (3) surface flagged items in the Pro-tier Pastoral Dashboard with severity bucket, (4) move self-harm handling from hard-reject to flag+surface (requires UX sign-off — crisis-resource link, not silent rejection), (5) add confidence field + basic eval harness against a 20-prayer golden set.",
-    "acceptance_criteria": [
-      "GATE: if pj-s17-hotfix-ai-claim resolved to path a (remove claim), this task is DELETED from tasks.json and acceptance criteria below are N/A. Architect + PM must explicitly check the hotfix decision doc before engineers start.",
-      "If path b: flagPrayer() in src/services/ai.service.ts is called on every new prayer submission from src/services/prayer.service.ts with a concurrency guard so a single user cannot trigger >N parallel classifier calls (N documented in code).",
-      "If path b: prayer_flags rows are inserted for every submission where the classifier returns a non-null flag, including classifier label, severity bucket, and confidence score (0.0–1.0).",
-      "If path b: the self-harm branch at src/services/prayer.service.ts:41-45 is changed from ModerationError rejection to flag+surface — the prayer is stored, a flag is written, and the submitter sees a crisis-resource page/link (copy approved by UX and referenced in the task notes).",
-      "If path b: the Pro-tier Pastoral Dashboard at src/app/(church)/church/[slug]/dashboard/flagged/page.tsx lists flagged prayers grouped by severity bucket, with prayer preview, flag label, confidence, and timestamp.",
-      "If path b: tests/ai/crisis-classifier-eval.test.ts exists, runs the classifier against a 20-prayer labeled golden set, and asserts a minimum precision + recall threshold documented in the test. Test passes.",
-      "If path b: a concurrency/load test or fixture-based test verifies flagPrayer() does not block prayer submission on failure (classifier error → prayer saved, flag skipped + error logged)."
-    ],
-    "files": [
-      "src/services/prayer.service.ts",
-      "src/services/ai.service.ts",
-      "src/app/(church)/church/[slug]/dashboard/flagged/page.tsx",
-      "tests/ai/crisis-classifier-eval.test.ts"
-    ],
-    "depends_on": [
-      "pj-s17-hotfix-ai-claim"
-    ],
-    "blockers": [
-      "pj-s17-hotfix-ai-claim"
-    ],
-    "notes": [
-      "[2026-04-17] PM: proposed by AIEngineer specialist pass. Conditional — depends on which path the hotfix decision takes.",
-      "[2026-04-17] PM: status blocked pending hotfix-ai-claim path decision (a=kill claim → delete this task, b=build it → flip to approved)."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

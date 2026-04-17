@@ -76,7 +76,7 @@ const SECTIONS = [
     id: 'pastoral-dashboard',
     emoji: '📋',
     title: 'Pastoral Dashboard',
-    subtitle: 'Real-time view of church activity, flagged care needs, and assignments.',
+    subtitle: 'Real-time view of church activity, pastoral notes, and assignments.',
     border: 'border-violet-500/30',
     numBg: 'bg-violet-500',
     numText: 'text-violet-500',
@@ -85,15 +85,7 @@ const SECTIONS = [
     steps: [
       {
         heading: 'Overview',
-        body: "The pastoral dashboard (Pro plan) gives admins and pastors a bird's-eye view of church prayer activity: active requests, recent prayer volume, member engagement, and flagged items.",
-      },
-      {
-        heading: 'AI-flagged care alerts',
-        body: 'Requests containing crisis language — self-harm indicators, acute grief, mental health language — are automatically flagged for pastoral review. They appear in the Flagged tab.',
-      },
-      {
-        heading: 'Reviewing flagged requests',
-        body: 'Open a flagged request to see the full content and the reason it was flagged. From here you can: add a private pastoral note, assign it to a pastor for follow-up, or dismiss the flag.',
+        body: "The pastoral dashboard (Pro plan) gives admins and pastors a bird's-eye view of church prayer activity: active requests, recent prayer volume, and member engagement.",
       },
       {
         heading: 'Pastoral notes',
@@ -314,7 +306,7 @@ export default function ChurchAdminGuidePage() {
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Starter ($19/mo)</Link>{' '}
               and{' '}
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Pro ($49/mo)</Link>{' '}
-              plans unlock pastoral tools, AI-flagged care alerts, analytics, and event walls.
+              plans unlock pastoral tools, pastoral notes & assignments, analytics, and event walls.
               See the <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Paid Features guide</Link> for a full comparison.
             </p>
             <div className="flex flex-wrap gap-2">
