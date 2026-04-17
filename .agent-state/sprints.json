@@ -326,5 +326,21 @@
     "features": 6,
     "size": "L",
     "status": "done"
+  },
+  {
+    "id": "16",
+    "phase": 16,
+    "name": "Morning Email (Daily Verse + Activity)",
+    "features": 4,
+    "size": "M",
+    "status": "done"
+  },
+  {
+    "id": "17",
+    "phase": 17,
+    "name": "Church Funnel & Pricing",
+    "features": 13,
+    "size": "L",
+    "status": "planned"
   }
 ]

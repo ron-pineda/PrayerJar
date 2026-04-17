@@ -3318,5 +3318,383 @@
     ],
     "created_at": "2026-04-16",
     "last_touched": "2026-04-16T15:00:00.000Z"
+  },
+  {
+    "id": "pj-s16-verse-library",
+    "sprint": "16",
+    "phase": "1",
+    "title": "Build verse library (src/lib/verses.ts + tests)",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create src/lib/verses.ts with 366 unique Bible verses indexed by day-of-year (Jan 1 → verse 1, Dec 31 → verse 366). Export getVerseForDay(date) helper. Add src/lib/verses.test.ts with coverage for day-of-year selection logic.",
+    "files": [
+      "src/lib/verses.ts",
+      "src/lib/verses.test.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "Commit ec5dfd5: 366 unique verses indexed by day-of-year selection logic. Tests verify getVerseForDay returns correct verse for input date."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s16-email-template",
+    "sprint": "16",
+    "phase": "2",
+    "title": "Build morning email template (React Email)",
+    "status": "done",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Create src/emails/morning-email.tsx using React Email. Template includes: header with PrayerJar branding, daily verse display, conditional activity summary (if user took actions in past 24h), 3 prayer cards (cards from friends/churches), footer with app link. Outlook-compatible table layout.",
+    "files": [
+      "src/emails/morning-email.tsx"
+    ],
+    "depends_on": [
+      "pj-s16-verse-library"
+    ],
+    "blockers": [],
+    "notes": [
+      "Commits 83e7a3c, c30c8d5: React Email template with header/verse/conditional activity/3 prayer cards/footer. Outlook-safe table layout for compatibility."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s16-cron-handler",
+    "sprint": "16",
+    "phase": "3",
+    "title": "Implement cron handler for morning email delivery",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create src/app/api/cron/morning-email/route.ts. Handler: (1) verify CRON_SECRET auth header, (2) query users with email_enabled=true, (3) batch send in groups of 50, (4) fetch user's 3 most recent prayers from friends/churches (exclude own prayers), (5) render email template, (6) send via Resend, (7) log results to Sentry. Operate on 24h UTC window. Add src/app/api/cron/morning-email/route.test.ts with auth/batch/error handling coverage.",
+    "files": [
+      "src/app/api/cron/morning-email/route.ts",
+      "src/app/api/cron/morning-email/route.test.ts"
+    ],
+    "depends_on": [
+      "pj-s16-email-template"
+    ],
+    "blockers": [],
+    "notes": [
+      "Commits 8c5bcf7, ddd6fd6, a91612f: cron handler with auth check, batching (50 users per batch), Promise.allSettled for fault tolerance, reduce-after-settle pattern, Sentry logging. Excludes user's own prayers. Operates on 24h UTC window."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s16-wire-up",
+    "sprint": "16",
+    "phase": "4",
+    "title": "Register cron route in vercel.json + remove old daily-brief",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Update vercel.json to register /api/cron/morning-email at appropriate schedule (01:00 UTC daily recommended). Remove old daily-brief cron route and template if present. Verify route does not conflict with other cron jobs.",
+    "files": [
+      "vercel.json"
+    ],
+    "depends_on": [
+      "pj-s16-cron-handler"
+    ],
+    "blockers": [],
+    "notes": [
+      "Commit 553133a: vercel.json updated with /api/cron/morning-email schedule. Old daily-brief cron + template removed."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-competitor-pricing",
+    "sprint": "17",
+    "title": "Competitor pricing & feature benchmark — Praytell, Pushpray, Subsplash, Tithely, PrayerMate",
+    "status": "proposed",
+    "assigned_to": "Research",
+    "priority": "high",
+    "description": "Gather real pricing, tier limits, and feature lists for the top 4–6 church/ministry software competitors. Deliver a comparison matrix (cost, member cap, ChMS integrations, pastoral tools, moderation, analytics, support SLA) plus a short narrative on where PrayerJar is above/below market. Purpose: unblock the Strategist — we cannot redesign tiers without real numbers. Audit finding #6.",
+    "files": [
+      "docs/strategy/competitor-pricing-2026-04.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Unblocks pj-s17-tier-redesign."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-tier-redesign",
+    "sprint": "17",
+    "title": "Pricing tier redesign — resolve Pastoral Dashboard mismatch, set member caps, decide trial",
+    "status": "proposed",
+    "assigned_to": "Strategist",
+    "priority": "high",
+    "description": "Decision task. Outputs: (1) final feature-to-tier mapping that reconciles `src/lib/plans.ts` with the marketing page (audit finding #1 — Pastoral Dashboard is advertised as Starter but gated at Pro); (2) Free/Starter member caps — today's 25-member Free is too small for most small churches (audit finding #2), recommend new cap and/or a 30-day Starter trial; (3) whether Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval, and Small Groups (audit finding #3) are Starter, Pro, or Enterprise; (4) enterprise anchor price + demo flow recommendation (audit finding #5). Writes to docs/strategy/pricing-prayerjar-2026-04.md. Must make a recommendation, not a menu.",
+    "files": [
+      "docs/strategy/pricing-prayerjar-2026-04.md"
+    ],
+    "depends_on": [
+      "pj-s17-competitor-pricing"
+    ],
+    "blockers": [
+      "pj-s17-competitor-pricing"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Strategist owns the decision; Backend + Copywriter execute downstream. This is the spine of the sprint — nothing marketing-facing ships until this is signed off."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-plans-gating-fix",
+    "sprint": "17",
+    "title": "Update src/lib/plans.ts to match approved tier map",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Execute the gating change decided in pj-s17-tier-redesign. Update `src/lib/plans.ts` feature flags, member caps, and any related guards (middleware, server actions that check plan level) so the code matches the approved marketing page. Includes unit coverage for the gating predicates. Small mechanical change — blocked on Strategist sign-off, not technically hard.",
+    "files": [
+      "src/lib/plans.ts"
+    ],
+    "depends_on": [
+      "pj-s17-tier-redesign"
+    ],
+    "blockers": [
+      "pj-s17-tier-redesign"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Fast-follow on Strategist — do NOT let Backend start before the tier map is final or we'll rework twice."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-for-churches-rewrite",
+    "sprint": "17",
+    "title": "Rewrite /for-churches marketing copy — accurate tiers + hidden features surfaced",
+    "status": "proposed",
+    "assigned_to": "Copywriter",
+    "priority": "high",
+    "description": "Rewrite the marketing page copy to match the approved tier map (audit findings #1, #3). Specifically: (a) correctly attribute Pastoral Dashboard to its actual tier, (b) surface the hidden features — Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, Small Groups — with short benefit-led descriptions, (c) add the new Free/Starter member caps, (d) add a pricing FAQ covering trial, overages, and migration. Strategist reviews voice/positioning before Frontend implements.",
+    "files": [
+      "src/app/(public)/for-churches/page.tsx"
+    ],
+    "depends_on": [
+      "pj-s17-tier-redesign"
+    ],
+    "blockers": [
+      "pj-s17-tier-redesign"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Strategist pairs on positioning; Frontend implements the final copy in pj-s17-for-churches-build."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-for-churches-build",
+    "sprint": "17",
+    "title": "Implement updated /for-churches page + pricing calculator component",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Ship the rewritten /for-churches page with: (1) corrected tier cards, (2) a new sections for Pastoral Care / Prayer Team / Testimony Approval / Small Groups, (3) a pricing calculator (member count -> recommended tier -> price) whose logic matches `src/lib/plans.ts`, (4) pricing FAQ accordion. Structure owned by Strategist; build owned by Frontend. Must match approved tier map exactly.",
+    "files": [
+      "src/app/(public)/for-churches/page.tsx",
+      "src/components/pricing-calculator.tsx"
+    ],
+    "depends_on": [
+      "pj-s17-for-churches-rewrite",
+      "pj-s17-plans-gating-fix"
+    ],
+    "blockers": [
+      "pj-s17-for-churches-rewrite",
+      "pj-s17-plans-gating-fix"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Calculator must read from plans.ts so copy and code cannot drift again."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-enterprise-demo-flow",
+    "sprint": "17",
+    "title": "Enterprise demo booking flow — replace 'contact sales' with a real funnel",
+    "status": "proposed",
+    "assigned_to": "Sales",
+    "priority": "medium",
+    "description": "Design the enterprise qualification flow (audit finding #5): (a) 'starting at' price anchor on the marketing page, (b) lead-capture form (church size, ChMS in use, timeline, denomination), (c) Calendly or similar demo booking, (d) automated follow-up sequence. Sales owns the sequence, qualification fields, and rep-facing brief. Frontend ships the form and booking widget in a paired task.",
+    "files": [
+      "docs/sales/enterprise-demo-flow.md"
+    ],
+    "depends_on": [
+      "pj-s17-tier-redesign"
+    ],
+    "blockers": [
+      "pj-s17-tier-redesign"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with pj-s17-enterprise-demo-ui for the implementation half."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-enterprise-demo-ui",
+    "sprint": "17",
+    "title": "Build /for-churches enterprise demo form + Calendly embed",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Implement the UI for the enterprise demo flow defined by Sales: lead-capture form with validation, submit server action that writes to a `church_enterprise_leads` table (or sends to CRM/Resend), Calendly (or equivalent) embed on the thank-you step. Must send a notification to ADMIN_EMAILS on submit. Paired with pj-s17-enterprise-demo-flow.",
+    "files": [
+      "src/app/(public)/for-churches/demo/page.tsx",
+      "src/app/(public)/for-churches/demo/actions.ts"
+    ],
+    "depends_on": [
+      "pj-s17-enterprise-demo-flow"
+    ],
+    "blockers": [
+      "pj-s17-enterprise-demo-flow"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Schema for church_enterprise_leads needs Database review before build."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-chms-integration-survey",
+    "sprint": "17",
+    "title": "ChMS integration landscape survey — Planning Center, Elvanto, ChurchTrac, Breeze",
+    "status": "proposed",
+    "assigned_to": "Integrations",
+    "priority": "medium",
+    "description": "Audit finding #4. Produce a short spec per ChMS: auth model (OAuth vs API key), member-sync endpoints, rate limits, webhook support, sandbox availability, and the minimum viable integration scope for PrayerJar (import members, sync small groups, push prayer summary back). Output: docs/integrations/chms-landscape.md + a ranked recommendation on which 1–2 to build first.",
+    "files": [
+      "docs/integrations/chms-landscape.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs in parallel with the pricing spine. Output feeds pj-s17-chms-architecture."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-chms-architecture",
+    "sprint": "17",
+    "title": "Architect pluggable ChMS integration layer",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "medium",
+    "description": "Design the integration surface so we can add ChMS providers without forking core sync logic. Outputs: adapter interface, job/webhook model, error-handling and retry strategy, data-mapping contract (church -> PrayerJar members + groups), env-var and secret-storage conventions. No code yet — handoff spec for Backend + Integrations to implement in Sprint 18. Audit finding #4.",
+    "files": [
+      "docs/architecture/chms-integration-layer.md"
+    ],
+    "depends_on": [
+      "pj-s17-chms-integration-survey"
+    ],
+    "blockers": [
+      "pj-s17-chms-integration-survey"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Spec only this sprint — implementation is Sprint 18 scope. Also add a 'We integrate with ChMS X and Y' section to /for-churches once a provider is selected (coordinate with Copywriter)."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-funnel-instrumentation",
+    "sprint": "17",
+    "title": "Conversion funnel instrumentation — /for-churches -> signup -> paid",
+    "status": "proposed",
+    "assigned_to": "Analytics",
+    "priority": "high",
+    "description": "Audit finding #7. Define the church-funnel event spec: for-churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested. Pick the tool (Vercel Analytics + PostHog is already in stack — verify) and write the event dictionary. Analytics owns the spec + dashboard; Frontend fires the events in a paired task. Also produce the weekly funnel review template.",
+    "files": [
+      "docs/analytics/church-funnel-spec.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Without this we cannot measure whether the redesign worked."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-funnel-instrumentation-fe",
+    "sprint": "17",
+    "title": "Wire funnel events into /for-churches, signup, and church dashboard",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Implement the events defined in pj-s17-funnel-instrumentation across the church acquisition flow: pageview, calculator interactions, signup steps, plan activation/upgrade in the church dashboard. Server-side events for plan_activated and plan_upgraded (webhook-driven — do not rely on client).",
+    "files": [
+      "src/app/(public)/for-churches/page.tsx",
+      "src/app/(church)/church/[slug]/dashboard/**",
+      "src/lib/analytics.ts"
+    ],
+    "depends_on": [
+      "pj-s17-funnel-instrumentation"
+    ],
+    "blockers": [
+      "pj-s17-funnel-instrumentation"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with Analytics spec."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-onboarding-audit",
+    "sprint": "17",
+    "title": "Church day-1 onboarding audit + guided setup proposal",
+    "status": "proposed",
+    "assigned_to": "Customer Success",
+    "priority": "medium",
+    "description": "Audit finding #8. Walk a pastor through signup -> first login -> first useful action today. Document what they actually see (empty dashboard? sample data? guided checklist?). Produce: (1) friction log, (2) proposed guided-setup checklist with success criteria per step, (3) suggested first-run sample content strategy. Designer pairs on the UI sketch; build is Sprint 18 scope. Hand off a concrete spec, not open questions.",
+    "files": [
+      "docs/users/church-onboarding-audit.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Designer paired for the wireframe. Implementation in Sprint 18."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-seo-for-churches",
+    "sprint": "17",
+    "title": "SEO + landing page optimization for church acquisition",
+    "status": "proposed",
+    "assigned_to": "Growth",
+    "priority": "low",
+    "description": "Optimize /for-churches and related pages for search acquisition: keyword research ('prayer software for churches', 'church prayer request app', etc.), title/meta/OG tuning, internal link structure from /blog and /about, schema.org Product markup for pricing, comparison landing pages for top competitors ('PrayerJar vs Pushpray'). Produces a Growth brief with prioritized content + on-page changes. Frontend executes the on-page changes; content tasks land in Sprint 18.",
+    "files": [
+      "docs/growth/for-churches-seo-brief.md"
+    ],
+    "depends_on": [
+      "pj-s17-for-churches-build",
+      "pj-s17-competitor-pricing"
+    ],
+    "blockers": [
+      "pj-s17-for-churches-build"
+    ],
+    "notes": [
+      "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs after the rewrite so we are not re-doing meta tags twice."
+    ],
+    "created_at": "2026-04-17",
+    "last_touched": "2026-04-17"
   }
 ]
