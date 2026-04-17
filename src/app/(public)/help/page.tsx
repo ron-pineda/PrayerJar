@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
 
 // metadata can't be exported from a 'use client' component — see generateMetadata pattern
 // For now this is a client component for accordion interactivity
@@ -59,7 +60,7 @@ const SECTIONS = [
     faqs: [
       {
         q: 'How is content moderated?',
-        a: 'Requests go through an AI screening step that flags content that may need pastoral care — things like crisis language, self-harm indicators, or sensitive situations. Flagged requests are reviewed before going fully public.',
+        a: 'Every submitted request is screened for content that violates our community guidelines (abuse, harassment, spam, explicit content). Requests that indicate the submitter may be in crisis surface in-app safety resources immediately — 988, Crisis Text Line, and others — so help is one tap away. Our moderation team also reviews reported content within 24 hours.',
       },
       {
         q: 'What if I see something inappropriate?',
@@ -103,7 +104,7 @@ const SECTIONS = [
     faqs: [
       {
         q: "What church features are available?",
-        a: 'Church plans include a private prayer wall visible only to members, a pastoral dashboard for tracking care needs, AI-flagged alerts for crisis situations, live event prayer walls, and custom branding.',
+        a: `Church plans include a private prayer wall visible only to members, live event prayer walls, and custom branding. The pastoral dashboard — with pastoral notes and prayer team assignments — is included on the ${PASTORAL_DASHBOARD_TIER_NAME} plan and above. See the For Churches page for the full feature-by-tier breakdown.`,
       },
       {
         q: 'How do I set up my church?',

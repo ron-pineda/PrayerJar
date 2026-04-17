@@ -3835,7 +3835,7 @@
     "id": "pj-s17-hotfix-ai-claim",
     "sprint": "17",
     "title": "HOTFIX: reconcile 'AI-Flagged Care' marketing claim with reality",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Architect",
     "priority": "critical",
     "description": "AIEngineer + Legal both flagged: /for-churches and pricing advertise 'AI-Flagged Care' / pastoral crisis surfacing, but `flagPrayer()` is never called in production code, the `prayer_flags` table is never populated, and self-harm prayers are REJECTED via ModerationError in src/services/prayer.service.ts:41-45 instead of being surfaced. Pro-tier 'Flagged Prayers' dashboard is permanently empty. This is FTC §5 deceptive-practice territory plus self-harm liability exposure. Architect decides the path: (a) immediately remove/soften the claim on marketing pages, OR (b) wire flagPrayer() insertion + surface in dashboard before any claim stays up. Output: decision doc + handoff task(s) to Copywriter (path a) or AIEngineer+Backend (path b). Must land before Sprint 17 marketing rewrite ships.",

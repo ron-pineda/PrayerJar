@@ -17,13 +17,13 @@ const FEATURES = [
     icon: '🧭',
     title: 'Pastoral Dashboard',
     description:
-      'See active prayers, pending flags, open assignments, and member activity — all in one place.',
+      'See active prayers, open assignments, and member activity — all in one place.',
   },
   {
-    icon: '🤖',
-    title: 'AI-Flagged Care',
+    icon: '📝',
+    title: 'Pastoral Notes & Assignments',
     description:
-      'Prayers that signal crisis or grief are automatically surfaced to your pastoral care team before anyone falls through the cracks.',
+      'Add private pastoral notes to any request and assign follow-up to the right leader. Notes stay internal to your pastoral team — the submitter never sees them.',
   },
   {
     icon: '📺',
@@ -219,7 +219,7 @@ export default function ForChurchesPage() {
             },
             {
               q: 'How does the pastoral dashboard work?',
-              a: `Admins and pastors on the ${PASTORAL_DASHBOARD_TIER_NAME} plan (and above) get a dedicated dashboard showing active prayers, AI-flagged care items, and prayer team assignments. Members never see the administrative side.`,
+              a: `Admins and pastors on the ${PASTORAL_DASHBOARD_TIER_NAME} plan (and above) get a dedicated dashboard showing active prayers, pastoral notes, and prayer team assignments. Members never see the administrative side.`,
             },
             {
               q: 'What happens at live events?',

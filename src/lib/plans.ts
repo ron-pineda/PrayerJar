@@ -61,7 +61,7 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
       'Unlimited groups',
       'Live event prayer wall',
       'Pastoral dashboard',
-      'AI-flagged prayer care',
+      'Pastoral notes & assignments',
       'Custom branding',
       'Advanced analytics & PDF reports',
       'Priority support',
@@ -96,3 +96,46 @@ export function getPlanByStripePriceId(priceId: string): PlanDefinition | null {
     p => p.stripePriceIdMonthly === priceId || p.stripePriceIdYearly === priceId
   ) ?? null;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Feature → tier constants (single source of truth)                  */
+/* ------------------------------------------------------------------ */
+//
+// These constants exist so that marketing copy (/for-churches, /help,
+// /docs/...) and server-side gating resolve to the SAME tier string.
+// Legal (FTC §5) surfaced an inconsistency where plans.ts said Pro,
+// the /for-churches FAQ said "Starter and Pro", and the dashboard
+// page enforced no plan gate at all. Keep all three in sync by
+// reading from here.
+//
+// If Strategist later moves the Pastoral Dashboard to a different
+// tier (see pj-s17-tier-redesign), edit PASTORAL_DASHBOARD_TIER below
+// and every downstream surface will follow automatically.
+
+/** The minimum plan tier that unlocks the Pastoral Dashboard. */
+export const PASTORAL_DASHBOARD_TIER: PlanTier = 'pro';
+
+/** Ordered from least to most privileged. */
+const TIER_RANK: Record<PlanTier, number> = {
+  free: 0,
+  starter: 1,
+  pro: 2,
+  enterprise: 3,
+};
+
+/**
+ * Returns true if the given plan tier grants access to the Pastoral
+ * Dashboard. Server-side gating code and marketing pages must both
+ * derive their answer from this predicate.
+ */
+export function hasPastoralDashboard(tier: PlanTier): boolean {
+  return TIER_RANK[tier] >= TIER_RANK[PASTORAL_DASHBOARD_TIER];
+}
+
+/**
+ * Human-readable tier name for the Pastoral Dashboard gate, suitable
+ * for rendering directly in marketing copy. Derived from PLANS so
+ * there is exactly one place to edit.
+ */
+export const PASTORAL_DASHBOARD_TIER_NAME: string =
+  PLANS[PASTORAL_DASHBOARD_TIER].name;
