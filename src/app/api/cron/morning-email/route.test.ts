@@ -126,7 +126,7 @@ describe('GET /api/cron/morning-email', () => {
 
   it('skips user when inside quiet hours (0–23 UTC covers all hours)', async () => {
     mockDbResults = [
-      [{ ...ELIGIBLE_USER, quietHoursStart: 0, quietHoursEnd: 23, quietHoursTimezone: 'UTC' }],
+      [{ ...ELIGIBLE_USER, quietHoursStart: 0, quietHoursEnd: 24, quietHoursTimezone: 'UTC' }],
     ];
     const res = await GET(makeRequest('test-secret'));
     expect(res.status).toBe(200);

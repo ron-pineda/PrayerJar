@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { users, prayers, prayerInteractions } from '@/db/schema';
-import { eq, and, isNotNull, gte, sql } from 'drizzle-orm';
+import { eq, and, ne, isNotNull, gte, lt, sql } from 'drizzle-orm';
 import { render } from '@react-email/components';
 import { Resend } from 'resend';
 import * as Sentry from '@sentry/nextjs';
@@ -28,6 +28,12 @@ function yesterdayMidnightUTC(): Date {
   return d;
 }
 
+function todayMidnightUTC(): Date {
+  const d = new Date();
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+}
+
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -37,6 +43,7 @@ export async function GET(req: NextRequest) {
   const verse = getDayVerse();
   const date = formatDate();
   const since = yesterdayMidnightUTC();
+  const until = todayMidnightUTC();
 
   const eligibleUsers = await db
     .select({
@@ -70,6 +77,7 @@ export async function GET(req: NextRequest) {
             and(
               eq(prayers.authorId, user.id),
               gte(prayerInteractions.createdAt, since),
+              lt(prayerInteractions.createdAt, until),
             )
           );
 
@@ -81,6 +89,7 @@ export async function GET(req: NextRequest) {
             and(
               eq(prayers.authorId, user.id),
               gte(prayerInteractions.createdAt, since),
+              lt(prayerInteractions.createdAt, until),
               isNotNull(prayerInteractions.message),
             )
           );
@@ -92,7 +101,7 @@ export async function GET(req: NextRequest) {
             prayerCount: prayers.prayerCount,
           })
           .from(prayers)
-          .where(eq(prayers.status, 'active'))
+          .where(and(eq(prayers.status, 'active'), ne(prayers.authorId, user.id)))
           .orderBy(sql`RANDOM()`)
           .limit(3);
 
