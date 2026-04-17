@@ -7,10 +7,16 @@ describe('verses array', () => {
   });
 
   it('every entry has non-empty text and reference', () => {
-    for (const verse of verses) {
-      expect(verse.text.length, `empty text at index ${verses.indexOf(verse)}`).toBeGreaterThan(0);
-      expect(verse.reference.length, `empty ref at index ${verses.indexOf(verse)}`).toBeGreaterThan(0);
+    for (const [i, verse] of verses.entries()) {
+      expect(verse.text.length, `empty text at index ${i}`).toBeGreaterThan(0);
+      expect(verse.reference.length, `empty ref at index ${i}`).toBeGreaterThan(0);
     }
+  });
+
+  it('has no duplicate references', () => {
+    const refs = verses.map(v => v.reference);
+    const unique = new Set(refs);
+    expect(unique.size).toBe(refs.length);
   });
 });
 
