@@ -4,6 +4,10 @@ import { NextRequest } from 'next/server';
 let mockDbResults: unknown[][] = [];
 let callIndex = 0;
 
+const { mockSendFn } = vi.hoisted(() => ({
+  mockSendFn: vi.fn().mockResolvedValue({ id: 'mock-email-id' }),
+}));
+
 vi.mock('@/db', () => {
   const makeChain = (result: unknown) => ({
     from: vi.fn().mockReturnThis(),
@@ -32,14 +36,11 @@ vi.mock('@/db', () => {
   return { db: dbProxy };
 });
 
-vi.mock('resend', () => {
-  const send = vi.fn().mockResolvedValue({ id: 'mock-email-id' });
-  return {
-    Resend: function MockResend(this: { emails: { send: typeof send } }) {
-      this.emails = { send };
-    },
-  };
-});
+vi.mock('resend', () => ({
+  Resend: function MockResend(this: { emails: { send: typeof mockSendFn } }) {
+    this.emails = { send: mockSendFn };
+  },
+}));
 
 vi.mock('@react-email/components', async (importOriginal) => {
   const original = await importOriginal<typeof import('@react-email/components')>();
@@ -84,6 +85,7 @@ describe('GET /api/cron/morning-email', () => {
     mockDbResults = [];
     callIndex = 0;
     process.env.CRON_SECRET = 'test-secret';
+    mockSendFn.mockResolvedValue({ id: 'mock-email-id' });
   });
 
   it('returns 401 when no authorization header is provided', async () => {
@@ -141,5 +143,44 @@ describe('GET /api/cron/morning-email', () => {
     const res = await GET(makeRequest('test-secret'));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ sent: 0, skipped: 1 });
+  });
+
+  it('counts user as skipped when Resend throws', async () => {
+    mockSendFn.mockRejectedValueOnce(new Error('Rate limit'));
+    mockDbResults = [
+      [ELIGIBLE_USER],
+      [{ count: 1 }],
+      [{ count: 0 }],
+      THREE_PRAYERS,
+    ];
+    const res = await GET(makeRequest('test-secret'));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ sent: 0, skipped: 1 });
+  });
+
+  it('processes users across multiple batches', async () => {
+    // 51 users — ensures the batch loop runs twice
+    const users51 = Array.from({ length: 51 }, (_, i) => ({
+      ...ELIGIBLE_USER,
+      id: `user-${i}`,
+      email: `user${i}@example.com`,
+    }));
+
+    // Each user needs 3 DB calls: prayersReceivedCount, encouragementsCount, prayerRows
+    // Plus 1 for eligibleUsers query = 1 + 51*3 = 154 DB calls total
+    mockDbResults = [
+      users51,                                        // call 0: eligibleUsers
+      ...Array(51).fill(null).flatMap(() => [
+        [{ count: 0 }],                               // prayersReceivedCount
+        [{ count: 0 }],                               // encouragementsCount
+        THREE_PRAYERS,                                 // prayerRows
+      ]),
+    ];
+
+    const res = await GET(makeRequest('test-secret'));
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.sent + body.skipped).toBe(51);
+    expect(body.sent).toBe(51);
   });
 });
