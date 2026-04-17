@@ -13,7 +13,7 @@
       "schedule": "0 10 * * *"
     },
     {
-      "path": "/api/cron/daily-brief",
+      "path": "/api/cron/morning-email",
       "schedule": "0 7 * * *"
     },
     {
