@@ -3835,7 +3835,7 @@
     "id": "pj-s17-hotfix-ai-claim",
     "sprint": "17",
     "title": "HOTFIX: reconcile 'AI-Flagged Care' marketing claim with reality",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Architect",
     "priority": "critical",
     "description": "AIEngineer + Legal both flagged: /for-churches and pricing advertise 'AI-Flagged Care' / pastoral crisis surfacing, but `flagPrayer()` is never called in production code, the `prayer_flags` table is never populated, and self-harm prayers are REJECTED via ModerationError in src/services/prayer.service.ts:41-45 instead of being surfaced. Pro-tier 'Flagged Prayers' dashboard is permanently empty. This is FTC §5 deceptive-practice territory plus self-harm liability exposure. Architect decides the path: (a) immediately remove/soften the claim on marketing pages, OR (b) wire flagPrayer() insertion + surface in dashboard before any claim stays up. Output: decision doc + handoff task(s) to Copywriter (path a) or AIEngineer+Backend (path b). Must land before Sprint 17 marketing rewrite ships.",
@@ -3858,7 +3858,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: hotfix surfaced by AIEngineer + Legal specialist pass. Blocks Sprint 17 marketing rewrite — cannot re-publish the claim.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist agent."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3867,7 +3868,7 @@
     "id": "pj-s17-hotfix-enterprise-claims",
     "sprint": "17",
     "title": "HOTFIX: remove or qualify SSO/SAML/SLA/custom-subdomain Enterprise claims",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Security",
     "priority": "critical",
     "description": "Security audit: Enterprise tier advertises SSO/SAML, 99.9% SLA, dedicated support, and custom subdomain — all with zero backing code. src/lib/auth.ts has only Google OAuth + Resend. `churches.subdomain` is a text column with no middleware routing. 'SLA' and 'dedicated support' have no runbook, no on-call rotation, no support contract. Deceptive advertising if sold to a church today. Security owns the reconciliation: produce a 'real vs advertised' matrix, decide which items get removed vs labeled 'coming soon' vs kept with a defensible definition, then hand the copy changes to Copywriter. Must land before /for-churches rewrite.",
@@ -3883,13 +3884,20 @@
     ],
     "files": [
       "docs/decisions/enterprise-claims-2026-04.md",
-      "src/app/(public)/for-churches/page.tsx"
+      "src/lib/plans.ts",
+      "src/app/(public)/for-churches/page.tsx",
+      "src/app/(public)/docs/paid/page.tsx"
     ],
     "depends_on": [],
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: hotfix from Security specialist pass. Same blocker pattern as hotfix-ai-claim — rewrite cannot ship with current claims.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist agent.",
+      "[2026-04-17] Security: decision doc docs/decisions/enterprise-claims-2026-04.md committed. Matrix: SSO/SAML → COMING SOON (Sprint 19+; no SAML lib, no per-tenant IdP, Workspace hosted_domain not enforced so not keep-with-qualification). Custom subdomain → COMING SOON (column exists, no middleware). SLA → REMOVE (Terms disclaim uptime at terms/page.tsx:33 — direct contradiction). Dedicated support / Dedicated account manager → REMOVE (Pro already advertises Priority support, no tightened definition exists). Custom Branding card reworded to drop subdomain + 'not a third-party platform' phrasing. Copy applied to src/lib/plans.ts, src/app/(public)/for-churches/page.tsx, and src/app/(public)/docs/paid/page.tsx in this commit.",
+      "[2026-04-17] Security: scope expanded beyond task brief — /docs/paid page.tsx had a second hard-coded Enterprise-claim table with the same four claims; edited in same commit. No standalone /pricing page exists; task brief's 'pricing page' referred to the /for-churches tier cards.",
+      "[2026-04-17] Security: Sprint 18+/19+ follow-ups noted in decision doc for Architect — SSO/OIDC per-tenant, subdomain middleware, SLA+runbook+Terms reconciliation, dedicated support channel.",
+      "[2026-04-17] Security: ⚠ ACCEPTANCE-CRITERION #7 OPEN — 'Legal sign-off in task notes'. Security cannot self-sign a Legal pass. The resolutions align with docs/legal/sprint17-church-compliance-2026-04-17.md, but PM should route this doc to the Legal agent for an explicit pass before Reviewer closes the task."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3898,7 +3906,7 @@
     "id": "pj-s17-hotfix-pastoral-consistency",
     "sprint": "17",
     "title": "HOTFIX: reconcile Pastoral Dashboard tier across plans.ts, FAQ, and gating code",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "critical",
     "description": "Legal flagged: `src/lib/plans.ts`, the public FAQ, and the actual server-side gating disagree on which tier gets the Pastoral Dashboard. A paying church could argue FTC §5 deceptive practice. Pick one truth (coordinate with Strategist if the tier assignment is in flux — but reconcile the three sources today even if the eventual tier changes later in Sprint 17). Small mechanical fix once the decision is made. Add a test that asserts plans.ts and FAQ copy stay in sync.",
@@ -3920,7 +3928,14 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: hotfix from Legal specialist pass. This is load-bearing for the whole tier-redesign task — if we don't fix the inconsistency NOW, the rewrite will re-ship the same lie.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist agent.",
+      "[2026-04-17] Backend: findings — the three sources disagreed as follows. plans.ts: 'Pastoral dashboard' listed under Pro only (truth). /for-churches FAQ (src/app/(public)/for-churches/page.tsx:221): 'Admins and pastors on Starter and Pro get a dedicated dashboard…' — WRONG, claimed Starter. FAQ page lives at src/app/(public)/help/page.tsx (not /faq/ as the task spec assumed; no /faq route exists): 'Church plans include… a pastoral dashboard for tracking care needs…' — vague, implied all church plans. Server-side gating at src/app/(church)/church/[slug]/dashboard/page.tsx: NO plan check at all, only role (admin/pastor) — a free-tier church's admin could reach the dashboard. Four distinct claims, one truth.",
+      "[2026-04-17] Backend: changes — (1) src/lib/plans.ts now exports PASTORAL_DASHBOARD_TIER ('pro'), PASTORAL_DASHBOARD_TIER_NAME (derived from PLANS.pro.name), and hasPastoralDashboard(tier) predicate. (2) /for-churches FAQ template-literal interpolates PASTORAL_DASHBOARD_TIER_NAME. (3) /help For-Churches FAQ answer rewritten to explicitly name the tier from PASTORAL_DASHBOARD_TIER_NAME. (4) Dashboard page now awaits getChurchTier() and calls hasPastoralDashboard(tier); free/starter admins get an upgrade prompt instead of the dashboard (this was the FTC-risk drift the task called out to fix). (5) New test file src/lib/plans.test.ts — 11 tests, all passing; covers: tier constant exists, name is derived from PLANS (not hand-typed), advertised tier actually lists the feature bullet, lower tiers do NOT list it, gating predicate returns expected values for all 4 tiers.",
+      "[2026-04-17] Backend: future-proofing — if Strategist reassigns the Pastoral Dashboard in pj-s17-tier-redesign, the change is a ONE-LINE edit to PASTORAL_DASHBOARD_TIER in src/lib/plans.ts. /for-churches FAQ, /help FAQ, and the server-side gate will all follow automatically via import.",
+      "[2026-04-17] Backend: adjacent inconsistencies queued for Strategist/Reviewer, not fixed here (scoped to the 3-file brief) — src/app/(public)/docs/paid/page.tsx:89 and src/app/(public)/docs/churches/page.tsx:78 also mention Pastoral Dashboard tier. Both are currently consistent with plans.ts (Pro) but hard-code the tier names inline; they should also derive from PASTORAL_DASHBOARD_TIER_NAME. Second adjacency — docs/paid page has a hand-coded feature-comparison matrix that will drift if plans.ts changes; consider driving it from PLANS.",
+      "[2026-04-17] Backend: verification — npx vitest run src/lib/plans.test.ts → 11/11 pass. Full suite had 6 pre-existing failures (Stripe/DB mock-wiring in billing.service, checkout route, stripe webhook, event.service, church-platform.service) confirmed present before my changes by git stash rerun; not regressions from this task. typecheck: no errors in any file I touched (plans.ts, plans.test.ts, for-churches/page.tsx, help/page.tsx, dashboard/page.tsx). Still blocked on Legal sign-off per AC #6 — Backend cannot self-sign, routing to PM + Legal for the pass before Reviewer closes.",
+      "[2026-04-17] Backend → QA: ready for QA. Manual test: (a) visit /for-churches, open 'How does the pastoral dashboard work?' FAQ — should say 'Pro plan (and above)', not Starter. (b) visit /help 'For Churches' section, 'What church features are available?' — should explicitly name the Pro plan. (c) as an admin of a free/starter church, navigate to /church/[slug]/dashboard — should see upgrade prompt, not the dashboard. (d) as an admin of a pro/enterprise church, navigate same path — should see the full dashboard."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

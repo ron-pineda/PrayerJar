@@ -92,10 +92,9 @@ const FEATURE_COMPARISON = [
   { feature: 'Custom branding', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Advanced analytics & PDF reports', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Priority support', free: false, starter: false, pro: true, enterprise: true },
-  { feature: 'Custom subdomain', free: false, starter: false, pro: false, enterprise: true },
-  { feature: 'SSO / SAML', free: false, starter: false, pro: false, enterprise: true },
-  { feature: 'SLA', free: false, starter: false, pro: false, enterprise: true },
-  { feature: 'Dedicated account manager', free: false, starter: false, pro: false, enterprise: true },
+  { feature: 'Custom subdomain (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
+  { feature: 'SSO / SAML (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
+  { feature: 'Custom agreement available', free: false, starter: false, pro: false, enterprise: true },
 ];
 
 /* ------------------------------------------------------------------ */

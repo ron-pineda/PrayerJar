@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { PLANS } from '@/lib/plans';
+import { PLANS, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
 import type { PlanTier } from '@/lib/plans';
 
 const FEATURES = [
@@ -35,7 +35,7 @@ const FEATURES = [
     icon: '🎨',
     title: 'Custom Branding',
     description:
-      'Your church logo, colors, and subdomain. PrayerJar becomes your tool, not a third-party platform.',
+      'Upload your church logo and choose accent colors so the private wall, event wall, and welcome messages match your congregation. Custom subdomain coming soon.',
   },
   {
     icon: '📊',
@@ -219,7 +219,7 @@ export default function ForChurchesPage() {
             },
             {
               q: 'How does the pastoral dashboard work?',
-              a: 'Admins and pastors on Starter and Pro get a dedicated dashboard showing active prayers, AI-flagged care items, and prayer team assignments. Members never see the administrative side.',
+              a: `Admins and pastors on the ${PASTORAL_DASHBOARD_TIER_NAME} plan (and above) get a dedicated dashboard showing active prayers, AI-flagged care items, and prayer team assignments. Members never see the administrative side.`,
             },
             {
               q: 'What happens at live events?',
