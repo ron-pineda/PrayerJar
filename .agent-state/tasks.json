@@ -3958,7 +3958,7 @@
     "id": "pj-s17-mrr-dashboard",
     "sprint": "17",
     "title": "MRR / churn / acquisition-attribution dashboard (internal)",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Finance",
     "priority": "high",
     "description": "Finance audit: we have zero visibility into MRR, net revenue retention, churn, or which acquisition channel a paying church came from. We cannot measure whether the Sprint 17 repricing helped or hurt. Must ship before the new prices go live. Scope: (1) MRR + new/expansion/churn breakdown pulled from Stripe + church table, (2) church-level acquisition source tagging (UTM capture at signup, stored on churches row), (3) churn detection — downgrades + cancellations, (4) simple internal dashboard at /admin/finance. Finance owns the spec + dashboard; Backend + Database implement.",
@@ -3981,7 +3981,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed by Finance specialist pass. Must ship before pj-s17-tier-redesign goes live or we'll reprice blind.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed)."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -4027,7 +4028,7 @@
     "id": "pj-s17-dpa-subprocessor",
     "sprint": "17",
     "title": "Data Processing Addendum + sub-processor list (public page)",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Legal",
     "priority": "high",
     "description": "Legal audit: current ToS is a 4-paragraph consumer ToS. No DPA, no sub-processor disclosure, no 501(c)(3) handling. Any church >100 members or any church's lawyer will ask for all three. Deliverables: (1) DPA template at /legal/dpa (click-through accept, stored per-church), (2) public sub-processor list at /legal/subprocessors (Vercel, Resend, Anthropic, Neon/Supabase, Stripe, etc. — with purpose + data categories), (3) `church_legal_acceptances` table, (4) 501(c)(3) verification flow on enterprise signup (upload determination letter, Admin approves).",
@@ -4051,7 +4052,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed by Legal specialist pass. Gate for any church >100 members.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed)."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -4060,7 +4062,7 @@
     "id": "pj-s17-brand-guide-v1",
     "sprint": "17",
     "title": "PrayerJar brand guide v1 — voice, tone, motifs, do/don'ts",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Brand",
     "priority": "medium",
     "description": "Brand audit: no docs/brand/brand-guide.md exists. Churches page sounds like a ChMS vendor, not PrayerJar — voice drift will happen on every new page without a written standard. Scope: (1) brand promise + positioning sentence, (2) voice attributes with do/don't examples, (3) jar motif + amber accent + verse-strip visual conventions, (4) tier-naming convention (Free / Small Church / Growing Church / Network per proposal), (5) 'Most Popular' → 'Best for churches 150–500' language rule, (6) banned phrases list. Deliverable: docs/brand/brand-guide.md + reference examples.",
@@ -4081,7 +4083,9 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed by Brand specialist pass. Unblocks consistent copy across pj-s17-for-churches-rewrite and every future marketing surface.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
+      "[2026-04-17] Brand → Reviewer: docs/brand/brand-guide.md v1 shipped. Covers: brand promise + positioning, primary/secondary audience, 5 voice attributes (warm, reverent, specific, faith-confident, plainspoken) with do/don't pairs, visual motifs (two-amber-systems documented honestly — OKLCH --primary + Tailwind amber-* — with component refs to prayer-jar.tsx, scroll-reveal.tsx, the inline verse strip at page.tsx:164-170, and lucide icons), tier-naming recommendation (Free / Small Church / Growing Church / Network — Strategist owns final call in pj-s17-tier-redesign), 'Best for churches N–M' rule replacing 'Most Popular', 16-entry banned-phrases list (codebase-specific + pre-empt patterns), usage guidance for marketing / in-app / transactional, and 3 reference copy examples (hero, tier-card, feature description). Queued for v2: Designer unifies OKLCH + amber into a single accent-token scale; extract <VerseStrip> component (Frontend); full typography table once Designer lands type system; consolidated 'What This Brand Is NOT' section. Did NOT touch src/lib/plans.ts (Backend's scope in pj-s17-plans-gating-fix) or rewrite /for-churches copy (Copywriter's scope in pj-s17-for-churches-rewrite)."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
