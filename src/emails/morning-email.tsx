@@ -108,7 +108,7 @@ export default function MorningEmail({ userName, date, verse, activity, prayers 
           {/* Prayers */}
           <Section style={{ padding: '20px 32px 28px' }}>
             <Text style={{ fontSize: '10px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', margin: '0 0 14px' }}>
-              3 Prayers Waiting for You
+              3 Prayers to Pray For
             </Text>
 
             {prayers.map((prayer, i) => {
