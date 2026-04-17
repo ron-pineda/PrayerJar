@@ -44,7 +44,11 @@ export function NotificationGroup({
       <ul className="divide-y rounded-xl border overflow-hidden">
         {items.map((n) => {
           const config = TYPE_CONFIG[n.type];
-          const href = n.relatedPrayerId ? `/p/${n.relatedPrayerId}` : null;
+          const href = n.relatedPrayerId
+            ? n.type === 'someone_prayed'
+              ? '/my-prayers'
+              : `/p/${n.relatedPrayerId}`
+            : null;
           const inner = (
             <>
               <span className="mt-0.5 shrink-0">

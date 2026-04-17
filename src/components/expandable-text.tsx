@@ -17,8 +17,12 @@ export function ExpandableText({ text, maxLines = 4, className }: ExpandableText
   useEffect(() => {
     const el = textRef.current;
     if (!el) return;
-    setIsTruncated(el.scrollHeight > el.clientHeight + 1);
-  }, [text]);
+    const check = () => setIsTruncated(el.scrollHeight > el.clientHeight + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [text, expanded]);
 
   return (
     <div className={cn('space-y-1', className)}>
