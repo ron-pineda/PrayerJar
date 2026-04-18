@@ -1,5 +1,8 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-17 pj-s17-for-churches-build Implement updated /for-churches page + pricing calculator component
+Shipped rewritten /for-churches page as server component with metadata export. PricingCalculator (client component) reads all tier data from plans.ts via FREE_CAP/STARTER_CAP constants + ENTERPRISE_THRESHOLD=500; downward-check logic correctly returns 'enterprise' for >500 members. 8-boundary test suite in pricing-calculator.test.ts, 8/8 pass. Enterprise CTA routes to /for-churches/demo in all three files. FaqAccordion ('use client') uses aria-expanded={isOpen} on each button. Zero tsc errors on touched files.
+
 ## 2026-04-18 pj-s17-enterprise-demo-flow Enterprise demo booking flow — replace 'contact sales' with a real funnel
 Sales delivered docs/sales/enterprise-demo-flow.md: 6-signal qualification decision tree (500+ members, multi-site, denomination, SSO need, DPA need, seminary); 10-field lead-capture form with types and required/optional markers; 4-touch automated email sequence (T+0 confirmation to lead, T+1h internal notification to ADMIN_EMAILS, T+24h nudge with Calendly link, T+72h size-personalized feature spotlight) with subject lines and full body copy; rep-facing brief template with qualification rubric and disqualification triggers; warm redirect to Growing Church for disqualified leads; Calendly inline embed recommendation with CALENDLY_URL env var. Price anchor confirmed at 'Starting at $199/mo'.
 
