@@ -260,7 +260,7 @@
 }
 
 .animate-slip-drop {
-  animation: slip-drop 0.85s ease-in forwards;
+  animation: slip-drop 0.85s ease-in both;
 }
 
 .animate-light-escape {

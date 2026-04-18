@@ -161,7 +161,7 @@ export function SlipDropAnimation({ onComplete }: { onComplete: () => void }) {
         height: 22,
         borderRadius: 2,
         background: 'rgba(254,243,199,0.92)',
-        zIndex: 50,
+        zIndex: 100,
         pointerEvents: 'none',
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}
