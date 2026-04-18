@@ -3552,7 +3552,7 @@
     "id": "pj-s17-for-churches-build",
     "sprint": "17",
     "title": "Implement updated /for-churches page + pricing calculator component",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Ship the rewritten /for-churches page with: (1) corrected tier cards, (2) a new sections for Pastoral Care / Prayer Team / Testimony Approval / Small Groups, (3) a pricing calculator (member count -> recommended tier -> price) whose logic matches `src/lib/plans.ts`, (4) pricing FAQ accordion. Structure owned by Strategist; build owned by Frontend. Must match approved tier map exactly.",
@@ -3568,7 +3568,8 @@
     ],
     "files": [
       "src/app/(public)/for-churches/page.tsx",
-      "src/components/pricing-calculator.tsx"
+      "src/components/pricing-calculator.tsx",
+      "src/components/tier-cards-section.tsx"
     ],
     "depends_on": [
       "pj-s17-for-churches-rewrite",
@@ -3581,7 +3582,8 @@
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Calculator must read from plans.ts so copy and code cannot drift again.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: dispatched after blockers cleared."
+      "[2026-04-17] PM: dispatched after blockers cleared.",
+      "[2026-04-17] Frontend: shipped. Page converted to server component with metadata export. Client state extracted into PricingCalculator (src/components/pricing-calculator.tsx) and TierCardsSection (src/components/tier-cards-section.tsx). All tier names, prices, member caps, and feature predicates read from plans.ts — zero hardcoded values. Lucide icons replace emoji. Verse strip (Galatians 6:2), jar motif in hero, 8-feature grid with tier badges, pricing calculator slider, 4 tier cards with fit-statements, 8-item FAQ using native <details>, 3 placeholder testimonials, enterprise section, bottom CTA. No SSO/SAML/SLA claims; subdomain/SSO marked 'coming soon' on Network card per plans.ts. npx tsc --noEmit: 0 errors on touched files. Handing to QA."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

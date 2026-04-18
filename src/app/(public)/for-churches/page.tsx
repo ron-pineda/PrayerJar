@@ -1,79 +1,178 @@
-'use client';
-
-import { useState } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import {
+  MessageSquare,
+  LayoutDashboard,
+  Inbox,
+  UserCheck,
+  CheckSquare,
+  Users,
+  Monitor,
+  BarChart2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { PLANS, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
-import type { PlanTier } from '@/lib/plans';
+import { PrayerJar } from '@/components/prayer-jar';
+import { ScrollReveal } from '@/components/scroll-reveal';
+import { PricingCalculator } from '@/components/pricing-calculator';
+import { TierCardsSection } from '@/components/tier-cards-section';
+import {
+  PLANS,
+  PASTORAL_DASHBOARD_TIER_NAME,
+  PASTORAL_CARE_INBOX_TIER,
+  PRAYER_TEAM_ASSIGNMENTS_TIER,
+  TESTIMONY_APPROVAL_QUEUE_TIER,
+} from '@/lib/plans';
+
+export const metadata: Metadata = {
+  title: 'PrayerJar for Churches & Ministries',
+  description:
+    'PrayerJar is the private prayer wall your congregation already wanted — safe, named, and built around care. Your pastoral team sees who is carrying what. Your members know they are prayed for.',
+};
 
 const FEATURES = [
   {
-    icon: '🛡️',
-    title: 'Private Prayer Wall',
+    icon: MessageSquare,
+    title: 'Two walls, one place — public and private.',
     description:
-      'A dedicated space where only your church members can post and pray. Separate from the public feed.',
+      'Any member can post to the public wall and receive prayer from the broader PrayerJar community. Small Church plans add a private wall that only your congregation sees — a safe room for the requests people carry but do not want to share publicly.',
+    tierLabel: `Free (public); ${PLANS.starter.name} and above (private)`,
   },
   {
-    icon: '🧭',
-    title: 'Pastoral Dashboard',
+    icon: LayoutDashboard,
+    title: 'See every open prayer before the week is over.',
     description:
-      'See active prayers, open assignments, and member activity — all in one place.',
+      'The pastoral dashboard shows you active prayers, who has been followed up with, and what is still open — all in one view. It is where pastoral notes live, too: private observations your care team records but the member never sees.',
+    tierLabel: `${PASTORAL_DASHBOARD_TIER_NAME} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
   },
   {
-    icon: '📝',
-    title: 'Pastoral Notes & Assignments',
+    icon: Inbox,
+    title: 'Someone left a request on Sunday. Know by Monday.',
     description:
-      'Add private pastoral notes to any request and assign follow-up to the right leader. Notes stay internal to your pastoral team — the submitter never sees them.',
+      'The pastoral care inbox surfaces prayer requests your care team has not yet reached — no ranking, no algorithmic sorting, just a list of people waiting. You decide who follows up and when.',
+    tierLabel: `${PLANS[PASTORAL_CARE_INBOX_TIER].name} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
   },
   {
-    icon: '📺',
-    title: 'Live Event Prayer Wall',
+    icon: UserCheck,
+    title: 'Route follow-up to the right person, not just anyone.',
     description:
-      'Display real-time prayer submissions on a screen during services, conferences, or retreats. Moderation console included.',
+      'Assign specific requests to individual members of your care team. Each assignee sees only what is theirs. Leaders see the full board. Nothing falls through because nobody owned it.',
+    tierLabel: `${PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
   {
-    icon: '🎨',
-    title: 'Custom Branding',
+    icon: CheckSquare,
+    title: 'Answered prayers, published carefully.',
     description:
-      'Upload your church logo and choose accent colors so the private wall, event wall, and welcome messages match your congregation. Custom subdomain coming soon.',
+      'When a member marks a prayer answered and writes a testimony, it waits in your approval queue before going live. You read it, decide what belongs on the wall, and post it with one click.',
+    tierLabel: `${PLANS[TESTIMONY_APPROVAL_QUEUE_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
   {
-    icon: '📊',
-    title: 'Analytics & Reports',
+    icon: Users,
+    title: 'Prayer circles for every part of your church.',
     description:
-      'Weekly prayer digests for pastors, engagement metrics, and downloadable PDF reports for leadership.',
+      'Small groups keep requests inside the people who belong to them — a women\'s Bible study sees its own wall, not the whole church\'s. Small Church supports up to five groups. Growing Church removes the cap.',
+    tierLabel: `${PLANS.starter.name} (up to ${PLANS.starter.limits.groups} groups); ${PLANS.pro.name} (unlimited)`,
+  },
+  {
+    icon: Monitor,
+    title: 'Real-time prayer during services and retreats.',
+    description:
+      'Display prayer submissions on a screen as they come in — during a Sunday service, a conference, or a silent retreat. A moderation console lets you approve what shows before it appears publicly.',
+    tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+  },
+  {
+    icon: BarChart2,
+    title: 'Know what your congregation is carrying, week by week.',
+    description:
+      'Weekly digests show which prayers are active, which have been answered, and where engagement is rising or falling. Growing Church adds downloadable PDF reports for leadership meetings.',
+    tierLabel: `Basic analytics — ${PLANS.starter.name} and above; Advanced & PDF — ${PLANS.pro.name} and above`,
   },
 ];
 
-const TIERS: PlanTier[] = ['free', 'starter', 'pro', 'enterprise'];
+const FAQ_ITEMS = [
+  {
+    q: 'Is prayer free for our congregation?',
+    a: 'Yes, always. Any member can submit and pray for requests at no cost. Plans cover pastoral tools and church admin features — not the act of praying.',
+  },
+  {
+    q: 'Is there a trial period?',
+    a: `No timed trial. The Free tier is your on-ramp: up to ${PLANS.free.limits.members} members and ${PLANS.free.limits.groups} groups, with no credit card and no expiration. Upgrade when you need more people, more groups, or pastoral tools.`,
+  },
+  {
+    q: 'What happens when we reach our member cap?',
+    a: 'You will see a notice in your admin panel when you are approaching the limit. New members cannot join until you upgrade or remove inactive accounts. No one currently in your church loses access — only new signups are paused.',
+  },
+  {
+    q: 'How does annual billing work?',
+    a: `Annual plans are billed once per year at 15% off the monthly rate. Small Church is $193.80/yr ($16.15/mo). Growing Church is $499.80/yr ($41.65/mo). You can switch between monthly and annual from your billing settings at any time; changes take effect at the next renewal.`,
+  },
+  {
+    q: 'What if our church grows into a larger plan?',
+    a: 'Upgrade anytime from your billing settings. You are charged a prorated amount for the rest of the current billing period and move to the new plan immediately. Your data, members, and groups all carry over.',
+  },
+  {
+    q: 'Can we migrate from another tool?',
+    a: 'PrayerJar does not currently offer an automated import from other prayer or ChMS tools. Your members can join by invitation link. Prayer history from another system would need to be re-entered manually. If your situation is more complex, contact us before signing up and we can talk through it.',
+  },
+  {
+    q: 'Can we cancel anytime?',
+    a: 'Yes. Cancel from your billing settings. You keep access until the end of the billing period you have already paid for. We do not charge cancellation fees and we do not lock you in.',
+  },
+  {
+    q: 'Do you offer a 501(c)(3) discount?',
+    a: 'Not at this time. Nonprofit pricing is on our roadmap but is not available yet. If this is a deciding factor for your church, reach out at hello@prayerjar.org and flag it — it helps us prioritize.',
+  },
+];
 
-function formatCents(cents: number): string {
-  return `$${(cents / 100).toFixed(0)}`;
-}
+const TESTIMONIAL_SLOTS = [
+  {
+    quote:
+      '[Quote from a pastor or church admin — 1–2 sentences on what changed for their care team or congregation.]',
+    attribution: '— [Name], [Title], [Church Name], [City, State]',
+  },
+  {
+    quote:
+      '[Quote from a pastor or small-group leader — 1–2 sentences on a specific moment or outcome, not a general endorsement.]',
+    attribution: '— [Name], [Title], [Church Name], [City, State]',
+  },
+  {
+    quote:
+      '[Quote from a congregation member or care-team volunteer — 1–2 sentences on what it felt like to be prayed for or to pray for someone.]',
+    attribution: '— [Name], [Church Name]',
+  },
+];
 
 export default function ForChurchesPage() {
-  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
-
   return (
     <main className="min-h-screen">
-      {/* Hero */}
+      {/* ── Hero ────────────────────────────────────────────────────── */}
       <section className="py-20 px-4 text-center max-w-2xl mx-auto">
         <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
           For churches &amp; ministries
         </p>
+
+        {/* Jar motif — once per page, in the hero */}
+        <div className="flex justify-center mb-8">
+          <PrayerJar count={12} />
+        </div>
+
         <h1 className="text-4xl font-bold tracking-tight mb-4">
-          Bring your church&apos;s prayer life online
+          No one falls through the cracks between Sundays.
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto">
-          PrayerJar gives your congregation a safe, private place to share prayer
-          requests — and gives your pastoral team the tools to care for every person in it.
+          PrayerJar is the private prayer wall your congregation already wanted
+          — safe, named, and built around care. Your pastoral team sees who is
+          carrying what. Your members know they are prayed for.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button size="lg" render={<Link href="/church/create" />}>
-            Get Started Free
+            Start your church free
           </Button>
-          <Button size="lg" variant="outline" render={<a href="mailto:hello@prayerjar.org" />}>
-            Talk to Us
+          <Button
+            size="lg"
+            variant="outline"
+            render={<a href="mailto:hello@prayerjar.org" />}
+          >
+            Talk to us
           </Button>
         </div>
         <p className="text-xs text-muted-foreground mt-4">
@@ -81,173 +180,164 @@ export default function ForChurchesPage() {
         </p>
       </section>
 
-      {/* Features */}
-      <section className="pb-20 px-4 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold tracking-tight text-center mb-12">
-          Everything your church needs
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-xl border bg-card p-6 space-y-3">
-              <span className="text-3xl">{f.icon}</span>
-              <h3 className="font-semibold text-base">{f.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Plans */}
-      <section className="pb-20 px-4 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold tracking-tight text-center mb-3">Plans</h2>
-        <p className="text-center text-muted-foreground mb-8 text-sm">
-          Prayer is always free. Plans are for churches that want pastoral tools.
+      {/* ── Verse / Mission Strip ────────────────────────────────────── */}
+      <div className="border-t border-b border-amber-900/20 bg-amber-950/10 py-4 mb-12 max-w-lg mx-auto px-4 text-center">
+        <p className="text-sm italic text-muted-foreground leading-relaxed">
+          &ldquo;Bear one another&apos;s burdens, and so fulfill the law of
+          Christ.&rdquo;
         </p>
+        <p className="text-xs text-primary mt-2">Galatians 6:2</p>
+      </div>
 
-        {/* Billing toggle */}
-        <div className="flex justify-center mb-10">
-          <div className="inline-flex rounded-lg border p-1 gap-1">
-            <button
-              onClick={() => setBilling('monthly')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                billing === 'monthly'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBilling('yearly')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                billing === 'yearly'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Yearly
-              <span className="ml-1.5 text-xs text-green-600 dark:text-green-400 font-semibold">
-                Save ~20%
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {TIERS.map((tier) => {
-            const plan = PLANS[tier];
-            const isFree = tier === 'free';
-            const isEnterprise = tier === 'enterprise';
-            const price =
-              billing === 'yearly' ? plan.yearlyPriceCents / 12 : plan.monthlyPriceCents;
-
+      {/* ── Features Grid ────────────────────────────────────────────── */}
+      <section className="pb-20 px-4 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold tracking-tight text-center mb-2">
+          What your pastoral team gets
+        </h2>
+        <p className="text-center text-sm text-muted-foreground mb-12">
+          Every feature below is available now — no waitlist, no setup fees.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {FEATURES.map((f, i) => {
+            const Icon = f.icon;
             return (
-              <div
-                key={tier}
-                className={`rounded-xl border bg-card p-6 flex flex-col gap-4 ${
-                  tier === 'pro' ? 'border-primary ring-2 ring-primary/20' : ''
-                }`}
-              >
-                <div>
-                  {tier === 'pro' && (
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary text-primary-foreground mb-2 inline-block">
-                      Most Popular
-                    </span>
-                  )}
-                  <h3 className="text-base font-semibold">{plan.name}</h3>
-                  <p className="text-2xl font-bold mt-1">
-                    {isEnterprise ? (
-                      <span className="text-base font-semibold">Custom</span>
-                    ) : isFree ? (
-                      'Free'
-                    ) : (
-                      <>
-                        {formatCents(price)}
-                        <span className="text-sm font-normal text-muted-foreground">/mo</span>
-                        {billing === 'yearly' && (
-                          <span className="block text-xs text-muted-foreground font-normal">
-                            billed yearly
-                          </span>
-                        )}
-                      </>
-                    )}
+              <ScrollReveal key={f.title} delay={i * 80}>
+                <div className="rounded-xl border bg-card p-6 space-y-3 h-full">
+                  <Icon className="h-6 w-6 text-primary" />
+                  <h3 className="font-semibold text-base leading-snug">
+                    {f.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {f.description}
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium pt-1">
+                    {f.tierLabel}
                   </p>
                 </div>
-
-                <ul className="space-y-1.5 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="text-sm text-muted-foreground flex gap-2">
-                      <span className="text-primary mt-0.5 shrink-0">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                {isEnterprise ? (
-                  <Button variant="outline" render={<a href="mailto:hello@prayerjar.org" />}>
-                    Contact Us
-                  </Button>
-                ) : isFree ? (
-                  <Button variant="outline" render={<Link href="/church/create" />}>
-                    Get Started
-                  </Button>
-                ) : (
-                  <Button render={<Link href="/church/create" />}>
-                    Get Started
-                  </Button>
-                )}
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ── Pricing Calculator ───────────────────────────────────────── */}
+      <section className="pb-20 px-4 max-w-2xl mx-auto">
+        <ScrollReveal>
+          <h2 className="text-2xl font-bold tracking-tight text-center mb-3">
+            Find the right plan
+          </h2>
+          <p className="text-center text-sm text-muted-foreground mb-8">
+            Move the slider to see which plan fits your church.
+          </p>
+          <PricingCalculator />
+        </ScrollReveal>
+      </section>
+
+      {/* ── Tier Cards ───────────────────────────────────────────────── */}
+      <section className="pb-20 px-4 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold tracking-tight text-center mb-3">
+          Plans
+        </h2>
+        <p className="text-center text-sm text-muted-foreground mb-10">
+          Prayer is always free. Pastoral tools start at $
+          {PLANS.starter.monthlyPriceCents / 100} a month.
+        </p>
+        <TierCardsSection />
+      </section>
+
+      {/* ── Pricing FAQ ──────────────────────────────────────────────── */}
       <section className="pb-20 px-4 max-w-2xl mx-auto">
         <h2 className="text-xl font-bold tracking-tight mb-8 text-center">
           Common questions
         </h2>
-        <div className="space-y-6">
-          {[
-            {
-              q: 'Is prayer still free for our congregation?',
-              a: 'Yes, always. Any member of your church can submit prayer requests and pray for others at no cost. Plans cover pastoral tools and church admin features only.',
-            },
-            {
-              q: 'Can we try before committing to a paid plan?',
-              a: 'The free tier is fully functional — private wall, member management, and basic notifications. No credit card required to get started.',
-            },
-            {
-              q: 'How does the pastoral dashboard work?',
-              a: `Admins and pastors on the ${PASTORAL_DASHBOARD_TIER_NAME} plan (and above) get a dedicated dashboard showing active prayers, pastoral notes, and prayer team assignments. Members never see the administrative side.`,
-            },
-            {
-              q: 'What happens at live events?',
-              a: 'Pro plan includes a live prayer wall you can display on a screen during services or conferences. Submissions appear in real time and a moderation console lets you approve what shows publicly.',
-            },
-            {
-              q: 'Can we cancel anytime?',
-              a: "Yes. Cancel from your billing settings at any time. You keep access until the end of your billing period. We don't lock you in.",
-            },
-          ].map(({ q, a }) => (
-            <div key={q} className="border-b pb-6 last:border-0">
-              <p className="font-medium text-sm mb-2">{q}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{a}</p>
-            </div>
+        <div className="space-y-1">
+          {FAQ_ITEMS.map((item, i) => (
+            <ScrollReveal key={item.q} delay={i * 80}>
+              <details className="group border-b last:border-0">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 py-4 text-sm font-medium select-none">
+                  {item.q}
+                  <span className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180">
+                    ▾
+                  </span>
+                </summary>
+                <p className="pb-4 text-sm text-muted-foreground leading-relaxed">
+                  {item.a}
+                </p>
+              </details>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
-      {/* Bottom CTA */}
+      {/* ── Social Proof Strip ───────────────────────────────────────── */}
+      <section className="pb-20 px-4 max-w-5xl mx-auto">
+        <h2 className="text-xl font-bold tracking-tight text-center mb-8">
+          Churches using PrayerJar
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {TESTIMONIAL_SLOTS.map((slot, i) => (
+            <ScrollReveal key={i} delay={i * 80}>
+              <div className="rounded-xl border bg-card p-6 space-y-3 h-full flex flex-col">
+                <p className="text-sm text-muted-foreground italic leading-relaxed flex-1">
+                  &ldquo;{slot.quote}&rdquo;
+                </p>
+                <p className="text-xs text-muted-foreground font-medium">
+                  {slot.attribution}
+                </p>
+                <p className="text-xs text-amber-500 font-semibold">
+                  [PLACEHOLDER — needs real church quote]
+                </p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Enterprise / Network Contact Section ─────────────────────── */}
+      <section className="pb-20 px-4 max-w-2xl mx-auto text-center">
+        <ScrollReveal>
+          <div className="rounded-xl border bg-card p-8 space-y-4">
+            <h2 className="text-xl font-bold tracking-tight">
+              Network plans — starting at $199 / mo
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              For multi-site churches, denominations, and networks that have
+              outgrown a single-church account.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              A Network plan is a bespoke agreement. You get unlimited
+              everything, volume pricing, and a contract that fits how your
+              denomination actually operates. Custom subdomain and SSO are on
+              the roadmap — we can discuss timeline when we talk.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              We do not put Network through self-serve checkout. We want to
+              understand your situation first.
+            </p>
+            <Button
+              size="lg"
+              render={<a href="/church/enterprise-demo" />}
+            >
+              Book a call
+            </Button>
+          </div>
+        </ScrollReveal>
+      </section>
+
+      {/* ── Bottom CTA ───────────────────────────────────────────────── */}
       <section className="pb-20 px-4 text-center">
-        <div className="max-w-md mx-auto rounded-xl border bg-card p-8 space-y-4">
-          <p className="text-lg font-semibold">Ready to get started?</p>
+        <div className="max-w-md mx-auto rounded-xl border bg-amber-950/10 border-amber-900/20 p-8 space-y-4">
+          <p className="text-lg font-semibold">Ready to start?</p>
           <p className="text-sm text-muted-foreground">
-            Set up your church in minutes. Free tier, no card required.
+            Prayer is always free. Pastoral tools start at $
+            {PLANS.starter.monthlyPriceCents / 100} a month.
           </p>
           <Button size="lg" render={<Link href="/church/create" />}>
-            Create Your Church
+            Start your church free
           </Button>
+          <p className="text-xs text-muted-foreground">
+            No credit card required. Cancel anytime.
+          </p>
         </div>
       </section>
     </main>
