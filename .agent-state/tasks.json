@@ -3575,10 +3575,7 @@
       "pj-s17-for-churches-rewrite",
       "pj-s17-plans-gating-fix"
     ],
-    "blockers": [
-      "pj-s17-for-churches-rewrite",
-      "pj-s17-plans-gating-fix"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Calculator must read from plans.ts so copy and code cannot drift again.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
@@ -3589,7 +3586,7 @@
       "[2026-04-17] Reviewer: APPROVED after targeted rework. All 4 rework items resolved: (1) recommendTier() uses FREE_CAP/STARTER_CAP from PLANS and ENTERPRISE_THRESHOLD=500 constant — downward-check correctly returns 'enterprise' for >500 (mental run: 600>500 → 'enterprise'); (2) pricing-calculator.test.ts exists with 8 boundary tests, all pass (npx vitest run confirms 8/8); (3) /church/enterprise-demo grep returns zero hits — /for-churches/demo confirmed in pricing-calculator.tsx:52, tier-cards-section.tsx:64, page.tsx:304; (4) faq-accordion.tsx is 'use client' with aria-expanded={isOpen} on each button. All other ACs passed previously."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17T22:55:00.000Z"
+    "last_touched": "2026-04-18T02:52:13.069Z"
   },
   {
     "id": "pj-s17-enterprise-demo-flow",
@@ -3629,7 +3626,7 @@
     "id": "pj-s17-enterprise-demo-ui",
     "sprint": "17",
     "title": "Build /for-churches enterprise demo form + Calendly embed",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Implement the UI for the enterprise demo flow defined by Sales: lead-capture form with validation, submit server action that writes to a `church_enterprise_leads` table (or sends to CRM/Resend), Calendly (or equivalent) embed on the thank-you step. Must send a notification to ADMIN_EMAILS on submit. Paired with pj-s17-enterprise-demo-flow.",
@@ -3654,7 +3651,8 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Schema for church_enterprise_leads needs Database review before build.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: final wave — all blockers cleared."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3693,7 +3691,7 @@
     "id": "pj-s17-chms-architecture",
     "sprint": "17",
     "title": "Architect pluggable ChMS integration layer",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Architect",
     "priority": "medium",
     "description": "Design the integration surface so we can add ChMS providers without forking core sync logic. Outputs: adapter interface, job/webhook model, error-handling and retry strategy, data-mapping contract (church -> PrayerJar members + groups), env-var and secret-storage conventions. No code yet — handoff spec for Backend + Integrations to implement in Sprint 18. Audit finding #4.",
@@ -3717,7 +3715,8 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Spec only this sprint — implementation is Sprint 18 scope. Also add a 'We integrate with ChMS X and Y' section to /for-churches once a provider is selected (coordinate with Copywriter).",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: final wave — all blockers cleared."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3757,7 +3756,7 @@
     "id": "pj-s17-funnel-instrumentation-fe",
     "sprint": "17",
     "title": "Wire funnel events into /for-churches, signup, and church dashboard",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Implement the events defined in pj-s17-funnel-instrumentation across the church acquisition flow: pageview, calculator interactions, signup steps, plan activation/upgrade in the church dashboard. Server-side events for plan_activated and plan_upgraded (webhook-driven — do not rely on client).",
@@ -3783,7 +3782,8 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with Analytics spec.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: final wave — all blockers cleared."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3827,7 +3827,7 @@
     "id": "pj-s17-seo-for-churches",
     "sprint": "17",
     "title": "SEO + landing page optimization for church acquisition",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Growth",
     "priority": "low",
     "description": "Optimize /for-churches and related pages for search acquisition: keyword research ('prayer software for churches', 'church prayer request app', etc.), title/meta/OG tuning, internal link structure from /blog and /about, schema.org Product markup for pricing, comparison landing pages for top competitors ('PrayerJar vs Pushpray'). Produces a Growth brief with prioritized content + on-page changes. Frontend executes the on-page changes; content tasks land in Sprint 18.",
@@ -3851,7 +3851,8 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs after the rewrite so we are not re-doing meta tags twice.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: final wave — all blockers cleared."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -4021,7 +4022,7 @@
     "id": "pj-s17-audit-log",
     "sprint": "17",
     "title": "Church audit log — capture admin + pastoral actions",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Security",
     "priority": "high",
     "description": "Security audit: no audit logs anywhere in the codebase. Any enterprise church will ask for them during procurement. Scope: (1) `audit_events` table keyed by church_id + actor_user_id + action + target_type + target_id + metadata + timestamp, (2) write-points for member add/remove, role change, prayer delete, plan change, (3) read-only admin view at /church/{slug}/admin/audit, (4) 90-day retention on Starter, 1-year on Pro, 3-year on Enterprise (tie to plans.ts).",
@@ -4049,7 +4050,8 @@
     ],
     "notes": [
       "[2026-04-17] PM: proposed by Security specialist pass. Foundational for enterprise-tier credibility.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: final wave — all blockers cleared."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
