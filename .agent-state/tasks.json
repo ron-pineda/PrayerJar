@@ -3958,7 +3958,7 @@
     "id": "pj-s17-mrr-dashboard",
     "sprint": "17",
     "title": "MRR / churn / acquisition-attribution dashboard (internal)",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Finance",
     "priority": "high",
     "description": "Finance audit: we have zero visibility into MRR, net revenue retention, churn, or which acquisition channel a paying church came from. We cannot measure whether the Sprint 17 repricing helped or hurt. Must ship before the new prices go live. Scope: (1) MRR + new/expansion/churn breakdown pulled from Stripe + church table, (2) church-level acquisition source tagging (UTM capture at signup, stored on churches row), (3) churn detection — downgrades + cancellations, (4) simple internal dashboard at /admin/finance. Finance owns the spec + dashboard; Backend + Database implement.",
@@ -3982,7 +3982,8 @@
     "notes": [
       "[2026-04-17] PM: proposed by Finance specialist pass. Must ship before pj-s17-tier-redesign goes live or we'll reprice blind.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed)."
+      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
+      "[2026-04-17] Backend: phase 1 committed (2bf0808) — attribution migration + MRR lib + Stripe webhook + 20/20 tests. /admin/finance dashboard UI is phase 2, queued."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -4028,7 +4029,7 @@
     "id": "pj-s17-dpa-subprocessor",
     "sprint": "17",
     "title": "Data Processing Addendum + sub-processor list (public page)",
-    "status": "in-progress",
+    "status": "approved",
     "assigned_to": "Legal",
     "priority": "high",
     "description": "Legal audit: current ToS is a 4-paragraph consumer ToS. No DPA, no sub-processor disclosure, no 501(c)(3) handling. Any church >100 members or any church's lawyer will ask for all three. Deliverables: (1) DPA template at /legal/dpa (click-through accept, stored per-church), (2) public sub-processor list at /legal/subprocessors (Vercel, Resend, Anthropic, Neon/Supabase, Stripe, etc. — with purpose + data categories), (3) `church_legal_acceptances` table, (4) 501(c)(3) verification flow on enterprise signup (upload determination letter, Admin approves).",
@@ -4053,7 +4054,8 @@
     "notes": [
       "[2026-04-17] PM: proposed by Legal specialist pass. Gate for any church >100 members.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed)."
+      "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
+      "[2026-04-17] PM: agent hit usage limit mid-task. Partial work committed (089587f) — subprocessors page + DPA template + migration 0027. Remaining: /legal/dpa public page + 501(c)(3) flow. Reset to approved for re-dispatch."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
