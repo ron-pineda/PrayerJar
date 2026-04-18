@@ -4290,7 +4290,7 @@
     "id": "pj-s18-04-security-encrypt-review",
     "sprint": "18",
     "title": "Security review: encrypt.ts + key rotation plan",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Security",
     "priority": "high",
     "description": "Review src/lib/encrypt.ts for crypto correctness. Specifically verify: (1) GCM mode with 12-byte IV; (2) authTag verified on decrypt; (3) IV never reused for the same key; (4) key length validated (32 bytes); (5) constant-time comparison for authTag (handled by Node crypto); (6) no silent error paths. Also produce a key rotation plan: how CHMS_CONFIG_ENCRYPTION_KEY rotates without invalidating existing chms_config values. Options: dual-key decrypt (try old, fall back to new); one-time migration on deploy; re-encrypt background job. Recommend one, document why.",
@@ -4307,7 +4307,8 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] PM: Gate for Integrations. No adapter work starts until this is approved."
+      "[2026-04-18] PM: Gate for Integrations. No adapter work starts until this is approved.",
+      "[2026-04-18] Security: PASS — all 8 crypto checklist items verified. GCM/12-byte IV correct, authTag enforced by decipher.final(), fresh IV per call, dual key-length validation at module load, no custom authTag comparison, no silent error paths, no key material in errors, algorithm hardcoded. Key rotation plan: Option B (one-time re-encryption migration on deploy) chosen — <50 churches at launch makes migration trivial, and Option B is the only approach that eliminates the old key during incident response (Option A would keep a compromised key live). Implementation sketch included in review doc. Integrations agent unblocked for pj-s18-05."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"

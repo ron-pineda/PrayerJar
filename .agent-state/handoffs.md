@@ -1,3 +1,4 @@
+[2026-04-18] Security → PM: pj-s18-04-security-encrypt-review PASS — Integrations unblocked for pj-s18-05 (PCO OAuth adapter).
 [2026-04-18] Backend → Security: pj-s18-03-encrypt-lib ready for review — AES-256-GCM encrypt.ts + 8 tests passing. Security sign-off (pj-s18-04) required before Integrations can use it.
 [2026-04-18] Database → PM: pj-s18-02-schema-migrations ready for review — 0030_chms_integration.sql + schema.ts updated. TypeScript clean.
 [2026-04-17] Reviewer → Architect: pj-s17-enterprise-demo-ui NEEDS-REWORK — demo_requested fires twice: server action fires trackDemoRequested() (correct, per spec §3.8 server-only), demo-form.tsx line 87 also fires raw track('demo_requested', ...) client-side with wrong property names. Remove client-side track() call from demo-form.tsx.
