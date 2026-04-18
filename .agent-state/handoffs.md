@@ -146,6 +146,7 @@
 [2026-04-15] Backend Engineer → Reviewer: pj-s12-fix-sse-polling + pj-s12-fix-double-interaction — SSE praying-now route deleted (no references found, polling already in use); double-interaction already fixed in current code (handlePrayed is local-only, action called once)
 [2026-04-15] Reviewer → PM: Sprint 12 complete — all 5 tasks done. pj-s12-fix-sse-polling, pj-s12-fix-double-interaction, pj-s12-claim-link approved. pj-s12-prayer-deletion and pj-s12-fire-forget-side-effects confirmed already implemented.
 
+[2026-04-17] Sales → Reviewer: pj-s17-enterprise-demo-flow — docs/sales/enterprise-demo-flow.md complete. Qualification threshold (500+ members OR multi-site OR denomination OR SSO/DPA need), 10-field lead form, 4-touch automated email sequence, rep brief template, disqualification path to Growing Church, Calendly inline embed spec with CALENDLY_URL env var. Price anchor: "Starting at $199/mo".
 [2026-04-17] PM → Architect: pj-s17-hotfix-ai-claim — decide path a (kill claim) vs b (build flagging) for AI-Flagged Care marketing claim
 [2026-04-17] PM → Security: pj-s17-hotfix-enterprise-claims — produce real-vs-advertised matrix for SSO/SAML/SLA/subdomain, hand copy changes to Copywriter
 [2026-04-17] PM → Backend: pj-s17-hotfix-pastoral-consistency — reconcile Pastoral Dashboard tier across plans.ts + FAQ + gating code
