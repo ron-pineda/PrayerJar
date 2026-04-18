@@ -4718,7 +4718,7 @@
     "id": "pj-s19-02",
     "sprint": "19",
     "title": "Homepage service personal stats + church query",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Add getMyIntercessionsCount, getMyAnsweredCount, getUserChurch. Update getHomepageData. Add homepage.service.test.ts.",
@@ -4727,8 +4727,13 @@
       "src/services/homepage.service.test.ts"
     ],
     "blockers": [],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "Added getMyIntercessionsCount, getMyAnsweredCount, getUserChurch to homepage.service.ts",
+      "Fixed: getUserChurch uses orderBy(joinedAt) for deterministic multi-church ordering",
+      "6/6 tests pass. Full suite 358/363 (5 pre-existing billing failures)",
+      "Reviewer approved — commit df1ff4b"
+    ],
+    "last_touched": "2026-04-18T02:00:00.000Z"
   },
   {
     "id": "pj-s19-03",
