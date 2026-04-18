@@ -43,6 +43,14 @@
     {
       "path": "/api/cron/audit-cleanup",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/chms-sync-runner",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/chms-full-sync-scheduler",
+      "schedule": "0 3 * * *"
     }
   ]
 }
