@@ -115,6 +115,20 @@ export default async function DpaPage({ searchParams }: Props) {
             <li>User-generated content: prayer requests, testimonies, comments, pastoral notes, attached images or audio</li>
             <li>Contact metadata: prayer interactions (&quot;I prayed&quot;), partnership requests</li>
             <li>Device and usage data: IP address (limited retention), approximate country, browser/device type</li>
+            <li>
+              <strong>ChMS-integrated data (opt-in per church).</strong> When a Church elects to
+              connect a supported Church Management System (e.g., Planning Center), PrayerJar
+              will process member rosters, contact details, and small-group membership imported
+              from the ChMS via OAuth-scoped API access. PrayerJar may optionally push a weekly
+              prayer-activity summary back to the ChMS person record (e.g., as a Note) when the
+              Church enables that feature. No ChMS data is imported without the Church&apos;s
+              explicit connection step, and the connection can be revoked by the Church at any
+              time. See the{' '}
+              <Link href="/legal/subprocessors" className="text-primary underline underline-offset-4">
+                Sub-processor List
+              </Link>{' '}
+              for the current ChMS integration partner(s).
+            </li>
           </ul>
           <p>
             <strong>Special-category / sensitive data.</strong> Prayer content frequently contains

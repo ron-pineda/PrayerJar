@@ -17,8 +17,8 @@ export interface Subprocessor {
   dpaUrl: string;
 }
 
-export const SUBPROCESSOR_LIST_VERSION = "v1.0-2026-04-17";
-export const SUBPROCESSOR_LIST_LAST_UPDATED = "2026-04-17";
+export const SUBPROCESSOR_LIST_VERSION = "v1.1-2026-04-18";
+export const SUBPROCESSOR_LIST_LAST_UPDATED = "2026-04-18";
 
 export const SUBPROCESSORS: Subprocessor[] = [
   {
@@ -89,6 +89,15 @@ export const SUBPROCESSORS: Subprocessor[] = [
       "Search queries (e.g., city/zip), approximate device location if provided. No personal account data.",
     region: "United States (global)",
     dpaUrl: "https://cloud.google.com/terms/data-processing-addendum",
+  },
+  {
+    name: "Planning Center Online, Inc.",
+    purpose:
+      "Optional Church Management Software (ChMS) integration. When a church admin connects PrayerJar to their Planning Center account, PrayerJar reads member rosters and small-group membership over OAuth-scoped API access. Connection is opt-in per church.",
+    dataCategories:
+      "Inbound from PCO to PrayerJar: member names, primary email addresses, phone numbers (where the church stores them), membership status, small-group membership. Outbound from PrayerJar to PCO: weekly prayer-activity summary written to the person's Notes record (only for churches that enable the push-back feature).",
+    region: "United States",
+    dpaUrl: "https://www.planningcenter.com/legal/dpa",
   },
   {
     name: "Apple Push Notification service & Google / Firebase Cloud Messaging",

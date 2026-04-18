@@ -341,6 +341,24 @@
     "name": "Church Funnel & Pricing",
     "features": 13,
     "size": "L",
-    "status": "planned"
+    "status": "done"
+  },
+  {
+    "id": "18",
+    "phase": 18,
+    "name": "ChMS Integration (Planning Center)",
+    "features": 16,
+    "size": "XL",
+    "status": "active",
+    "notes": "Sprint 18 kicked off 2026-04-18. 16 tasks proposed in tasks.json (pj-s18-01 through pj-s18-16). Gate task: pj-s18-01 (Legal PCO sub-processor). Planning Center #1 per docs/integrations/chms-landscape.md."
+  },
+  {
+    "id": "19",
+    "phase": 19,
+    "name": "UI Modernization",
+    "features": 0,
+    "size": "M",
+    "status": "planned",
+    "notes": "Use Claude Design (Anthropic Labs) to prototype /for-churches + homepage directions before committing sprint capacity. Queued after ChMS integration — avoid UI rework when ChMS features land."
   }
 ]
