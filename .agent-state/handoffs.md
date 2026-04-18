@@ -1,3 +1,4 @@
+[2026-04-18] Analytics → PM: pj-s18-12 done — trackChmsConnectionStarted/Completed/Failed added to analytics.server.ts + fired from connect/callback/runner. church-funnel-spec.md updated.
 [2026-04-18] Frontend → PM: pj-s18-11-frontend-connect-ui ready for review — integrations settings page + ChmsConnectCard (connected/disconnected states, sync status badge, Sync Now, Disconnect). TypeScript clean.
 [2026-04-18] Backend → PM: pj-s18-10-sync-jobs-runner ready for review — runner + full-sync scheduler, 8 tests, backoff/dead-letter/Sentry all implemented.
 [2026-04-18] Integrations → PM: pj-s18-09-push-summary ready for review — pushPrayerSummary with 403/404 graceful degradation, 3 new tests (14 total in adapter).

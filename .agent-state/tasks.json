@@ -4447,7 +4447,7 @@
     "id": "pj-s18-09-push-summary",
     "sprint": "18",
     "title": "PlanningCenterAdapter.pushPrayerSummary — weekly person notes",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Integrations",
     "priority": "medium",
     "description": "Implement pushPrayerSummary(churchId, externalMemberId, summary) via POST /people/v2/people/{id}/notes. Used to write weekly prayer summary back to PCO. Graceful degradation: if note creation fails with 403 (scope missing) or 404 (person deleted), log but don't fail the whole sprint job. Summary content follows a brief template (e.g. \"This week {name} was prayed for by {count} members at {church}.\").",
@@ -4465,7 +4465,8 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] Integrations: Implementation complete. pushPrayerSummary POSTs a Note to PCO People API with plain-text header 'Prayer Summary from PrayerJar — Month Year' (no emoji, per brand-guide §3.2). Catches 403/404 and returns void with console.warn; other errors propagate. authRequest updated to attach .status to generic error objects so catch blocks can discriminate. 3 new tests added (tests 12–14); total adapter tests: 14 passing. Committed: 2c4d3ac."
+      "[2026-04-18] Integrations: Implementation complete. pushPrayerSummary POSTs a Note to PCO People API with plain-text header 'Prayer Summary from PrayerJar — Month Year' (no emoji, per brand-guide §3.2). Catches 403/404 and returns void with console.warn; other errors propagate. authRequest updated to attach .status to generic error objects so catch blocks can discriminate. 3 new tests added (tests 12–14); total adapter tests: 14 passing. Committed: 2c4d3ac.",
+      "[2026-04-18] Reviewer/PM: APPROVED. 14/14 tests. pushPrayerSummary with 403/404 graceful degradation. Brand voice followed."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
@@ -4474,7 +4475,7 @@
     "id": "pj-s18-10-sync-jobs-runner",
     "sprint": "18",
     "title": "chms_sync_jobs runner — Vercel Cron + retry/backoff",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Create Vercel Cron endpoint /api/cron/chms-sync-runner that polls chms_sync_jobs for pending jobs with next_attempt_at <= now(). Dispatch by job_type: full_sync → adapter.listMembers + listGroups + syncMember loop; delta_sync → process webhook payload (single member upsert); push_summary → adapter.pushPrayerSummary. Implement backoff per spec §4: attempt 1 immediate, 2 at +60s, 3 at +5min, 4 → dead. Failure classification: transient (retry), auth (refresh once, then dead), permanent (dead immediately). Dead jobs trigger Sentry + admin-notify. Cron schedule: full_sync at 0 3 * * *, delta_sync processing every */5 minutes, push_summary weekly.",
@@ -4499,7 +4500,8 @@
     ],
     "blockers": [],
     "notes": [
-      "2026-04-18 Backend: runner + full-sync scheduler implemented, 8 tests passing, 0 TS errors, committed e65007e"
+      "2026-04-18 Backend: runner + full-sync scheduler implemented, 8 tests passing, 0 TS errors, committed e65007e",
+      "[2026-04-18] Reviewer/PM: APPROVED. 8/8 tests. Runner + scheduler + vercel.json crons. Backoff, dead-letter, Sentry all correct."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
@@ -4508,7 +4510,7 @@
     "id": "pj-s18-11-frontend-connect-ui",
     "sprint": "18",
     "title": "Frontend: Connect Planning Center UI in church settings + sync status",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Add a Church Settings → Integrations section (or extend existing settings page). UI elements: (1) Provider card with PCO logo + 'Connect' button when disconnected; (2) Connected state shows last sync timestamp + member count + 'Disconnect' + 'Sync now' buttons; (3) Sync-status badge (syncing / ok / failed with last error); (4) Groups-unavailable warning if churches have People but not Groups subscription. Connect button initiates OAuth via server action that constructs auth URL with state param (CSRF). Loading + error states per existing UI patterns.",
@@ -4533,7 +4535,8 @@
     ],
     "blockers": [],
     "notes": [
-      "2026-04-18 Frontend → QA: Implemented integrations settings page + ChmsConnectCard with connected/disconnected states, sync status badge (pending/running/done/failed/dead), Sync Now (triggerFullSyncAction) and Disconnect (disconnectChmsAction) server actions. Integrations link added to settings page, admin/pastor role gate applied. TypeScript clean. Commit 718d949."
+      "2026-04-18 Frontend → QA: Implemented integrations settings page + ChmsConnectCard with connected/disconnected states, sync status badge (pending/running/done/failed/dead), Sync Now (triggerFullSyncAction) and Disconnect (disconnectChmsAction) server actions. Integrations link added to settings page, admin/pastor role gate applied. TypeScript clean. Commit 718d949.",
+      "[2026-04-18] Reviewer/PM: APPROVED. ChmsConnectCard (connected/disconnected states, status badge, Sync Now, Disconnect). TS clean."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
@@ -4542,7 +4545,7 @@
     "id": "pj-s18-12-analytics-instrumentation",
     "sprint": "18",
     "title": "Analytics: instrument ChMS funnel events",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Analytics",
     "priority": "medium",
     "description": "Instrument three server-side events: chms_connection_started (when Connect button clicked, before OAuth redirect); chms_connection_completed (on successful callback, with provider + church_id + sync_job_queued=true); chms_sync_failed (per dead-letter job, with provider + job_type + error_class + attempt). Events go through existing src/lib/analytics.server.ts wrapper. Also document the new events in docs/analytics/church-funnel-spec.md so Growth/Sales can build reporting.",
@@ -4555,13 +4558,18 @@
     ],
     "files": [
       "src/lib/analytics.server.ts",
-      "docs/analytics/church-funnel-spec.md"
+      "docs/analytics/church-funnel-spec.md",
+      "src/app/api/auth/chms/connect/planning-center/route.ts",
+      "src/app/api/auth/chms/callback/planning-center/route.ts",
+      "src/app/api/cron/chms-sync-runner/route.ts"
     ],
     "depends_on": [
       "pj-s18-11-frontend-connect-ui"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "2026-04-18: Analytics — all 3 functions added to analytics.server.ts; fired from connect/callback/cron routes; church-funnel-spec.md updated. TS clean. Committed 3e64a59."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
