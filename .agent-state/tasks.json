@@ -3552,7 +3552,7 @@
     "id": "pj-s17-for-churches-build",
     "sprint": "17",
     "title": "Implement updated /for-churches page + pricing calculator component",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Ship the rewritten /for-churches page with: (1) corrected tier cards, (2) a new sections for Pastoral Care / Prayer Team / Testimony Approval / Small Groups, (3) a pricing calculator (member count -> recommended tier -> price) whose logic matches `src/lib/plans.ts`, (4) pricing FAQ accordion. Structure owned by Strategist; build owned by Frontend. Must match approved tier map exactly.",
@@ -3583,16 +3583,18 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Calculator must read from plans.ts so copy and code cannot drift again.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: dispatched after blockers cleared.",
-      "[2026-04-17] Frontend: shipped. Page converted to server component with metadata export. Client state extracted into PricingCalculator (src/components/pricing-calculator.tsx) and TierCardsSection (src/components/tier-cards-section.tsx). All tier names, prices, member caps, and feature predicates read from plans.ts — zero hardcoded values. Lucide icons replace emoji. Verse strip (Galatians 6:2), jar motif in hero, 8-feature grid with tier badges, pricing calculator slider, 4 tier cards with fit-statements, 8-item FAQ using native <details>, 3 placeholder testimonials, enterprise section, bottom CTA. No SSO/SAML/SLA claims; subdomain/SSO marked 'coming soon' on Network card per plans.ts. npx tsc --noEmit: 0 errors on touched files. Handing to QA."
+      "[2026-04-17] Frontend: shipped. Page converted to server component with metadata export. Client state extracted into PricingCalculator (src/components/pricing-calculator.tsx) and TierCardsSection (src/components/tier-cards-section.tsx). All tier names, prices, member caps, and feature predicates read from plans.ts — zero hardcoded values. Lucide icons replace emoji. Verse strip (Galatians 6:2), jar motif in hero, 8-feature grid with tier badges, pricing calculator slider, 4 tier cards with fit-statements, 8-item FAQ using native <details>, 3 placeholder testimonials, enterprise section, bottom CTA. No SSO/SAML/SLA claims; subdomain/SSO marked 'coming soon' on Network card per plans.ts. npx tsc --noEmit: 0 errors on touched files. Handing to QA.",
+      "[2026-04-18] Reviewer: NEEDS-REWORK — returning to Frontend via Architect. Four AC failures: (1) LOGIC BUG in recommendTier(): PLANS.pro.limits.members === null is always true, so the function can never return 'enterprise' — running recommendTier(600) returns 'pro'. The slider max displays '500+' but routes to the wrong tier. The condition memberCount <= 500 on line 21 of pricing-calculator.tsx is unreachable dead code. Fix: remove the null short-circuit and use a named constant (e.g. ENTERPRISE_THRESHOLD = 500) derived from plans.ts or passed as a parameter so the boundary is visible and testable. (2) NO CALCULATOR TESTS: plans.test.ts covers gating predicates (pj-s17-plans-gating-fix work) but contains zero tests for recommendTier(). AC requires 'Tests exist for the calculator's tier-selection logic and pass.' Add a pricing-calculator.test.ts covering the seven manual test cases in the AC: 1, 25, 49, 50, 150, 500, 1000 members. (3) WRONG ENTERPRISE CTA PATH: page.tsx, pricing-calculator.tsx, and tier-cards-section.tsx all link to /church/enterprise-demo. Sales doc §2 places the form at /for-churches/demo; the paired UI task (pj-s17-enterprise-demo-ui) lists src/app/(public)/for-churches/demo/page.tsx as its file. The CTA will 404 when the UI lands. Fix all three files to /for-churches/demo. (4) NO aria-expanded ON FAQ: the native <details>/<summary> accordion has no aria-expanded attribute. AC says 'each item has an aria-expanded attribute.' Native <details> uses the open attribute, not aria-expanded, and screen reader support varies across browsers. AC is explicit — either add aria-expanded via JS (controlling a custom accordion) or switch to a component that renders the attribute."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-18T09:00:00.000Z",
+    "status": "needs-rework"
   },
   {
     "id": "pj-s17-enterprise-demo-flow",
     "sprint": "17",
     "title": "Enterprise demo booking flow — replace 'contact sales' with a real funnel",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Sales",
     "priority": "medium",
     "description": "Design the enterprise qualification flow (audit finding #5): (a) 'starting at' price anchor on the marketing page, (b) lead-capture form (church size, ChMS in use, timeline, denomination), (c) Calendly or similar demo booking, (d) automated follow-up sequence. Sales owns the sequence, qualification fields, and rep-facing brief. Frontend ships the form and booking widget in a paired task.",
@@ -3619,10 +3621,11 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with pj-s17-enterprise-demo-ui for the implementation half.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: dispatched after blockers cleared.",
-      "[2026-04-17] Sales: docs/sales/enterprise-demo-flow.md complete. 6-signal qualification decision tree; 10-field form with types and required/optional markers; 4-touch automated sequence (T+0, T+1h, T+24h, T+72h); rep-facing brief template; disqualification path to Growing Church; Calendly inline embed recommended with CALENDLY_URL env var. Price anchor confirmed: 'Starting at $199/mo'. Handing to Reviewer."
+      "[2026-04-17] Sales: docs/sales/enterprise-demo-flow.md complete. 6-signal qualification decision tree; 10-field form with types and required/optional markers; 4-touch automated sequence (T+0, T+1h, T+24h, T+72h); rep-facing brief template; disqualification path to Growing Church; Calendly inline embed recommended with CALENDLY_URL env var. Price anchor confirmed: 'Starting at $199/mo'. Handing to Reviewer.",
+      "[2026-04-18] Reviewer: approved — all six AC met. Qualification decision tree with 6 signals present in §1. All 10 form fields specified with field type and required/optional markers in §2 table. 4-touch automated email sequence (T+0 confirmation to lead, T+1h internal notification, T+24h nudge, T+72h feature spotlight) with subject lines and full body copy in §3. Rep-facing brief template with qualification rubric, disqualification triggers, and 24h handoff SLA in §4. Disqualification path with specific warm redirect message and Growing Church CTA in §5. Calendly inline embed recommended with CALENDLY_URL env var named in §6. Price anchor 'Starting at $199/mo' confirmed. No SSO/SAML/SLA as current features — all correctly scoped as coming-soon or not mentioned."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-18T09:00:00.000Z"
   },
   {
     "id": "pj-s17-enterprise-demo-ui",

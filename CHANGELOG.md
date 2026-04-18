@@ -1,5 +1,8 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-18 pj-s17-enterprise-demo-flow Enterprise demo booking flow — replace 'contact sales' with a real funnel
+Sales delivered docs/sales/enterprise-demo-flow.md: 6-signal qualification decision tree (500+ members, multi-site, denomination, SSO need, DPA need, seminary); 10-field lead-capture form with types and required/optional markers; 4-touch automated email sequence (T+0 confirmation to lead, T+1h internal notification to ADMIN_EMAILS, T+24h nudge with Calendly link, T+72h size-personalized feature spotlight) with subject lines and full body copy; rep-facing brief template with qualification rubric and disqualification triggers; warm redirect to Growing Church for disqualified leads; Calendly inline embed recommendation with CALENDLY_URL env var. Price anchor confirmed at 'Starting at $199/mo'.
+
 ## 2026-04-17 pj-s17-plans-gating-fix Update src/lib/plans.ts to match approved tier map
 Updated plans.ts with Sprint 17 tier map: display names Free/Small Church/Growing Church/Network; Free caps raised to 50 members/3 groups; PASTORAL_DASHBOARD_TIER moved pro→starter; three new gating predicates (hasPastoralCareInbox, hasPrayerTeamAssignments, hasTestimonyApprovalQueue); 15% annual discount math; three dashboard routes (care/team/testimony) now plan-gated via plans.ts predicates. 44/44 tests pass.
 
