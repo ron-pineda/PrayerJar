@@ -7,7 +7,7 @@ import { PrayerJar } from '@/components/prayer-jar';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { getDailyVerse } from '@/lib/daily-verse';
 import { db } from '@/db';
-import { prayers, prayerInteractions, users } from '@/db/schema';
+import { prayers, users } from '@/db/schema';
 import { eq, and, gt, ne, or, isNull, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { getHomepageData } from '@/services/homepage.service';
@@ -38,14 +38,9 @@ async function getStats(viewerUserId?: string | null) {
     .from(prayers)
     .where(eq(prayers.status, 'answered'));
 
-  const [interactionsRow] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(prayerInteractions);
-
   return {
     active: Number(totalRow?.count ?? 0),
     answered: Number(answeredRow?.count ?? 0),
-    prayedFor: Number(interactionsRow?.count ?? 0),
   };
 }
 
