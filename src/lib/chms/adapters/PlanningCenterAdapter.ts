@@ -6,12 +6,16 @@ import type {
   ChmsWebhookResult,
 } from '../ChmsAdapter';
 import { db } from '@/db';
-import { churches, chmsSyncJobs } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { churches, churchMembers, users, chmsSyncJobs } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
 import { encrypt } from '@/lib/encrypt';
+import { notifyAdmins } from '@/lib/admin-notify';
+import { RateLimiter } from '../rateLimiter';
 
 const PCO_TOKEN_URL = 'https://api.planningcenteronline.com/oauth/token';
 const PCO_REVOKE_URL = 'https://api.planningcenteronline.com/oauth/revoke';
+const PCO_PEOPLE_URL = 'https://api.planningcenteronline.com/people/v2/people?per_page=100';
+const PCO_GROUPS_URL = 'https://api.planningcenteronline.com/groups/v2/groups?per_page=100';
 
 export class PlanningCenterAdapter implements ChmsAdapter {
   private readonly clientId: string;
@@ -19,6 +23,8 @@ export class PlanningCenterAdapter implements ChmsAdapter {
   private config: ChmsConfig | null = null;
   /** Set when connect() is called and stored so private helpers can read it. */
   private churchId: string | null = null;
+  /** Per-org token-bucket: 100 requests per 60 seconds. */
+  private readonly rateLimiter = new RateLimiter(100, 60_000);
 
   constructor() {
     const clientId = process.env.CHMS_PLANNING_CENTER_CLIENT_ID;
@@ -147,6 +153,10 @@ export class PlanningCenterAdapter implements ChmsAdapter {
       throw new Error('PlanningCenterAdapter: not connected (no accessToken)');
     }
 
+    // Throttle before every outbound request (including retries) to stay
+    // within Planning Center's 100 req/min limit per organization.
+    await this.rateLimiter.throttle();
+
     const makeRequest = async (token: string) =>
       fetch(url, {
         method,
@@ -160,8 +170,9 @@ export class PlanningCenterAdapter implements ChmsAdapter {
     let response = await makeRequest(this.config.accessToken);
 
     if (response.status === 401) {
-      // Attempt refresh
+      // Attempt refresh — consumes another rate-limiter token for the retry
       await this.refreshAccessToken(this.churchId ?? '');
+      await this.rateLimiter.throttle();
       response = await makeRequest(this.config!.accessToken!);
 
       if (response.status === 401) {
@@ -178,6 +189,45 @@ export class PlanningCenterAdapter implements ChmsAdapter {
     }
 
     return response.json();
+  }
+
+  /**
+   * Like authRequest but returns the raw Response so callers can inspect the
+   * status code (e.g. 403 for Groups module not licensed) without throwing.
+   */
+  private async authRequestRaw(method: string, url: string): Promise<Response> {
+    if (!this.config?.accessToken) {
+      throw new Error('PlanningCenterAdapter: not connected (no accessToken)');
+    }
+
+    await this.rateLimiter.throttle();
+
+    const makeRequest = async (token: string) =>
+      fetch(url, {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+    let response = await makeRequest(this.config.accessToken);
+
+    if (response.status === 401) {
+      await this.refreshAccessToken(this.churchId ?? '');
+      await this.rateLimiter.throttle();
+      response = await makeRequest(this.config!.accessToken!);
+
+      if (response.status === 401) {
+        throw new Error('PCO_AUTH_EXPIRED');
+      }
+    }
+
+    if (response.status === 429) {
+      throw new Error('PCO_RATE_LIMITED');
+    }
+
+    return response;
   }
 
   private async refreshAccessToken(churchId: string): Promise<void> {
@@ -222,20 +272,213 @@ export class PlanningCenterAdapter implements ChmsAdapter {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // Stub methods — pj-s18-06
+  // listMembers — pj-s18-06
   // ─────────────────────────────────────────────────────────────
 
   async listMembers(_churchId: string): Promise<ChmsMember[]> {
-    throw new Error('listMembers not yet implemented — pj-s18-06');
+    const members: ChmsMember[] = [];
+    let nextUrl: string | null = PCO_PEOPLE_URL;
+
+    while (nextUrl) {
+      const page = (await this.authRequest('GET', nextUrl)) as {
+        data: Array<{
+          id: string;
+          attributes: {
+            first_name: string;
+            last_name: string;
+            status: string;
+            primary_email_address?: { address: string } | null;
+          };
+        }>;
+        links?: { next?: string | null };
+      };
+
+      for (const person of page.data) {
+        members.push({
+          externalId: person.id,
+          firstName: person.attributes.first_name,
+          lastName: person.attributes.last_name,
+          // PCO may sideload primary_email_address as a nested attribute
+          email: person.attributes.primary_email_address?.address ?? null,
+          // Phone not stored in Sprint 18 per spec §5
+          phone: null,
+          status: person.attributes.status === 'active' ? 'active' : 'inactive',
+          raw: person as unknown as Record<string, unknown>,
+        });
+      }
+
+      nextUrl = page.links?.next ?? null;
+    }
+
+    return members;
   }
 
-  async listGroups(_churchId: string): Promise<ChmsGroup[]> {
-    throw new Error('listGroups not yet implemented — pj-s18-06');
+  // ─────────────────────────────────────────────────────────────
+  // listGroups — pj-s18-06
+  // ─────────────────────────────────────────────────────────────
+
+  async listGroups(churchId: string): Promise<ChmsGroup[]> {
+    // Use raw request so we can inspect the 403 without throwing
+    const firstResponse = await this.authRequestRaw('GET', PCO_GROUPS_URL);
+
+    if (firstResponse.status === 403) {
+      // Groups module not licensed for this org — mark and persist gracefully
+      if (this.config) {
+        this.config.groupsAvailable = false;
+        const encryptedConfig = encrypt(JSON.stringify(this.config));
+        await db
+          .update(churches)
+          .set({ chmsConfig: encryptedConfig })
+          .where(eq(churches.id, churchId));
+      }
+      return [];
+    }
+
+    if (!firstResponse.ok) {
+      throw new Error(`PCO API error: ${firstResponse.status}`);
+    }
+
+    const groups: ChmsGroup[] = [];
+
+    // Process the first page we already have
+    const processPage = async (pageData: {
+      data: Array<{
+        id: string;
+        attributes: { name: string; description?: string | null };
+      }>;
+      links?: { next?: string | null };
+    }): Promise<string | null> => {
+      for (const group of pageData.data) {
+        const memberExternalIds = await this.fetchGroupMemberIds(group.id);
+        groups.push({
+          externalId: group.id,
+          name: group.attributes.name,
+          description: group.attributes.description ?? null,
+          memberExternalIds,
+          raw: group as unknown as Record<string, unknown>,
+        });
+      }
+      return pageData.links?.next ?? null;
+    };
+
+    let firstPage = (await firstResponse.json()) as {
+      data: Array<{
+        id: string;
+        attributes: { name: string; description?: string | null };
+      }>;
+      links?: { next?: string | null };
+    };
+
+    let nextUrl: string | null = await processPage(firstPage);
+
+    // Paginate remaining group pages
+    while (nextUrl) {
+      const page = (await this.authRequest('GET', nextUrl)) as typeof firstPage;
+      nextUrl = await processPage(page);
+    }
+
+    return groups;
   }
 
-  async syncMember(_churchId: string, _member: ChmsMember): Promise<void> {
-    throw new Error('syncMember not yet implemented — pj-s18-06');
+  /**
+   * Fetch all member person IDs for a given PCO group, following pagination.
+   */
+  private async fetchGroupMemberIds(groupId: string): Promise<string[]> {
+    const memberIds: string[] = [];
+    let nextUrl: string | null =
+      `https://api.planningcenteronline.com/groups/v2/groups/${groupId}/memberships?per_page=100`;
+
+    while (nextUrl) {
+      const page = (await this.authRequest('GET', nextUrl)) as {
+        data: Array<{
+          relationships: { person: { data: { id: string } } };
+        }>;
+        links?: { next?: string | null };
+      };
+
+      for (const membership of page.data) {
+        memberIds.push(membership.relationships.person.data.id);
+      }
+
+      nextUrl = page.links?.next ?? null;
+    }
+
+    return memberIds;
   }
+
+  // ─────────────────────────────────────────────────────────────
+  // syncMember — pj-s18-06
+  // ─────────────────────────────────────────────────────────────
+
+  async syncMember(churchId: string, member: ChmsMember): Promise<void> {
+    // Members without email cannot be linked to a user account (no stub possible)
+    if (!member.email) {
+      // Cannot create a stub user without an email address — skip the upsert.
+      // The churchMembers row requires a non-null userId per schema constraints.
+      return;
+    }
+
+    // 1. Look up existing user by email
+    const existingUsers = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, member.email));
+
+    let userId: string;
+
+    if (existingUsers.length > 0) {
+      // User already exists — link them
+      userId = existingUsers[0].id;
+    } else {
+      // 2. Create stub user and notify admins to send an invite
+      const newId = crypto.randomUUID();
+      await db.insert(users).values({
+        id: newId,
+        name: `${member.firstName} ${member.lastName}`,
+        email: member.email,
+        emailVerified: null,
+      });
+
+      userId = newId;
+
+      // Notify admins that a stub user was created and needs an invite sent.
+      // (A dedicated user-facing invite email flow is tracked for a future sprint.)
+      await notifyAdmins({
+        subject: `[PrayerJar] New stub user created via ChMS sync`,
+        body: `A stub user was created for ${member.firstName} ${member.lastName} (${member.email}) during a Planning Center sync for church ${churchId}. Please send them an invite to activate their account.`,
+      }).catch(() => {
+        // Fire-and-forget — never block sync on notification failure
+      });
+    }
+
+    // 3. Upsert churchMembers row keyed on (churchId, chmsProvider, externalChmsId)
+    await db
+      .insert(churchMembers)
+      .values({
+        churchId,
+        userId,
+        chmsProvider: 'planning-center',
+        externalChmsId: member.externalId,
+        chmsStatus: member.status,
+        chmsSyncedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: [
+          churchMembers.churchId,
+          churchMembers.chmsProvider,
+          churchMembers.externalChmsId,
+        ],
+        set: {
+          userId,
+          chmsStatus: member.status,
+          chmsSyncedAt: new Date(),
+        },
+      });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Unimplemented stubs — future sprints
+  // ─────────────────────────────────────────────────────────────
 
   async pushPrayerSummary(
     _churchId: string,

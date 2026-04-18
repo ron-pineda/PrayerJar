@@ -15,6 +15,10 @@ vi.mock('@/db', () => ({
   },
 }));
 
+vi.mock('@/lib/admin-notify', () => ({
+  notifyAdmins: vi.fn().mockResolvedValue(undefined),
+}));
+
 // Set required env vars before the module is imported
 process.env.CHMS_PLANNING_CENTER_CLIENT_ID = 'test-client-id';
 process.env.CHMS_PLANNING_CENTER_CLIENT_SECRET = 'test-client-secret';
@@ -26,6 +30,7 @@ process.env.CHMS_CONFIG_ENCRYPTION_KEY = 'a'.repeat(64);
 import { PlanningCenterAdapter } from './PlanningCenterAdapter';
 import { encrypt } from '@/lib/encrypt';
 import { db } from '@/db';
+import { notifyAdmins } from '@/lib/admin-notify';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -47,11 +52,24 @@ function mockDbUpdate() {
 /**
  * Build a chainable Drizzle insert mock:
  *   db.insert(table).values({})  →  resolves undefined
+ *   also supports .values({}).onConflictDoUpdate({})  →  resolves undefined
  */
 function mockDbInsert() {
-  const valuesFn = vi.fn().mockResolvedValue(undefined);
+  const onConflictDoUpdateFn = vi.fn().mockResolvedValue(undefined);
+  const valuesFn = vi.fn().mockReturnValue({ onConflictDoUpdate: onConflictDoUpdateFn });
   (db as any).insert = vi.fn().mockReturnValue({ values: valuesFn });
-  return { valuesFn };
+  return { valuesFn, onConflictDoUpdateFn };
+}
+
+/**
+ * Build a chainable Drizzle select mock:
+ *   db.select({}).from(table).where(condition)  →  resolves rows
+ */
+function mockDbSelect(rows: unknown[]) {
+  const whereFn = vi.fn().mockResolvedValue(rows);
+  const fromFn = vi.fn().mockReturnValue({ where: whereFn });
+  (db as any).select = vi.fn().mockReturnValue({ from: fromFn });
+  return { whereFn, fromFn };
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
@@ -262,6 +280,273 @@ describe('PlanningCenterAdapter', () => {
       await expect(
         adapter.authRequest('GET', 'https://api.planningcenteronline.com/people/v2/people')
       ).rejects.toThrow('PCO_AUTH_EXPIRED');
+    });
+  });
+
+  // ── 6. listMembers — single page ─────────────────────────────────────────
+
+  describe('listMembers()', () => {
+    it('returns ChmsMember array from a single page with no links.next', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-list',
+        refreshToken: 'rt-list',
+        connectedAt: new Date().toISOString(),
+      };
+
+      const pageOne = {
+        data: [
+          {
+            id: 'p1',
+            attributes: {
+              first_name: 'Alice',
+              last_name: 'Smith',
+              status: 'active',
+              primary_email_address: { address: 'alice@example.com' },
+            },
+          },
+          {
+            id: 'p2',
+            attributes: {
+              first_name: 'Bob',
+              last_name: 'Jones',
+              status: 'inactive',
+              primary_email_address: null,
+            },
+          },
+        ],
+        links: {},
+      };
+
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => pageOne,
+      });
+
+      const members = await adapter.listMembers('church-1');
+
+      expect(members).toHaveLength(2);
+      expect(members[0]).toMatchObject({
+        externalId: 'p1',
+        firstName: 'Alice',
+        lastName: 'Smith',
+        email: 'alice@example.com',
+        phone: null,
+        status: 'active',
+      });
+      expect(members[1]).toMatchObject({
+        externalId: 'p2',
+        firstName: 'Bob',
+        lastName: 'Jones',
+        email: null,
+        status: 'inactive',
+      });
+    });
+
+    // ── 7. listMembers — two pages ──────────────────────────────────────────
+
+    it('paginates via links.next and returns members from both pages', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-paginate',
+        refreshToken: 'rt-paginate',
+        connectedAt: new Date().toISOString(),
+      };
+
+      const makePerson = (id: string) => ({
+        id,
+        attributes: {
+          first_name: `First${id}`,
+          last_name: `Last${id}`,
+          status: 'active',
+          primary_email_address: { address: `${id}@example.com` },
+        },
+      });
+
+      const pageOne = {
+        data: [makePerson('p1'), makePerson('p2')],
+        links: { next: 'https://api.planningcenteronline.com/people/v2/people?per_page=100&offset=100' },
+      };
+      const pageTwo = {
+        data: [makePerson('p3'), makePerson('p4')],
+        links: {},
+      };
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValueOnce({ ok: true, status: 200, json: async () => pageOne })
+        .mockResolvedValueOnce({ ok: true, status: 200, json: async () => pageTwo });
+
+      const members = await adapter.listMembers('church-paginate');
+
+      expect(members).toHaveLength(4);
+      expect(members.map((m: { externalId: string }) => m.externalId)).toEqual(['p1', 'p2', 'p3', 'p4']);
+    });
+  });
+
+  // ── 8. listGroups — 403 sets groupsAvailable=false ───────────────────────
+
+  describe('listGroups()', () => {
+    it('sets groupsAvailable=false and returns [] when PCO returns 403', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-groups',
+        refreshToken: 'rt-groups',
+        connectedAt: new Date().toISOString(),
+        groupsAvailable: true,
+      };
+      adapter.churchId = 'church-groups-403';
+
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        json: async () => ({ errors: [{ status: '403' }] }),
+      });
+
+      mockDbUpdate();
+
+      const groups = await adapter.listGroups('church-groups-403');
+
+      expect(groups).toEqual([]);
+      expect(adapter.config.groupsAvailable).toBe(false);
+      expect((db as any).update).toHaveBeenCalledOnce();
+    });
+
+    // ── 9. listGroups — happy path ────────────────────────────────────────
+
+    it('returns ChmsGroup with memberExternalIds from memberships endpoint', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-groups-ok',
+        refreshToken: 'rt-groups-ok',
+        connectedAt: new Date().toISOString(),
+        groupsAvailable: true,
+      };
+
+      const groupsPage = {
+        data: [
+          { id: 'g1', attributes: { name: 'Small Group A', description: 'A small group' } },
+        ],
+        links: {},
+      };
+      const membershipsPage = {
+        data: [
+          { relationships: { person: { data: { id: 'p1' } } } },
+          { relationships: { person: { data: { id: 'p2' } } } },
+        ],
+        links: {},
+      };
+
+      global.fetch = vi
+        .fn()
+        // First call: list groups (authRequestRaw)
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          json: async () => groupsPage,
+        })
+        // Second call: fetch memberships for g1 (authRequest)
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          json: async () => membershipsPage,
+        });
+
+      const groups = await adapter.listGroups('church-groups-ok');
+
+      expect(groups).toHaveLength(1);
+      expect(groups[0]).toMatchObject({
+        externalId: 'g1',
+        name: 'Small Group A',
+        description: 'A small group',
+        memberExternalIds: ['p1', 'p2'],
+      });
+    });
+  });
+
+  // ── 10. syncMember — user already exists ─────────────────────────────────
+
+  describe('syncMember()', () => {
+    it('upserts into churchMembers without creating a stub user when email exists', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-sync',
+        refreshToken: 'rt-sync',
+        connectedAt: new Date().toISOString(),
+      };
+
+      const member = {
+        externalId: 'ext-p1',
+        firstName: 'Carol',
+        lastName: 'Doe',
+        email: 'carol@example.com',
+        phone: null,
+        status: 'active' as const,
+        raw: {},
+      };
+
+      // db.select returns an existing user
+      mockDbSelect([{ id: 'user-uuid-existing' }]);
+      const { valuesFn, onConflictDoUpdateFn } = mockDbInsert();
+
+      await adapter.syncMember('church-sync', member);
+
+      // No stub user created — insert called once (for churchMembers upsert)
+      expect((db as any).insert).toHaveBeenCalledOnce();
+      // onConflictDoUpdate means it was an upsert
+      expect(onConflictDoUpdateFn).toHaveBeenCalledOnce();
+      expect(notifyAdmins).not.toHaveBeenCalled();
+    });
+
+    // ── 11. syncMember — no user, create stub + notify ─────────────────────
+
+    it('creates stub user and calls notifyAdmins when email not in users table', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-sync-stub',
+        refreshToken: 'rt-sync-stub',
+        connectedAt: new Date().toISOString(),
+      };
+
+      const member = {
+        externalId: 'ext-p2',
+        firstName: 'Dave',
+        lastName: 'New',
+        email: 'dave@example.com',
+        phone: null,
+        status: 'active' as const,
+        raw: {},
+      };
+
+      // db.select returns no existing user
+      mockDbSelect([]);
+      const { valuesFn, onConflictDoUpdateFn } = mockDbInsert();
+
+      await adapter.syncMember('church-stub', member);
+
+      // insert called twice: stub user + churchMembers upsert
+      expect((db as any).insert).toHaveBeenCalledTimes(2);
+      // Both values calls were made
+      expect(valuesFn).toHaveBeenCalledTimes(2);
+
+      // First insert: stub user with emailVerified=null
+      const stubUserArg = valuesFn.mock.calls[0][0];
+      expect(stubUserArg).toMatchObject({
+        name: 'Dave New',
+        email: 'dave@example.com',
+        emailVerified: null,
+      });
+
+      // Admin notified
+      expect(notifyAdmins).toHaveBeenCalledOnce();
+      expect((notifyAdmins as any).mock.calls[0][0].subject).toContain('stub user');
     });
   });
 });
