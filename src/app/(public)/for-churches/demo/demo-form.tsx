@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
-import { track } from '@vercel/analytics';
 import { requestDemo } from './actions';
 
 const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? '#';
@@ -83,11 +82,6 @@ export function DemoForm() {
       if ('error' in result) {
         setError(result.error);
       } else {
-        // Fire the funnel event on successful submit
-        track('demo_requested', {
-          memberBucket: String(formData.get('memberBucket') ?? ''),
-          timeline: String(formData.get('timeline') ?? ''),
-        });
         setSubmitted(true);
       }
     });
