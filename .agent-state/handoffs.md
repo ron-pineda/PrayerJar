@@ -1,3 +1,4 @@
+[2026-04-18] Frontend Engineer → QA: pj-s19-07 /praise-wall DONE. Lights jar hero + light-escape orb on each praise card. 359/5 tests. Commit 0319a4e. All 7 impl tasks complete — ready for QA.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-06 /pray DONE. Slips jar hero + "Someone wrote this for you." + live active count. Commit 51aabad.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-05 /for-churches DONE. Placeholder testimonials removed, live trust strip added, hero jar upgraded to size=lg. Commit e3874d4.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-04 PrayerDialog slip-drop DONE. SlipDropAnimation outside Dialog, fires on submit success. Commit f87c071.
@@ -220,3 +221,5 @@
 [2026-04-18T03:21:24.105Z] Dashboard sync — 0 fix(es): 
 [2026-04-18] PM → Legal: pj-s18-01-legal-pco-subprocessor — Sprint 18 gate task. Planning Center as new subprocessor + DPA update. Integrations blocked until sign-off memo at docs/legal/sprint18-chms-signoff.md.
 [2026-04-18] Legal → PM: pj-s18-01-legal-pco-subprocessor ready for review — GO decision with 6 conditions on Integrations. Memo at docs/legal/sprint18-chms-signoff.md. Subprocessor list v1.1-2026-04-18 (added PCO). DPA v1.1-2026-04-18 (ChMS bullet in Section 3). Re-consent required for existing Churches before PCO toggle enabled. Integrations unblocked for pj-s18-05/06 subject to pj-s18-04 (Security/encryption) also signing off.
+
+[2026-04-18T19:38:43.340Z] Dashboard sync — 0 fix(es): 

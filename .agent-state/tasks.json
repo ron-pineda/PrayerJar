@@ -4746,10 +4746,7 @@
     "files": [
       "src/app/(public)/page.tsx"
     ],
-    "blockers": [
-      "pj-s19-01",
-      "pj-s19-02"
-    ],
+    "blockers": [],
     "notes": [
       "Signed-out hero: jar lg + countLabel, new headline, Lucide icons, no stats strip",
       "Signed-in: personal journey strip (active/intercessions/answered), contextual CTAs with church slug",
@@ -4757,7 +4754,7 @@
       "Fixed: removed dead prayedFor query (was feeding removed stats strip)",
       "Reviewer approved — commit ca355cf"
     ],
-    "last_touched": "2026-04-18T03:00:00.000Z"
+    "last_touched": "2026-04-18T19:38:43.340Z"
   },
   {
     "id": "pj-s19-04",
@@ -4770,15 +4767,13 @@
     "files": [
       "src/components/prayer-dialog.tsx"
     ],
-    "blockers": [
-      "pj-s19-01"
-    ],
+    "blockers": [],
     "notes": [
       "SlipDropAnimation renders outside Dialog at fragment root, fires handleDropComplete on end",
       "handleSuccess sets showDrop=true; handleDropComplete clears, closes, refreshes",
       "Reviewer approved — commit f87c071"
     ],
-    "last_touched": "2026-04-18T03:30:00.000Z"
+    "last_touched": "2026-04-18T19:38:43.340Z"
   },
   {
     "id": "pj-s19-05",
@@ -4791,16 +4786,14 @@
     "files": [
       "src/app/(public)/for-churches/page.tsx"
     ],
-    "blockers": [
-      "pj-s19-01"
-    ],
+    "blockers": [],
     "notes": [
       "getTrustStats() fetches church/prayer/member counts in parallel",
       "TESTIMONIAL_SLOTS removed completely. Trust strip guarded by trust.churches > 0",
       "Hero jar now uses live trust.prayers count with size=lg and countLabel",
       "Reviewer approved — commit e3874d4"
     ],
-    "last_touched": "2026-04-18T04:00:00.000Z"
+    "last_touched": "2026-04-18T19:38:43.340Z"
   },
   {
     "id": "pj-s19-06",
@@ -4813,21 +4806,19 @@
     "files": [
       "src/app/(public)/pray/page.tsx"
     ],
-    "blockers": [
-      "pj-s19-01"
-    ],
+    "blockers": [],
     "notes": [
       "getActivePrayerCount filters active + non-expired + non-group prayers",
       "PrayerJar slips mode with live count, evocative headline preserved CategoryPicker",
       "Reviewer approved — commit 51aabad"
     ],
-    "last_touched": "2026-04-18T04:30:00.000Z"
+    "last_touched": "2026-04-18T19:38:43.340Z"
   },
   {
     "id": "pj-s19-07",
     "sprint": "19",
     "title": "/praise-wall lights jar hero + light-escape animation",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Add PrayerJar lights md with answered count. Wrap each PraiseCard with animate-light-escape orb.",
@@ -4838,8 +4829,12 @@
     "blockers": [
       "pj-s19-01"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "getAnsweredCount() queries prayers status=answered. PrayerJar lights + countLabel in header.",
+      "Each PraiseCard wrapped in relative div with animate-light-escape orb, staggered delay.",
+      "359/5 tests. Reviewer approved — commit 0319a4e"
+    ],
+    "last_touched": "2026-04-18T05:00:00.000Z"
   },
   {
     "id": "pj-s19-08",
