@@ -2,6 +2,9 @@
 
 ## 2026-04-17
 
+### pj-s17-mrr-dashboard — MRR / churn / acquisition-attribution dashboard (internal)
+MRR attribution layer, spec doc, and UTM capture wired at church creation. docs/finance/mrr-dashboard-spec.md defines all 10 metrics with explicit formulas, refresh cadence (live query), permissions (requireAdmin / ADMIN_EMAILS), and access path (/admin/finance). createChurch() in church-platform.service.ts accepts utm_source/medium/campaign and derives acquisition_source = utmSource ?? 'direct'. POST /api/v1/church reads UTMs from request body first, URL query params as fallback. 68/68 tests pass (20 MRR, 48 route).
+
 ### pj-s17-chms-integration-survey — ChMS integration landscape survey
 Research doc at docs/integrations/chms-landscape.md covering Planning Center, Elvanto, ChurchTrac, and Breeze with auth model, endpoints, rate limits, webhook support, sandbox availability, and MVI scope per platform. Ranked recommendation: Planning Center #1 (Sprint 18 — OAuth 2.0, person webhooks, free sandbox, 73k churches), Breeze #2 (Sprint 19), ChurchTrac skip (no API), Elvanto deprioritize.
 
