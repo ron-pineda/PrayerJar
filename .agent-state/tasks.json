@@ -4063,9 +4063,7 @@
     "depends_on": [
       "pj-s17-plans-gating-fix"
     ],
-    "blockers": [
-      "pj-s17-plans-gating-fix"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed by Security specialist pass. Foundational for enterprise-tier credibility.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
@@ -4076,7 +4074,7 @@
       "[2026-04-18] Reviewer: APPROVED after rework. AC4 confirmed: searchParams awaited as Promise<{...}> (Next.js 16 async pattern), DB-level WHERE clauses for action/from/to/retention cutoff, .limit(50).offset() pagination with prev/next links, <form method=GET> filter UI with 6-option action select + date inputs + submit + clear link. AC6 confirmed: /api/cron/audit-cleanup/route.ts exists, Bearer CRON_SECRET auth check, churches bucketed by auditRetentionDays(tier), one DELETE per retention bucket via inArray+lt, vercel.json entry at 0 3 * * *. 6/6 cron tests pass. All 8 AC met."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T03:21:24.105Z"
   },
   {
     "id": "pj-s17-dpa-subprocessor",

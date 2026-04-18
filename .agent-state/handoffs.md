@@ -194,3 +194,5 @@
 [2026-04-18T02:52:13.069Z] Dashboard sync — 0 fix(es): 
 [2026-04-18] Reviewer → done: pj-s17-enterprise-demo-ui — APPROVED after targeted re-review (commit 4180ad8). Sole failing AC (duplicate client-side track('demo_requested',...)) confirmed removed. Zero track( hits in demo-form.tsx, zero @vercel/analytics import, trackDemoRequested() in actions.ts intact. All TS errors pre-existing in test files — none introduced by fix. All 6 AC met.
 [2026-04-18] Reviewer → done: pj-s17-audit-log — APPROVED after rework. AC4: searchParams as Promise<{...}> (Next.js 16), DB-level WHERE for action/from/to/retention cutoff, .limit(50).offset() pagination, prev/next links, <form method=GET> with 6-option action select + date inputs + submit + clear. AC6: /api/cron/audit-cleanup with Bearer CRON_SECRET auth, per-church deletion bucketed by auditRetentionDays(tier), vercel.json at 0 3 * * *, 6/6 tests pass. All 8 AC met. Sprint 17: 20/20 done — SPRINT COMPLETE.
+
+[2026-04-18T03:21:24.105Z] Dashboard sync — 0 fix(es): 
