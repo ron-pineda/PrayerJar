@@ -91,7 +91,7 @@ export default async function HomePage() {
               </span>
             </h1>
             {homepageData.prayedForMeCount > 0 && (
-              <p className="text-muted-foreground text-sm">
+              <p className="text-base font-semibold text-amber-600 dark:text-amber-400">
                 {homepageData.prayedForMeCount}{' '}
                 {homepageData.prayedForMeCount === 1 ? 'person' : 'people'} prayed for your requests this week
               </p>
