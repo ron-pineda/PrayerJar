@@ -375,7 +375,14 @@ export const groups = pgTable('groups', {
   isPublic: boolean('is_public').default(false).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   churchId: uuid('church_id').references(() => churches.id, { onDelete: 'set null' }),
-});
+  // --- ChMS Integration (pj-s18-02) ---
+  externalChmsId: text('external_chms_id'),
+  chmsProvider: text('chms_provider'),
+}, (t) => [
+  uniqueIndex('groups_chms_idx')
+    .on(t.churchId, t.chmsProvider, t.externalChmsId)
+    .where(sql`external_chms_id IS NOT NULL`),
+]);
 
 export const groupMembers = pgTable('group_members', {
   id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -555,6 +562,11 @@ export const churches = pgTable('churches', {
   // every query and we can detect downgrades cheaply.
   currentPlan: planTierEnum('current_plan').default('free').notNull(),
   previousPlan: planTierEnum('previous_plan'),
+  // --- ChMS Integration (pj-s18-02) ---
+  // 'planning-center' | 'breeze' | null
+  chmsProvider: text('chms_provider'),
+  // AES-256-GCM encrypted JSON blob stored as text (not jsonb)
+  chmsConfig: text('chms_config'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -565,9 +577,17 @@ export const churchMembers = pgTable('church_members', {
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   role: churchMemberRoleEnum('role').notNull().default('member'),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow().notNull(),
+  // --- ChMS Integration (pj-s18-02) ---
+  externalChmsId: text('external_chms_id'),
+  chmsProvider: text('chms_provider'),
+  chmsStatus: text('chms_status'),      // 'active' | 'inactive'
+  chmsSyncedAt: timestamp('chms_synced_at', { withTimezone: true }),
 }, (t) => [
   uniqueIndex('church_members_church_user_idx').on(t.churchId, t.userId),
   index('church_members_user_idx').on(t.userId),
+  uniqueIndex('church_members_chms_idx')
+    .on(t.churchId, t.chmsProvider, t.externalChmsId)
+    .where(sql`external_chms_id IS NOT NULL`),
 ]);
 
 export type Church = typeof churches.$inferSelect;
@@ -927,3 +947,29 @@ export const auditEvents = pgTable('audit_events', {
 
 export type AuditEvent = typeof auditEvents.$inferSelect;
 export type NewAuditEvent = typeof auditEvents.$inferInsert;
+
+// --- ChMS Sync Jobs (pj-s18-02) ---
+
+export const chmsSyncJobs = pgTable('chms_sync_jobs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  provider: text('provider').notNull(),
+  jobType: text('job_type').notNull(),    // 'full_sync' | 'delta_sync' | 'push_summary'
+  status: text('status').notNull().default('pending'),
+  payload: jsonb('payload'),
+  attempt: integer('attempt').notNull().default(0),
+  maxAttempts: integer('max_attempts').notNull().default(3),
+  nextAttemptAt: timestamp('next_attempt_at', { withTimezone: true }).notNull().default(sql`now()`),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  error: text('error'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('chms_sync_jobs_pending_idx')
+    .on(t.nextAttemptAt)
+    .where(sql`status = 'pending'`),
+  index('chms_sync_jobs_church_idx').on(t.churchId, t.createdAt),
+]);
+
+export type ChmsSyncJob = typeof chmsSyncJobs.$inferSelect;
+export type NewChmsSyncJob = typeof chmsSyncJobs.$inferInsert;
