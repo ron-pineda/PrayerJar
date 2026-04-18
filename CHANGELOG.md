@@ -2,6 +2,9 @@
 
 ## 2026-04-17
 
+### pj-s17-competitor-pricing — Competitor pricing & feature benchmark
+Research doc at docs/strategy/competitor-pricing-2026-04-17.md. 8 competitors surveyed: Prayer Platform ($10), PrayerMate ($12-40), Echo Prayer ($15/yr), Uplift Prayer (free), Subsplash ($149-1,200+), Pushpay ($199-999+), Tithe.ly ($72-119), Planning Center Groups ($0-179). Summary matrix + detailed breakdowns with source URLs. PrayerJar verdict: price-competitive, Starter $19 mispriced between $10-$15 anchors, free tier (25/1) tightest in segment. Three recommendations: loosen free to 50/3, add annual pricing at 17% discount, advertise Planning Center integration.
+
 ### pj-s17-onboarding-audit — Church day-1 onboarding audit + guided setup proposal
 Audit and design spec for church onboarding: 15-friction-point log with file refs, 8-step guided checklist with server-tracked success criteria, first-run sample content strategy with dismissal mechanism, top-3 quick wins (all implemented in commit 69ff73b), and low-fi wireframes for 3 screens (post-creation welcome, persistent setup progress bar, plan gate redesign). Ready for Sprint 18 build.
 

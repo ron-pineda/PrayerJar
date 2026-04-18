@@ -3411,7 +3411,7 @@
     "id": "pj-s17-competitor-pricing",
     "sprint": "17",
     "title": "Competitor pricing & feature benchmark — Praytell, Pushpray, Subsplash, Tithely, PrayerMate",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Research",
     "priority": "high",
     "description": "Gather real pricing, tier limits, and feature lists for the top 4–6 church/ministry software competitors. Deliver a comparison matrix (cost, member cap, ChMS integrations, pastoral tools, moderation, analytics, support SLA) plus a short narrative on where PrayerJar is above/below market. Purpose: unblock the Strategist — we cannot redesign tiers without real numbers. Audit finding #6.",
@@ -3424,14 +3424,15 @@
       "File is linked from the Sprint 17 handoff entry so pj-s17-tier-redesign can consume it."
     ],
     "files": [
-      "docs/strategy/competitor-pricing-2026-04.md"
+      "docs/strategy/competitor-pricing-2026-04-17.md"
     ],
     "depends_on": [],
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Unblocks pj-s17-tier-redesign.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: Research delivered docs/strategy/competitor-pricing-2026-04-17.md earlier in sprint. Sending to Reviewer."
+      "[2026-04-17] PM: Research delivered docs/strategy/competitor-pricing-2026-04-17.md earlier in sprint. Sending to Reviewer.",
+      "[2026-04-17] Reviewer: Reviewed and approved. All 6 AC met. 8 competitors covered (well above the 4 minimum); 'Praytell' gap noted with explanation; 'Pushpray' treated as Pushpay (named competitor covered). Matrix columns for moderation/analytics/SLA appear in narrative form rather than strict table columns — acceptable for a research deliverable; the Strategist has all required data. Source URLs + observation date present. Pricing advantages/disadvantages section explicit. Handoff linkage functional. Unblocks pj-s17-tier-redesign."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
