@@ -4784,7 +4784,7 @@
     "id": "pj-s19-05",
     "sprint": "19",
     "title": "/for-churches trust strip + hero jar",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Remove placeholder testimonials. Add live trust strip with church/prayer/member counts. Add jar lg to hero.",
@@ -4794,8 +4794,13 @@
     "blockers": [
       "pj-s19-01"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "getTrustStats() fetches church/prayer/member counts in parallel",
+      "TESTIMONIAL_SLOTS removed completely. Trust strip guarded by trust.churches > 0",
+      "Hero jar now uses live trust.prayers count with size=lg and countLabel",
+      "Reviewer approved — commit e3874d4"
+    ],
+    "last_touched": "2026-04-18T04:00:00.000Z"
   },
   {
     "id": "pj-s19-06",
