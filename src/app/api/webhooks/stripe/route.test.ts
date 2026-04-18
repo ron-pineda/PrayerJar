@@ -3,14 +3,15 @@ import type Stripe from 'stripe';
 
 // Hoist mocks so they are available before vi.mock factories run
 const mocks = vi.hoisted(() => {
-  const insertOnConflictDoNothing = vi.fn().mockResolvedValue(undefined);
+  const insertReturning = vi.fn().mockResolvedValue([{ id: 'sub-id-1' }]);
+  const insertOnConflictDoNothing = vi.fn().mockReturnValue({ returning: insertReturning });
   const insertValues = vi.fn().mockReturnValue({ onConflictDoNothing: insertOnConflictDoNothing });
   const updateReturning = vi.fn().mockResolvedValue([{ id: 'sub-id-1' }]);
   const updateWhere = vi.fn().mockReturnValue({ returning: updateReturning });
   const updateSet = vi.fn().mockReturnValue({ where: updateWhere });
   const subscriptionsRetrieve = vi.fn();
 
-  return { insertValues, insertOnConflictDoNothing, updateSet, updateWhere, updateReturning, subscriptionsRetrieve };
+  return { insertValues, insertOnConflictDoNothing, insertReturning, updateSet, updateWhere, updateReturning, subscriptionsRetrieve };
 });
 
 vi.mock('@/services/billing.service', () => ({
@@ -54,6 +55,13 @@ vi.mock('@/db/schema', () => ({
   donations: {},
   subscriptions: {},
   eventLicenses: {},
+  churches: {
+    currentPlan: { name: 'current_plan' },
+    previousPlan: { name: 'previous_plan' },
+    firstPaidAt: { name: 'first_paid_at' },
+    subscriptionId: { name: 'subscription_id' },
+    id: { name: 'id' },
+  },
 }));
 
 import { POST } from './route';
@@ -125,7 +133,8 @@ describe('POST /api/webhooks/stripe', () => {
     process.env.STRIPE_SECRET_KEY = 'sk_test_fake';
 
     // Re-attach hoisted mocks after clearAllMocks resets them
-    mocks.insertOnConflictDoNothing.mockResolvedValue(undefined);
+    mocks.insertReturning.mockResolvedValue([{ id: 'sub-id-1' }]);
+    mocks.insertOnConflictDoNothing.mockReturnValue({ returning: mocks.insertReturning });
     mocks.insertValues.mockReturnValue({ onConflictDoNothing: mocks.insertOnConflictDoNothing });
     mocks.updateReturning.mockResolvedValue([{ id: 'sub-id-1' }]);
     mocks.updateWhere.mockReturnValue({ returning: mocks.updateReturning });

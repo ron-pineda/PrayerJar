@@ -539,6 +539,22 @@ export const churches = pgTable('churches', {
   primaryColor: text('primary_color').default('#d4a843').notNull(),
   createdBy: uuid('created_by').notNull().references(() => users.id, { onDelete: 'cascade' }),
   subscriptionId: uuid('subscription_id').references(() => subscriptions.id, { onDelete: 'set null' }),
+  // --- Acquisition + MRR attribution (pj-s17-mrr-dashboard) ---
+  // acquisitionSource is a coarse-grained bucket (e.g. 'organic', 'referral',
+  // 'directory', 'paid_search'). UTMs are preserved verbatim for detail.
+  acquisitionSource: text('acquisition_source'),
+  utmSource: text('utm_source'),
+  utmMedium: text('utm_medium'),
+  utmCampaign: text('utm_campaign'),
+  // First time this church had an active paid subscription. Written by the
+  // Stripe webhook on subscription activation; never updated afterwards, so
+  // it survives churn + re-activation.
+  firstPaidAt: timestamp('first_paid_at', { withTimezone: true }),
+  // Redundant with subscriptions.tier (joined via subscriptionId) but
+  // materialized on churches so the MRR dashboard doesn't need a join on
+  // every query and we can detect downgrades cheaply.
+  currentPlan: planTierEnum('current_plan').default('free').notNull(),
+  previousPlan: planTierEnum('previous_plan'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -778,3 +794,65 @@ export const contactSubmissions = pgTable('contact_submissions', {
 
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
 export type NewContactSubmission = typeof contactSubmissions.$inferInsert;
+
+// --- Sprint 17: church legal acceptances + 501(c)(3) verifications ---
+
+export const legalDocumentTypeEnum = pgEnum('legal_document_type', [
+  'dpa',
+  'subprocessor_list',
+  'terms',
+  'privacy',
+]);
+
+export const nonprofitStatusEnum = pgEnum('nonprofit_status', [
+  'unverified',
+  'pending',
+  'verified',
+  'rejected',
+]);
+
+/**
+ * Records each click-through acceptance of a versioned legal document
+ * (DPA, Sub-processor list, etc.) by a church, attributed to the accepting user.
+ * One row per (church, document_type, document_version, user) acceptance event.
+ */
+export const churchLegalAcceptances = pgTable('church_legal_acceptances', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'set null' }),
+  documentType: legalDocumentTypeEnum('document_type').notNull(),
+  documentVersion: text('document_version').notNull(),
+  acceptedAt: timestamp('accepted_at', { withTimezone: true }).defaultNow().notNull(),
+  ipAddress: text('ip_address'),
+}, (t) => [
+  index('church_legal_acceptances_church_idx').on(t.churchId),
+  index('church_legal_acceptances_church_doc_idx').on(t.churchId, t.documentType),
+]);
+
+export type ChurchLegalAcceptance = typeof churchLegalAcceptances.$inferSelect;
+export type NewChurchLegalAcceptance = typeof churchLegalAcceptances.$inferInsert;
+
+/**
+ * 501(c)(3) nonprofit verification records. One active row per church.
+ * `determinationLetterUrl` points to a Vercel Blob with the IRS determination
+ * letter PDF. Admin reviews at /admin/legal-verifications.
+ */
+export const nonprofitVerifications = pgTable('nonprofit_verifications', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  submittedByUserId: uuid('submitted_by_user_id').references(() => users.id, { onDelete: 'set null' }),
+  ein: text('ein'),
+  legalName: text('legal_name'),
+  determinationLetterUrl: text('determination_letter_url').notNull(),
+  status: nonprofitStatusEnum('status').notNull().default('pending'),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  reviewedBy: text('reviewed_by'),
+  reviewNotes: text('review_notes'),
+}, (t) => [
+  index('nonprofit_verifications_church_idx').on(t.churchId),
+  index('nonprofit_verifications_status_idx').on(t.status),
+]);
+
+export type NonprofitVerification = typeof nonprofitVerifications.$inferSelect;
+export type NewNonprofitVerification = typeof nonprofitVerifications.$inferInsert;

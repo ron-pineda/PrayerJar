@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import Stripe from 'stripe';
 import { constructStripeEvent } from '@/services/billing.service';
 import { evaluateDonorBadge } from '@/services/badge.service';
@@ -47,21 +47,29 @@ export async function POST(req: NextRequest) {
         const stripeSubscription = await stripe.subscriptions.retrieve(session.subscription as string);
         const item = stripeSubscription.items.data[0];
         const plan = getPlanByStripePriceId(item.price.id);
+        const resolvedTier = plan?.tier ?? 'starter';
         const [inserted] = await db.insert(subscriptions).values({
           userId,
           stripeSubscriptionId: stripeSubscription.id,
           stripePriceId: item.price.id,
-          tier: plan?.tier ?? 'starter',
+          tier: resolvedTier,
           status: 'active',
           currentPeriodStart: new Date((item as any).current_period_start * 1000),
           currentPeriodEnd: new Date((item as any).current_period_end * 1000),
         }).onConflictDoNothing().returning({ id: subscriptions.id });
 
         // Link the subscription to the church so getChurchTier() resolves correctly
+        // and materialize acquisition/MRR columns (pj-s17-mrr-dashboard).
         if (inserted?.id && churchId) {
           await db
             .update(churches)
-            .set({ subscriptionId: inserted.id, updatedAt: new Date() })
+            .set({
+              subscriptionId: inserted.id,
+              firstPaidAt: sql`COALESCE(${churches.firstPaidAt}, NOW())`,
+              previousPlan: sql`${churches.currentPlan}`,
+              currentPlan: resolvedTier,
+              updatedAt: new Date(),
+            })
             .where(eq(churches.id, churchId));
         }
       } catch (err) {
@@ -128,10 +136,15 @@ export async function POST(req: NextRequest) {
     const stripeSubscription = event.data.object as Stripe.Subscription;
     const item = stripeSubscription.items.data[0];
     try {
+      const newPlan = getPlanByStripePriceId(item.price.id);
+      const newTier = newPlan?.tier ?? 'starter';
+
       const result = await db
         .update(subscriptions)
         .set({
           status: stripeSubscription.status as (typeof subscriptions.$inferSelect)['status'],
+          tier: newTier,
+          stripePriceId: item.price.id,
           currentPeriodStart: new Date(item.current_period_start * 1000),
           currentPeriodEnd: new Date(item.current_period_end * 1000),
           cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
@@ -145,6 +158,34 @@ export async function POST(req: NextRequest) {
         // Return 200 so Stripe doesn't retry — this may be a race with checkout.session.completed
         return NextResponse.json({ received: true });
       }
+
+      // Materialize plan change + detect downgrade-to-free for the MRR
+      // dashboard (pj-s17-mrr-dashboard). We capture previousPlan here so a
+      // downgrade surfaces as contraction/churn in the next dashboard read.
+      const churchRows = await db
+        .update(churches)
+        .set({
+          previousPlan: sql`${churches.currentPlan}`,
+          currentPlan: newTier,
+          updatedAt: new Date(),
+        })
+        .where(eq(churches.subscriptionId, result[0].id))
+        .returning({ id: churches.id, currentPlan: churches.currentPlan, previousPlan: churches.previousPlan });
+
+      for (const row of churchRows) {
+        // Log a structured churn event when a paid church drops to free.
+        // Server-side Vercel Analytics isn't available; Sentry + log aggregator
+        // pick up console.log on the platform. See docs/finance/mrr-dashboard-spec.md.
+        if (row.previousPlan && row.previousPlan !== 'free' && row.currentPlan === 'free') {
+          console.log(JSON.stringify({
+            event: 'churn.downgrade',
+            churchId: row.id,
+            fromTier: row.previousPlan,
+            toTier: row.currentPlan,
+            source: 'subscription.updated',
+          }));
+        }
+      }
     } catch (err) {
       console.error('Webhook subscription update error:', err);
       return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
@@ -152,10 +193,36 @@ export async function POST(req: NextRequest) {
   } else if (event.type === 'customer.subscription.deleted') {
     const stripeSubscription = event.data.object as Stripe.Subscription;
     try {
-      await db
+      const result = await db
         .update(subscriptions)
         .set({ status: 'canceled', updatedAt: new Date() })
-        .where(eq(subscriptions.stripeSubscriptionId, stripeSubscription.id));
+        .where(eq(subscriptions.stripeSubscriptionId, stripeSubscription.id))
+        .returning({ id: subscriptions.id });
+
+      // Drop the church back to free and fire churn event (pj-s17-mrr-dashboard).
+      if (result[0]?.id) {
+        const churchRows = await db
+          .update(churches)
+          .set({
+            previousPlan: sql`${churches.currentPlan}`,
+            currentPlan: 'free',
+            updatedAt: new Date(),
+          })
+          .where(eq(churches.subscriptionId, result[0].id))
+          .returning({ id: churches.id, previousPlan: churches.previousPlan });
+
+        for (const row of churchRows) {
+          if (row.previousPlan && row.previousPlan !== 'free') {
+            console.log(JSON.stringify({
+              event: 'churn.canceled',
+              churchId: row.id,
+              fromTier: row.previousPlan,
+              toTier: 'free',
+              source: 'subscription.deleted',
+            }));
+          }
+        }
+      }
     } catch (err) {
       console.error('Webhook subscription delete error:', err);
       return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
