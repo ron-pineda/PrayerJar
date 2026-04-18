@@ -1,3 +1,4 @@
+[2026-04-17] Architect → Reviewer: pj-s17-chms-architecture — docs/architecture/chms-integration-layer.md complete. ChmsAdapter interface (7 methods), webhook route POST /api/webhooks/chms/[provider], 3 critical schema additions (churches.chmsProvider/chmsConfig, church_members.externalChmsId index, chms_sync_jobs table), Sprint 18 task list for Planning Center impl. Ready for Reviewer.
 [2026-04-17] Frontend → Reviewer (rework): pj-s17-for-churches-build — fixed recommendTier() logic bug, added 8 pricing-calculator tests, corrected /for-churches/demo CTA path in 3 files, replaced details/summary FAQ with aria-expanded accordion component.
 [2026-04-17] Reviewer → done: pj-s17-for-churches-build — APPROVED after targeted rework. All 4 failures resolved: recommendTier() downward-check with ENTERPRISE_THRESHOLD=500 correctly returns 'enterprise' for >500; 8/8 calculator tests pass; /church/enterprise-demo zero hits, /for-churches/demo confirmed in 3 files; faq-accordion.tsx 'use client' with aria-expanded={isOpen} on each button.
 [2026-04-18] Reviewer → Architect: pj-s17-for-churches-build — REWORK: 4 AC failures: (1) recommendTier() can never return 'enterprise' — PLANS.pro.limits.members === null always short-circuits to 'pro'; 600-member test proves it; (2) no pricing-calculator tests — plans.test.ts covers gating predicates only, no test for recommendTier(); (3) enterprise CTA links to /church/enterprise-demo everywhere but sales doc §2 and UI task file list both say /for-churches/demo; (4) FAQ aria-expanded missing — native <details>/<summary> uses open attribute, not aria-expanded as AC requires.
@@ -179,3 +180,5 @@
 [2026-04-18T02:34:35.165Z] Dashboard sync — 0 fix(es): 
 
 [2026-04-18T02:47:12.936Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-18T02:52:13.069Z] Dashboard sync — 0 fix(es): 

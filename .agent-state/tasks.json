@@ -3691,7 +3691,7 @@
     "id": "pj-s17-chms-architecture",
     "sprint": "17",
     "title": "Architect pluggable ChMS integration layer",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Architect",
     "priority": "medium",
     "description": "Design the integration surface so we can add ChMS providers without forking core sync logic. Outputs: adapter interface, job/webhook model, error-handling and retry strategy, data-mapping contract (church -> PrayerJar members + groups), env-var and secret-storage conventions. No code yet — handoff spec for Backend + Integrations to implement in Sprint 18. Audit finding #4.",
@@ -3710,13 +3710,12 @@
     "depends_on": [
       "pj-s17-chms-integration-survey"
     ],
-    "blockers": [
-      "pj-s17-chms-integration-survey"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Spec only this sprint — implementation is Sprint 18 scope. Also add a 'We integrate with ChMS X and Y' section to /for-churches once a provider is selected (coordinate with Copywriter).",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: final wave — all blockers cleared."
+      "[2026-04-17] PM: final wave — all blockers cleared.",
+      "[2026-04-17] Architect: spec complete. docs/architecture/chms-integration-layer.md committed (428 lines). ChmsAdapter interface: connect/disconnect/listMembers/listGroups/syncMember/pushPrayerSummary/handleWebhook. Webhook endpoint: POST /api/webhooks/chms/[provider]. 3 critical schema additions: (1) churches.chmsProvider + churches.chmsConfig (encrypted text), (2) church_members.externalChmsId + unique index, (3) new chms_sync_jobs table. No src/ code written. Ready for Reviewer."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
