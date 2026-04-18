@@ -25,6 +25,9 @@ import {
   PRAYER_TEAM_ASSIGNMENTS_TIER,
   TESTIMONY_APPROVAL_QUEUE_TIER,
 } from '@/lib/plans';
+import { db } from '@/db';
+import { prayers, churchMembers } from '@/db/schema';
+import { or, eq, sql, count } from 'drizzle-orm';
 
 export const metadata: Metadata = {
   title: 'PrayerJar for Churches & Ministries',
@@ -133,25 +136,29 @@ const FAQ_ITEMS = [
   },
 ];
 
-const TESTIMONIAL_SLOTS = [
-  {
-    quote:
-      '[Quote from a pastor or church admin — 1–2 sentences on what changed for their care team or congregation.]',
-    attribution: '— [Name], [Title], [Church Name], [City, State]',
-  },
-  {
-    quote:
-      '[Quote from a pastor or small-group leader — 1–2 sentences on a specific moment or outcome, not a general endorsement.]',
-    attribution: '— [Name], [Title], [Church Name], [City, State]',
-  },
-  {
-    quote:
-      '[Quote from a congregation member or care-team volunteer — 1–2 sentences on what it felt like to be prayed for or to pray for someone.]',
-    attribution: '— [Name], [Church Name]',
-  },
-];
+async function getTrustStats() {
+  const [churchCountRow, prayerRows, memberRows] = await Promise.all([
+    db
+      .select({ count: sql<number>`COUNT(DISTINCT ${churchMembers.churchId})` })
+      .from(churchMembers),
+    db
+      .select({ count: count() })
+      .from(prayers)
+      .where(or(eq(prayers.status, 'active'), eq(prayers.status, 'answered'))),
+    db
+      .select({ count: count() })
+      .from(churchMembers),
+  ]);
 
-export default function ForChurchesPage() {
+  return {
+    churches: Number(churchCountRow[0]?.count ?? 0),
+    prayers: Number(prayerRows[0]?.count ?? 0),
+    members: Number(memberRows[0]?.count ?? 0),
+  };
+}
+
+export default async function ForChurchesPage() {
+  const trust = await getTrustStats();
   return (
     <main className="min-h-screen">
       {/* Funnel instrumentation — fires for_churches_view on mount */}
@@ -165,7 +172,11 @@ export default function ForChurchesPage() {
 
         {/* Jar motif — once per page, in the hero */}
         <div className="flex justify-center mb-8">
-          <PrayerJar count={12} />
+          <PrayerJar
+            count={trust.prayers}
+            size="lg"
+            countLabel={`${trust.prayers.toLocaleString()} prayers held across ${trust.churches} churches`}
+          />
         </div>
 
         <h1 className="text-4xl font-bold tracking-tight mb-4">
@@ -266,29 +277,38 @@ export default function ForChurchesPage() {
         <FaqAccordion items={FAQ_ITEMS} />
       </section>
 
-      {/* ── Social Proof Strip ───────────────────────────────────────── */}
-      <section className="pb-20 px-4 max-w-5xl mx-auto">
-        <h2 className="text-xl font-bold tracking-tight text-center mb-8">
-          Churches using PrayerJar
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {TESTIMONIAL_SLOTS.map((slot, i) => (
-            <ScrollReveal key={i} delay={i * 80}>
-              <div className="rounded-xl border bg-card p-6 space-y-3 h-full flex flex-col">
-                <p className="text-sm text-muted-foreground italic leading-relaxed flex-1">
-                  &ldquo;{slot.quote}&rdquo;
-                </p>
-                <p className="text-xs text-muted-foreground font-medium">
-                  {slot.attribution}
-                </p>
-                <p className="text-xs text-amber-500 font-semibold">
-                  [PLACEHOLDER — needs real church quote]
-                </p>
+      {/* ── Trust Strip ─────────────────────────────────────── */}
+      {trust.churches > 0 && (
+        <section className="pb-20 px-4 max-w-3xl mx-auto">
+          <ScrollReveal>
+            <div className="rounded-xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 py-10 px-6 text-center">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-8">
+                PrayerJar by the numbers
+              </p>
+              <div className="grid grid-cols-3 divide-x divide-border">
+                <div className="flex flex-col items-center gap-1 px-4">
+                  <span className="text-3xl font-bold tabular-nums text-amber-500 dark:text-amber-400">
+                    {trust.churches}
+                  </span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Churches</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-4">
+                  <span className="text-3xl font-bold tabular-nums text-amber-500 dark:text-amber-400">
+                    {trust.prayers.toLocaleString()}
+                  </span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Prayers Held</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 px-4">
+                  <span className="text-3xl font-bold tabular-nums text-amber-500 dark:text-amber-400">
+                    {trust.members.toLocaleString()}
+                  </span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Members Prayed For</span>
+                </div>
               </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </section>
+            </div>
+          </ScrollReveal>
+        </section>
+      )}
 
       {/* ── Enterprise / Network Contact Section ─────────────────────── */}
       <section className="pb-20 px-4 max-w-2xl mx-auto text-center">
