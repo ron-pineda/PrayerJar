@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import type { ChmsConfig } from '@/lib/chms/ChmsAdapter';
 import { disconnectChmsAction, triggerFullSyncAction } from '@/app/actions/chms.actions';
 
@@ -166,13 +167,19 @@ export function ChmsConnectCard({
             </p>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-wrap items-center gap-4">
           <a
             href={`/api/auth/chms/connect/planning-center?churchId=${churchId}`}
             className="inline-flex items-center gap-1 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
           >
             Connect Planning Center →
           </a>
+          <Link
+            href="/docs/churches/connect-planning-center"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Learn more →
+          </Link>
         </div>
       </section>
     );
@@ -187,6 +194,12 @@ export function ChmsConnectCard({
         <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
           ● Connected
         </span>
+        <Link
+          href="/docs/churches/connect-planning-center"
+          className="ml-auto text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Learn more →
+        </Link>
       </div>
 
       {/* Stats */}
