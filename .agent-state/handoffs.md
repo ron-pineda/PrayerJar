@@ -1,3 +1,4 @@
+[2026-04-18] Backend → Security: pj-s18-03-encrypt-lib ready for review — AES-256-GCM encrypt.ts + 8 tests passing. Security sign-off (pj-s18-04) required before Integrations can use it.
 [2026-04-18] Database → PM: pj-s18-02-schema-migrations ready for review — 0030_chms_integration.sql + schema.ts updated. TypeScript clean.
 [2026-04-17] Reviewer → Architect: pj-s17-enterprise-demo-ui NEEDS-REWORK — demo_requested fires twice: server action fires trackDemoRequested() (correct, per spec §3.8 server-only), demo-form.tsx line 87 also fires raw track('demo_requested', ...) client-side with wrong property names. Remove client-side track() call from demo-form.tsx.
 [2026-04-17] Reviewer → done: pj-s17-chms-architecture — APPROVED. All 6 AC met. ChmsAdapter interface (7 methods), job model + backoff [0/60s/300s], field-mapping tables, env-var convention CHMS_{PROVIDER}_{KEY}, Planning Center as Sprint 18 target with S18-1–S18-8 task table. No src/ code introduced.

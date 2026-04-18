@@ -4247,8 +4247,10 @@
     "blockers": [],
     "notes": [
       "[2026-04-18] PM: Parallel-safe with s18-01. Migration can be written while Legal reviews — just don't deploy it until Legal signs off.",
-      "[2026-04-18] Database Engineer: 0030_chms_integration.sql created + schema.ts updated. TypeScript clean (no errors in schema.ts). Committed. Ready for Reviewer."
+      "[2026-04-18] Database Engineer: 0030_chms_integration.sql created + schema.ts updated. TypeScript clean (no errors in schema.ts). Committed. Ready for Reviewer.",
+      "[2026-04-18] Reviewer/PM: APPROVED. SQL verified against spec §7 — all 4 sections, correct partial WHERE clauses, cascade FK, rollback block. All 6 AC met."
     ],
+    "status": "done",
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
@@ -4256,7 +4258,7 @@
     "id": "pj-s18-03-encrypt-lib",
     "sprint": "18",
     "title": "Create src/lib/encrypt.ts — AES-256-GCM helper",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "No existing encrypt utility in src/lib. Create AES-256-GCM encrypt/decrypt using Node crypto. Key source: process.env.CHMS_CONFIG_ENCRYPTION_KEY (32-byte hex string). Output format: base64(iv || ciphertext || authTag). Decrypt must verify authTag (GCM authenticates). Handle malformed input by throwing explicitly — no silent null returns. Unit tests cover: round-trip, wrong key, tampered ciphertext, tampered authTag, missing env var.",
@@ -4278,7 +4280,8 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] PM: Must gate on Security review (s18-04) before Integrations uses it."
+      "[2026-04-18] PM: Must gate on Security review (s18-04) before Integrations uses it.",
+      "[2026-04-18] Backend Engineer: Built AES-256-GCM encrypt/decrypt in src/lib/encrypt.ts using node:crypto only. Output: base64(iv[12]||ciphertext[N]||authTag[16]). Fails at module load if CHMS_CONFIG_ENCRYPTION_KEY is missing or not 64 hex chars. 8 unit tests pass: 3 round-trips (normal/empty/long), wrong key throws, tampered ciphertext throws, tampered authTag throws, missing env var throws at module load, wrong-length env var throws at module load. No npm dependencies added."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
