@@ -1,3 +1,4 @@
+[2026-04-18] Integrations → PM: pj-s18-06-pco-adapter-sync ready for review — listMembers (paginated), listGroups (403-graceful), syncMember (stub user + notifyAdmins), RateLimiter (100 req/60s token-bucket). 11 tests passing.
 [2026-04-18] Integrations → PM: pj-s18-05-pco-adapter-oauth ready for review — ChmsAdapter interface, providers registry, PlanningCenterAdapter OAuth (connect/disconnect/token exchange/refresh), callback + connect routes, 5 tests passing.
 [2026-04-18] Security → PM: pj-s18-04-security-encrypt-review PASS — Integrations unblocked for pj-s18-05 (PCO OAuth adapter).
 [2026-04-18] Backend → Security: pj-s18-03-encrypt-lib ready for review — AES-256-GCM encrypt.ts + 8 tests passing. Security sign-off (pj-s18-04) required before Integrations can use it.
