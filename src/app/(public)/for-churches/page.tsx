@@ -9,6 +9,7 @@ import {
   Users,
   Monitor,
   BarChart2,
+  Link2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PrayerJar } from '@/components/prayer-jar';
@@ -87,6 +88,13 @@ const FEATURES = [
     description:
       'Weekly digests show which prayers are active, which have been answered, and where engagement is rising or falling. Growing Church adds downloadable PDF reports for leadership meetings.',
     tierLabel: `Basic analytics — ${PLANS.starter.name} and above; Advanced & PDF — ${PLANS.pro.name} and above`,
+  },
+  {
+    icon: Link2,
+    title: 'Integrates with Planning Center.',
+    description:
+      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. Small groups sync too. A brief weekly prayer summary appears as a note on each person\'s PCO record so your pastoral picture stays current.',
+    tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
 ];
 
