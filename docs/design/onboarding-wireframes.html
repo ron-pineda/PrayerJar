@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrayerJar — Church Onboarding Wireframes (Sprint 17)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #111; padding: 32px; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .meta { font-size: 13px; color: #555; margin-bottom: 40px; }
+    .screen-section { margin-bottom: 64px; }
+    .screen-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+    .screen-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .screen-desc { font-size: 13px; color: #555; margin-bottom: 16px; max-width: 680px; }
+    .friction-tag { display: inline-block; font-size: 11px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 3px; padding: 2px 7px; margin-right: 4px; margin-bottom: 12px; color: #444; }
+    .device { background: #fff; border: 2px solid #bbb; border-radius: 6px; overflow: hidden; max-width: 760px; }
+    /* --- Nav bar --- */
+    .nav-bar { background: #fff; border-bottom: 1px solid #ddd; height: 48px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+    .nav-brand { font-size: 15px; font-weight: 600; }
+    .nav-right { display: flex; gap: 20px; align-items: center; font-size: 13px; color: #666; }
+    .nav-progress-chip { background: #111; color: #fff; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+    .nav-progress-bar-track { width: 120px; height: 6px; background: #e0e0e0; border-radius: 3px; display: inline-block; vertical-align: middle; position: relative; }
+    .nav-progress-bar-fill { height: 100%; background: #333; border-radius: 3px; }
+    /* --- Page body --- */
+    .page-body { padding: 28px 24px; }
+    /* --- Welcome screen specifics --- */
+    .welcome-banner { border: 2px dashed #bbb; border-radius: 6px; padding: 24px; text-align: center; background: #fafafa; margin-bottom: 24px; }
+    .welcome-banner h2 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .welcome-banner p { font-size: 13px; color: #555; max-width: 460px; margin: 0 auto 16px; }
+    .btn-primary { display: inline-block; background: #111; color: #fff; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 4px; margin-right: 8px; }
+    .btn-secondary { display: inline-block; background: #fff; color: #111; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 4px; border: 1px solid #bbb; }
+    .checklist { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
+    .checklist-header { background: #f5f5f5; border-bottom: 1px solid #ddd; padding: 10px 16px; font-size: 12px; font-weight: 700; color: #444; display: flex; align-items: center; justify-content: space-between; }
+    .checklist-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #eee; gap: 12px; font-size: 13px; }
+    .checklist-row:last-child { border-bottom: none; }
+    .check-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #bbb; flex-shrink: 0; background: #fff; }
+    .check-circle.done { background: #333; border-color: #333; }
+    .check-circle.done::after { content: "✓"; display: block; color: #fff; font-size: 10px; text-align: center; line-height: 14px; }
+    .step-text { flex: 1; color: #333; }
+    .step-text.done { color: #888; text-decoration: line-through; }
+    .step-link { font-size: 11px; color: #555; text-decoration: underline; }
+    .badge-plan { font-size: 10px; font-weight: 700; background: #eee; border-radius: 3px; padding: 2px 6px; color: #888; border: 1px solid #ccc; }
+    .progress-fraction { font-size: 12px; color: #666; }
+    /* --- Persistent bar screen --- */
+    .progress-bar-highlight { border: 2px solid #111; }
+    .progress-bar-annotation { font-size: 11px; color: #c00; font-weight: 600; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+    .annotation-arrow { font-size: 14px; }
+    /* --- Plan gate screen --- */
+    .plan-gate-section { padding: 20px 0; }
+    .plan-gate-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #111; }
+    .gate-free-actions { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; }
+    .gate-free-header { background: #f5f5f5; border-bottom: 1px solid #ddd; padding: 10px 16px; font-size: 12px; font-weight: 700; color: #444; }
+    .gate-action-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #eee; gap: 12px; font-size: 13px; }
+    .gate-action-row:last-child { border-bottom: none; }
+    .gate-action-icon { width: 32px; height: 32px; border-radius: 4px; background: #eee; border: 1px solid #ddd; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .gate-action-text { flex: 1; }
+    .gate-action-title { font-weight: 600; font-size: 13px; }
+    .gate-action-sub { font-size: 11px; color: #777; }
+    .gate-action-cta { font-size: 12px; color: #333; text-decoration: underline; }
+    .divider { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+    .upgrade-box { border: 1.5px solid #bbb; border-radius: 6px; padding: 18px; text-align: center; background: #fafafa; }
+    .upgrade-box h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .upgrade-box p { font-size: 12px; color: #555; margin-bottom: 14px; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .upgrade-features { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .upgrade-feature-chip { font-size: 11px; border: 1px solid #bbb; border-radius: 99px; padding: 3px 10px; color: #444; background: #fff; }
+    .section-divider { border: none; border-top: 2px solid #ddd; margin: 48px 0; }
+    .wireframe-note { font-size: 11px; color: #777; font-style: italic; margin-top: 8px; }
+    .route-badge { font-size: 11px; background: #eee; border-radius: 3px; padding: 2px 8px; color: #555; border: 1px solid #ddd; font-family: monospace; }
+    .redline { font-size: 11px; color: #c00; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <h1>PrayerJar — Church Onboarding Wireframes</h1>
+  <p class="meta">
+    Sprint 17 · Designer agent · 2026-04-17 ·
+    Paired with: <code>docs/users/church-onboarding-audit.md</code> ·
+    Task: <code>pj-s17-onboarding-audit</code>
+  </p>
+  <p class="meta">
+    Palette: black / white / gray (wireframe fidelity). No production colors applied.<br>
+    These wireframes address AC #6 only. Content and friction analysis are in the audit document.
+  </p>
+
+  <!-- =====================================================================
+       SCREEN 1: Post-creation welcome / redirect screen
+       ===================================================================== -->
+  <div class="screen-section">
+    <div class="screen-label">Screen 1 of 3</div>
+    <div class="screen-title">Post-Creation Welcome — Dedicated Route</div>
+    <div class="screen-desc">
+      What a pastor sees immediately after creating their church. Shown at
+      <code>/church/[slug]/welcome</code> — a route displayed only on first visit,
+      then redirects to setup on dismiss. Resolves the current redirect that drops
+      the pastor on the public church profile with no guidance.
+    </div>
+    <span class="friction-tag">Friction #2</span>
+    <span class="friction-tag">Friction #4</span>
+    <span class="friction-tag">Friction #5</span>
+    <span class="route-badge">/church/[slug]/welcome</span>
+
+    <div class="device" style="margin-top: 12px;">
+      <!-- Nav -->
+      <div class="nav-bar">
+        <div class="nav-brand">⛪ Church Platform</div>
+        <div class="nav-right">
+          <span>Pastor Jane</span>
+          <span>← Back to PrayerJar</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="page-body">
+
+        <!-- Welcome banner -->
+        <div class="welcome-banner">
+          <h2>Grace Community Church is live.</h2>
+          <p>
+            You're minutes away from having a real prayer wall for your congregation.
+            Follow the steps below to finish your setup — most churches are up and
+            running in 10 minutes.
+          </p>
+          <a class="btn-primary" href="#">Start setup guide →</a>
+          <a class="btn-secondary" href="#">View public profile</a>
+        </div>
+
+        <!-- 8-step checklist -->
+        <div class="checklist">
+          <div class="checklist-header">
+            <span>Setup checklist</span>
+            <span class="progress-fraction">0 of 8 steps complete</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle done"></div>
+            <span class="step-text done">1. Name your church</span>
+            <span class="step-link">Done automatically</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">2. Write a welcome message</span>
+            <span class="step-link">Go to settings →</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">3. Add a church description</span>
+            <span class="step-link">Go to settings →</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">4. Share your invite link with at least one person</span>
+            <span class="step-link">Copy invite link →</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">5. Post your first prayer request</span>
+            <span class="step-link">Go to prayer wall →</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">6. Customize your branding</span>
+            <span class="step-link">Go to branding →</span>
+            <span class="badge-plan">Starter+</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">7. Create your first small group</span>
+            <span class="step-link">Go to groups →</span>
+          </div>
+
+          <div class="checklist-row">
+            <div class="check-circle"></div>
+            <span class="step-text">8. Run your first live prayer event</span>
+            <span class="step-link">Go to events →</span>
+            <span class="badge-plan">Starter+</span>
+          </div>
+        </div>
+
+        <p class="wireframe-note">
+          Layout decision: dedicated <code>/church/[slug]/welcome</code> route (not modal overlay)
+          so the URL can be bookmarked and is clearly first-visit-only. Once the pastor clicks
+          "Start setup guide" or "View public profile," this route redirects permanently to setup.
+          Steps 6 and 8 show "Starter+" badge in-situ so the checklist doubles as a plan prompt
+          without a separate upsell screen.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- =====================================================================
+       SCREEN 2: Persistent setup progress bar in church layout header
+       ===================================================================== -->
+  <div class="screen-section">
+    <div class="screen-label">Screen 2 of 3</div>
+    <div class="screen-title">Persistent Setup Progress Bar — Church Header</div>
+    <div class="screen-desc">
+      A slim progress component inserted into the existing church management layout header
+      (<code>src/app/(church)/layout.tsx</code>). Visible on every church management page
+      until all 8 steps are complete. Disappears automatically on completion.
+    </div>
+    <span class="friction-tag">Friction #7</span>
+    <span class="friction-tag">Friction #8</span>
+    <span class="route-badge">src/app/(church)/layout.tsx — header</span>
+
+    <div style="margin-top: 12px;">
+
+      <!-- State A: Partially complete (e.g., 3 of 8) -->
+      <div style="margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .05em;">
+        State A — Setup in progress (3 of 8 steps done)
+      </div>
+      <div class="device progress-bar-highlight" style="margin-bottom: 4px;">
+        <div class="nav-bar">
+          <div class="nav-brand">⛪ Church Platform</div>
+          <div class="nav-right">
+            <!-- Progress chip + mini bar + link — this is the new component -->
+            <span class="nav-progress-chip">3 of 8 setup steps</span>
+            <span class="nav-progress-bar-track">
+              <span class="nav-progress-bar-fill" style="width: 37.5%;"></span>
+            </span>
+            <a href="#" style="font-size: 12px; color: #444; text-decoration: underline;">View checklist →</a>
+            <span style="color:#ccc;">|</span>
+            <span>Pastor Jane</span>
+            <span>← Back to PrayerJar</span>
+          </div>
+        </div>
+      </div>
+      <div class="redline">▲ NEW: progress chip + bar + "View checklist" link injected between brand and user info in the existing nav.</div>
+      <div class="progress-bar-annotation">
+        <span class="annotation-arrow">↑</span>
+        Highlighted border = annotation only, not part of the actual UI
+      </div>
+
+      <div style="margin-top: 20px; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .05em;">
+        State B — Setup complete (8 of 8) — component hidden
+      </div>
+      <div class="device" style="margin-bottom: 4px;">
+        <div class="nav-bar">
+          <div class="nav-brand">⛪ Church Platform</div>
+          <div class="nav-right">
+            <!-- No progress component — it has been removed from the DOM -->
+            <span style="font-size: 12px; color: #888; font-style: italic;">[setup progress bar hidden — all 8 steps complete]</span>
+            <span style="color:#ccc;">|</span>
+            <span>Pastor Jane</span>
+            <span>← Back to PrayerJar</span>
+          </div>
+        </div>
+      </div>
+      <div class="redline">▲ Bar is removed entirely when stepsComplete === 8. No "Congratulations" banner — just silence.</div>
+
+      <div style="margin-top: 20px; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .05em;">
+        State C — Small-viewport fallback (narrow header)
+      </div>
+      <div class="device" style="max-width: 420px; margin-bottom: 4px;">
+        <div class="nav-bar" style="flex-wrap: wrap; height: auto; padding: 8px 16px; gap: 6px;">
+          <div class="nav-brand" style="width: 100%;">⛪ Church Platform</div>
+          <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
+            <span class="nav-progress-bar-track" style="flex: 1;">
+              <span class="nav-progress-bar-fill" style="width: 37.5%;"></span>
+            </span>
+            <span style="font-size: 11px; color: #555;">3/8</span>
+            <a href="#" style="font-size: 11px; color: #555; text-decoration: underline;">Setup</a>
+          </div>
+        </div>
+      </div>
+      <div class="redline">▲ On narrow screens: chip collapses to "3/8" text, mini-bar persists, "View checklist" collapses to "Setup".</div>
+
+    </div>
+
+    <p class="wireframe-note" style="margin-top: 12px;">
+      Layout decision: progress inserted inline in the existing single-row nav rather than
+      a separate sub-header bar. Keeps the chrome height at 48px. Three states shown:
+      in-progress (chip + bar + link), complete (hidden), and narrow-viewport collapse.
+      Completion data fetched server-side in layout.tsx alongside session — no additional
+      client round-trip.
+    </p>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- =====================================================================
+       SCREEN 3: Plan gate redesign — free-tier value before upgrade prompt
+       ===================================================================== -->
+  <div class="screen-section">
+    <div class="screen-label">Screen 3 of 3</div>
+    <div class="screen-title">Plan Gate Redesign — Pastoral Dashboard</div>
+    <div class="screen-desc">
+      What a free-tier pastor sees when they navigate to the Pastoral Dashboard.
+      Current state: abrupt dead-end with "Upgrade to unlock it." Redesign shows
+      available free-tier actions first, then presents the upgrade prompt below the fold.
+    </div>
+    <span class="friction-tag">Friction #9</span>
+    <span class="friction-tag">Friction #10</span>
+    <span class="route-badge">/church/[slug]/dashboard</span>
+
+    <div class="device" style="margin-top: 12px;">
+      <div class="nav-bar">
+        <div class="nav-brand">⛪ Church Platform</div>
+        <div class="nav-right">
+          <span class="nav-progress-chip">5 of 8 setup steps</span>
+          <span class="nav-progress-bar-track">
+            <span class="nav-progress-bar-fill" style="width: 62.5%;"></span>
+          </span>
+          <a href="#" style="font-size: 12px; color: #444; text-decoration: underline;">View checklist →</a>
+          <span style="color:#ccc;">|</span>
+          <span>Pastor Jane</span>
+          <span>← Back to PrayerJar</span>
+        </div>
+      </div>
+
+      <div class="page-body">
+
+        <div style="margin-bottom: 20px;">
+          <div style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">Grace Community Church</div>
+          <div style="font-size: 13px; color: #777;">Free plan · 4 members</div>
+        </div>
+
+        <!-- Free-tier available actions — shown FIRST, above upgrade prompt -->
+        <div class="gate-free-actions">
+          <div class="gate-free-header">
+            Available on your free plan — start here
+          </div>
+
+          <div class="gate-action-row">
+            <div class="gate-action-icon">🙏</div>
+            <div class="gate-action-text">
+              <div class="gate-action-title">Prayer Wall</div>
+              <div class="gate-action-sub">View and respond to your congregation's prayer requests</div>
+            </div>
+            <a class="gate-action-cta" href="#">Open prayer wall →</a>
+          </div>
+
+          <div class="gate-action-row">
+            <div class="gate-action-icon">👥</div>
+            <div class="gate-action-text">
+              <div class="gate-action-title">Small Groups</div>
+              <div class="gate-action-sub">Create groups and manage group-specific prayer walls</div>
+            </div>
+            <a class="gate-action-cta" href="#">Go to groups →</a>
+          </div>
+
+          <div class="gate-action-row">
+            <div class="gate-action-icon">🔗</div>
+            <div class="gate-action-text">
+              <div class="gate-action-title">Invite Members</div>
+              <div class="gate-action-sub">Share your church's invite link with your congregation</div>
+            </div>
+            <a class="gate-action-cta" href="#">Copy invite link →</a>
+          </div>
+
+          <div class="gate-action-row">
+            <div class="gate-action-icon">⚙️</div>
+            <div class="gate-action-text">
+              <div class="gate-action-title">Church Settings</div>
+              <div class="gate-action-sub">Update your welcome message, description, and contact info</div>
+            </div>
+            <a class="gate-action-cta" href="#">Go to settings →</a>
+          </div>
+        </div>
+
+        <!-- Divider — upgrade prompt BELOW free actions -->
+        <hr class="divider">
+
+        <!-- Upgrade box — comes second, below the fold -->
+        <div class="upgrade-box">
+          <h4>The Pastoral Dashboard is a Starter plan feature.</h4>
+          <p>
+            Upgrade to see flagged prayers, the care inbox, your prayer team, and
+            congregation-level insights — all in one place.
+          </p>
+          <div class="upgrade-features">
+            <span class="upgrade-feature-chip">Flagged Prayers</span>
+            <span class="upgrade-feature-chip">Care Inbox</span>
+            <span class="upgrade-feature-chip">Prayer Team</span>
+            <span class="upgrade-feature-chip">Congregation Insights</span>
+            <span class="upgrade-feature-chip">Branding</span>
+          </div>
+          <a class="btn-primary" href="#">Upgrade Grace Community Church →</a>
+          <div style="margin-top: 8px;">
+            <a href="#" style="font-size: 12px; color: #666; text-decoration: underline;">View all plan features</a>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; text-align: center;">
+          <a href="#" style="font-size: 12px; color: #888; text-decoration: underline;">← Back to Grace Community Church</a>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="wireframe-note" style="margin-top: 8px;">
+      Layout decision: free-tier actions rendered first in a card list — prayer wall,
+      groups, invite link, settings — so the pastor lands somewhere useful, not a
+      dead-end. Upgrade box appears below with feature chips naming exactly what they'd
+      unlock. "Upgrade [church name]" CTA is church-scoped (not the generic /billing
+      route) to fix Friction #10.
+    </p>
+  </div>
+
+  <hr class="section-divider">
+
+  <div style="font-size: 12px; color: #888; padding-bottom: 32px;">
+    <strong>File:</strong> docs/design/onboarding-wireframes.html ·
+    <strong>Prepared by:</strong> Designer agent ·
+    <strong>Paired with:</strong> docs/users/church-onboarding-audit.md ·
+    <strong>Status:</strong> Low-fidelity wireframes — no production colors, no external dependencies.
+    These are implementation-guidance sketches, not polished mockups.
+    Frontend should consult the full audit document for friction context per screen.
+  </div>
+
+</body>
+</html>

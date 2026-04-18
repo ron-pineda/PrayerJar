@@ -3779,7 +3779,7 @@
     "id": "pj-s17-onboarding-audit",
     "sprint": "17",
     "title": "Church day-1 onboarding audit + guided setup proposal",
-    "status": "needs-rework",
+    "status": "review",
     "assigned_to": "Customer Success",
     "priority": "medium",
     "description": "Audit finding #8. Walk a pastor through signup -> first login -> first useful action today. Document what they actually see (empty dashboard? sample data? guided checklist?). Produce: (1) friction log, (2) proposed guided-setup checklist with success criteria per step, (3) suggested first-run sample content strategy. Designer pairs on the UI sketch; build is Sprint 18 scope. Hand off a concrete spec, not open questions.",
@@ -3793,7 +3793,8 @@
       "Document ends with a list of discrete Sprint 18 implementation tasks (titles only, ready for Architect to create)."
     ],
     "files": [
-      "docs/users/church-onboarding-audit.md"
+      "docs/users/church-onboarding-audit.md",
+      "docs/design/onboarding-wireframes.html"
     ],
     "depends_on": [],
     "blockers": [],
@@ -3802,7 +3803,8 @@
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: kicked off wave-2b.",
       "[2026-04-17] CustomerSuccess: audit complete. docs/users/church-onboarding-audit.md written. Found 15 friction points. Biggest: post-creation redirect lands pastor on public profile, not setup guide \u2014 a 1-line fix. Setup Guide has 3 issues: coming-soon label on a live feature, no completion tracking, and never surfaced post-creation. Proposed 8-step checklist with server-tracked success criteria, first-run sample content strategy, and 9 Sprint 18 implementation tasks. Handing to Reviewer.",
-      "[2026-04-17] Reviewer: NEEDS-REWORK. AC6 unmet: the acceptance criterion requires \"a Designer-paired wireframe or wireframe link for the proposed onboarding UI\" \u2014 the document explicitly states \"No wireframes are included in this document\" and provides only text scoping notes. Six of seven AC are fully met: file exists, step-by-step walkthrough with file references (8 steps), 15-item friction log citing screen+file per entry, 8-step checklist with success criteria, first-run sample content with concrete text+dismissal mechanism, 9 Sprint 18 implementation tasks. The 3 quick wins are correctly identified and align with commit 69ff73b (acknowledged). What is missing: at minimum, low-fi wireframes (pen-and-paper scan, Figma link, or ASCII layout) for the post-creation welcome screen, the persistent setup progress bar, and the plan gate redesign \u2014 the three screens the document itself flags as needing Designer attention. CustomerSuccess must either (a) produce low-fi wireframes for those 3 screens, or (b) get a Figma/sketch link from the Designer and embed it before this doc can close."
+      "[2026-04-17] Reviewer: NEEDS-REWORK. AC6 unmet: the acceptance criterion requires \"a Designer-paired wireframe or wireframe link for the proposed onboarding UI\" \u2014 the document explicitly states \"No wireframes are included in this document\" and provides only text scoping notes. Six of seven AC are fully met: file exists, step-by-step walkthrough with file references (8 steps), 15-item friction log citing screen+file per entry, 8-step checklist with success criteria, first-run sample content with concrete text+dismissal mechanism, 9 Sprint 18 implementation tasks. The 3 quick wins are correctly identified and align with commit 69ff73b (acknowledged). What is missing: at minimum, low-fi wireframes (pen-and-paper scan, Figma link, or ASCII layout) for the post-creation welcome screen, the persistent setup progress bar, and the plan gate redesign \u2014 the three screens the document itself flags as needing Designer attention. CustomerSuccess must either (a) produce low-fi wireframes for those 3 screens, or (b) get a Figma/sketch link from the Designer and embed it before this doc can close.",
+      "[2026-04-17] Designer: wireframes added at docs/design/onboarding-wireframes.html. Returning to Reviewer."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
