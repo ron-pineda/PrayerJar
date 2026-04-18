@@ -3512,7 +3512,7 @@
     "id": "pj-s17-for-churches-rewrite",
     "sprint": "17",
     "title": "Rewrite /for-churches marketing copy — accurate tiers + hidden features surfaced",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Copywriter",
     "priority": "high",
     "description": "Rewrite the marketing page copy to match the approved tier map (audit findings #1, #3). Specifically: (a) correctly attribute Pastoral Dashboard to its actual tier, (b) surface the hidden features — Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, Small Groups — with short benefit-led descriptions, (c) add the new Free/Starter member caps, (d) add a pricing FAQ covering trial, overages, and migration. Strategist reviews voice/positioning before Frontend implements.",
@@ -3540,7 +3540,8 @@
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Strategist pairs on positioning; Frontend implements the final copy in pj-s17-for-churches-build.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off after tier-redesign PM sign-off."
+      "[2026-04-17] PM: kicked off after tier-redesign PM sign-off.",
+      "[2026-04-17] Copywriter: Copy complete. Deliverable at docs/marketing/for-churches-copy-v2.md. All 7 acceptance criteria addressed: tier cards for Free/Small Church/Growing Church/Network with fit-statements; Pastoral Dashboard and Pastoral Care Inbox at Small Church tier; Prayer Team Assignments and Testimony Approval Queue at Growing Church; Small Groups cap noted; 8-item FAQ (trial, overages, migration, annual billing, plan growth, cancellation, 501c3); social proof placeholder slots; Enterprise demo section with all 5 qualification fields. No AI-Flagged Care, SSO/SLA/dedicated-support, or Most Popular badge. Annual discount is 15% throughout. Handing to Reviewer."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
