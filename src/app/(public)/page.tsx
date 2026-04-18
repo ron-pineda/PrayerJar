@@ -91,7 +91,7 @@ export default async function HomePage() {
             </div>
             <h1 className="text-3xl font-bold">
               Good {getTimeOfDay()},{' '}
-              <span className="text-amber-600 dark:text-amber-400">
+              <span className="text-4xl text-amber-600 dark:text-amber-400">
                 {session.user.name?.split(' ')[0] ?? 'friend'}
               </span>
             </h1>
