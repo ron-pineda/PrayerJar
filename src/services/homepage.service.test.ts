@@ -44,6 +44,15 @@ describe('getMyAnsweredCount', () => {
     const result = await getMyAnsweredCount('user-1');
     expect(result).toBe(3);
   });
+
+  it('returns 0 when user has no answered prayers', async () => {
+    (db as any).select = vi.fn().mockReturnThis();
+    (db as any).from = vi.fn().mockReturnThis();
+    (db as any).where = vi.fn().mockResolvedValue([{ count: 0 }]);
+
+    const result = await getMyAnsweredCount('user-1');
+    expect(result).toBe(0);
+  });
 });
 
 describe('getUserChurch', () => {
@@ -54,6 +63,7 @@ describe('getUserChurch', () => {
     (db as any).from = vi.fn().mockReturnThis();
     (db as any).innerJoin = vi.fn().mockReturnThis();
     (db as any).where = vi.fn().mockReturnThis();
+    (db as any).orderBy = vi.fn().mockReturnThis();
     (db as any).limit = vi.fn().mockResolvedValue([]);
 
     const result = await getUserChurch('user-1');
@@ -65,6 +75,7 @@ describe('getUserChurch', () => {
     (db as any).from = vi.fn().mockReturnThis();
     (db as any).innerJoin = vi.fn().mockReturnThis();
     (db as any).where = vi.fn().mockReturnThis();
+    (db as any).orderBy = vi.fn().mockReturnThis();
     (db as any).limit = vi.fn().mockResolvedValue([{ slug: 'grace-chapel', name: 'Grace Chapel' }]);
 
     const result = await getUserChurch('user-1');

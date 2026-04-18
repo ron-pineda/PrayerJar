@@ -111,6 +111,7 @@ export async function getUserChurch(userId: string): Promise<{ slug: string; nam
     .from(churchMembers)
     .innerJoin(churches, eq(churchMembers.churchId, churches.id))
     .where(eq(churchMembers.userId, userId))
+    .orderBy(churchMembers.joinedAt)
     .limit(1);
   return rows[0] ?? null;
 }
