@@ -1,3 +1,4 @@
+[2026-04-18] Backend → Security: pj-s18-07-webhook-route ready for review — PCO HMAC-SHA256, timing-safe compare, 5-minute replay window, church lookup via pcoOrgId. pj-s18-08 security review needed. NOTE: webhookSecret is undefined for all current churches until a secret-registration UI is added (no existing OAuth flow writes it) — flag this in your review findings.
 [2026-04-18] Integrations → PM: pj-s18-06-pco-adapter-sync ready for review — listMembers (paginated), listGroups (403-graceful), syncMember (stub user + notifyAdmins), RateLimiter (100 req/60s token-bucket). 11 tests passing.
 [2026-04-18] Integrations → PM: pj-s18-05-pco-adapter-oauth ready for review — ChmsAdapter interface, providers registry, PlanningCenterAdapter OAuth (connect/disconnect/token exchange/refresh), callback + connect routes, 5 tests passing.
 [2026-04-18] Security → PM: pj-s18-04-security-encrypt-review PASS — Integrations unblocked for pj-s18-05 (PCO OAuth adapter).
