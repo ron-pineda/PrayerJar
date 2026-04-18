@@ -3711,7 +3711,7 @@
     "id": "pj-s17-funnel-instrumentation",
     "sprint": "17",
     "title": "Conversion funnel instrumentation — /for-churches -> signup -> paid",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Analytics",
     "priority": "high",
     "description": "Audit finding #7. Define the church-funnel event spec: for-churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested. Pick the tool (Vercel Analytics + PostHog is already in stack — verify) and write the event dictionary. Analytics owns the spec + dashboard; Frontend fires the events in a paired task. Also produce the weekly funnel review template.",
@@ -3731,7 +3731,8 @@
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Without this we cannot measure whether the redesign worked.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off wave-2b."
+      "[2026-04-17] PM: kicked off wave-2b.",
+      "[2026-04-17] Analytics: spec complete — docs/analytics/church-funnel-spec.md written. Confirmed only @vercel/analytics is installed (no PostHog). All 8 events defined with properties, firing sides, and expected volumes. plan_activated and plan_upgraded marked server-side (Stripe webhook). Weekly funnel review template and dashboard definition included. Ready for Reviewer."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3961,7 +3962,7 @@
     "id": "pj-s17-mrr-dashboard",
     "sprint": "17",
     "title": "MRR / churn / acquisition-attribution dashboard (internal)",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Finance",
     "priority": "high",
     "description": "Finance audit: we have zero visibility into MRR, net revenue retention, churn, or which acquisition channel a paying church came from. We cannot measure whether the Sprint 17 repricing helped or hurt. Must ship before the new prices go live. Scope: (1) MRR + new/expansion/churn breakdown pulled from Stripe + church table, (2) church-level acquisition source tagging (UTM capture at signup, stored on churches row), (3) churn detection — downgrades + cancellations, (4) simple internal dashboard at /admin/finance. Finance owns the spec + dashboard; Backend + Database implement.",
@@ -3986,7 +3987,8 @@
       "[2026-04-17] PM: proposed by Finance specialist pass. Must ship before pj-s17-tier-redesign goes live or we'll reprice blind.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
-      "[2026-04-17] Backend: phase 1 committed (2bf0808) — attribution migration + MRR lib + Stripe webhook + 20/20 tests. /admin/finance dashboard UI is phase 2, queued."
+      "[2026-04-17] Backend: phase 1 committed (2bf0808) — attribution migration + MRR lib + Stripe webhook + 20/20 tests. /admin/finance dashboard UI is phase 2, queued.",
+      "[2026-04-17] Reviewer → needs-rework: Two phase-1 criteria unmet. (1) docs/finance/mrr-dashboard-spec.md does not exist — AC1 requires it committed with explicit MRR/new MRR/expansion MRR/contraction MRR/churned MRR/net revenue retention formulas; the library exists but the spec doc does not. (2) UTM parameters are defined in the schema and populated by the Stripe webhook on plan events, but there is no code that captures UTMs from the signup URL and writes them to the churches row at signup time, and no test that simulates a signup with UTMs and asserts the row values — AC4 requires both. Everything else in phase 1 is solid: migration 0026 has all 7 required columns, mrr.ts exports computeMRR/computeChurn/computeAcquisitionBreakdown, churn detection fires on downgrade and cancellation webhook events and emits structured churn events, and 20/20 tests pass. Fix: (a) add docs/finance/mrr-dashboard-spec.md with formulas, (b) wire UTM capture in the church signup path reading params from the request/session and writing to the churches row, (c) add a test that confirms the UTM columns are written at signup."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -4067,7 +4069,7 @@
     "id": "pj-s17-brand-guide-v1",
     "sprint": "17",
     "title": "PrayerJar brand guide v1 — voice, tone, motifs, do/don'ts",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Brand",
     "priority": "medium",
     "description": "Brand audit: no docs/brand/brand-guide.md exists. Churches page sounds like a ChMS vendor, not PrayerJar — voice drift will happen on every new page without a written standard. Scope: (1) brand promise + positioning sentence, (2) voice attributes with do/don't examples, (3) jar motif + amber accent + verse-strip visual conventions, (4) tier-naming convention (Free / Small Church / Growing Church / Network per proposal), (5) 'Most Popular' → 'Best for churches 150–500' language rule, (6) banned phrases list. Deliverable: docs/brand/brand-guide.md + reference examples.",
