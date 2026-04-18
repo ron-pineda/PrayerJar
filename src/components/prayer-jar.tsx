@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const LIGHT_SLOTS = [
   { left: 15, bottom: 14 }, { left: 40, bottom: 22 }, { left: 65, bottom: 11 },
@@ -96,39 +96,41 @@ export function PrayerJar({
   const slipCount = Math.min(count, SLIP_SLOTS.length);
 
   return (
-    <div className="flex flex-col items-center" aria-hidden="true">
-      <div
-        style={{
-          width: dims.neckW,
-          height: dims.neckH,
-          border: '2.5px solid rgba(212,168,67,0.5)',
-          borderBottom: 'none',
-          borderRadius: '12px 12px 0 0',
-          background: 'rgba(255,255,255,0.02)',
-        }}
-      />
-      <div
-        style={{
-          position: 'relative',
-          width: dims.bodyW,
-          height: dims.bodyH,
-          border: '2.5px solid rgba(212,168,67,0.5)',
-          borderTop: 'none',
-          borderRadius: '0 0 80px 80px',
-          background: 'rgba(10,10,20,0.8)',
-          overflow: 'hidden',
-        }}
-      >
-        <div style={{ position: 'absolute', top: 24, left: 22, width: 28, height: 110, background: 'rgba(255,255,255,0.05)', borderRadius: 14, transform: 'rotate(-8deg)' }} />
-        <div style={{ position: 'absolute', top: 16, right: 36, width: 14, height: 55, background: 'rgba(255,255,255,0.03)', borderRadius: 7, transform: 'rotate(5deg)' }} />
+    <div className="flex flex-col items-center">
+      <div aria-hidden="true">
+        <div
+          style={{
+            width: dims.neckW,
+            height: dims.neckH,
+            border: '2.5px solid rgba(212,168,67,0.5)',
+            borderBottom: 'none',
+            borderRadius: '12px 12px 0 0',
+            background: 'rgba(255,255,255,0.02)',
+          }}
+        />
+        <div
+          style={{
+            position: 'relative',
+            width: dims.bodyW,
+            height: dims.bodyH,
+            border: '2.5px solid rgba(212,168,67,0.5)',
+            borderTop: 'none',
+            borderRadius: '0 0 80px 80px',
+            background: 'rgba(10,10,20,0.8)',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'absolute', top: 24, left: 22, width: 28, height: 110, background: 'rgba(255,255,255,0.05)', borderRadius: 14, transform: 'rotate(-8deg)' }} />
+          <div style={{ position: 'absolute', top: 16, right: 36, width: 14, height: 55, background: 'rgba(255,255,255,0.03)', borderRadius: 7, transform: 'rotate(5deg)' }} />
 
-        {mode === 'lights' && LIGHT_SLOTS.slice(0, lightCount).map((slot, i) => (
-          <div key={i} className="prayer-jar-light" style={lightStyle(i, slot)} />
-        ))}
+          {mode === 'lights' && LIGHT_SLOTS.slice(0, lightCount).map((slot, i) => (
+            <div key={i} className="prayer-jar-light" style={lightStyle(i, slot)} />
+          ))}
 
-        {mode === 'slips' && SLIP_SLOTS.slice(0, slipCount).map((slot, i) => (
-          <SlipItem key={i} slot={slot} index={i} />
-        ))}
+          {mode === 'slips' && SLIP_SLOTS.slice(0, slipCount).map((slot, i) => (
+            <SlipItem key={i} slot={slot} index={i} />
+          ))}
+        </div>
       </div>
 
       {countLabel && (
@@ -141,6 +143,13 @@ export function PrayerJar({
 }
 
 export function SlipDropAnimation({ onComplete }: { onComplete: () => void }) {
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) {
+      onComplete();
+    }
+  }, [onComplete]);
+
   return (
     <div
       className="animate-slip-drop"
