@@ -1,12 +1,24 @@
 import { getAnsweredPrayersFiltered } from '@/services/prayer.service';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { getDailyVerse } from '@/lib/daily-verse';
+import { PrayerJar } from '@/components/prayer-jar';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { LightsReleasedClient } from '@/components/lights-released-client';
 import type { CategoryValue } from '@/db/schema';
+import { db } from '@/db';
+import { prayers } from '@/db/schema';
+import { eq, count } from 'drizzle-orm';
 
 export const metadata = { title: 'Lights Released | The Prayer Jar' };
+
+async function getAnsweredCount() {
+  const [row] = await db
+    .select({ count: count() })
+    .from(prayers)
+    .where(eq(prayers.status, 'answered'));
+  return Number(row?.count ?? 0);
+}
 
 export default async function PraiseWallPage({
   searchParams,
@@ -20,14 +32,24 @@ export default async function PraiseWallPage({
       ? (category as CategoryValue)
       : undefined;
 
-  // Default period is 'month'
-  const prayers = await getAnsweredPrayersFiltered('month', activeCategory);
-  const verse = getDailyVerse();
+  const [answeredPrayers, verse, answeredCount] = await Promise.all([
+    getAnsweredPrayersFiltered('month', activeCategory),
+    Promise.resolve(getDailyVerse()),
+    getAnsweredCount(),
+  ]);
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Lights Released ✨</h1>
+      <div className="flex flex-col items-center text-center mb-8">
+        <PrayerJar
+          count={answeredCount}
+          size="md"
+          mode="lights"
+          countLabel={`${answeredCount.toLocaleString()} lights released`}
+        />
+        <h1 className="text-3xl font-bold tracking-tight mt-6 mb-2">
+          Lights Released ✨
+        </h1>
         <p className="text-muted-foreground">
           Every light was once a prayer. God answered.
         </p>
@@ -62,7 +84,7 @@ export default async function PraiseWallPage({
         ))}
       </div>
 
-      <LightsReleasedClient initialPrayers={prayers} category={activeCategory} />
+      <LightsReleasedClient initialPrayers={answeredPrayers} category={activeCategory} />
     </main>
   );
 }

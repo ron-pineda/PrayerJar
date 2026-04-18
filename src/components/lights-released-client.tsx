@@ -73,7 +73,10 @@ export function LightsReleasedClient({
         <div className="grid gap-4 sm:grid-cols-2">
           {prayers.map((prayer, i) => (
             <ScrollReveal key={prayer.id} delay={Math.min(i, 5) * 80}>
-              <PraiseCard prayer={prayer} />
+              <div className="relative">
+                <div className="animate-light-escape" style={{ animationDelay: `${Math.min(i, 5) * 0.08}s` }} />
+                <PraiseCard prayer={prayer} />
+              </div>
             </ScrollReveal>
           ))}
         </div>
