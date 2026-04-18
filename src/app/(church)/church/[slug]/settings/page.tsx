@@ -75,6 +75,19 @@ export default async function ChurchSettingsPage({ params }: Props) {
           initialMessage={church.welcomeMessage ?? ''}
         />
       </section>
+
+      <section className="rounded-lg border bg-card p-6">
+        <h2 className="text-base font-semibold mb-1">Integrations</h2>
+        <p className="text-sm text-muted-foreground mb-5">
+          Connect your Church Management System to sync your member roster.
+        </p>
+        <Link
+          href={`/church/${slug}/settings/integrations`}
+          className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted transition-colors"
+        >
+          Manage integrations →
+        </Link>
+      </section>
     </div>
   );
 }
