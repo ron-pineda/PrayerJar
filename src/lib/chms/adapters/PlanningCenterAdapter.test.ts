@@ -549,4 +549,104 @@ describe('PlanningCenterAdapter', () => {
       expect((notifyAdmins as any).mock.calls[0][0].subject).toContain('stub user');
     });
   });
+
+  // ── 12–14. pushPrayerSummary ─────────────────────────────────────────────
+
+  describe('pushPrayerSummary()', () => {
+    // ── 12. success (200) ───────────────────────────────────────────────────
+
+    it('POSTs a note to the PCO person endpoint with correct URL and body on 200', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-notes',
+        refreshToken: 'rt-notes',
+        connectedAt: new Date().toISOString(),
+      };
+
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: async () => ({ data: { id: 'note-1', type: 'Note' } }),
+      });
+
+      await adapter.pushPrayerSummary('church-1', 'person-42', 'You prayed 5 times this month.');
+
+      expect(global.fetch).toHaveBeenCalledOnce();
+
+      const [calledUrl, calledInit] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0] as [string, RequestInit];
+      expect(calledUrl).toBe(
+        'https://api.planningcenteronline.com/people/v2/people/person-42/notes'
+      );
+      expect(calledInit.method).toBe('POST');
+
+      const body = JSON.parse(calledInit.body as string);
+      expect(body.data.type).toBe('Note');
+      expect(body.data.attributes.note_category_id).toBeNull();
+
+      const noteText: string = body.data.attributes.note;
+      expect(noteText).toContain('Prayer Summary from PrayerJar');
+      expect(noteText).toContain('You prayed 5 times this month.');
+    });
+
+    // ── 13. 403 → no throw, returns void ───────────────────────────────────
+
+    it('catches a 403 response, logs a warning, and returns void without throwing', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-notes-403',
+        refreshToken: 'rt-notes-403',
+        connectedAt: new Date().toISOString(),
+      };
+
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        json: async () => ({ errors: [{ status: '403' }] }),
+      });
+
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await expect(
+        adapter.pushPrayerSummary('church-1', 'person-forbidden', 'Summary text.')
+      ).resolves.toBeUndefined();
+
+      expect(warnSpy).toHaveBeenCalledOnce();
+      expect(warnSpy.mock.calls[0][0]).toContain('person-forbidden');
+      expect(warnSpy.mock.calls[0][0]).toContain('403');
+
+      warnSpy.mockRestore();
+    });
+
+    // ── 14. 404 → no throw, returns void ───────────────────────────────────
+
+    it('catches a 404 response, logs a warning, and returns void without throwing', async () => {
+      const adapter = makeAdapter() as any;
+      adapter.config = {
+        provider: 'planning-center',
+        accessToken: 'at-notes-404',
+        refreshToken: 'rt-notes-404',
+        connectedAt: new Date().toISOString(),
+      };
+
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({ errors: [{ status: '404' }] }),
+      });
+
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      await expect(
+        adapter.pushPrayerSummary('church-1', 'person-deleted', 'Summary text.')
+      ).resolves.toBeUndefined();
+
+      expect(warnSpy).toHaveBeenCalledOnce();
+      expect(warnSpy.mock.calls[0][0]).toContain('person-deleted');
+      expect(warnSpy.mock.calls[0][0]).toContain('404');
+
+      warnSpy.mockRestore();
+    });
+  });
 });

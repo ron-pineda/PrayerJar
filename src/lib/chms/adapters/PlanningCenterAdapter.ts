@@ -212,7 +212,9 @@ export class PlanningCenterAdapter implements ChmsAdapter {
     }
 
     if (!response.ok) {
-      throw new Error(`PCO API error: ${response.status}`);
+      const error = new Error(`PCO API error: ${response.status}`);
+      (error as { status?: number }).status = response.status;
+      throw error;
     }
 
     return response.json();
@@ -509,10 +511,36 @@ export class PlanningCenterAdapter implements ChmsAdapter {
 
   async pushPrayerSummary(
     _churchId: string,
-    _externalMemberId: string,
-    _summary: string
+    externalMemberId: string,
+    summary: string
   ): Promise<void> {
-    throw new Error('pushPrayerSummary not yet implemented — pj-s18-06');
+    const monthYear = new Date().toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+    const noteText = `Prayer Summary from PrayerJar — ${monthYear}\n\n${summary}`;
+
+    try {
+      await this.authRequest(
+        'POST',
+        `https://api.planningcenteronline.com/people/v2/people/${externalMemberId}/notes`,
+        {
+          data: {
+            type: 'Note',
+            attributes: { note: noteText, note_category_id: null },
+          },
+        }
+      );
+    } catch (err: unknown) {
+      const status = (err as { status?: number }).status;
+      if (status === 403 || status === 404) {
+        console.warn(
+          `[PCO] pushPrayerSummary skipped for person ${externalMemberId}: HTTP ${status}`
+        );
+        return;
+      }
+      throw err;
+    }
   }
 
   async handleWebhook(
