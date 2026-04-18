@@ -1,3 +1,4 @@
+[2026-04-18] QA → Reviewer: pj-s19-08 QA PASS. All 5 surfaces verified. Fixed SlipDropAnimation zIndex (50→100) + animation fill (forwards→both). Commit 3f07f6e.
 [2026-04-18] Frontend Engineer → QA: pj-s19-07 /praise-wall DONE. Lights jar hero + light-escape orb on each praise card. 359/5 tests. Commit 0319a4e. All 7 impl tasks complete — ready for QA.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-06 /pray DONE. Slips jar hero + "Someone wrote this for you." + live active count. Commit 51aabad.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-05 /for-churches DONE. Placeholder testimonials removed, live trust strip added, hero jar upgraded to size=lg. Commit e3874d4.

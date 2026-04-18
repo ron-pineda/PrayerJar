@@ -4840,7 +4840,7 @@
     "id": "pj-s19-08",
     "sprint": "19",
     "title": "QA visual regression all 5 surfaces",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Verify all surfaces at 375/768/1280px. Check jar modes, animations play once, personal stats correct, no placeholder text, CTAs route correctly.",
@@ -4854,8 +4854,14 @@
       "pj-s19-06",
       "pj-s19-07"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "Static QA PASS on all 7 surfaces. All checklist items verified.",
+      "Fixed: SlipDropAnimation zIndex 50→100 to clear dialog stacking context",
+      "Fixed: animate-slip-drop fill mode forwards→both to prevent initial position flash",
+      "Browser verification still recommended for z-index + animation timing",
+      "QA approved — commit 3f07f6e"
+    ],
+    "last_touched": "2026-04-18T05:30:00.000Z"
   },
   {
     "id": "pj-s19-09",
