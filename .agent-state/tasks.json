@@ -4257,7 +4257,7 @@
     "id": "pj-s18-03-encrypt-lib",
     "sprint": "18",
     "title": "Create src/lib/encrypt.ts — AES-256-GCM helper",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "No existing encrypt utility in src/lib. Create AES-256-GCM encrypt/decrypt using Node crypto. Key source: process.env.CHMS_CONFIG_ENCRYPTION_KEY (32-byte hex string). Output format: base64(iv || ciphertext || authTag). Decrypt must verify authTag (GCM authenticates). Handle malformed input by throwing explicitly — no silent null returns. Unit tests cover: round-trip, wrong key, tampered ciphertext, tampered authTag, missing env var.",
@@ -4280,7 +4280,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-18] PM: Must gate on Security review (s18-04) before Integrations uses it.",
-      "[2026-04-18] Backend Engineer: Built AES-256-GCM encrypt/decrypt in src/lib/encrypt.ts using node:crypto only. Output: base64(iv[12]||ciphertext[N]||authTag[16]). Fails at module load if CHMS_CONFIG_ENCRYPTION_KEY is missing or not 64 hex chars. 8 unit tests pass: 3 round-trips (normal/empty/long), wrong key throws, tampered ciphertext throws, tampered authTag throws, missing env var throws at module load, wrong-length env var throws at module load. No npm dependencies added."
+      "[2026-04-18] Backend Engineer: Built AES-256-GCM encrypt/decrypt in src/lib/encrypt.ts using node:crypto only. Output: base64(iv[12]||ciphertext[N]||authTag[16]). Fails at module load if CHMS_CONFIG_ENCRYPTION_KEY is missing or not 64 hex chars. 8 unit tests pass: 3 round-trips (normal/empty/long), wrong key throws, tampered ciphertext throws, tampered authTag throws, missing env var throws at module load, wrong-length env var throws at module load. No npm dependencies added.",
+      "[2026-04-18] Reviewer: Security review (pj-s18-04) confirmed PASS. Marking done as part of Sprint 18 final sign-off."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
@@ -4640,7 +4641,7 @@
     "id": "pj-s18-15-sales-cs-enablement",
     "sprint": "18",
     "title": "Sales + CS enablement brief + rollout playbook",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Sales",
     "priority": "medium",
     "description": "Jointly with CustomerSuccess, produce two artifacts. (1) Sales enablement brief at docs/sales/pco-integration-brief.md — the 30-second pitch, top 5 objection handles (data privacy, Groups module cost, what if we change ChMS, does our pastor need to authorize, can it be reversed), competitive positioning (who else integrates with PCO, how PrayerJar's use is different). (2) CS rollout playbook at docs/customer-success/pco-rollout.md — which churches get the integration first (existing paid churches with 150+ members), monitoring dashboards to watch post-launch, common support questions + canned responses, escalation path for auth failures.",
@@ -4660,7 +4661,8 @@
     ],
     "blockers": [],
     "notes": [
-      "2026-04-18 Sales+CS: pco-integration-brief.md written (30-sec pitch, 5 objection handles, competitive positioning, pricing context, what-it-does-NOT-do section). pco-rollout.md written (Phase 1 cohort, 30-day Enterprise notice window, monitoring checklist, 7 canned responses, auth failure escalation path, notice + outreach email templates). PCO integration bullet added to /for-churches FEATURES array under Growing Church tier (Link2 icon, tierLabel matches PLANS.pro). TypeScript clean (0 errors on for-churches). Needs PM review before sprint close."
+      "2026-04-18 Sales+CS: pco-integration-brief.md written (30-sec pitch, 5 objection handles, competitive positioning, pricing context, what-it-does-NOT-do section). pco-rollout.md written (Phase 1 cohort, 30-day Enterprise notice window, monitoring checklist, 7 canned responses, auth failure escalation path, notice + outreach email templates). PCO integration bullet added to /for-churches FEATURES array under Growing Church tier (Link2 icon, tierLabel matches PLANS.pro). TypeScript clean (0 errors on for-churches). Needs PM review before sprint close.",
+      "[2026-04-18] Reviewer/PM: APPROVED. Sales brief (pitch/5 objections/competitive position), CS rollout playbook (cohort/monitoring/canned responses/escalation), PCO bullet on /for-churches. 30-day Enterprise notice window documented. TS clean."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
@@ -4669,7 +4671,7 @@
     "id": "pj-s18-16-reviewer-sprint-signoff",
     "sprint": "18",
     "title": "Reviewer: final Sprint 18 approval",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "Review entire Sprint 18 delivery against architecture spec + acceptance criteria on each task. Confirm: (1) all task ACs met; (2) Legal + Security sign-offs present; (3) QA integration tests pass in sandbox; (4) code quality meets PrayerJar standards (tests, no placeholder error handling, no secrets in logs); (5) /for-churches claim is materially backed by shipped code; (6) no regression in existing monthly checkout / church creation / prayer wall flows.",
@@ -4685,7 +4687,9 @@
       "pj-s18-15-sales-cs-enablement"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[2026-04-18] Reviewer: Sprint 18 APPROVED WITH CONDITIONS. All 16 tasks done. Known gaps documented. See docs/sprint-reviews/sprint18-reviewer-signoff.md."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   }

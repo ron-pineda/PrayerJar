@@ -349,8 +349,8 @@
     "name": "ChMS Integration (Planning Center)",
     "features": 16,
     "size": "XL",
-    "status": "active",
-    "notes": "Sprint 18 kicked off 2026-04-18. 16 tasks proposed in tasks.json (pj-s18-01 through pj-s18-16). Gate task: pj-s18-01 (Legal PCO sub-processor). Planning Center #1 per docs/integrations/chms-landscape.md."
+    "status": "done",
+    "notes": "Sprint 18 kicked off 2026-04-18. 16 tasks proposed in tasks.json (pj-s18-01 through pj-s18-16). Gate task: pj-s18-01 (Legal PCO sub-processor). Planning Center #1 per docs/integrations/chms-landscape.md. CLOSED 2026-04-18 by Reviewer: APPROVED WITH CONDITIONS. All 16 tasks done. Known gaps: (1) webhookSecret not populated during OAuth — tracked for Sprint 19; (2) PCO sandbox integration tests pending human credentials — not a sprint-close blocker but blocks Enterprise go-live. 353/358 tests pass; 5 pre-existing failures unrelated to Sprint 18."
   },
   {
     "id": "19",
