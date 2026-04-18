@@ -4763,7 +4763,7 @@
     "id": "pj-s19-04",
     "sprint": "19",
     "title": "PrayerDialog slip-drop animation",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Import SlipDropAnimation. Show after successful submission, close dialog on animation end.",
@@ -4773,8 +4773,12 @@
     "blockers": [
       "pj-s19-01"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "SlipDropAnimation renders outside Dialog at fragment root, fires handleDropComplete on end",
+      "handleSuccess sets showDrop=true; handleDropComplete clears, closes, refreshes",
+      "Reviewer approved — commit f87c071"
+    ],
+    "last_touched": "2026-04-18T03:30:00.000Z"
   },
   {
     "id": "pj-s19-05",

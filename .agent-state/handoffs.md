@@ -1,3 +1,4 @@
+[2026-04-18] Frontend Engineer → Reviewer: pj-s19-04 PrayerDialog slip-drop DONE. SlipDropAnimation outside Dialog, fires on submit success. Commit f87c071.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-03 Homepage redesign DONE. Signed-out lg jar + new headline + Lucide icons. Signed-in personal stats + church CTAs. Fixed dead prayedFor query. Commit ca355cf.
 [2026-04-18] Backend Engineer → Reviewer: pj-s19-02 Homepage service DONE. getMyIntercessionsCount/getMyAnsweredCount/getUserChurch + getHomepageData update. 6/6 tests. Fixed getUserChurch orderBy. Commit df1ff4b.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-01 PrayerJar upgrade DONE. size/mode/countLabel + SlipDropAnimation + CSS keyframes. Fixed: countLabel aria-hidden, reduced-motion onComplete. Commit ae12544.
