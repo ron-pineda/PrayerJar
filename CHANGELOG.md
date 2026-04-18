@@ -1,5 +1,10 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-17
+
+### pj-s17-brand-guide-v1 — PrayerJar brand guide v1
+Committed docs/brand/brand-guide.md: brand promise, 5 voice attributes with do/don't pairs, visual motifs with hex codes and component refs, tier-naming convention (Free / Small Church / Growing Church / Network), fit-statement rule replacing "Most Popular," 16-entry banned-phrases list, and 3 reference copy examples. Unblocks pj-s17-tier-redesign and pj-s17-for-churches-rewrite.
+
 ## 2026-04-11
 
 ### pj-s2.4-40 — Long-form testimony stories

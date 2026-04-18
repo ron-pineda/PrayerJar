@@ -3650,7 +3650,7 @@
     "id": "pj-s17-chms-integration-survey",
     "sprint": "17",
     "title": "ChMS integration landscape survey \u2014 Planning Center, Elvanto, ChurchTrac, Breeze",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Integrations",
     "priority": "medium",
     "description": "Audit finding #4. Produce a short spec per ChMS: auth model (OAuth vs API key), member-sync endpoints, rate limits, webhook support, sandbox availability, and the minimum viable integration scope for PrayerJar (import members, sync small groups, push prayer summary back). Output: docs/integrations/chms-landscape.md + a ranked recommendation on which 1\u20132 to build first.",
@@ -3669,7 +3669,8 @@
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs in parallel with the pricing spine. Output feeds pj-s17-chms-architecture.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: kicked off wave-2b."
+      "[2026-04-17] PM: kicked off wave-2b.",
+      "[2026-04-17] Integrations: research complete. docs/integrations/chms-landscape.md committed. Top recommendation: Planning Center (#1, Sprint 18) — OAuth 2.0, 100 req/min, person webhooks, free sandbox, 73k churches. Breeze (#2, Sprint 19) — API key, 20 req/min, polling only, 11k small churches. ChurchTrac: no public API, skip. Elvanto: partial webhooks, no sandbox, deprioritize. Unblocks pj-s17-chms-architecture."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

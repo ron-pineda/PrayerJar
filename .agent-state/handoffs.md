@@ -146,3 +146,4 @@
 [2026-04-17] PM → Brand: pj-s17-brand-guide-v1 — write docs/brand/brand-guide.md v1 (voice, tier names, motif, do/don't)
 [2026-04-17] PM → Finance: pj-s17-mrr-dashboard — ship MRR/churn/attribution spec + internal dashboard before repricing
 [2026-04-17] PM → Legal: pj-s17-dpa-subprocessor — DPA template + public sub-processor list + 501(c)(3) flow
+[2026-04-17] Integrations → Reviewer: pj-s17-chms-integration-survey — docs/integrations/chms-landscape.md complete. Planning Center #1 (OAuth 2.0, person webhooks, free sandbox, 73k churches, 100 req/min), Breeze #2 (API key, polling only, 11k small churches, 20 req/min), ChurchTrac skip (no API), Elvanto deprioritize (partial webhooks, no sandbox). Unblocks pj-s17-chms-architecture.
