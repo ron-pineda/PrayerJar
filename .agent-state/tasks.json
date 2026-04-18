@@ -4508,7 +4508,7 @@
     "id": "pj-s18-11-frontend-connect-ui",
     "sprint": "18",
     "title": "Frontend: Connect Planning Center UI in church settings + sync status",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Add a Church Settings → Integrations section (or extend existing settings page). UI elements: (1) Provider card with PCO logo + 'Connect' button when disconnected; (2) Connected state shows last sync timestamp + member count + 'Disconnect' + 'Sync now' buttons; (3) Sync-status badge (syncing / ok / failed with last error); (4) Groups-unavailable warning if churches have People but not Groups subscription. Connect button initiates OAuth via server action that constructs auth URL with state param (CSRF). Loading + error states per existing UI patterns.",
@@ -4532,7 +4532,9 @@
       "pj-s18-05-pco-adapter-oauth"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "2026-04-18 Frontend → QA: Implemented integrations settings page + ChmsConnectCard with connected/disconnected states, sync status badge (pending/running/done/failed/dead), Sync Now (triggerFullSyncAction) and Disconnect (disconnectChmsAction) server actions. Integrations link added to settings page, admin/pastor role gate applied. TypeScript clean. Commit 718d949."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },

@@ -1,3 +1,4 @@
+[2026-04-18] Frontend → PM: pj-s18-11-frontend-connect-ui ready for review — integrations settings page + ChmsConnectCard (connected/disconnected states, sync status badge, Sync Now, Disconnect). TypeScript clean.
 [2026-04-18] Backend → PM: pj-s18-10-sync-jobs-runner ready for review — runner + full-sync scheduler, 8 tests, backoff/dead-letter/Sentry all implemented.
 [2026-04-18] Integrations → PM: pj-s18-09-push-summary ready for review — pushPrayerSummary with 403/404 graceful degradation, 3 new tests (14 total in adapter).
 [2026-04-18] Security → PM: pj-s18-08 webhook review PASS WITH CONDITIONS — all 7 crypto checks pass (raw body HMAC, timingSafeEqual, full-body scope, chmsConfig secret, 5-min replay window, uniform 401s, Sentry scope). webhookSecret gap documented as Option b: known gap, delta sync non-operational until Sprint 19 registration task is implemented, nightly full-sync covers interim. Review at docs/security/sprint18-webhook-review.md.
