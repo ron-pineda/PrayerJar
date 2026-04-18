@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/nextjs';
 import { getAdapterForChurch } from '@/lib/chms/providers';
 import { notifyAdmins } from '@/lib/admin-notify';
 import type { ChmsWebhookResult } from '@/lib/chms/ChmsAdapter';
+import { trackChmsSyncFailed } from '@/lib/analytics.server';
 
 const BATCH_SIZE = 10;
 
@@ -108,6 +109,15 @@ export async function GET(req: NextRequest) {
           .update(chmsSyncJobs)
           .set({ status: 'dead', error: errMsg, completedAt: new Date() })
           .where(eq(chmsSyncJobs.id, job.id));
+
+        // Fire analytics: sync job marked dead
+        await trackChmsSyncFailed({
+          church_id: job.churchId,
+          provider: job.provider,
+          job_type: job.jobType,
+          error_class: kind,
+          attempt: newAttempt,
+        });
 
         Sentry.captureException(err, {
           extra: {

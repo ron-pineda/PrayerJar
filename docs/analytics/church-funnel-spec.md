@@ -335,6 +335,26 @@ Compare `signup_complete` rates for sessions that include `calculator_interacted
 
 ---
 
+## ChMS Integration Events (Sprint 18)
+
+These events instrument the Planning Center Online (PCO) connection and sync pipeline. All are server-side only.
+
+| Event | Trigger | Properties | Server/Client |
+|---|---|---|---|
+| `chms_connection_started` | Pastor clicks Connect PCO (after auth, before redirect) | `church_id`, `provider`, `user_id` | Server |
+| `chms_connection_completed` | OAuth callback succeeds, tokens stored | `church_id`, `provider`, `user_id`, `sync_job_queued` | Server |
+| `chms_sync_failed` | Sync job marked dead in cron runner | `church_id`, `provider`, `job_type`, `error_class`, `attempt` | Server |
+
+**Firing locations:**
+- `chms_connection_started` — `src/app/api/auth/chms/connect/planning-center/route.ts` (after role check, before PCO redirect)
+- `chms_connection_completed` — `src/app/api/auth/chms/callback/planning-center/route.ts` (after `exchangeCodeForTokens` succeeds)
+- `chms_sync_failed` — `src/app/api/cron/chms-sync-runner/route.ts` (when `isDead === true`)
+
+**`error_class` values for `chms_sync_failed`:** `'auth'` (expired/refreshfailed), `'transient'` (rate limit / 5xx), `'permanent'` (all other errors).  
+**`sync_job_queued`** is always `true` for `chms_connection_completed` — `exchangeCodeForTokens` unconditionally inserts a `full_sync` job.
+
+---
+
 ## 8. Schema Stability Policy
 
 This is version 1.0 of the church funnel event schema. Any future change to an event name, removal of a required property, or type change to an existing property must:

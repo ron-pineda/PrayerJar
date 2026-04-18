@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { churchMembers } from '@/db/schema';
 import { and, eq, inArray } from 'drizzle-orm';
 import { PlanningCenterAdapter } from '@/lib/chms/adapters/PlanningCenterAdapter';
+import { trackChmsConnectionCompleted } from '@/lib/analytics.server';
 
 // GET /api/auth/chms/callback/planning-center?code=...&state=...
 export async function GET(request: Request) {
@@ -60,6 +61,14 @@ export async function GET(request: Request) {
   try {
     const adapter = new PlanningCenterAdapter();
     await adapter.exchangeCodeForTokens(code, churchId);
+
+    // Fire analytics: connection succeeded, tokens stored, full_sync job queued
+    await trackChmsConnectionCompleted({
+      church_id: churchId,
+      provider: 'planning-center',
+      user_id: session.user.id,
+      sync_job_queued: true,
+    });
   } catch (err) {
     console.error('[PCO callback] token exchange failed:', err);
     const failUrl = new URL('/church/settings/integrations', request.url);

@@ -4,6 +4,7 @@ import { db } from '@/db';
 import { churchMembers } from '@/db/schema';
 import { and, eq, inArray } from 'drizzle-orm';
 import { PlanningCenterAdapter } from '@/lib/chms/adapters/PlanningCenterAdapter';
+import { trackChmsConnectionStarted } from '@/lib/analytics.server';
 
 // GET /api/auth/chms/connect/planning-center?churchId=<id>
 export async function GET(request: Request) {
@@ -44,6 +45,13 @@ export async function GET(request: Request) {
   // 5. Build authorization URL
   const adapter = new PlanningCenterAdapter();
   const authorizationUrl = adapter.getAuthorizationUrl(state);
+
+  // Fire analytics: connection initiated (after auth + role check, before redirect)
+  await trackChmsConnectionStarted({
+    church_id: churchId,
+    provider: 'planning-center',
+    user_id: session.user.id,
+  });
 
   // 6. Set state cookie and redirect to PCO
   return new Response(null, {

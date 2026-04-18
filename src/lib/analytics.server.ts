@@ -1,6 +1,6 @@
 // Server-side analytics helpers — safe to import from server actions and route handlers.
 // Uses @vercel/analytics/server which does NOT require a browser context.
-// Spec: docs/analytics/church-funnel-spec.md v1.0 (Sprint 17)
+// Spec: docs/analytics/church-funnel-spec.md v1.0 (Sprint 17); ChMS events added Sprint 18
 //
 // NOTE: Do NOT import this file from any 'use client' component.
 
@@ -69,5 +69,52 @@ export async function trackDemoRequested(props: {
 }) {
   await track('demo_requested', props).catch((err) =>
     console.error('[analytics] demo_requested failed:', err),
+  );
+}
+
+// --- ChMS Integration Events (Sprint 18 — pj-s18-12) ---
+
+/**
+ * Fires when a pastor initiates a ChMS connection (after auth + role check
+ * pass, before the OAuth provider redirect). Call from the connect route.
+ */
+export async function trackChmsConnectionStarted(props: {
+  church_id: string;
+  provider: string;
+  user_id: string;
+}) {
+  await track('chms_connection_started', props).catch((err) =>
+    console.error('[analytics] chms_connection_started failed:', err),
+  );
+}
+
+/**
+ * Fires when the OAuth callback succeeds and tokens are stored in the DB.
+ * sync_job_queued is always true — exchangeCodeForTokens inserts a full_sync job.
+ */
+export async function trackChmsConnectionCompleted(props: {
+  church_id: string;
+  provider: string;
+  user_id: string;
+  sync_job_queued: boolean;
+}) {
+  await track('chms_connection_completed', props).catch((err) =>
+    console.error('[analytics] chms_connection_completed failed:', err),
+  );
+}
+
+/**
+ * Fires when a ChMS sync job is marked dead in the cron runner (auth error,
+ * permanent error, or max retries exhausted).
+ */
+export async function trackChmsSyncFailed(props: {
+  church_id: string;
+  provider: string;
+  job_type: string;
+  error_class: 'transient' | 'auth' | 'permanent';
+  attempt: number;
+}) {
+  await track('chms_sync_failed', props).catch((err) =>
+    console.error('[analytics] chms_sync_failed failed:', err),
   );
 }
