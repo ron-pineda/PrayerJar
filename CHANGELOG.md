@@ -2,6 +2,12 @@
 
 ## 2026-04-17
 
+### pj-s17-chms-integration-survey — ChMS integration landscape survey
+Research doc at docs/integrations/chms-landscape.md covering Planning Center, Elvanto, ChurchTrac, and Breeze with auth model, endpoints, rate limits, webhook support, sandbox availability, and MVI scope per platform. Ranked recommendation: Planning Center #1 (Sprint 18 — OAuth 2.0, person webhooks, free sandbox, 73k churches), Breeze #2 (Sprint 19), ChurchTrac skip (no API), Elvanto deprioritize.
+
+### pj-s17-funnel-instrumentation — Church acquisition funnel event spec
+Spec at docs/analytics/church-funnel-spec.md. Confirmed @vercel/analytics as sole analytics tool (no PostHog). Defined all 8 funnel events (for_churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested) with trigger, firing side, properties, types, and expected volume. plan_activated and plan_upgraded locked to server-side Stripe webhook. Weekly funnel review template and 4 dashboard views included.
+
 ### pj-s17-brand-guide-v1 — PrayerJar brand guide v1
 Committed docs/brand/brand-guide.md: brand promise, 5 voice attributes with do/don't pairs, visual motifs with hex codes and component refs, tier-naming convention (Free / Small Church / Growing Church / Network), fit-statement rule replacing "Most Popular," 16-entry banned-phrases list, and 3 reference copy examples. Unblocks pj-s17-tier-redesign and pj-s17-for-churches-rewrite.
 
