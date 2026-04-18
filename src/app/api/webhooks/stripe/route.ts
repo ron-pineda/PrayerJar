@@ -6,6 +6,8 @@ import { evaluateDonorBadge } from '@/services/badge.service';
 import { getPlanByStripePriceId } from '@/lib/plans';
 import { db } from '@/db';
 import { donations, subscriptions, eventLicenses, churches } from '@/db/schema';
+import { logAuditEvent } from '@/lib/audit';
+import { trackPlanActivated, trackPlanUpgraded } from '@/lib/analytics.server';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY not configured');
@@ -71,6 +73,20 @@ export async function POST(req: NextRequest) {
               updatedAt: new Date(),
             })
             .where(eq(churches.id, churchId));
+        }
+
+        // Funnel event — plan_activated fires on first paid subscription.
+        // checkout.session.completed is the authoritative first-payment signal.
+        if (inserted?.id) {
+          const billingInterval =
+            item.price.recurring?.interval === 'year' ? 'annual' : 'monthly';
+          void trackPlanActivated({
+            user_id: userId,
+            church_id: churchId ?? '',
+            plan: resolvedTier,
+            billing_interval: billingInterval,
+            stripe_subscription_id: stripeSubscription.id,
+          });
         }
       } catch (err) {
         console.error('Webhook subscription processing error:', err);
@@ -151,7 +167,7 @@ export async function POST(req: NextRequest) {
           updatedAt: new Date(),
         })
         .where(eq(subscriptions.stripeSubscriptionId, stripeSubscription.id))
-        .returning({ id: subscriptions.id });
+        .returning({ id: subscriptions.id, userId: subscriptions.userId });
 
       if (result.length === 0) {
         console.error(`subscription.updated: no subscription found for ${stripeSubscription.id}`);
@@ -170,12 +186,21 @@ export async function POST(req: NextRequest) {
           updatedAt: new Date(),
         })
         .where(eq(churches.subscriptionId, result[0].id))
-        .returning({ id: churches.id, currentPlan: churches.currentPlan, previousPlan: churches.previousPlan });
+        .returning({
+          id: churches.id,
+          currentPlan: churches.currentPlan,
+          previousPlan: churches.previousPlan,
+          firstPaidAt: churches.firstPaidAt,
+        });
+
+      // Tier ordering used to distinguish upgrades from downgrades.
+      const TIER_ORDER: Record<string, number> = { free: 0, starter: 1, pro: 2, enterprise: 3 };
+      const subscriptionUserId = result[0].userId;
+      const billingIntervalUpdated =
+        item.price.recurring?.interval === 'year' ? 'annual' : 'monthly';
 
       for (const row of churchRows) {
         // Log a structured churn event when a paid church drops to free.
-        // Server-side Vercel Analytics isn't available; Sentry + log aggregator
-        // pick up console.log on the platform. See docs/finance/mrr-dashboard-spec.md.
         if (row.previousPlan && row.previousPlan !== 'free' && row.currentPlan === 'free') {
           console.log(JSON.stringify({
             event: 'churn.downgrade',
@@ -185,6 +210,42 @@ export async function POST(req: NextRequest) {
             source: 'subscription.updated',
           }));
         }
+
+        // Funnel event — plan_upgraded fires when a church moves to a higher tier.
+        const prevOrder = TIER_ORDER[row.previousPlan ?? 'free'] ?? 0;
+        const nextOrder = TIER_ORDER[row.currentPlan] ?? 0;
+        if (
+          row.previousPlan &&
+          row.previousPlan !== row.currentPlan &&
+          nextOrder > prevOrder
+        ) {
+          const daysSinceActivation = row.firstPaidAt
+            ? Math.floor((Date.now() - new Date(row.firstPaidAt).getTime()) / 86_400_000)
+            : 0;
+          void trackPlanUpgraded({
+            user_id: subscriptionUserId ?? '',
+            church_id: row.id,
+            from_plan: row.previousPlan,
+            to_plan: row.currentPlan,
+            billing_interval: billingIntervalUpdated,
+            days_since_activation: daysSinceActivation,
+            stripe_subscription_id: stripeSubscription.id,
+          });
+        }
+
+        // Audit log the plan change (actorUserId is null — Stripe triggered it).
+        await logAuditEvent({
+          churchId: row.id,
+          actorUserId: null,
+          action: 'plan.change',
+          targetType: 'church',
+          targetId: row.id,
+          metadata: {
+            fromPlan: row.previousPlan ?? 'unknown',
+            toPlan: row.currentPlan,
+            source: 'stripe.subscription.updated',
+          },
+        });
       }
     } catch (err) {
       console.error('Webhook subscription update error:', err);

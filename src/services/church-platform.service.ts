@@ -4,6 +4,7 @@ import { eq, and, desc, count } from 'drizzle-orm';
 import type { Church, ChurchMember } from '@/db/schema';
 import { PLANS } from '@/lib/plans';
 import type { PlanTier } from '@/lib/plans';
+import { logAuditEvent } from '@/lib/audit';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -133,10 +134,12 @@ export async function getChurchByAdminUserId(
 }
 
 // Add a user to a church (default role: 'member'). No-op if already a member.
+// actorUserId is the admin/pastor performing the action (for audit logging).
 export async function addChurchMember(
   churchId: string,
   userId: string,
   role: 'admin' | 'pastor' | 'member' = 'member',
+  actorUserId?: string,
 ): Promise<void> {
   const tier = await getChurchTier(churchId);
   const limit = PLANS[tier].limits.members;
@@ -155,13 +158,83 @@ export async function addChurchMember(
     .insert(churchMembers)
     .values({ churchId, userId, role })
     .onConflictDoNothing();
+
+  await logAuditEvent({
+    churchId,
+    actorUserId: actorUserId ?? null,
+    action: 'member.add',
+    targetType: 'user',
+    targetId: userId,
+    metadata: { role },
+  });
 }
 
 // Remove a user from a church
-export async function removeChurchMember(churchId: string, userId: string): Promise<void> {
+// actorUserId is the admin/pastor performing the removal (for audit logging).
+export async function removeChurchMember(
+  churchId: string,
+  userId: string,
+  actorUserId?: string,
+): Promise<void> {
   await db
     .delete(churchMembers)
     .where(and(eq(churchMembers.churchId, churchId), eq(churchMembers.userId, userId)));
+
+  await logAuditEvent({
+    churchId,
+    actorUserId: actorUserId ?? null,
+    action: 'member.remove',
+    targetType: 'user',
+    targetId: userId,
+  });
+}
+
+// Change a church member's role (admin/pastor/member).
+// actorUserId is the admin performing the change (for audit logging).
+export async function updateChurchMemberRole(
+  churchId: string,
+  userId: string,
+  newRole: 'admin' | 'pastor' | 'member',
+  actorUserId?: string,
+): Promise<void> {
+  await db
+    .update(churchMembers)
+    .set({ role: newRole })
+    .where(and(eq(churchMembers.churchId, churchId), eq(churchMembers.userId, userId)));
+
+  await logAuditEvent({
+    churchId,
+    actorUserId: actorUserId ?? null,
+    action: 'role.change',
+    targetType: 'user',
+    targetId: userId,
+    metadata: { newRole },
+  });
+}
+
+// Delete a prayer on behalf of a church admin (bypasses owner check).
+// actorUserId is the admin performing the deletion (for audit logging).
+export async function deleteChurchPrayerAsAdmin(
+  churchId: string,
+  prayerId: string,
+  actorUserId?: string,
+): Promise<boolean> {
+  const result = await db
+    .delete(prayers)
+    .where(and(eq(prayers.id, prayerId), eq(prayers.churchId, churchId)))
+    .returning({ id: prayers.id });
+
+  if (result.length > 0) {
+    await logAuditEvent({
+      churchId,
+      actorUserId: actorUserId ?? null,
+      action: 'prayer.delete',
+      targetType: 'prayer',
+      targetId: prayerId,
+    });
+  }
+
+  return result.length > 0;
 }
 
 // Update welcome message

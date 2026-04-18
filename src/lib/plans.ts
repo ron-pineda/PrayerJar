@@ -184,3 +184,24 @@ export const TESTIMONY_APPROVAL_QUEUE_TIER: PlanTier = 'pro';
 export function hasTestimonyApprovalQueue(tier: PlanTier): boolean {
   return TIER_RANK[tier] >= TIER_RANK[TESTIMONY_APPROVAL_QUEUE_TIER];
 }
+
+/**
+ * Returns the number of days audit events are retained for a given plan tier.
+ *
+ * Tier mapping (pj-s17-audit-log):
+ *   free     →  90 days  (same bucket as Small Church — no paid plan)
+ *   starter  →  90 days  (Small Church)
+ *   pro      → 365 days  (Growing Church)
+ *   enterprise → 1095 days (Network — 3 years)
+ */
+export function auditRetentionDays(tier: PlanTier): number {
+  switch (tier) {
+    case 'free':
+    case 'starter':
+      return 90;
+    case 'pro':
+      return 365;
+    case 'enterprise':
+      return 1095;
+  }
+}

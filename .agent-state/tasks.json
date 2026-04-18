@@ -4024,7 +4024,7 @@
     "id": "pj-s17-audit-log",
     "sprint": "17",
     "title": "Church audit log — capture admin + pastoral actions",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Security",
     "priority": "high",
     "description": "Security audit: no audit logs anywhere in the codebase. Any enterprise church will ask for them during procurement. Scope: (1) `audit_events` table keyed by church_id + actor_user_id + action + target_type + target_id + metadata + timestamp, (2) write-points for member add/remove, role change, prayer delete, plan change, (3) read-only admin view at /church/{slug}/admin/audit, (4) 90-day retention on Starter, 1-year on Pro, 3-year on Enterprise (tie to plans.ts).",
@@ -4039,10 +4039,14 @@
       "Task notes explicitly flag that retention tier names must track any renames from pj-s17-tier-redesign (Free / Small Church / Growing Church / Network)."
     ],
     "files": [
-      "drizzle/migrations/00XX_audit_events.sql",
+      "src/db/migrations/0029_audit_events.sql",
       "src/db/schema.ts",
       "src/lib/audit.ts",
-      "src/app/(church)/church/[slug]/admin/audit/page.tsx"
+      "src/lib/plans.ts",
+      "src/services/church-platform.service.ts",
+      "src/app/api/webhooks/stripe/route.ts",
+      "src/app/(church)/church/[slug]/admin/audit/page.tsx",
+      "src/lib/audit.test.ts"
     ],
     "depends_on": [
       "pj-s17-plans-gating-fix"
@@ -4053,7 +4057,8 @@
     "notes": [
       "[2026-04-17] PM: proposed by Security specialist pass. Foundational for enterprise-tier credibility.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: final wave — all blockers cleared."
+      "[2026-04-17] PM: final wave — all blockers cleared.",
+      "[2026-04-17] Security: implementation complete. Migration 0029_audit_events.sql. 5 write-points wired: member.add + member.remove + role.change (addChurchMember/removeChurchMember/updateChurchMemberRole in church-platform.service.ts), prayer.delete (deleteChurchPrayerAsAdmin in church-platform.service.ts), plan.change (Stripe webhook subscription.updated). auditRetentionDays() added to plans.ts: free/starter=90d, pro=365d, enterprise=1095d. Read-only admin page at /church/{slug}/admin/audit. 8/8 tests pass. 0 new tsc errors on touched files. Retention tier names track plans.ts — not hardcoded."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
