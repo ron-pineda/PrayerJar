@@ -34,7 +34,7 @@ export default function CreateChurchPage() {
       }
 
       const { slug } = await res.json();
-      router.push(`/church/${slug}`);
+      router.push(`/church/${slug}/setup`);
     } catch {
       setError('Network error. Please check your connection and try again.');
     } finally {

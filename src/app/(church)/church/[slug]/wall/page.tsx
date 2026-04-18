@@ -80,8 +80,9 @@ export default async function ChurchWallPage({ params }: Props) {
 
       {/* Prayer list */}
       {prayers.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-          No prayers have been shared yet. Be the first!
+        <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground flex flex-col items-center gap-3">
+          <p>No prayers have been shared yet. Be the first!</p>
+          <a href="/pray" className="text-sm font-medium text-primary underline underline-offset-4">Add a prayer</a>
         </div>
       ) : (
         <ul className="flex flex-col gap-4">

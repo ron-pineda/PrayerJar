@@ -68,7 +68,7 @@ export default async function ChurchSetupPage({ params }: Props) {
     {
       title: 'Invite Your Prayer Team',
       description: 'Add members to your church so they can pray together.',
-      comingSoon: true,
+      link: { href: `/church/${slug}/dashboard/team`, label: 'Invite Members' },
     },
     {
       title: 'Set Up Your First Event',
