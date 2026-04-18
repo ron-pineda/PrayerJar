@@ -1,3 +1,4 @@
+[2026-04-18] DocWriter → PM: pj-s18-14 ready for review — /docs/churches/connect-planning-center page + Learn more links from ChmsConnectCard. Brand voice follows brand-guide.md. Needs CustomerSuccess review for accuracy.
 [2026-04-18] QA → PM: pj-s18-13 ready for review — 8 integration test scenarios scaffolded (skip without PCO_SANDBOX_CLIENT_ID). QA sign-off template at docs/qa/sprint18-chms-signoff.md. BLOCKED on human: obtain PCO sandbox org + credentials.
 [2026-04-18] Analytics → PM: pj-s18-12 done — trackChmsConnectionStarted/Completed/Failed added to analytics.server.ts + fired from connect/callback/runner. church-funnel-spec.md updated.
 [2026-04-18] Frontend → PM: pj-s18-11-frontend-connect-ui ready for review — integrations settings page + ChmsConnectCard (connected/disconnected states, sync status badge, Sync Now, Disconnect). TypeScript clean.
