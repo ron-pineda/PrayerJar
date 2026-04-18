@@ -1,3 +1,4 @@
+[2026-04-18] Frontend Engineer → Reviewer: pj-s19-06 /pray DONE. Slips jar hero + "Someone wrote this for you." + live active count. Commit 51aabad.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-05 /for-churches DONE. Placeholder testimonials removed, live trust strip added, hero jar upgraded to size=lg. Commit e3874d4.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-04 PrayerDialog slip-drop DONE. SlipDropAnimation outside Dialog, fires on submit success. Commit f87c071.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-03 Homepage redesign DONE. Signed-out lg jar + new headline + Lucide icons. Signed-in personal stats + church CTAs. Fixed dead prayedFor query. Commit ca355cf.

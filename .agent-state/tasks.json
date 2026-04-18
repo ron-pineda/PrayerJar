@@ -4806,7 +4806,7 @@
     "id": "pj-s19-06",
     "sprint": "19",
     "title": "/pray slips-mode jar hero + new headline",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Add PrayerJar mode=slips size=md with countLabel. Headline: Someone wrote this for you.",
@@ -4816,8 +4816,12 @@
     "blockers": [
       "pj-s19-01"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "getActivePrayerCount filters active + non-expired + non-group prayers",
+      "PrayerJar slips mode with live count, evocative headline preserved CategoryPicker",
+      "Reviewer approved — commit 51aabad"
+    ],
+    "last_touched": "2026-04-18T04:30:00.000Z"
   },
   {
     "id": "pj-s19-07",
