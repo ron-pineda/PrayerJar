@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PLANS, ANNUAL_DISCOUNT_PERCENT, type PlanTier } from '@/lib/plans';
+import { trackPricingView } from '@/lib/analytics';
 
 const TIERS: PlanTier[] = ['free', 'starter', 'pro', 'enterprise'];
 
@@ -155,9 +156,43 @@ function TierCard({
 
 export function TierCardsSection() {
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    // Fire pricing_view once per session when the tier card section scrolls
+    // into view. Uses sessionStorage to prevent re-fires on scroll-back-up.
+    const SESSION_KEY = 'pj_pricing_view_fired';
+    if (sessionStorage.getItem(SESSION_KEY)) {
+      firedRef.current = true;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (firedRef.current) return;
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          firedRef.current = true;
+          sessionStorage.setItem(SESSION_KEY, '1');
+          trackPricingView({
+            page_path: window.location.pathname,
+            tier_count: TIERS.length,
+            referrer_event: null, // enriched by analytics wrapper in a future sprint
+          });
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div>
+    <div ref={sectionRef}>
       {/* Billing toggle */}
       <div className="flex justify-center mb-10">
         <div className="inline-flex rounded-lg border p-1 gap-1">

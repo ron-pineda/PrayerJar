@@ -3758,7 +3758,7 @@
     "id": "pj-s17-funnel-instrumentation-fe",
     "sprint": "17",
     "title": "Wire funnel events into /for-churches, signup, and church dashboard",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Implement the events defined in pj-s17-funnel-instrumentation across the church acquisition flow: pageview, calculator interactions, signup steps, plan activation/upgrade in the church dashboard. Server-side events for plan_activated and plan_upgraded (webhook-driven — do not rely on client).",
@@ -3773,22 +3773,28 @@
     ],
     "files": [
       "src/app/(public)/for-churches/page.tsx",
-      "src/app/(church)/church/[slug]/dashboard/**",
-      "src/lib/analytics.ts"
+      "src/components/for-churches-view-tracker.tsx",
+      "src/components/tier-cards-section.tsx",
+      "src/components/pricing-calculator.tsx",
+      "src/app/(church)/church/create/page.tsx",
+      "src/app/api/v1/church/route.ts",
+      "src/app/api/webhooks/stripe/route.ts",
+      "src/app/(public)/for-churches/demo/actions.ts",
+      "src/lib/analytics.ts",
+      "src/lib/analytics.server.ts"
     ],
     "depends_on": [
       "pj-s17-funnel-instrumentation"
     ],
-    "blockers": [
-      "pj-s17-funnel-instrumentation"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with Analytics spec.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: final wave — all blockers cleared."
+      "[2026-04-17] PM: final wave — all blockers cleared.",
+      "[2026-04-18] Frontend: all 8 events wired. Client events (for_churches_view, pricing_view, calculator_interacted, signup_start) via @vercel/analytics track() in typed wrappers in src/lib/analytics.ts. Server events (signup_complete, plan_activated, plan_upgraded, demo_requested) via @vercel/analytics/server in src/lib/analytics.server.ts. ForChurchesViewTracker \"use client\" component fires for_churches_view on mount. IntersectionObserver on TierCardsSection with sessionStorage dedup for pricing_view. Calculator debounced 500ms + 5s rate cap per spec §3.3. signup_start fires on first field focus in church/create page. signup_complete fires in /api/v1/church route after createChurch(). plan_activated fires in Stripe webhook after checkout.session.completed subscription insert. plan_upgraded fires in customer.subscription.updated when tier order increases. demo_requested wired into demo/actions.ts. 0 new tsc errors. Handing to QA."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-18"
   },
   {
     "id": "pj-s17-onboarding-audit",

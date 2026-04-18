@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { db } from '@/db';
 import { churchEnterpriseLeads } from '@/db/schema';
+import { trackDemoRequested } from '@/lib/analytics.server';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
 const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
@@ -36,6 +37,19 @@ const demoSchema = z.object({
 });
 
 export type DemoFormResult = { success: true } | { error: string };
+
+// ── Analytics bucket mapping ───────────────────────────────────────────────
+// Maps demo form member-bucket enum to spec §3.8 church_size_bucket values.
+function toAnalyticsBucket(memberBucket: string): string {
+  switch (memberBucket) {
+    case '<50': return '1-25'; // closest spec bucket
+    case '50–150': return '26-100';
+    case '150–500': return '101-500';
+    case '500–2,000':
+    case '2,000+': return '500+';
+    default: return '1-25';
+  }
+}
 
 // ── Qualification flags (derived from form data for the admin notification) ──
 
@@ -145,6 +159,16 @@ export async function requestDemo(formData: FormData): Promise<DemoFormResult> {
     console.error('[requestDemo] DB insert failed:', err);
     return { error: 'Something went wrong. Please try again.' };
   }
+
+  // Funnel event — fires server-side after successful lead persist.
+  // has_calendly_booked is false at submit time; updated via Calendly webhook
+  // or redirect param in Sprint 18. Spec §3.8.
+  void trackDemoRequested({
+    church_size_bucket: toAnalyticsBucket(data.memberBucket),
+    has_calendly_booked: false,
+    referrer_plan: null, // no referrer_plan passed through the current form
+    source_utm: null,    // UTM not captured in the current form; future sprint
+  });
 
   // Fire admin notification — failure must not block the user-facing response.
   sendAdminNotification(data).catch((err) => {

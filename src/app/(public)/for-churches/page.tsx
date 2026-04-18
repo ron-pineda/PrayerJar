@@ -16,6 +16,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { PricingCalculator } from '@/components/pricing-calculator';
 import { TierCardsSection } from '@/components/tier-cards-section';
 import { FaqAccordion } from '@/components/faq-accordion';
+import { ForChurchesViewTracker } from '@/components/for-churches-view-tracker';
 import {
   PLANS,
   PASTORAL_DASHBOARD_TIER_NAME,
@@ -145,6 +146,9 @@ const TESTIMONIAL_SLOTS = [
 export default function ForChurchesPage() {
   return (
     <main className="min-h-screen">
+      {/* Funnel instrumentation — fires for_churches_view on mount */}
+      <ForChurchesViewTracker />
+
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section className="py-20 px-4 text-center max-w-2xl mx-auto">
         <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { createChurch } from '@/services/church-platform.service';
+import { trackSignupComplete } from '@/lib/analytics.server';
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -41,5 +42,19 @@ export async function POST(req: Request) {
     utmMedium,
     utmCampaign,
   });
+
+  // Funnel event — fires server-side after successful church creation.
+  // signup_method is always 'email' here; OAuth creates churches via a
+  // separate flow if one exists. plan_at_signup defaults to 'free' since
+  // the first church plan is always Free until a Stripe checkout completes.
+  void trackSignupComplete({
+    user_id: session.user.id,
+    signup_method: 'email',
+    plan_at_signup: 'free',
+    // church_size_bucket is not captured at church-create time; would need
+    // to be added to the form and passed in the body in a future sprint.
+    church_size_bucket: 'unknown',
+  });
+
   return Response.json({ slug: church.slug }, { status: 201 });
 }

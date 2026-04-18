@@ -1,12 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { trackSignupStart } from '@/lib/analytics';
 
 export default function CreateChurchPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Fire signup_start once per session on first field interaction.
+  const signupStartFiredRef = useRef(false);
+  function handleSignupStart() {
+    if (signupStartFiredRef.current) return;
+    signupStartFiredRef.current = true;
+    trackSignupStart({
+      signup_method: 'email',
+      plan_intent: new URLSearchParams(window.location.search).get('plan'),
+      source_page: document.referrer
+        ? (() => {
+            try {
+              return new URL(document.referrer).pathname;
+            } catch {
+              return '/';
+            }
+          })()
+        : '/',
+    });
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,6 +86,7 @@ export default function CreateChurchPage() {
             placeholder="First Baptist Church"
             className="border rounded-md px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
             disabled={loading}
+            onFocus={handleSignupStart}
           />
         </div>
 

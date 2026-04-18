@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PLANS, ANNUAL_DISCOUNT_PERCENT, type PlanTier } from '@/lib/plans';
+import { trackCalculatorInteracted } from '@/lib/analytics';
 
 // Thresholds read from plans.ts where available; pro.limits.members is null
 // (no hard cap), so the enterprise boundary is a local business-rule constant.
@@ -12,6 +13,17 @@ const STARTER_CAP = PLANS.starter.limits.members!;   // 150
 // pro.limits.members === null (Growing Church has no hard cap).
 // >500 members signals enterprise (Network) territory.
 const ENTERPRISE_THRESHOLD = 500;
+
+/**
+ * Buckets a numeric member count into one of four range strings.
+ * Matches the spec buckets in docs/analytics/church-funnel-spec.md §3.3.
+ */
+function bucketMemberCount(count: number): string {
+  if (count <= 25) return '1-25';
+  if (count <= 100) return '26-100';
+  if (count <= 500) return '101-500';
+  return '500+';
+}
 
 /**
  * Determines the recommended plan tier for a given member count.
@@ -35,6 +47,24 @@ function formatDollars(cents: number): string {
 export function PricingCalculator() {
   const [memberCount, setMemberCount] = useState(75);
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly');
+
+  // Debounce + rate-cap for calculator_interacted (spec: 500ms debounce, 1 event/5s).
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastFiredRef = useRef<number>(0);
+
+  const fireCalculatorEvent = useCallback((count: number, tier: PlanTier) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      const now = Date.now();
+      if (now - lastFiredRef.current < 5000) return; // 5s rate cap
+      lastFiredRef.current = now;
+      trackCalculatorInteracted({
+        calculator_field: 'member_count',
+        new_value: bucketMemberCount(count),
+        resulting_plan: tier,
+      });
+    }, 500);
+  }, []);
 
   const tier = recommendTier(memberCount);
   const plan = PLANS[tier];
@@ -73,7 +103,11 @@ export function PricingCalculator() {
             max={600}
             step={10}
             value={memberCount}
-            onChange={(e) => setMemberCount(Number(e.target.value))}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              setMemberCount(next);
+              fireCalculatorEvent(next, recommendTier(next));
+            }}
             className="flex-1 accent-primary"
           />
           <span className="text-sm font-semibold w-16 text-right">
