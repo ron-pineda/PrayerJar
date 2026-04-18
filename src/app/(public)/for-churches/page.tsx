@@ -15,6 +15,7 @@ import { PrayerJar } from '@/components/prayer-jar';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { PricingCalculator } from '@/components/pricing-calculator';
 import { TierCardsSection } from '@/components/tier-cards-section';
+import { FaqAccordion } from '@/components/faq-accordion';
 import {
   PLANS,
   PASTORAL_DASHBOARD_TIER_NAME,
@@ -250,23 +251,7 @@ export default function ForChurchesPage() {
         <h2 className="text-xl font-bold tracking-tight mb-8 text-center">
           Common questions
         </h2>
-        <div className="space-y-1">
-          {FAQ_ITEMS.map((item, i) => (
-            <ScrollReveal key={item.q} delay={i * 80}>
-              <details className="group border-b last:border-0">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 py-4 text-sm font-medium select-none">
-                  {item.q}
-                  <span className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180">
-                    ▾
-                  </span>
-                </summary>
-                <p className="pb-4 text-sm text-muted-foreground leading-relaxed">
-                  {item.a}
-                </p>
-              </details>
-            </ScrollReveal>
-          ))}
-        </div>
+        <FaqAccordion items={FAQ_ITEMS} />
       </section>
 
       {/* ── Social Proof Strip ───────────────────────────────────────── */}
@@ -316,7 +301,7 @@ export default function ForChurchesPage() {
             </p>
             <Button
               size="lg"
-              render={<a href="/church/enterprise-demo" />}
+              render={<a href="/for-churches/demo" />}
             >
               Book a call
             </Button>

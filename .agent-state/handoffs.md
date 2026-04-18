@@ -1,3 +1,4 @@
+[2026-04-17] Frontend → Reviewer (rework): pj-s17-for-churches-build — fixed recommendTier() logic bug, added 8 pricing-calculator tests, corrected /for-churches/demo CTA path in 3 files, replaced details/summary FAQ with aria-expanded accordion component.
 [2026-04-18] Reviewer → Architect: pj-s17-for-churches-build — REWORK: 4 AC failures: (1) recommendTier() can never return 'enterprise' — PLANS.pro.limits.members === null always short-circuits to 'pro'; 600-member test proves it; (2) no pricing-calculator tests — plans.test.ts covers gating predicates only, no test for recommendTier(); (3) enterprise CTA links to /church/enterprise-demo everywhere but sales doc §2 and UI task file list both say /for-churches/demo; (4) FAQ aria-expanded missing — native <details>/<summary> uses open attribute, not aria-expanded as AC requires.
 [2026-04-18] Reviewer → done: pj-s17-enterprise-demo-flow — APPROVED. All 6 AC met. Qualification tree + 6-signal decision tree present; 10 fields with type/required markers in §2 table; 4-touch sequence (T+0/T+1h/T+24h/T+72h) with subject lines and full body copy; rep brief with rubric + disqualification triggers + 24h SLA; warm redirect to Growing Church in §5; Calendly inline embed + CALENDLY_URL env var in §6. Price anchor confirmed.
 [2026-04-17] Frontend → QA: pj-s17-for-churches-build — /for-churches converted to server component (metadata export), PricingCalculator and TierCardsSection extracted as client components. All data sourced from plans.ts. 8 features, 4 tier cards, 8-item FAQ, jar motif, verse strip, social proof placeholders, enterprise section all shipped. 0 tsc errors on touched files.
@@ -175,3 +176,5 @@
 [2026-04-17] PM → Legal: pj-s17-dpa-subprocessor — finish DPA public page + 501(c)(3) flow (partial work already committed)
 
 [2026-04-18T02:34:35.165Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-18T02:47:12.936Z] Dashboard sync — 0 fix(es): 

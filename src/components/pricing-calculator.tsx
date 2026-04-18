@@ -5,23 +5,24 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PLANS, ANNUAL_DISCOUNT_PERCENT, type PlanTier } from '@/lib/plans';
 
+// Thresholds read from plans.ts where available; pro.limits.members is null
+// (no hard cap), so the enterprise boundary is a local business-rule constant.
+const FREE_CAP = PLANS.free.limits.members!;         // 50
+const STARTER_CAP = PLANS.starter.limits.members!;   // 150
+// pro.limits.members === null (Growing Church has no hard cap).
+// >500 members signals enterprise (Network) territory.
+const ENTERPRISE_THRESHOLD = 500;
+
 /**
  * Determines the recommended plan tier for a given member count.
- * Reads limits.members from plans.ts — no hardcoded values.
+ * Walks downward from the most-expensive tier so that null caps on pro/enterprise
+ * never cause a short-circuit before the enterprise branch is evaluated.
  */
-function recommendTier(memberCount: number): PlanTier {
-  if (memberCount <= (PLANS.free.limits.members ?? 0)) return 'free';
-  if (
-    PLANS.starter.limits.members !== null &&
-    memberCount <= PLANS.starter.limits.members
-  )
-    return 'starter';
-  if (
-    PLANS.pro.limits.members === null ||
-    memberCount <= 500 // pro is "unlimited" — route >500 to enterprise
-  )
-    return 'pro';
-  return 'enterprise';
+export function recommendTier(memberCount: number): PlanTier {
+  if (memberCount > ENTERPRISE_THRESHOLD) return 'enterprise';
+  if (memberCount > STARTER_CAP) return 'pro';
+  if (memberCount > FREE_CAP) return 'starter';
+  return 'free';
 }
 
 function formatDollars(cents: number): string {
@@ -48,7 +49,7 @@ export function PricingCalculator() {
     ? `${formatDollars(plan.yearlyMonthlyEquivalentCents)}/mo`
     : `${formatDollars(plan.monthlyPriceCents)}/mo`;
 
-  const ctaHref = isEnterprise ? '/church/enterprise-demo' : '/church/create';
+  const ctaHref = isEnterprise ? '/for-churches/demo' : '/church/create';
   const ctaLabel = isEnterprise
     ? 'Contact for pricing'
     : isFree

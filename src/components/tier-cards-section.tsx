@@ -61,7 +61,7 @@ function TierCard({
 
   const ctaHref =
     tier === 'enterprise'
-      ? '/church/enterprise-demo'
+      ? '/for-churches/demo'
       : '/church/create';
 
   return (
