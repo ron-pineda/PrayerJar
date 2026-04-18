@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { acceptDpa } from './actions';
-import { DPA_VERSION } from './actions';
+import { DPA_VERSION } from './constants';
 
 interface Props {
   churchId: string;

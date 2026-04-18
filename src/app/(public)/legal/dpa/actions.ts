@@ -8,8 +8,7 @@ import {
   churchMembers,
 } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
-
-export const DPA_VERSION = 'v1.0-2026-04-17';
+import { DPA_VERSION } from './constants';
 
 /**
  * acceptDpa — server action

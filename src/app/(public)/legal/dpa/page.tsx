@@ -5,7 +5,7 @@ import { db } from '@/db';
 import { churchMembers, churches } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { DpaAcceptButton } from './DpaAcceptButton';
-import { DPA_VERSION } from './actions';
+import { DPA_VERSION } from './constants';
 
 export const metadata: Metadata = {
   title: 'Data Processing Addendum | The Prayer Jar',

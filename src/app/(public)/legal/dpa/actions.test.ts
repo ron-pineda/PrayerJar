@@ -13,7 +13,8 @@ vi.mock('next/headers', () => ({
 
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
-import { acceptDpa, DPA_VERSION } from './actions';
+import { acceptDpa } from './actions';
+import { DPA_VERSION } from './constants';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
