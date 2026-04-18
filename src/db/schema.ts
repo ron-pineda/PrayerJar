@@ -856,3 +856,74 @@ export const nonprofitVerifications = pgTable('nonprofit_verifications', {
 
 export type NonprofitVerification = typeof nonprofitVerifications.$inferSelect;
 export type NewNonprofitVerification = typeof nonprofitVerifications.$inferInsert;
+
+// --- Enterprise Demo Leads (pj-s17-enterprise-demo-ui) ---
+
+export const churchEnterpriseMemberBucketEnum = pgEnum('church_enterprise_member_bucket', [
+  '<50', '50–150', '150–500', '500–2,000', '2,000+',
+]);
+
+export const churchEnterpriseCampusCountEnum = pgEnum('church_enterprise_campus_count', [
+  '1 (single site)', '2–4', '5–10', '11+',
+]);
+
+export const churchEnterpriseChmsEnum = pgEnum('church_enterprise_chms', [
+  'Planning Center', 'Breeze', 'ChurchTrac', 'Elvanto', 'Other', 'None',
+]);
+
+export const churchEnterpriseUseCaseEnum = pgEnum('church_enterprise_use_case', [
+  'Prayer ministry', 'Small groups', 'Pastoral care', 'All of the above',
+]);
+
+export const churchEnterpriseTimelineEnum = pgEnum('church_enterprise_timeline', [
+  'Ready now', '1–3 months', '3–6 months', 'Just exploring',
+]);
+
+/**
+ * Enterprise (Network) demo request leads.
+ * Populated by the /for-churches/demo form action.
+ * Referenced by the follow-up email sequence (Sales) and the internal admin notification.
+ */
+export const churchEnterpriseLeads = pgTable('church_enterprise_leads', {
+  id: uuid('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  churchName: text('church_name').notNull(),
+  denomination: text('denomination'),
+  cityState: text('city_state').notNull(),
+  website: text('website').notNull(),
+  memberBucket: churchEnterpriseMemberBucketEnum('member_bucket').notNull(),
+  campusCount: churchEnterpriseCampusCountEnum('campus_count').notNull(),
+  chms: churchEnterpriseChmsEnum('chms').notNull(),
+  useCase: churchEnterpriseUseCaseEnum('use_case').notNull(),
+  timeline: churchEnterpriseTimelineEnum('timeline').notNull(),
+  contactName: text('contact_name').notNull(),
+  contactEmail: text('contact_email').notNull(),
+  contactPhone: text('contact_phone'),
+  // Set to true when a Calendly booking is confirmed (via webhook or redirect param)
+  calendlyBooked: boolean('calendly_booked').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [
+  index('enterprise_leads_created_idx').on(t.createdAt),
+  index('enterprise_leads_email_idx').on(t.contactEmail),
+]);
+
+export type ChurchEnterpriseLead = typeof churchEnterpriseLeads.$inferSelect;
+export type NewChurchEnterpriseLead = typeof churchEnterpriseLeads.$inferInsert;
+
+// --- Audit Events (pj-s17-audit-log) ---
+
+export const auditEvents = pgTable('audit_events', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  actorUserId: uuid('actor_user_id').references(() => users.id, { onDelete: 'set null' }),
+  action: text('action').notNull(),
+  targetType: text('target_type'),
+  targetId: uuid('target_id'),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index('audit_events_church_id_idx').on(t.churchId),
+  index('audit_events_created_at_idx').on(t.createdAt),
+]);
+
+export type AuditEvent = typeof auditEvents.$inferSelect;
+export type NewAuditEvent = typeof auditEvents.$inferInsert;

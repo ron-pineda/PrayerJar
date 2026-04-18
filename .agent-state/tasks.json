@@ -3626,7 +3626,7 @@
     "id": "pj-s17-enterprise-demo-ui",
     "sprint": "17",
     "title": "Build /for-churches enterprise demo form + Calendly embed",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Implement the UI for the enterprise demo flow defined by Sales: lead-capture form with validation, submit server action that writes to a `church_enterprise_leads` table (or sends to CRM/Resend), Calendly (or equivalent) embed on the thank-you step. Must send a notification to ADMIN_EMAILS on submit. Paired with pj-s17-enterprise-demo-flow.",
@@ -3641,21 +3641,24 @@
     ],
     "files": [
       "src/app/(public)/for-churches/demo/page.tsx",
-      "src/app/(public)/for-churches/demo/actions.ts"
+      "src/app/(public)/for-churches/demo/actions.ts",
+      "src/app/(public)/for-churches/demo/demo-form.tsx",
+      "src/app/(public)/for-churches/demo/actions.test.ts",
+      "src/db/schema.ts",
+      "src/db/migrations/0028_enterprise_leads.sql"
     ],
     "depends_on": [
       "pj-s17-enterprise-demo-flow"
     ],
-    "blockers": [
-      "pj-s17-enterprise-demo-flow"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Schema for church_enterprise_leads needs Database review before build.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: final wave — all blockers cleared."
+      "[2026-04-17] PM: final wave — all blockers cleared.",
+      "[2026-04-18] Frontend Engineer: complete. Migration needed — added church_enterprise_leads table with 5 new pg enums (member_bucket, campus_count, chms, use_case, timeline); drizzle-kit generate produced 0028_enterprise_leads.sql and updated journal/snapshot. Persists to DB via requestDemo() server action with Zod validation. Admin notification email built directly with Resend (not notifyAdmins() — this notification contains user-submitted lead data, which is appropriate for the internal sales flow). demo_requested funnel event fires client-side via @vercel/analytics track() on successful form submit. Thank-you step links to NEXT_PUBLIC_CALENDLY_URL (falls back gracefully to text if not set). 10 tests pass covering: valid submission inserts + returns success, denomination=null when blank, missing required fields (4 cases), invalid email, invalid URL, DB failure. 0 new tsc errors in my files. Handing to Reviewer."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-18T03:02:00.000Z"
   },
   {
     "id": "pj-s17-chms-integration-survey",
