@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { prayers, prayerInteractions } from '@/db/schema';
+import { prayers, prayerInteractions, churchMembers, churches } from '@/db/schema';
 import { eq, and, gt, lt, or, isNull, ne, sql, count, inArray } from 'drizzle-orm';
 import { addDays } from 'date-fns';
 
@@ -89,12 +89,57 @@ export async function getCommunityPrayerSnippet(userId: string): Promise<{ id: s
   return results[0] ?? null;
 }
 
+export async function getMyIntercessionsCount(userId: string): Promise<number> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(prayerInteractions)
+    .where(eq(prayerInteractions.userId, userId));
+  return Number(row?.count ?? 0);
+}
+
+export async function getMyAnsweredCount(userId: string): Promise<number> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(prayers)
+    .where(and(eq(prayers.authorId, userId), eq(prayers.status, 'answered')));
+  return Number(row?.count ?? 0);
+}
+
+export async function getUserChurch(userId: string): Promise<{ slug: string; name: string } | null> {
+  const rows = await db
+    .select({ slug: churches.slug, name: churches.name })
+    .from(churchMembers)
+    .innerJoin(churches, eq(churchMembers.churchId, churches.id))
+    .where(eq(churchMembers.userId, userId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 export async function getHomepageData(userId: string) {
-  const [prayedForMeCount, expiringCount, activePrayerCount, communityPrayer] = await Promise.all([
+  const [
+    prayedForMeCount,
+    expiringCount,
+    activePrayerCount,
+    communityPrayer,
+    myIntercessionsCount,
+    myAnsweredCount,
+    church,
+  ] = await Promise.all([
     getPrayedForMeCount(userId),
     getExpiringPrayerCount(userId),
     getActivePrayerCount(userId),
     getCommunityPrayerSnippet(userId),
+    getMyIntercessionsCount(userId),
+    getMyAnsweredCount(userId),
+    getUserChurch(userId),
   ]);
-  return { prayedForMeCount, expiringCount, activePrayerCount, communityPrayer };
+  return {
+    prayedForMeCount,
+    expiringCount,
+    activePrayerCount,
+    communityPrayer,
+    myIntercessionsCount,
+    myAnsweredCount,
+    church,
+  };
 }
