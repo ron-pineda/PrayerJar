@@ -1,5 +1,14 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-17 pj-s17-chms-architecture Architect pluggable ChMS integration layer
+Spec-only deliverable. docs/architecture/chms-integration-layer.md defines ChmsAdapter interface (7 methods: connect/disconnect/listMembers/listGroups/syncMember/pushPrayerSummary/handleWebhook), Planning Center as Sprint 18 reference target, webhook endpoint POST /api/webhooks/chms/[provider], exponential backoff retry (0/60s/300s, dead-letter via Sentry at attempt 3), field-mapping tables for PCO Person and ChMS group, CHMS_{PROVIDER}_{KEY} env-var naming convention with encrypted per-church chmsConfig, Sprint 18 task table S18-1 through S18-8. No src/ code introduced.
+
+## 2026-04-17 pj-s17-funnel-instrumentation-fe Wire funnel events into /for-churches, signup, and church dashboard
+All 8 church-acquisition funnel events wired per docs/analytics/church-funnel-spec.md. Client events (for_churches_view, pricing_view, calculator_interacted, signup_start) via typed wrappers in src/lib/analytics.ts. Server events (signup_complete, plan_activated, plan_upgraded, demo_requested) via src/lib/analytics.server.ts using @vercel/analytics/server. plan_activated and plan_upgraded confirmed server-side only in Stripe webhook handler. Typed wrappers enforce event names at call sites. 0 new tsc errors in production files.
+
+## 2026-04-17 pj-s17-seo-for-churches SEO + landing page optimization for church acquisition
+Delivered docs/growth/for-churches-seo-brief.md: 15 keyword targets (1 primary + 4 secondary + 10 long-tail) with volume estimates; title tag 'Church Prayer Wall Software — PrayerJar' (44 chars), meta description 155 chars exactly; H1/H2 recommendations, schema.org Product JSON-LD with 3-tier offers, alt text table; 3 comparison pages (prayerjar-vs-prayermate, vs-prayer-platform, vs-uplift); internal link map from 6 existing pages; top 3 content priorities; baseline measurement (0 impressions, 0 clicks). sitemap.ts fixed to remove auth-gated /church/{slug} entries; robots.ts confirmed correct.
+
 ## 2026-04-17 pj-s17-for-churches-build Implement updated /for-churches page + pricing calculator component
 Shipped rewritten /for-churches page as server component with metadata export. PricingCalculator (client component) reads all tier data from plans.ts via FREE_CAP/STARTER_CAP constants + ENTERPRISE_THRESHOLD=500; downward-check logic correctly returns 'enterprise' for >500 members. 8-boundary test suite in pricing-calculator.test.ts, 8/8 pass. Enterprise CTA routes to /for-churches/demo in all three files. FaqAccordion ('use client') uses aria-expanded={isOpen} on each button. Zero tsc errors on touched files.
 

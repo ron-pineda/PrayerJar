@@ -3626,7 +3626,7 @@
     "id": "pj-s17-enterprise-demo-ui",
     "sprint": "17",
     "title": "Build /for-churches enterprise demo form + Calendly embed",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Implement the UI for the enterprise demo flow defined by Sales: lead-capture form with validation, submit server action that writes to a `church_enterprise_leads` table (or sends to CRM/Resend), Calendly (or equivalent) embed on the thank-you step. Must send a notification to ADMIN_EMAILS on submit. Paired with pj-s17-enterprise-demo-flow.",
@@ -3655,10 +3655,11 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Schema for church_enterprise_leads needs Database review before build.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: final wave — all blockers cleared.",
-      "[2026-04-18] Frontend Engineer: complete. Migration needed — added church_enterprise_leads table with 5 new pg enums (member_bucket, campus_count, chms, use_case, timeline); drizzle-kit generate produced 0028_enterprise_leads.sql and updated journal/snapshot. Persists to DB via requestDemo() server action with Zod validation. Admin notification email built directly with Resend (not notifyAdmins() — this notification contains user-submitted lead data, which is appropriate for the internal sales flow). demo_requested funnel event fires client-side via @vercel/analytics track() on successful form submit. Thank-you step links to NEXT_PUBLIC_CALENDLY_URL (falls back gracefully to text if not set). 10 tests pass covering: valid submission inserts + returns success, denomination=null when blank, missing required fields (4 cases), invalid email, invalid URL, DB failure. 0 new tsc errors in my files. Handing to Reviewer."
+      "[2026-04-18] Frontend Engineer: complete. Migration needed — added church_enterprise_leads table with 5 new pg enums (member_bucket, campus_count, chms, use_case, timeline); drizzle-kit generate produced 0028_enterprise_leads.sql and updated journal/snapshot. Persists to DB via requestDemo() server action with Zod validation. Admin notification email built directly with Resend (not notifyAdmins() — this notification contains user-submitted lead data, which is appropriate for the internal sales flow). demo_requested funnel event fires client-side via @vercel/analytics track() on successful form submit. Thank-you step links to NEXT_PUBLIC_CALENDLY_URL (falls back gracefully to text if not set). 10 tests pass covering: valid submission inserts + returns success, denomination=null when blank, missing required fields (4 cases), invalid email, invalid URL, DB failure. 0 new tsc errors in my files. Handing to Reviewer.",
+      "[2026-04-17] Reviewer: NEEDS-REWORK. Two issues. (1) AC6 fails — demo_requested fires TWICE: actions.ts:166 calls trackDemoRequested() server-side (correct, per spec §3.8 and §1 firing-model table), then demo-form.tsx:87 also calls track('demo_requested', ...) client-side after the server action returns success. Spec §1 and §3.8 are unambiguous: this event is server-side only, 'Ensures the event fires only when data is persisted.' The server fire is correct; the client fire must be removed. (2) The client-side call also emits wrong property names: spec §3.8 requires church_size_bucket / has_calendly_booked / referrer_plan / source_utm; the client emits memberBucket / timeline. This wouldn't matter if the client call were removed, but confirms the client emit was not reviewed against spec. Fix: remove the track('demo_requested', ...) call from demo-form.tsx (lines 87-90). Everything else passes: all 10 form fields present with correct required/optional markers, Zod validation rejects bad inputs with user-visible errors, DB insert confirmed, admin notification email via Resend, thank-you step links to NEXT_PUBLIC_CALENDLY_URL with fallback, 10/10 tests pass, 0 new tsc errors in production files. Risk if shipped: double-counted demo_requested events inflate enterprise pipeline metrics — plan_activated/demo_requested conversion rate becomes misleading."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-18T03:02:00.000Z"
+    "last_touched": "2026-04-17T23:10:00.000Z"
   },
   {
     "id": "pj-s17-chms-integration-survey",
@@ -3694,7 +3695,7 @@
     "id": "pj-s17-chms-architecture",
     "sprint": "17",
     "title": "Architect pluggable ChMS integration layer",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Architect",
     "priority": "medium",
     "description": "Design the integration surface so we can add ChMS providers without forking core sync logic. Outputs: adapter interface, job/webhook model, error-handling and retry strategy, data-mapping contract (church -> PrayerJar members + groups), env-var and secret-storage conventions. No code yet — handoff spec for Backend + Integrations to implement in Sprint 18. Audit finding #4.",
@@ -3718,10 +3719,11 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Spec only this sprint — implementation is Sprint 18 scope. Also add a 'We integrate with ChMS X and Y' section to /for-churches once a provider is selected (coordinate with Copywriter).",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: final wave — all blockers cleared.",
-      "[2026-04-17] Architect: spec complete. docs/architecture/chms-integration-layer.md committed (428 lines). ChmsAdapter interface: connect/disconnect/listMembers/listGroups/syncMember/pushPrayerSummary/handleWebhook. Webhook endpoint: POST /api/webhooks/chms/[provider]. 3 critical schema additions: (1) churches.chmsProvider + churches.chmsConfig (encrypted text), (2) church_members.externalChmsId + unique index, (3) new chms_sync_jobs table. No src/ code written. Ready for Reviewer."
+      "[2026-04-17] Architect: spec complete. docs/architecture/chms-integration-layer.md committed (428 lines). ChmsAdapter interface: connect/disconnect/listMembers/listGroups/syncMember/pushPrayerSummary/handleWebhook. Webhook endpoint: POST /api/webhooks/chms/[provider]. 3 critical schema additions: (1) churches.chmsProvider + churches.chmsConfig (encrypted text), (2) church_members.externalChmsId + unique index, (3) new chms_sync_jobs table. No src/ code written. Ready for Reviewer.",
+      "[2026-04-17] Reviewer: approved — all 6 AC met. (1) docs/architecture/chms-integration-layer.md exists and committed. (2) ChmsAdapter interface defined with all 7 required methods: connect, disconnect, listMembers, listGroups, syncMember, pushPrayerSummary, handleWebhook — TypeScript signatures with param types and return types. (3) Job model covers all 3 sync trigger types (manual/scheduled/webhook), Vercel Cron queue/processor, exponential backoff with explicit retry delays [0, 60s, 300s] and dead-letter at attempt 3 via Sentry. (4) Field-mapping tables present for PCO Person → PrayerJar users/churchMembers and ChMS group → PrayerJar groups with field-level mapping and upsert rule. (5) Env-var naming convention CHMS_{PROVIDER_SLUG}_{KEY} documented with split rationale (global OAuth creds in env vars, per-church tokens encrypted in DB). (6) Planning Center named as top-1 reference implementation target with concrete Sprint 18 handoff task table (S18-1 through S18-8). No src/ code introduced. Spec only as required."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-17T23:10:00.000Z"
   },
   {
     "id": "pj-s17-funnel-instrumentation",
@@ -3758,7 +3760,7 @@
     "id": "pj-s17-funnel-instrumentation-fe",
     "sprint": "17",
     "title": "Wire funnel events into /for-churches, signup, and church dashboard",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Implement the events defined in pj-s17-funnel-instrumentation across the church acquisition flow: pageview, calculator interactions, signup steps, plan activation/upgrade in the church dashboard. Server-side events for plan_activated and plan_upgraded (webhook-driven — do not rely on client).",
@@ -3791,10 +3793,11 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Paired with Analytics spec.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: final wave — all blockers cleared.",
-      "[2026-04-18] Frontend: all 8 events wired. Client events (for_churches_view, pricing_view, calculator_interacted, signup_start) via @vercel/analytics track() in typed wrappers in src/lib/analytics.ts. Server events (signup_complete, plan_activated, plan_upgraded, demo_requested) via @vercel/analytics/server in src/lib/analytics.server.ts. ForChurchesViewTracker \"use client\" component fires for_churches_view on mount. IntersectionObserver on TierCardsSection with sessionStorage dedup for pricing_view. Calculator debounced 500ms + 5s rate cap per spec §3.3. signup_start fires on first field focus in church/create page. signup_complete fires in /api/v1/church route after createChurch(). plan_activated fires in Stripe webhook after checkout.session.completed subscription insert. plan_upgraded fires in customer.subscription.updated when tier order increases. demo_requested wired into demo/actions.ts. 0 new tsc errors. Handing to QA."
+      "[2026-04-18] Frontend: all 8 events wired. Client events (for_churches_view, pricing_view, calculator_interacted, signup_start) via @vercel/analytics track() in typed wrappers in src/lib/analytics.ts. Server events (signup_complete, plan_activated, plan_upgraded, demo_requested) via @vercel/analytics/server in src/lib/analytics.server.ts. ForChurchesViewTracker \"use client\" component fires for_churches_view on mount. IntersectionObserver on TierCardsSection with sessionStorage dedup for pricing_view. Calculator debounced 500ms + 5s rate cap per spec §3.3. signup_start fires on first field focus in church/create page. signup_complete fires in /api/v1/church route after createChurch(). plan_activated fires in Stripe webhook after checkout.session.completed subscription insert. plan_upgraded fires in customer.subscription.updated when tier order increases. demo_requested wired into demo/actions.ts. 0 new tsc errors. Handing to QA.",
+      "[2026-04-17] Reviewer: approved — all 6 AC met. All 8 events fire from correct locations per spec §3: for_churches_view (ForChurchesViewTracker client component mount), pricing_view (IntersectionObserver on TierCardsSection with sessionStorage dedup), calculator_interacted (debounced 500ms + 5s rate cap matching spec §3.3), signup_start (first field focus on /church/create), signup_complete (server action after DB write), plan_activated and plan_upgraded (Stripe webhook handler — server-side only, verified by file path). demo_requested wired in demo/actions.ts server-side. AC3 confirmed: plan_activated and plan_upgraded emit from src/app/api/webhooks/stripe/route.ts only — no client-side fire. AC4 confirmed: src/lib/analytics.ts exports typed wrappers (trackForChurchesView, trackPricingView, trackCalculatorInteracted, trackSignupStart) enforcing event names at call sites; src/lib/analytics.server.ts exports typed wrappers for all server events. Note: the client-side double-fire of demo_requested discovered in pj-s17-enterprise-demo-ui is in demo-form.tsx (that task's file) — this task's instrumentation in demo/actions.ts is correct. 0 new tsc errors in production files."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-17T23:10:00.000Z"
   },
   {
     "id": "pj-s17-onboarding-audit",
@@ -3835,7 +3838,7 @@
     "id": "pj-s17-seo-for-churches",
     "sprint": "17",
     "title": "SEO + landing page optimization for church acquisition",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Growth",
     "priority": "low",
     "description": "Optimize /for-churches and related pages for search acquisition: keyword research ('prayer software for churches', 'church prayer request app', etc.), title/meta/OG tuning, internal link structure from /blog and /about, schema.org Product markup for pricing, comparison landing pages for top competitors ('PrayerJar vs Pushpray'). Produces a Growth brief with prioritized content + on-page changes. Frontend executes the on-page changes; content tasks land in Sprint 18.",
@@ -3860,10 +3863,11 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs after the rewrite so we are not re-doing meta tags twice.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: final wave — all blockers cleared.",
-      "[2026-04-17] Growth: SEO brief complete at docs/growth/for-churches-seo-brief.md. 15 keyword targets, exact title/description copy, H1/H2/schema recommendations, 3 comparison pages, internal link map, top 3 content priorities from Content agent. robots.ts/sitemap.ts bug fixed: removed auth-gated /church/{slug} entries from sitemap (robots.ts disallow was already correct). Handing to Reviewer."
+      "[2026-04-17] Growth: SEO brief complete at docs/growth/for-churches-seo-brief.md. 15 keyword targets, exact title/description copy, H1/H2/schema recommendations, 3 comparison pages, internal link map, top 3 content priorities from Content agent. robots.ts/sitemap.ts bug fixed: removed auth-gated /church/{slug} entries from sitemap (robots.ts disallow was already correct). Handing to Reviewer.",
+      "[2026-04-17] Reviewer: approved — all 6 AC met. (1) docs/growth/for-churches-seo-brief.md exists and committed. (2) 15 keyword targets confirmed (1 primary + 4 secondary + 10 long-tail) with search volume estimates and difficulty ratings. (3) Title tag 'Church Prayer Wall Software — PrayerJar' at 44 chars (≤60), meta description at exactly 155 chars (≤155), OG image/text specified. (4) On-page changes listed with file paths: H1 'No one falls through the cracks between Sundays.', H2 'Private Prayer Wall Software for Your Church', 4 section heading replacements, schema.org Product JSON-LD block (both inline and metadata.other options documented for Frontend), alt text table for feature images. (5) 3 comparison pages: /compare/prayerjar-vs-prayermate (Priority 1), /compare/prayerjar-vs-prayer-platform (Priority 2), /compare/prayerjar-vs-uplift (Priority 3) — each with URL slug, competitor name, and at least 1 paragraph angle. (6) Baseline measurement present (§0): organic impressions ~0, clicks 0, average position not ranked, with measurement instructions for post-deploy comparison. sitemap.ts fix removes auth-gated /church/{slug} entries; robots.ts confirmed already correct."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-17T23:10:00.000Z"
   },
   {
     "id": "pj-s17-hotfix-ai-claim",
@@ -4030,7 +4034,7 @@
     "id": "pj-s17-audit-log",
     "sprint": "17",
     "title": "Church audit log — capture admin + pastoral actions",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Security",
     "priority": "high",
     "description": "Security audit: no audit logs anywhere in the codebase. Any enterprise church will ask for them during procurement. Scope: (1) `audit_events` table keyed by church_id + actor_user_id + action + target_type + target_id + metadata + timestamp, (2) write-points for member add/remove, role change, prayer delete, plan change, (3) read-only admin view at /church/{slug}/admin/audit, (4) 90-day retention on Starter, 1-year on Pro, 3-year on Enterprise (tie to plans.ts).",
@@ -4064,10 +4068,11 @@
       "[2026-04-17] PM: proposed by Security specialist pass. Foundational for enterprise-tier credibility.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: final wave — all blockers cleared.",
-      "[2026-04-17] Security: implementation complete. Migration 0029_audit_events.sql. 5 write-points wired: member.add + member.remove + role.change (addChurchMember/removeChurchMember/updateChurchMemberRole in church-platform.service.ts), prayer.delete (deleteChurchPrayerAsAdmin in church-platform.service.ts), plan.change (Stripe webhook subscription.updated). auditRetentionDays() added to plans.ts: free/starter=90d, pro=365d, enterprise=1095d. Read-only admin page at /church/{slug}/admin/audit. 8/8 tests pass. 0 new tsc errors on touched files. Retention tier names track plans.ts — not hardcoded."
+      "[2026-04-17] Security: implementation complete. Migration 0029_audit_events.sql. 5 write-points wired: member.add + member.remove + role.change (addChurchMember/removeChurchMember/updateChurchMemberRole in church-platform.service.ts), prayer.delete (deleteChurchPrayerAsAdmin in church-platform.service.ts), plan.change (Stripe webhook subscription.updated). auditRetentionDays() added to plans.ts: free/starter=90d, pro=365d, enterprise=1095d. Read-only admin page at /church/{slug}/admin/audit. 8/8 tests pass. 0 new tsc errors on touched files. Retention tier names track plans.ts — not hardcoded.",
+      "[2026-04-17] Reviewer: NEEDS-REWORK. Two AC failures. (1) AC4 fails — the audit page at src/app/(church)/church/[slug]/admin/audit/page.tsx lists events but has no filter UI (no action selector, no date-range picker) and no pagination. The current implementation does a .limit(200) + JS .filter() in-memory. AC literal text: 'lists events for the current church with filter by action and by date range, paginated.' Enterprise churches with high event volume (e.g. plan.change events over 3 years) will hit the 200-row cap and lose older records. (2) AC6 fails — the retention policy is applied as a JS display filter (rows are returned from DB then filtered by cutoff date in memory), but no scheduled job or documented manual query exists that actually DELETES rows older than the retention window. AC literal text: 'a scheduled job (or documented manual query) deletes audit rows older than the retention window.' Showing only recent rows on the UI is not equivalent to deleting them — stale rows accumulate in the DB, retention compliance is not met, and the query will degrade over time. Fix for AC4: add server-side action/URL param filtering by action string and date range (passed as query params), plus cursor or offset-based pagination. Fix for AC6: add either a Vercel Cron route that runs DELETE FROM audit_events WHERE created_at < now() - interval '{n} days' per church tier, or document the manual query with clear instructions in a code comment or doc. Everything else passes: migration correct with church_id and created_at indexes, schema.ts exports match, logAuditEvent() (note: AC3 says logEvent() but logAuditEvent() is equivalent and the function is typed and called at all 5 write-points — not failing on name), server-side admin gating enforces admin/pastor role, 8/8 tests pass, tier names sourced from plans.ts. Risk if shipped: AC6 gap is a compliance issue for any Enterprise church citing GDPR/CCPA data-retention commitments. AC4 gap degrades the admin experience and makes the log unusable for auditing at Enterprise scale."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-17T23:10:00.000Z"
   },
   {
     "id": "pj-s17-dpa-subprocessor",
