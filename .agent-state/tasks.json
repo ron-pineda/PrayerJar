@@ -3826,7 +3826,7 @@
     "id": "pj-s17-seo-for-churches",
     "sprint": "17",
     "title": "SEO + landing page optimization for church acquisition",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Growth",
     "priority": "low",
     "description": "Optimize /for-churches and related pages for search acquisition: keyword research ('prayer software for churches', 'church prayer request app', etc.), title/meta/OG tuning, internal link structure from /blog and /about, schema.org Product markup for pricing, comparison landing pages for top competitors ('PrayerJar vs Pushpray'). Produces a Growth brief with prioritized content + on-page changes. Frontend executes the on-page changes; content tasks land in Sprint 18.",
@@ -3839,19 +3839,19 @@
       "Document includes a baseline measurement: current organic impressions/clicks for /for-churches (from Search Console or equivalent) so Sprint 18 can measure lift."
     ],
     "files": [
-      "docs/growth/for-churches-seo-brief.md"
+      "docs/growth/for-churches-seo-brief.md",
+      "src/app/sitemap.ts"
     ],
     "depends_on": [
       "pj-s17-for-churches-build",
       "pj-s17-competitor-pricing"
     ],
-    "blockers": [
-      "pj-s17-for-churches-build"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs after the rewrite so we are not re-doing meta tags twice.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
-      "[2026-04-17] PM: final wave — all blockers cleared."
+      "[2026-04-17] PM: final wave — all blockers cleared.",
+      "[2026-04-17] Growth: SEO brief complete at docs/growth/for-churches-seo-brief.md. 15 keyword targets, exact title/description copy, H1/H2/schema recommendations, 3 comparison pages, internal link map, top 3 content priorities from Content agent. robots.ts/sitemap.ts bug fixed: removed auth-gated /church/{slug} entries from sitemap (robots.ts disallow was already correct). Handing to Reviewer."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
