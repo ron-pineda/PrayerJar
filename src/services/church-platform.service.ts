@@ -42,8 +42,16 @@ export async function createChurch(params: {
   description?: string;
   welcomeMessage?: string;
   createdBy: string;
+  /** UTM attribution fields — written at signup from the request URL or form. */
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
 }): Promise<Church> {
   const slug = generateSlug(params.name);
+
+  // Derive acquisition_source from utm_source. Falls back to 'direct' when no
+  // UTM is present so every church has a non-null source bucket in the dashboard.
+  const acquisitionSource = params.utmSource ?? 'direct';
 
   const [church] = await db
     .insert(churches)
@@ -53,6 +61,10 @@ export async function createChurch(params: {
       description: params.description ?? null,
       welcomeMessage: params.welcomeMessage ?? null,
       createdBy: params.createdBy,
+      utmSource: params.utmSource ?? null,
+      utmMedium: params.utmMedium ?? null,
+      utmCampaign: params.utmCampaign ?? null,
+      acquisitionSource,
     })
     .returning();
 

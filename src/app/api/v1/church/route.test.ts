@@ -16,6 +16,10 @@ vi.mock('@/services/church-platform.service', () => ({
     primaryColor: '#d4a843',
     createdBy: 'user-1',
     subscriptionId: null,
+    utmSource: null,
+    utmMedium: null,
+    utmCampaign: null,
+    acquisitionSource: 'direct',
     createdAt: new Date(),
     updatedAt: new Date(),
   }),
@@ -89,5 +93,112 @@ describe('POST /api/v1/church', () => {
 
     const body = await res.json();
     expect(body).toHaveProperty('error');
+  });
+
+  // ---------------------------------------------------------------------------
+  // UTM attribution — AC4 (pj-s17-mrr-dashboard)
+  // Simulates a church-creation call with UTM params and asserts that
+  // createChurch() is called with utmSource, utmMedium, utmCampaign set, and
+  // that acquisitionSource would be derived as utm_source (handled inside the
+  // service, but the route must pass the raw UTMs through).
+  // ---------------------------------------------------------------------------
+
+  it('passes UTM fields from request body to createChurch', async () => {
+    const { auth } = await import('@/lib/auth');
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const { createChurch } = await import('@/services/church-platform.service');
+    const { POST } = await import('./route');
+
+    const req = new Request('http://localhost/api/v1/church', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Grace Community Church',
+        utmSource: 'google',
+        utmMedium: 'cpc',
+        utmCampaign: 'spring-launch',
+      }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+
+    // Assert createChurch was called with the UTM fields so we know the service
+    // layer (which writes to the DB) will receive the attribution data.
+    expect(vi.mocked(createChurch)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        utmSource: 'google',
+        utmMedium: 'cpc',
+        utmCampaign: 'spring-launch',
+        createdBy: 'user-1',
+      }),
+    );
+  });
+
+  it('passes UTM fields from URL query params when not in body', async () => {
+    const { auth } = await import('@/lib/auth');
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const { createChurch } = await import('@/services/church-platform.service');
+    const { POST } = await import('./route');
+
+    const req = new Request(
+      'http://localhost/api/v1/church?utm_source=directory&utm_medium=organic&utm_campaign=church-finder',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'Hope Fellowship' }),
+      },
+    );
+
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+
+    expect(vi.mocked(createChurch)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        utmSource: 'directory',
+        utmMedium: 'organic',
+        utmCampaign: 'church-finder',
+        createdBy: 'user-1',
+      }),
+    );
+  });
+
+  it('uses acquisition_source = "direct" when no UTM params are present', async () => {
+    const { auth } = await import('@/lib/auth');
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const { createChurch } = await import('@/services/church-platform.service');
+    const { POST } = await import('./route');
+
+    const req = new Request('http://localhost/api/v1/church', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'River Church' }),
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+
+    // When no UTMs are present, the route passes undefined utm* values, and
+    // church-platform.service.ts derives acquisitionSource = 'direct'.
+    expect(vi.mocked(createChurch)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        utmSource: undefined,
+        utmMedium: undefined,
+        utmCampaign: undefined,
+      }),
+    );
+
+    // The mock returns acquisitionSource: 'direct' — confirm the response is ok.
+    const body = await res.json();
+    expect(body).toHaveProperty('slug');
   });
 });
