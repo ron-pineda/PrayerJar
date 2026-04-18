@@ -4162,7 +4162,7 @@
     "id": "pj-s17-annual-billing-stripe",
     "sprint": "17",
     "title": "Create annual Stripe price IDs + wire into plans.ts",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "PM approved annual billing launch (option A) alongside Sprint 17 repricing. plans.ts has yearlyPriceCents and annualStripePriceId placeholder fields ready. Steps: (1) Create annual price IDs in Stripe Dashboard for Small Church ($193.80/yr) and Growing Church ($499.80/yr) — link to the existing monthly products. (2) Add the real price IDs to plans.ts annualStripePriceId fields. (3) Update the billing server action / Stripe checkout session creation to support an annual=true param that selects the yearly price ID. (4) Wire the billing toggle in TierCardsSection to pass annual=true to the checkout URL. (5) Test with Stripe test mode price IDs before swapping to live. Must not break the existing monthly checkout flow.",
@@ -4185,8 +4185,471 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] PM: queued after tier-redesign approval. Annual billing approved to launch in parallel with Sprint 17 repricing (option A). Stripe manual step required first — create price IDs in dashboard before Backend can wire them."
+      "[2026-04-18] PM: queued after tier-redesign approval. Annual billing approved to launch in parallel with Sprint 17 repricing (option A). Stripe manual step required first — create price IDs in dashboard before Backend can wire them.",
+      "[2026-04-18] Done: Old annual prices ($180/yr, $468/yr) archived in Stripe. New prices created — Small Church $193.80/yr (price_1TNQn6QlOul7I43yN9VXcXMT), Growing Church $499.80/yr (price_1TNQneQlOul7I43yR7t7sZQv). All 4 price IDs set in Vercel env (STRIPE_PRICE_STARTER_MONTHLY/YEARLY, STRIPE_PRICE_PRO_MONTHLY/YEARLY). plans.ts already reads from env vars — no code change needed. Checkout action (billing.actions.ts) and UpgradeButton already support monthly/yearly toggle."
     ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-01-legal-pco-subprocessor",
+    "sprint": "18",
+    "title": "Legal: add Planning Center as subprocessor + DPA update",
+    "status": "done",
+    "assigned_to": "Legal",
+    "priority": "high",
+    "description": "Before the Integrations agent writes any OAuth code, Legal must review and document Planning Center as a new subprocessor. Planning Center receives church member PII (names, emails, phones) via OAuth-scoped API access. Update docs/legal/subprocessors with PCO row (name, purpose, data types, location). Update DPA to reflect ChMS data flow. Review PCO's own DPA/ToS for conflicts. Deliverable is a sign-off memo Legal posts in docs/legal/sprint18-chms-signoff.md before Integrations can start.",
+    "acceptance_criteria": [
+      "docs/legal/subprocessors.ts or equivalent data source updated with Planning Center entry",
+      "DPA document updated to mention ChMS integration data flow (member PII → PCO via OAuth)",
+      "PCO's own DPA/ToS reviewed for conflicts with PrayerJar's commitments",
+      "Sign-off memo at docs/legal/sprint18-chms-signoff.md with clear go/no-go decision",
+      "If no-go: specific blocker documented, alternative path proposed"
+    ],
+    "files": [
+      "src/app/(public)/legal/subprocessors/data.ts",
+      "src/app/(public)/legal/dpa/constants.ts",
+      "src/app/(public)/legal/dpa/page.tsx",
+      "docs/legal/sprint18-chms-signoff.md"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: Sprint 18 kickoff. Gate for entire sprint — Integrations cannot start until Legal signs off on subprocessor addition.",
+      "[2026-04-18] Legal: Picked up. Reviewing existing subprocessors data, DPA, and PCO's public privacy/DPA commitments.",
+      "[2026-04-18] Legal: Decision = GO. Added PCO to subprocessor list (v1.1-2026-04-18). Bumped DPA_VERSION to v1.1-2026-04-18 + added ChMS bullet to Section 3. Sign-off memo at docs/legal/sprint18-chms-signoff.md includes 6 non-negotiable conditions on Integrations work (encrypted tokens, HMAC webhook verify, scope minimalism, in-app copy, real revocation, 30-day Enterprise notice). All 5 AC met. Subprocessors test + DPA actions test both passing. Handing to PM for approval.",
+      "[2026-04-18] Reviewer/PM: APPROVED. All 5 AC met. Memo accepted. Sprint 18 gate cleared."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-02-schema-migrations",
+    "sprint": "18",
+    "title": "DB migrations: ChMS schema additions per architecture spec §7",
+    "status": "review",
+    "assigned_to": "Database Engineer",
+    "priority": "high",
+    "description": "Write Drizzle migration covering all schema additions in docs/architecture/chms-integration-layer.md §7: (A) churches.chms_provider text + churches.chms_config text; (B) church_members.external_chms_id + chms_provider + chms_status + chms_synced_at + unique index; (C) groups.external_chms_id + chms_provider + unique index; (D) new chms_sync_jobs table with pending-jobs + church indices. chmsConfig is text not jsonb — it stores AES-256-GCM encrypted JSON envelope. Include rollback SQL.",
+    "acceptance_criteria": [
+      "Migration file created (src/db/migrations/0030_chms_integration.sql or next available number)",
+      "Drizzle schema updated in src/db/schema.ts — all new columns and chms_sync_jobs table exported",
+      "Partial unique indices on external_chms_id (only where NOT NULL) to allow rows without ChMS linkage",
+      "chms_sync_jobs_pending_idx scoped WHERE status = 'pending' (hot path for runner)",
+      "Migration runs cleanly against a fresh DB and against current prod schema snapshot",
+      "Rollback SQL included in a comment block"
+    ],
+    "files": [
+      "src/db/migrations/0030_chms_integration.sql",
+      "src/db/schema.ts"
+    ],
+    "depends_on": [],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: Parallel-safe with s18-01. Migration can be written while Legal reviews — just don't deploy it until Legal signs off.",
+      "[2026-04-18] Database Engineer: 0030_chms_integration.sql created + schema.ts updated. TypeScript clean (no errors in schema.ts). Committed. Ready for Reviewer."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-03-encrypt-lib",
+    "sprint": "18",
+    "title": "Create src/lib/encrypt.ts — AES-256-GCM helper",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "No existing encrypt utility in src/lib. Create AES-256-GCM encrypt/decrypt using Node crypto. Key source: process.env.CHMS_CONFIG_ENCRYPTION_KEY (32-byte hex string). Output format: base64(iv || ciphertext || authTag). Decrypt must verify authTag (GCM authenticates). Handle malformed input by throwing explicitly — no silent null returns. Unit tests cover: round-trip, wrong key, tampered ciphertext, tampered authTag, missing env var.",
+    "acceptance_criteria": [
+      "src/lib/encrypt.ts exports encrypt(plaintext: string): string and decrypt(ciphertext: string): string",
+      "IV is random per encrypt call (crypto.randomBytes(12) — GCM requires 12 bytes)",
+      "Output is base64-encoded — single string per value, storable in a text column",
+      "authTag verification on decrypt — tampering throws",
+      "Wrong key on decrypt throws with generic error (never leaks which part failed)",
+      "Missing CHMS_CONFIG_ENCRYPTION_KEY env var throws at module load, not on first call (fail-fast)",
+      "Unit tests: round-trip, wrong key, tampered ciphertext, tampered authTag, key length validation"
+    ],
+    "files": [
+      "src/lib/encrypt.ts",
+      "src/lib/encrypt.test.ts"
+    ],
+    "depends_on": [
+      "pj-s18-02-schema-migrations"
+    ],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: Must gate on Security review (s18-04) before Integrations uses it."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-04-security-encrypt-review",
+    "sprint": "18",
+    "title": "Security review: encrypt.ts + key rotation plan",
+    "status": "proposed",
+    "assigned_to": "Security",
+    "priority": "high",
+    "description": "Review src/lib/encrypt.ts for crypto correctness. Specifically verify: (1) GCM mode with 12-byte IV; (2) authTag verified on decrypt; (3) IV never reused for the same key; (4) key length validated (32 bytes); (5) constant-time comparison for authTag (handled by Node crypto); (6) no silent error paths. Also produce a key rotation plan: how CHMS_CONFIG_ENCRYPTION_KEY rotates without invalidating existing chms_config values. Options: dual-key decrypt (try old, fall back to new); one-time migration on deploy; re-encrypt background job. Recommend one, document why.",
+    "acceptance_criteria": [
+      "Code review comment in docs/security/sprint18-encrypt-review.md — pass or list specific issues",
+      "Key rotation plan documented (chosen approach + rationale + implementation sketch)",
+      "If issues found: specific fixes referenced by file:line, Backend re-implements, Security re-reviews"
+    ],
+    "files": [
+      "docs/security/sprint18-encrypt-review.md"
+    ],
+    "depends_on": [
+      "pj-s18-03-encrypt-lib"
+    ],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: Gate for Integrations. No adapter work starts until this is approved."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-05-pco-adapter-oauth",
+    "sprint": "18",
+    "title": "PlanningCenterAdapter — OAuth flow + connect/disconnect",
+    "status": "proposed",
+    "assigned_to": "Integrations",
+    "priority": "high",
+    "description": "Create src/lib/chms/ChmsAdapter.ts interface per architecture spec §1. Create src/lib/chms/providers.ts with ChmsProviderSlug + CHMS_ADAPTERS registry. Implement src/lib/chms/adapters/PlanningCenterAdapter.ts covering: OAuth 2.0 authorization-code flow; access_token + refresh_token exchange; token refresh on 401; connect() stores encrypted config; disconnect() revokes and clears config. Callback route /api/auth/chms/callback/planning-center handles redirect. Required env vars: CHMS_PLANNING_CENTER_CLIENT_ID, CHMS_PLANNING_CENTER_CLIENT_SECRET. Scopes requested: people, groups.",
+    "acceptance_criteria": [
+      "src/lib/chms/ChmsAdapter.ts defines interface per spec §1 (ChmsMember, ChmsGroup, ChmsWebhookResult, ChmsAdapter, ChmsConfig types)",
+      "src/lib/chms/providers.ts exports CHMS_ADAPTERS registry + getAdapterForChurch()",
+      "PlanningCenterAdapter.connect() implements authorization-code exchange and stores encrypted tokens",
+      "PlanningCenterAdapter.disconnect() revokes tokens at PCO and clears churches.chmsConfig",
+      "Token refresh on 401: single retry with refreshed token, then mark job dead",
+      "/api/auth/chms/callback/planning-center/route.ts handles PCO callback + CSRF state parameter",
+      "Unit tests mock PCO OAuth endpoints and verify encrypted storage path",
+      "Integration test against PCO sandbox — full connect/disconnect round-trip"
+    ],
+    "files": [
+      "src/lib/chms/ChmsAdapter.ts",
+      "src/lib/chms/providers.ts",
+      "src/lib/chms/adapters/PlanningCenterAdapter.ts",
+      "src/app/api/auth/chms/callback/planning-center/route.ts",
+      "src/lib/chms/adapters/PlanningCenterAdapter.test.ts"
+    ],
+    "depends_on": [
+      "pj-s18-01-legal-pco-subprocessor",
+      "pj-s18-04-security-encrypt-review"
+    ],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: Core of the sprint. This is why the Integrations specialist agent exists."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-06-pco-adapter-sync",
+    "sprint": "18",
+    "title": "PlanningCenterAdapter — listMembers, listGroups, syncMember + rate limiting",
+    "status": "proposed",
+    "assigned_to": "Integrations",
+    "priority": "high",
+    "description": "Implement the data-sync methods of PlanningCenterAdapter: listMembers() paginates GET /people/v2/people; listGroups() paginates GET /groups/v2/groups + /groups/{id}/memberships; syncMember() upserts into church_members + creates stub users if email not registered. Map per spec §5. Rate-limit: 100 req/min per org — track request timestamps, back off 1 second before window. Handle Groups module 403 by setting groupsAvailable=false in chmsConfig rather than failing. Cursor pagination via links.next.",
+    "acceptance_criteria": [
+      "listMembers() returns ChmsMember[] for a church — handles cursor pagination",
+      "listGroups() returns ChmsGroup[] with memberExternalIds resolved — handles Groups module 403 gracefully",
+      "syncMember() upserts by (church_id, chms_provider, external_chms_id) — creates stub user for unregistered emails",
+      "Stub user onboardingCompleted=false, emailVerified=null, invite email sent via existing admin-notify path",
+      "Rate limiter enforces <=100 req/min — measured via test that bursts 150 requests and observes pacing",
+      "Field mapping matches spec §5 exactly (first_name+last_name → users.name, primary_email → users.email, status → chms_status)",
+      "Integration test against PCO sandbox verifies full member roster import + group import"
+    ],
+    "files": [
+      "src/lib/chms/adapters/PlanningCenterAdapter.ts",
+      "src/lib/chms/adapters/PlanningCenterAdapter.test.ts",
+      "src/lib/chms/rateLimiter.ts"
+    ],
+    "depends_on": [
+      "pj-s18-05-pco-adapter-oauth"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-07-webhook-route",
+    "sprint": "18",
+    "title": "Webhook endpoint /api/webhooks/chms/[provider] + HMAC verification",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create parameterized webhook route per architecture spec §3. Handler: (1) read provider from URL; (2) call adapter.handleWebhook(payload, headers); (3) verify HMAC-SHA256 via X-PCO-Webhooks-Authenticity header against webhookSecret from chmsConfig; (4) on fail → 401 + Sentry; (5) on ignore → 200; (6) on valid → insert chms_sync_jobs row (delta_sync, pending) + 202 Accepted. Never block webhook response on downstream work.",
+    "acceptance_criteria": [
+      "src/app/api/webhooks/chms/[provider]/route.ts POST handler",
+      "adapter.handleWebhook() implemented in PlanningCenterAdapter with HMAC-SHA256 verification using raw body (not JSON.parse'd)",
+      "Raw request body preserved for signature verification (Next.js: use req.text() not req.json())",
+      "Invalid signature → 401 Unauthorized + Sentry.captureException with churchId context",
+      "Ignored events (outside subscribed types) → 200 OK with { ignored: true }",
+      "Valid events → insert chms_sync_jobs row + 202 Accepted (async processing)",
+      "Timing-safe HMAC compare (crypto.timingSafeEqual, not ===)",
+      "Unit tests: valid signature, invalid signature, tampered body, unknown provider, missing webhookSecret"
+    ],
+    "files": [
+      "src/app/api/webhooks/chms/[provider]/route.ts",
+      "src/app/api/webhooks/chms/[provider]/route.test.ts"
+    ],
+    "depends_on": [
+      "pj-s18-05-pco-adapter-oauth"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-08-security-webhook-review",
+    "sprint": "18",
+    "title": "Security review: webhook signature verification + replay protection",
+    "status": "proposed",
+    "assigned_to": "Security",
+    "priority": "high",
+    "description": "Review /api/webhooks/chms/[provider] for: (1) HMAC uses raw body not parsed JSON; (2) timing-safe compare; (3) signature over full body including whitespace; (4) webhookSecret pulled from chmsConfig (not hardcoded); (5) replay protection — PCO webhooks include a timestamp; reject events older than 5 minutes. Verify 401 response doesn't leak whether signature format was invalid vs wrong key vs missing secret.",
+    "acceptance_criteria": [
+      "Code review at docs/security/sprint18-webhook-review.md — pass or specific issues",
+      "Replay protection implemented (timestamp tolerance window documented)",
+      "401 responses don't differentiate between failure modes in the body/logs accessible to an attacker",
+      "If issues found: Backend re-implements, Security re-reviews"
+    ],
+    "files": [
+      "docs/security/sprint18-webhook-review.md"
+    ],
+    "depends_on": [
+      "pj-s18-07-webhook-route"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-09-push-summary",
+    "sprint": "18",
+    "title": "PlanningCenterAdapter.pushPrayerSummary — weekly person notes",
+    "status": "proposed",
+    "assigned_to": "Integrations",
+    "priority": "medium",
+    "description": "Implement pushPrayerSummary(churchId, externalMemberId, summary) via POST /people/v2/people/{id}/notes. Used to write weekly prayer summary back to PCO. Graceful degradation: if note creation fails with 403 (scope missing) or 404 (person deleted), log but don't fail the whole sprint job. Summary content follows a brief template (e.g. \"This week {name} was prayed for by {count} members at {church}.\").",
+    "acceptance_criteria": [
+      "pushPrayerSummary() creates a note on the PCO person record",
+      "403/404 responses logged but don't throw — allow other members' summaries to proceed",
+      "Summary template follows brand voice (warm, specific — reference docs/brand/brand-guide.md)",
+      "Integration test against PCO sandbox verifies note creation + retrieval"
+    ],
+    "files": [
+      "src/lib/chms/adapters/PlanningCenterAdapter.ts"
+    ],
+    "depends_on": [
+      "pj-s18-06-pco-adapter-sync"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-10-sync-jobs-runner",
+    "sprint": "18",
+    "title": "chms_sync_jobs runner — Vercel Cron + retry/backoff",
+    "status": "proposed",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Create Vercel Cron endpoint /api/cron/chms-sync-runner that polls chms_sync_jobs for pending jobs with next_attempt_at <= now(). Dispatch by job_type: full_sync → adapter.listMembers + listGroups + syncMember loop; delta_sync → process webhook payload (single member upsert); push_summary → adapter.pushPrayerSummary. Implement backoff per spec §4: attempt 1 immediate, 2 at +60s, 3 at +5min, 4 → dead. Failure classification: transient (retry), auth (refresh once, then dead), permanent (dead immediately). Dead jobs trigger Sentry + admin-notify. Cron schedule: full_sync at 0 3 * * *, delta_sync processing every */5 minutes, push_summary weekly.",
+    "acceptance_criteria": [
+      "src/app/api/cron/chms-sync-runner/route.ts exists with Bearer CRON_SECRET auth",
+      "vercel.json updated with two cron entries (nightly full + 5-minute delta processor)",
+      "Backoff schedule implemented: attempt 1 immediate, 2 at +60s, 3 at +5min, 4 dead",
+      "Failure classification: 429/5xx/timeout → transient (retry); 401 → refresh once then dead; 4xx other → dead",
+      "Dead jobs: Sentry.captureException + admin-notify.ts call with churchId + provider + jobType + attempt",
+      "Runner is idempotent — double-runs don't duplicate member inserts (upsert semantics)",
+      "Unit tests: retry schedule, classification logic, dead-letter Sentry call",
+      "Integration test: inject a pending full_sync job, run runner, verify completed_at set + church_members rows inserted"
+    ],
+    "files": [
+      "src/app/api/cron/chms-sync-runner/route.ts",
+      "src/app/api/cron/chms-sync-runner/route.test.ts",
+      "vercel.json"
+    ],
+    "depends_on": [
+      "pj-s18-06-pco-adapter-sync",
+      "pj-s18-07-webhook-route"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-11-frontend-connect-ui",
+    "sprint": "18",
+    "title": "Frontend: Connect Planning Center UI in church settings + sync status",
+    "status": "proposed",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Add a Church Settings → Integrations section (or extend existing settings page). UI elements: (1) Provider card with PCO logo + 'Connect' button when disconnected; (2) Connected state shows last sync timestamp + member count + 'Disconnect' + 'Sync now' buttons; (3) Sync-status badge (syncing / ok / failed with last error); (4) Groups-unavailable warning if churches have People but not Groups subscription. Connect button initiates OAuth via server action that constructs auth URL with state param (CSRF). Loading + error states per existing UI patterns.",
+    "acceptance_criteria": [
+      "Settings page section 'Integrations' visible to church admins + pastors only",
+      "Disconnected state: PCO logo + Connect button that redirects to authorize URL",
+      "Connected state: shows chmsConfig.connectedAt, last_synced_at, member count (query), Disconnect + Sync now buttons",
+      "Sync now button triggers a full_sync job (POST to server action that inserts chms_sync_jobs row)",
+      "Disconnect button: confirm modal, then calls adapter.disconnect()",
+      "Sync status badge: 'Never synced' | 'Syncing' | 'Synced {relative time}' | 'Failed: {error}'",
+      "Groups-unavailable warning shown when chmsConfig.groupsAvailable === false",
+      "Role gate: non-admin/pastor sees nothing (entire section hidden)",
+      "Mobile responsive — tested at 375px width"
+    ],
+    "files": [
+      "src/app/(church)/church/[slug]/settings/integrations/page.tsx",
+      "src/app/(church)/church/[slug]/settings/integrations/ChmsConnectCard.tsx",
+      "src/app/actions/chms.actions.ts"
+    ],
+    "depends_on": [
+      "pj-s18-05-pco-adapter-oauth"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-12-analytics-instrumentation",
+    "sprint": "18",
+    "title": "Analytics: instrument ChMS funnel events",
+    "status": "proposed",
+    "assigned_to": "Analytics",
+    "priority": "medium",
+    "description": "Instrument three server-side events: chms_connection_started (when Connect button clicked, before OAuth redirect); chms_connection_completed (on successful callback, with provider + church_id + sync_job_queued=true); chms_sync_failed (per dead-letter job, with provider + job_type + error_class + attempt). Events go through existing src/lib/analytics.server.ts wrapper. Also document the new events in docs/analytics/church-funnel-spec.md so Growth/Sales can build reporting.",
+    "acceptance_criteria": [
+      "trackChmsConnectionStarted(), trackChmsConnectionCompleted(), trackChmsSyncFailed() added to src/lib/analytics.server.ts",
+      "Events fired from the correct code paths (Connect button server action, OAuth callback, sync runner dead-letter path)",
+      "Event properties match spec — provider (string), church_id (uuid), error_class (transient/auth/permanent), attempt (number)",
+      "docs/analytics/church-funnel-spec.md updated with the 3 new events (trigger, properties, server vs client designation)",
+      "Unit tests verify events are called with the correct properties"
+    ],
+    "files": [
+      "src/lib/analytics.server.ts",
+      "docs/analytics/church-funnel-spec.md"
+    ],
+    "depends_on": [
+      "pj-s18-11-frontend-connect-ui"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-13-qa-pco-integration-tests",
+    "sprint": "18",
+    "title": "QA: integration tests against PCO sandbox",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Acquire a free PCO sandbox organization and register a dev OAuth app. Write integration tests that run against the live sandbox (skipped in CI without PCO_SANDBOX_* env vars). Cover: (1) OAuth connect happy path; (2) OAuth callback with invalid state (CSRF); (3) token refresh on 401; (4) full_sync imports N members; (5) webhook delivery verification (requires ngrok or similar); (6) rate limit — send 150 requests, verify pacing; (7) Groups module 403 degradation (sandbox without Groups subscription); (8) disconnect revokes tokens.",
+    "acceptance_criteria": [
+      "PCO sandbox org acquired + credentials stored in team password manager",
+      "Integration test suite in src/lib/chms/adapters/PlanningCenterAdapter.integration.test.ts",
+      "All 8 scenarios have a test — skipped if PCO_SANDBOX_CLIENT_ID missing",
+      "Test run in CI on a schedule (weekly, not per-PR — sandbox quota + flakiness)",
+      "Failure modes produce actionable error messages with which scenario and what response was expected/received",
+      "QA signoff doc at docs/qa/sprint18-chms-signoff.md with pass/fail per scenario"
+    ],
+    "files": [
+      "src/lib/chms/adapters/PlanningCenterAdapter.integration.test.ts",
+      "docs/qa/sprint18-chms-signoff.md"
+    ],
+    "depends_on": [
+      "pj-s18-09-push-summary",
+      "pj-s18-10-sync-jobs-runner",
+      "pj-s18-11-frontend-connect-ui"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-14-doc-writer-setup-guide",
+    "sprint": "18",
+    "title": "DocWriter: customer setup guide — How to connect Planning Center",
+    "status": "proposed",
+    "assigned_to": "DocWriter",
+    "priority": "medium",
+    "description": "Write a customer-facing guide at /docs/churches/connect-planning-center (or equivalent route). Audience: a non-technical pastor or church admin. Covers: (1) what PrayerJar uses PCO data for (member sync, group sync, weekly summary notes); (2) what permissions we request (people, groups scopes); (3) step-by-step screenshots of the connect flow; (4) how to disconnect; (5) FAQ: does this share data with other churches (no), can we limit to a subset of members (not v1), what happens if we unsubscribe from PCO Groups module. Written in PrayerJar brand voice — warm, reverent, plainspoken per docs/brand/brand-guide.md.",
+    "acceptance_criteria": [
+      "New doc page at the appropriate /docs route",
+      "Screenshots of the connect flow (captured from PCO sandbox)",
+      "FAQ section addresses: data isolation, scope of data access, disconnection, Groups module degradation, token expiry handling",
+      "Links from /for-churches + the Integrations settings section",
+      "Reviewed by CustomerSuccess for accuracy before publish"
+    ],
+    "files": [
+      "src/app/(public)/docs/churches/connect-planning-center/page.tsx"
+    ],
+    "depends_on": [
+      "pj-s18-11-frontend-connect-ui"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-15-sales-cs-enablement",
+    "sprint": "18",
+    "title": "Sales + CS enablement brief + rollout playbook",
+    "status": "proposed",
+    "assigned_to": "Sales",
+    "priority": "medium",
+    "description": "Jointly with CustomerSuccess, produce two artifacts. (1) Sales enablement brief at docs/sales/pco-integration-brief.md — the 30-second pitch, top 5 objection handles (data privacy, Groups module cost, what if we change ChMS, does our pastor need to authorize, can it be reversed), competitive positioning (who else integrates with PCO, how PrayerJar's use is different). (2) CS rollout playbook at docs/customer-success/pco-rollout.md — which churches get the integration first (existing paid churches with 150+ members), monitoring dashboards to watch post-launch, common support questions + canned responses, escalation path for auth failures.",
+    "acceptance_criteria": [
+      "docs/sales/pco-integration-brief.md — 30-second pitch, 5 objection handles, competitive positioning",
+      "docs/customer-success/pco-rollout.md — rollout cohort, monitoring checklist, canned responses, escalation tree",
+      "Both docs reviewed by PM for accuracy before sprint close",
+      "/for-churches page updated with 'Integrates with Planning Center' as a Growing Church/Network tier feature bullet (copy approved by Copywriter)"
+    ],
+    "files": [
+      "docs/sales/pco-integration-brief.md",
+      "docs/customer-success/pco-rollout.md",
+      "src/app/(public)/for-churches/page.tsx"
+    ],
+    "depends_on": [
+      "pj-s18-13-qa-pco-integration-tests"
+    ],
+    "blockers": [],
+    "notes": [],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s18-16-reviewer-sprint-signoff",
+    "sprint": "18",
+    "title": "Reviewer: final Sprint 18 approval",
+    "status": "proposed",
+    "assigned_to": "Reviewer",
+    "priority": "high",
+    "description": "Review entire Sprint 18 delivery against architecture spec + acceptance criteria on each task. Confirm: (1) all task ACs met; (2) Legal + Security sign-offs present; (3) QA integration tests pass in sandbox; (4) code quality meets PrayerJar standards (tests, no placeholder error handling, no secrets in logs); (5) /for-churches claim is materially backed by shipped code; (6) no regression in existing monthly checkout / church creation / prayer wall flows.",
+    "acceptance_criteria": [
+      "All Sprint 18 tasks marked done with Reviewer notes",
+      "Regression test pass: sign-in, church creation, prayer posting, monthly checkout, morning email cron",
+      "No secrets in logs (grep for client_secret, access_token, api_key in recent logs)",
+      "/for-churches 'Integrates with Planning Center' feature claim is backed by working code — removed if anything is still broken"
+    ],
+    "files": [],
+    "depends_on": [
+      "pj-s18-14-doc-writer-setup-guide",
+      "pj-s18-15-sales-cs-enablement"
+    ],
+    "blockers": [],
+    "notes": [],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   }
