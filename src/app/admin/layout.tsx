@@ -2,21 +2,27 @@ import { requireAdmin } from '@/lib/admin-auth';
 import { listModerationLogs } from '@/services/moderation-log.service';
 import { listContactSubmissions } from '@/services/contact.service';
 import { db } from '@/db';
-import { reports } from '@/db/schema';
+import { reports, nonprofitVerifications } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 
 async function getNavCounts() {
-  const [unresolvedModLogs, unreadContact, pendingReports] = await Promise.all([
-    listModerationLogs({ resolved: false, limit: 200 }),
-    listContactSubmissions({ read: false, limit: 200 }),
-    db.select().from(reports).where(eq(reports.status, 'pending')),
-  ]);
+  const [unresolvedModLogs, unreadContact, pendingReports, pendingVerifications] =
+    await Promise.all([
+      listModerationLogs({ resolved: false, limit: 200 }),
+      listContactSubmissions({ read: false, limit: 200 }),
+      db.select().from(reports).where(eq(reports.status, 'pending')),
+      db
+        .select({ id: nonprofitVerifications.id })
+        .from(nonprofitVerifications)
+        .where(eq(nonprofitVerifications.status, 'pending')),
+    ]);
 
   return {
     reports: pendingReports.length,
     moderation: unresolvedModLogs.length,
     feedback: unreadContact.length,
+    legalVerifications: pendingVerifications.length,
   };
 }
 
@@ -29,6 +35,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/queue', label: 'Reports', count: counts.reports, critical: counts.reports > 0 },
     { href: '/admin/moderation', label: 'Moderation', count: counts.moderation, critical: counts.moderation > 0 },
     { href: '/admin/feedback', label: 'Feedback', count: counts.feedback, critical: false },
+    {
+      href: '/admin/legal-verifications',
+      label: 'Legal',
+      count: counts.legalVerifications,
+      critical: false,
+    },
   ];
 
   return (

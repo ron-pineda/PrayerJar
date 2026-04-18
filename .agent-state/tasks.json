@@ -4053,7 +4053,7 @@
     "id": "pj-s17-dpa-subprocessor",
     "sprint": "17",
     "title": "Data Processing Addendum + sub-processor list (public page)",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Legal",
     "priority": "high",
     "description": "Legal audit: current ToS is a 4-paragraph consumer ToS. No DPA, no sub-processor disclosure, no 501(c)(3) handling. Any church >100 members or any church's lawyer will ask for all three. Deliverables: (1) DPA template at /legal/dpa (click-through accept, stored per-church), (2) public sub-processor list at /legal/subprocessors (Vercel, Resend, Anthropic, Neon/Supabase, Stripe, etc. — with purpose + data categories), (3) `church_legal_acceptances` table, (4) 501(c)(3) verification flow on enterprise signup (upload determination letter, Admin approves).",
@@ -4069,9 +4069,20 @@
     ],
     "files": [
       "src/app/(public)/legal/dpa/page.tsx",
+      "src/app/(public)/legal/dpa/actions.ts",
+      "src/app/(public)/legal/dpa/DpaAcceptButton.tsx",
+      "src/app/(public)/legal/dpa/actions.test.ts",
       "src/app/(public)/legal/subprocessors/page.tsx",
+      "src/app/(public)/legal/subprocessors/subprocessors.test.ts",
+      "src/app/(church)/church/[slug]/settings/nonprofit/page.tsx",
+      "src/app/(church)/church/[slug]/settings/nonprofit/actions.ts",
+      "src/app/(church)/church/[slug]/settings/nonprofit/NonprofitUploadForm.tsx",
+      "src/app/(church)/church/[slug]/settings/nonprofit/actions.test.ts",
+      "src/app/admin/legal-verifications/page.tsx",
+      "src/app/admin/legal-verifications/actions.ts",
+      "src/app/admin/legal-verifications/ReviewForm.tsx",
       "docs/legal/dpa-template.md",
-      "drizzle/migrations/00XX_church_legal.sql"
+      "src/db/migrations/0027_church_legal.sql"
     ],
     "depends_on": [],
     "blockers": [],
@@ -4080,7 +4091,8 @@
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
       "[2026-04-17] PM: agent hit usage limit mid-task. Partial work committed (089587f) — subprocessors page + DPA template + migration 0027. Remaining: /legal/dpa public page + 501(c)(3) flow. Reset to approved for re-dispatch.",
-      "[2026-04-17] PM: kicked off after tier-redesign PM sign-off."
+      "[2026-04-17] PM: kicked off after tier-redesign PM sign-off.",
+      "[2026-04-17] Legal → Reviewer: DPA page (/legal/dpa) + click-through accept server action (ip_address captured) + 501(c)(3) upload flow (nonprofit_verifications table, Vercel Blob PDF upload, /admin/legal-verifications review queue). Migration 0027 already included nonprofit_verifications table — no column added to churches table. Auth pattern reused from settings page (admin|pastor role check via churchMembers join). 19 tests pass. Footer updated with sub-processors link."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

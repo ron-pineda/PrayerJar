@@ -8,6 +8,9 @@ import {
 } from '@/services/church-platform.service';
 import { getPastoralStats } from '@/services/pastoral.service';
 import { hasPastoralDashboard, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
+import { db } from '@/db';
+import { nonprofitVerifications } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -76,7 +79,15 @@ export default async function PastoralDashboardPage({ params }: Props) {
     );
   }
 
-  const stats = await getPastoralStats(church.id);
+  const [stats, [latestVerification]] = await Promise.all([
+    getPastoralStats(church.id),
+    db
+      .select({ status: nonprofitVerifications.status })
+      .from(nonprofitVerifications)
+      .where(eq(nonprofitVerifications.churchId, church.id))
+      .orderBy(desc(nonprofitVerifications.submittedAt))
+      .limit(1),
+  ]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -132,6 +143,29 @@ export default async function PastoralDashboardPage({ params }: Props) {
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
           <span className="font-medium">Prayer Team</span>
+          <span className="text-muted-foreground text-sm">→</span>
+        </Link>
+        <Link
+          href={`/church/${slug}/settings/nonprofit`}
+          className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
+        >
+          <span className="font-medium">
+            501(c)(3) Verification
+            {latestVerification && (
+              <span
+                className={`ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+                  latestVerification.status === 'verified'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
+                    : latestVerification.status === 'pending'
+                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+                }`}
+              >
+                {latestVerification.status.charAt(0).toUpperCase() +
+                  latestVerification.status.slice(1)}
+              </span>
+            )}
+          </span>
           <span className="text-muted-foreground text-sm">→</span>
         </Link>
       </div>

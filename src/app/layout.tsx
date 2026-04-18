@@ -123,6 +123,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Link href="/help" className="hover:text-foreground transition-colors">Help</Link>
                 <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
                 <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+                <Link href="/legal/subprocessors" className="hover:text-foreground transition-colors">Sub-processors</Link>
                 <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
                 <Link href="/give" className="hover:text-foreground transition-colors">Give</Link>
               </div>
