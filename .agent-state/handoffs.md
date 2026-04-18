@@ -162,5 +162,6 @@
 [2026-04-18T02:18:08.088Z] Dashboard sync — 0 fix(es): 
 
 [2026-04-17] PM → Backend: pj-s17-plans-gating-fix — update plans.ts per approved tier decision doc
+[2026-04-18] Backend → Reviewer: pj-s17-plans-gating-fix — plans.ts fully updated per Sprint 17 tier map; 4 new gate constants + predicates; 3 dashboard routes (care/team/testimony) plan-gated for first time; 44/44 tests pass
 [2026-04-17] PM → Copywriter: pj-s17-for-churches-rewrite — rewrite /for-churches copy per approved tier map + brand guide
 [2026-04-17] PM → Legal: pj-s17-dpa-subprocessor — finish DPA public page + 501(c)(3) flow (partial work already committed)

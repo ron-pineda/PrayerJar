@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
+import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
 import { getPastoralNotes } from '@/services/pastoral.service';
+import { hasPastoralCareInbox, PLANS, PASTORAL_CARE_INBOX_TIER } from '@/lib/plans';
 import { CreateNoteForm } from './CreateNoteForm';
 
 interface Props {
@@ -38,6 +39,31 @@ export default async function PastoralCareInboxPage({ params }: Props) {
         <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
           ← Back to {church.name}
         </Link>
+      </div>
+    );
+  }
+
+  // Plan-tier gate. Source of truth is src/lib/plans.ts (PASTORAL_CARE_INBOX_TIER).
+  const tier = await getChurchTier(church.id);
+  if (!hasPastoralCareInbox(tier)) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-xl font-semibold mb-3">Pastoral Care Inbox</h1>
+        <p className="text-muted-foreground mb-4">
+          The Pastoral Care Inbox is available on the {PLANS[PASTORAL_CARE_INBOX_TIER].name} plan and
+          above. Upgrade to unlock it.
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <Link href="/billing" className="text-sm text-primary hover:underline">
+            View plans
+          </Link>
+          <Link
+            href={`/church/${slug}`}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Back to {church.name}
+          </Link>
+        </div>
       </div>
     );
   }

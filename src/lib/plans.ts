@@ -5,6 +5,8 @@ export type PlanDefinition = {
   name: string;
   monthlyPriceCents: number;
   yearlyPriceCents: number;
+  yearlyMonthlyEquivalentCents?: number; // display helper: yearlyPriceCents/12 rounded
+  displayPrice?: string;                  // UI display override (e.g. enterprise)
   stripePriceIdMonthly: string | null;  // populated from env vars
   stripePriceIdYearly: string | null;
   features: string[];
@@ -16,6 +18,9 @@ export type PlanDefinition = {
   };
 };
 
+/** Annual discount percentage applied to yearly pricing (15%). */
+export const ANNUAL_DISCOUNT_PERCENT = 15;
+
 export const PLANS: Record<PlanTier, PlanDefinition> = {
   free: {
     tier: 'free',
@@ -25,18 +30,19 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
     stripePriceIdMonthly: null,
     stripePriceIdYearly: null,
     features: [
-      'Up to 25 members',
-      '1 group',
+      'Up to 50 members',
+      '3 groups',
       'Public prayer wall',
       'Basic notifications',
     ],
-    limits: { members: 25, groups: 1, events: 0, admins: 1 },
+    limits: { members: 50, groups: 3, events: 0, admins: 1 },
   },
   starter: {
     tier: 'starter',
-    name: 'Starter',
-    monthlyPriceCents: 1900,   // $19/mo
-    yearlyPriceCents: 18000,   // $180/yr (save ~21%)
+    name: 'Small Church',
+    monthlyPriceCents: 1900,          // $19/mo
+    yearlyPriceCents: 19380,          // $193.80/yr (15% off monthly × 12)
+    yearlyMonthlyEquivalentCents: 1615, // $16.15/mo when billed annually
     stripePriceIdMonthly: process.env.STRIPE_PRICE_STARTER_MONTHLY ?? null,
     stripePriceIdYearly: process.env.STRIPE_PRICE_STARTER_YEARLY ?? null,
     features: [
@@ -46,22 +52,27 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
       'Custom welcome message',
       'Email digest for pastors',
       'Basic analytics',
+      'Pastoral dashboard',
+      'Pastoral care inbox',
     ],
     limits: { members: 150, groups: 5, events: 2, admins: 3 },
   },
   pro: {
     tier: 'pro',
-    name: 'Pro',
-    monthlyPriceCents: 4900,   // $49/mo
-    yearlyPriceCents: 46800,   // $468/yr (save ~20%)
+    name: 'Growing Church',
+    monthlyPriceCents: 4900,          // $49/mo
+    yearlyPriceCents: 49980,          // $499.80/yr (15% off monthly × 12)
+    yearlyMonthlyEquivalentCents: 4165, // $41.65/mo when billed annually
     stripePriceIdMonthly: process.env.STRIPE_PRICE_PRO_MONTHLY ?? null,
     stripePriceIdYearly: process.env.STRIPE_PRICE_PRO_YEARLY ?? null,
     features: [
       'Unlimited members',
       'Unlimited groups',
-      'Live event prayer wall',
       'Pastoral dashboard',
-      'Pastoral notes & assignments',
+      'Pastoral care inbox',
+      'Prayer team assignments',
+      'Testimony approval queue',
+      'Live event prayer wall',
       'Custom branding',
       'Advanced analytics & PDF reports',
       'Priority support',
@@ -70,13 +81,14 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
   },
   enterprise: {
     tier: 'enterprise',
-    name: 'Enterprise',
+    name: 'Network',
     monthlyPriceCents: 0,      // custom pricing, contact sales
     yearlyPriceCents: 0,
+    displayPrice: 'Starting at $199/mo',
     stripePriceIdMonthly: null,
     stripePriceIdYearly: null,
     features: [
-      'Everything in Pro',
+      'Everything in Growing Church',
       'Unlimited events',
       'Unlimited admins',
       'Custom subdomain (coming soon)',
@@ -108,20 +120,20 @@ export function getPlanByStripePriceId(priceId: string): PlanDefinition | null {
 // page enforced no plan gate at all. Keep all three in sync by
 // reading from here.
 //
-// If Strategist later moves the Pastoral Dashboard to a different
-// tier (see pj-s17-tier-redesign), edit PASTORAL_DASHBOARD_TIER below
-// and every downstream surface will follow automatically.
-
-/** The minimum plan tier that unlocks the Pastoral Dashboard. */
-export const PASTORAL_DASHBOARD_TIER: PlanTier = 'pro';
+// Sprint 17 (pj-s17-tier-redesign): Pastoral Dashboard and Pastoral
+// Care Inbox moved from 'pro' to 'starter'. Prayer Team Assignments
+// and Testimony Approval Queue added as new 'pro'-tier constants.
 
 /** Ordered from least to most privileged. */
-const TIER_RANK: Record<PlanTier, number> = {
+export const TIER_RANK: Record<PlanTier, number> = {
   free: 0,
   starter: 1,
   pro: 2,
   enterprise: 3,
 };
+
+/** The minimum plan tier that unlocks the Pastoral Dashboard. */
+export const PASTORAL_DASHBOARD_TIER: PlanTier = 'starter';
 
 /**
  * Returns true if the given plan tier grants access to the Pastoral
@@ -139,3 +151,36 @@ export function hasPastoralDashboard(tier: PlanTier): boolean {
  */
 export const PASTORAL_DASHBOARD_TIER_NAME: string =
   PLANS[PASTORAL_DASHBOARD_TIER].name;
+
+/** The minimum plan tier that unlocks the Pastoral Care Inbox. */
+export const PASTORAL_CARE_INBOX_TIER: PlanTier = 'starter';
+
+/**
+ * Returns true if the given plan tier grants access to the Pastoral
+ * Care Inbox.
+ */
+export function hasPastoralCareInbox(tier: PlanTier): boolean {
+  return TIER_RANK[tier] >= TIER_RANK[PASTORAL_CARE_INBOX_TIER];
+}
+
+/** The minimum plan tier that unlocks Prayer Team Assignments. */
+export const PRAYER_TEAM_ASSIGNMENTS_TIER: PlanTier = 'pro';
+
+/**
+ * Returns true if the given plan tier grants access to Prayer Team
+ * Assignments.
+ */
+export function hasPrayerTeamAssignments(tier: PlanTier): boolean {
+  return TIER_RANK[tier] >= TIER_RANK[PRAYER_TEAM_ASSIGNMENTS_TIER];
+}
+
+/** The minimum plan tier that unlocks the Testimony Approval Queue. */
+export const TESTIMONY_APPROVAL_QUEUE_TIER: PlanTier = 'pro';
+
+/**
+ * Returns true if the given plan tier grants access to the Testimony
+ * Approval Queue.
+ */
+export function hasTestimonyApprovalQueue(tier: PlanTier): boolean {
+  return TIER_RANK[tier] >= TIER_RANK[TESTIMONY_APPROVAL_QUEUE_TIER];
+}

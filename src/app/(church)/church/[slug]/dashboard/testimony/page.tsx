@@ -4,7 +4,8 @@ import { auth } from '@/lib/auth';
 import { db } from '@/db';
 import { testimonyApprovals, prayers, users } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
-import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
+import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
+import { hasTestimonyApprovalQueue, PLANS, TESTIMONY_APPROVAL_QUEUE_TIER } from '@/lib/plans';
 import { TestimonyActions } from './TestimonyActions';
 
 interface Props {
@@ -45,6 +46,31 @@ export default async function TestimonyQueuePage({ params, searchParams }: Props
         <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
           ← Back to {church.name}
         </Link>
+      </div>
+    );
+  }
+
+  // Plan-tier gate. Source of truth is src/lib/plans.ts (TESTIMONY_APPROVAL_QUEUE_TIER).
+  const tier = await getChurchTier(church.id);
+  if (!hasTestimonyApprovalQueue(tier)) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-xl font-semibold mb-3">Testimony Approval Queue</h1>
+        <p className="text-muted-foreground mb-4">
+          The Testimony Approval Queue is available on the {PLANS[TESTIMONY_APPROVAL_QUEUE_TIER].name} plan and
+          above. Upgrade to unlock it.
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <Link href="/billing" className="text-sm text-primary hover:underline">
+            View plans
+          </Link>
+          <Link
+            href={`/church/${slug}`}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Back to {church.name}
+          </Link>
+        </div>
       </div>
     );
   }
