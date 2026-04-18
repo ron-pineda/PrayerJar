@@ -356,9 +356,9 @@
     "id": "19",
     "phase": 19,
     "name": "UI Modernization",
-    "features": 0,
+    "features": 9,
     "size": "M",
-    "status": "planned",
-    "notes": "Use Claude Design (Anthropic Labs) to prototype /for-churches + homepage directions before committing sprint capacity. Queued after ChMS integration — avoid UI rework when ChMS features land."
+    "status": "active",
+    "notes": "Jar-first approach: upgrade PrayerJar component (size/mode/countLabel/SlipDropAnimation), then redesign 5 surfaces: homepage signed-out, homepage signed-in, /for-churches, /pray, /praise-wall. Brainstormed 2026-04-18. Spec: docs/superpowers/specs/2026-04-18-ui-modernization-design.md. Plan: docs/superpowers/plans/2026-04-18-ui-modernization.md. 9 tasks: pj-s19-01 through pj-s19-09."
   }
 ]

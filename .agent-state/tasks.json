@@ -4692,5 +4692,160 @@
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
+  },
+  {
+    "id": "pj-s19-01",
+    "sprint": "19",
+    "title": "PrayerJar component upgrade",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Add size/mode/countLabel props. SlipDropAnimation export. CSS keyframes in globals.css.",
+    "files": [
+      "src/components/prayer-jar.tsx",
+      "src/app/globals.css"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-02",
+    "sprint": "19",
+    "title": "Homepage service personal stats + church query",
+    "status": "approved",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "Add getMyIntercessionsCount, getMyAnsweredCount, getUserChurch. Update getHomepageData. Add homepage.service.test.ts.",
+    "files": [
+      "src/services/homepage.service.ts",
+      "src/services/homepage.service.test.ts"
+    ],
+    "blockers": [],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-03",
+    "sprint": "19",
+    "title": "Homepage redesign signed-out + signed-in",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Signed-out: jar lg, new headline, Lucide icons, remove global stats strip. Signed-in: personal stats strip, contextual CTAs.",
+    "files": [
+      "src/app/(public)/page.tsx"
+    ],
+    "blockers": [
+      "pj-s19-01",
+      "pj-s19-02"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-04",
+    "sprint": "19",
+    "title": "PrayerDialog slip-drop animation",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Import SlipDropAnimation. Show after successful submission, close dialog on animation end.",
+    "files": [
+      "src/components/prayer-dialog.tsx"
+    ],
+    "blockers": [
+      "pj-s19-01"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-05",
+    "sprint": "19",
+    "title": "/for-churches trust strip + hero jar",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Remove placeholder testimonials. Add live trust strip with church/prayer/member counts. Add jar lg to hero.",
+    "files": [
+      "src/app/(public)/for-churches/page.tsx"
+    ],
+    "blockers": [
+      "pj-s19-01"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-06",
+    "sprint": "19",
+    "title": "/pray slips-mode jar hero + new headline",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Add PrayerJar mode=slips size=md with countLabel. Headline: Someone wrote this for you.",
+    "files": [
+      "src/app/(public)/pray/page.tsx"
+    ],
+    "blockers": [
+      "pj-s19-01"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-07",
+    "sprint": "19",
+    "title": "/praise-wall lights jar hero + light-escape animation",
+    "status": "approved",
+    "assigned_to": "Frontend Engineer",
+    "priority": "medium",
+    "description": "Add PrayerJar lights md with answered count. Wrap each PraiseCard with animate-light-escape orb.",
+    "files": [
+      "src/app/(public)/praise-wall/page.tsx",
+      "src/components/lights-released-client.tsx"
+    ],
+    "blockers": [
+      "pj-s19-01"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-08",
+    "sprint": "19",
+    "title": "QA visual regression all 5 surfaces",
+    "status": "approved",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Verify all surfaces at 375/768/1280px. Check jar modes, animations play once, personal stats correct, no placeholder text, CTAs route correctly.",
+    "files": [],
+    "blockers": [
+      "pj-s19-01",
+      "pj-s19-02",
+      "pj-s19-03",
+      "pj-s19-04",
+      "pj-s19-05",
+      "pj-s19-06",
+      "pj-s19-07"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
+  },
+  {
+    "id": "pj-s19-09",
+    "sprint": "19",
+    "title": "Reviewer Sprint 19 sign-off",
+    "status": "approved",
+    "assigned_to": "Reviewer",
+    "priority": "high",
+    "description": "Final review against spec at docs/superpowers/specs/2026-04-18-ui-modernization-design.md. Confirm backwards compat, reduced-motion, no fake testimonials.",
+    "files": [],
+    "blockers": [
+      "pj-s19-08"
+    ],
+    "notes": [],
+    "last_touched": "2026-04-18T00:00:00.000Z"
   }
 ]
