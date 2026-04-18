@@ -4410,8 +4410,10 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] Backend: Implemented. pcoOrgId added to ChmsConfig, fetched from /people/v2/me after token exchange (best-effort). handleWebhook: HMAC-SHA256 over raw body, timingSafeEqual, 5-min replay protection, event routing (upsert/delete/ignore). Webhook route: raw body preserved, church lookup by pcoOrgId, uniform 401 for all auth failures, 202 after async job insert, Sentry on sig failure only. 26 tests passing, no TS errors in new files. NOTE: webhookSecret field will be undefined until a secret-registration UI is built (tracked for pj-s18-08 awareness). Ready for Security review."
+      "[2026-04-18] Backend: Implemented. pcoOrgId added to ChmsConfig, fetched from /people/v2/me after token exchange (best-effort). handleWebhook: HMAC-SHA256 over raw body, timingSafeEqual, 5-min replay protection, event routing (upsert/delete/ignore). Webhook route: raw body preserved, church lookup by pcoOrgId, uniform 401 for all auth failures, 202 after async job insert, Sentry on sig failure only. 26 tests passing, no TS errors in new files. NOTE: webhookSecret field will be undefined until a secret-registration UI is built (tracked for pj-s18-08 awareness). Ready for Security review.",
+      "[2026-04-18] Reviewer/PM: APPROVED pending Security sign-off on pj-s18-08. Tests 26/26. All 8 AC met."
     ],
+    "status": "done",
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
@@ -4419,7 +4421,7 @@
     "id": "pj-s18-08-security-webhook-review",
     "sprint": "18",
     "title": "Security review: webhook signature verification + replay protection",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Security",
     "priority": "high",
     "description": "Review /api/webhooks/chms/[provider] for: (1) HMAC uses raw body not parsed JSON; (2) timing-safe compare; (3) signature over full body including whitespace; (4) webhookSecret pulled from chmsConfig (not hardcoded); (5) replay protection \u2014 PCO webhooks include a timestamp; reject events older than 5 minutes. Verify 401 response doesn't leak whether signature format was invalid vs wrong key vs missing secret.",
@@ -4436,7 +4438,9 @@
       "pj-s18-07-webhook-route"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[2026-04-18] Security: PASS WITH CONDITIONS. All 7 cryptographic checks pass — raw body HMAC, timingSafeEqual, full-body scope, chmsConfig secret source, 5-min replay window, uniform 401 responses, Sentry scope correct. One known functional gap: webhookSecret is never populated during OAuth (exchangeCodeForTokens), so webhook delta sync is non-operational for all churches. Documented as Option b: known gap, nightly full-sync fallback, Sprint 19 registration task required. Review at docs/security/sprint18-webhook-review.md."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
