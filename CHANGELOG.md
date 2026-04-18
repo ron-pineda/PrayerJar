@@ -1,5 +1,8 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-18 pj-s17-audit-log Church audit log — capture admin + pastoral actions
+Migration 0029 adds audit_events table (church_id FK, actor_user_id FK, action, target_type, target_id, metadata jsonb, created_at) with indexes on church_id and created_at. logAuditEvent() typed helper wired at 5 write-points (member.add, member.remove, role.change, prayer.delete, plan.change). Read-only admin page at /church/{slug}/admin/audit: searchParams awaited as Promise (Next.js 16 async pattern), DB-level WHERE clauses for action/date-range/retention cutoff, .limit(50).offset() pagination with prev/next links, <form method=GET> filter UI with 6-option action select + date inputs + submit + clear. Access gated to admin/pastor role server-side. Scheduled retention deletion via /api/cron/audit-cleanup: buckets churches by auditRetentionDays(tier), runs one DELETE per bucket (max 3), auth via Bearer CRON_SECRET, scheduled at 0 3 * * * in vercel.json. 6/6 cron tests + 8/8 audit tests pass.
+
 ## 2026-04-17 pj-s17-chms-architecture Architect pluggable ChMS integration layer
 Spec-only deliverable. docs/architecture/chms-integration-layer.md defines ChmsAdapter interface (7 methods: connect/disconnect/listMembers/listGroups/syncMember/pushPrayerSummary/handleWebhook), Planning Center as Sprint 18 reference target, webhook endpoint POST /api/webhooks/chms/[provider], exponential backoff retry (0/60s/300s, dead-letter via Sentry at attempt 3), field-mapping tables for PCO Person and ChMS group, CHMS_{PROVIDER}_{KEY} env-var naming convention with encrypted per-church chmsConfig, Sprint 18 task table S18-1 through S18-8. No src/ code introduced.
 
