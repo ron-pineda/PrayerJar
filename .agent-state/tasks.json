@@ -3650,7 +3650,7 @@
     "id": "pj-s17-chms-integration-survey",
     "sprint": "17",
     "title": "ChMS integration landscape survey — Planning Center, Elvanto, ChurchTrac, Breeze",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Integrations",
     "priority": "medium",
     "description": "Audit finding #4. Produce a short spec per ChMS: auth model (OAuth vs API key), member-sync endpoints, rate limits, webhook support, sandbox availability, and the minimum viable integration scope for PrayerJar (import members, sync small groups, push prayer summary back). Output: docs/integrations/chms-landscape.md + a ranked recommendation on which 1–2 to build first.",
@@ -3668,7 +3668,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Runs in parallel with the pricing spine. Output feeds pj-s17-chms-architecture.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off wave-2b."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3710,7 +3711,7 @@
     "id": "pj-s17-funnel-instrumentation",
     "sprint": "17",
     "title": "Conversion funnel instrumentation — /for-churches -> signup -> paid",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Analytics",
     "priority": "high",
     "description": "Audit finding #7. Define the church-funnel event spec: for-churches_view, pricing_view, calculator_interacted, signup_start, signup_complete, plan_activated, plan_upgraded, demo_requested. Pick the tool (Vercel Analytics + PostHog is already in stack — verify) and write the event dictionary. Analytics owns the spec + dashboard; Frontend fires the events in a paired task. Also produce the weekly funnel review template.",
@@ -3729,7 +3730,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Without this we cannot measure whether the redesign worked.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off wave-2b."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
@@ -3773,7 +3775,7 @@
     "id": "pj-s17-onboarding-audit",
     "sprint": "17",
     "title": "Church day-1 onboarding audit + guided setup proposal",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Customer Success",
     "priority": "medium",
     "description": "Audit finding #8. Walk a pastor through signup -> first login -> first useful action today. Document what they actually see (empty dashboard? sample data? guided checklist?). Produce: (1) friction log, (2) proposed guided-setup checklist with success criteria per step, (3) suggested first-run sample content strategy. Designer pairs on the UI sketch; build is Sprint 18 scope. Hand off a concrete spec, not open questions.",
@@ -3793,7 +3795,8 @@
     "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Designer paired for the wireframe. Implementation in Sprint 18.",
-      "[2026-04-17] PM: approved after Architect acceptance-criteria pass."
+      "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
+      "[2026-04-17] PM: kicked off wave-2b."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
