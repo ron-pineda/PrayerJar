@@ -4157,5 +4157,37 @@
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"
+  },
+  {
+    "id": "pj-s17-annual-billing-stripe",
+    "sprint": "17",
+    "title": "Create annual Stripe price IDs + wire into plans.ts",
+    "status": "approved",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "PM approved annual billing launch (option A) alongside Sprint 17 repricing. plans.ts has yearlyPriceCents and annualStripePriceId placeholder fields ready. Steps: (1) Create annual price IDs in Stripe Dashboard for Small Church ($193.80/yr) and Growing Church ($499.80/yr) — link to the existing monthly products. (2) Add the real price IDs to plans.ts annualStripePriceId fields. (3) Update the billing server action / Stripe checkout session creation to support an annual=true param that selects the yearly price ID. (4) Wire the billing toggle in TierCardsSection to pass annual=true to the checkout URL. (5) Test with Stripe test mode price IDs before swapping to live. Must not break the existing monthly checkout flow.",
+    "acceptance_criteria": [
+      "plans.ts annualStripePriceId fields contain real Stripe price IDs (test mode first, then live)",
+      "Checkout session creation accepts an annual flag and uses annualStripePriceId when true",
+      "TierCardsSection billing toggle passes the flag through to checkout URL",
+      "Existing monthly checkout flow unchanged — regression tested",
+      "Test: checkout with annual=true creates a subscription billed yearly at the correct price",
+      "Stripe webhook plan.change event fires correctly on annual subscription creation",
+      "Live price IDs are in Vercel env (STRIPE_PRICE_STARTER_ANNUAL, STRIPE_PRICE_PRO_ANNUAL) not hardcoded"
+    ],
+    "files": [
+      "src/lib/plans.ts",
+      "src/app/api/v1/billing/checkout/route.ts",
+      "src/components/tier-cards-section.tsx"
+    ],
+    "depends_on": [
+      "pj-s17-plans-gating-fix"
+    ],
+    "blockers": [],
+    "notes": [
+      "[2026-04-18] PM: queued after tier-redesign approval. Annual billing approved to launch in parallel with Sprint 17 repricing (option A). Stripe manual step required first — create price IDs in dashboard before Backend can wire them."
+    ],
+    "created_at": "2026-04-18",
+    "last_touched": "2026-04-18"
   }
 ]
