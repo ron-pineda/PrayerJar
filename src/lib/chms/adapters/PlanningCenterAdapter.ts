@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import type {
   ChmsAdapter,
   ChmsConfig,
@@ -115,6 +116,31 @@ export class PlanningCenterAdapter implements ChmsAdapter {
       Date.now() + data.expires_in * 1000
     ).toISOString();
 
+    // Fetch the PCO organization ID so webhook events can be matched back to this church.
+    // Best-effort: if the sub-request fails, OAuth still succeeds; pcoOrgId stays undefined
+    // and webhook lookup for this church will silently fail until they reconnect.
+    let pcoOrgId: string | undefined;
+    try {
+      const meRes = await fetch(
+        'https://api.planningcenteronline.com/people/v2/me',
+        {
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (meRes.ok) {
+        const meData = (await meRes.json()) as {
+          data?: { relationships?: { organization?: { data?: { id?: string } } } };
+        };
+        const orgId = meData?.data?.relationships?.organization?.data?.id;
+        if (orgId) pcoOrgId = orgId;
+      }
+    } catch {
+      // Non-fatal — OAuth flow continues without pcoOrgId
+    }
+
     const config: ChmsConfig = {
       provider: 'planning-center',
       accessToken: data.access_token,
@@ -122,6 +148,7 @@ export class PlanningCenterAdapter implements ChmsAdapter {
       tokenExpiresAt,
       connectedAt: new Date().toISOString(),
       groupsAvailable: true,
+      ...(pcoOrgId !== undefined ? { pcoOrgId } : {}),
     };
 
     const encryptedConfig = encrypt(JSON.stringify(config));
@@ -489,9 +516,72 @@ export class PlanningCenterAdapter implements ChmsAdapter {
   }
 
   async handleWebhook(
-    _payload: unknown,
-    _headers: Record<string, string>
+    payload: unknown,
+    headers: Record<string, string>
   ): Promise<ChmsWebhookResult | null> {
-    throw new Error('handleWebhook not yet implemented — pj-s18-06');
+    // Must have a webhook secret configured to verify the signature
+    const secret = this.config?.webhookSecret;
+    if (!secret) return null;
+
+    const rawBody = headers['x-raw-body'];
+    const signature = headers['x-pco-webhooks-authenticity'];
+    if (!rawBody || !signature) return null;
+
+    // HMAC-SHA256 verify (timing-safe)
+    const expected = createHmac('sha256', secret)
+      .update(rawBody, 'utf8')
+      .digest('hex');
+    const expectedBuf = Buffer.from(expected);
+    const actualBuf = Buffer.from(signature);
+    if (expectedBuf.length !== actualBuf.length || !timingSafeEqual(expectedBuf, actualBuf)) {
+      return null; // caller responds 401
+    }
+
+    // Replay protection: reject events older than 5 minutes
+    const data = payload as {
+      data: Array<{
+        attributes: {
+          created_at: string;
+          name: string;
+          payload: { data: { id: string; attributes: Record<string, unknown> } };
+        };
+      }>;
+    };
+    const event = data.data?.[0];
+    if (!event) return { event: 'unknown', externalId: '', action: 'ignore' };
+
+    const createdAt = new Date(event.attributes.created_at);
+    if (Date.now() - createdAt.getTime() > 5 * 60 * 1000) {
+      return { event: event.attributes.name, externalId: '', action: 'ignore' };
+    }
+
+    const eventName = event.attributes.name;
+    const externalId = event.attributes.payload?.data?.id ?? '';
+
+    // Only process subscribed events
+    const SUBSCRIBED = ['person.created', 'person.updated', 'person.deleted'];
+    if (!SUBSCRIBED.includes(eventName)) {
+      return { event: eventName, externalId, action: 'ignore' };
+    }
+
+    if (eventName === 'person.deleted') {
+      return { event: eventName, externalId, action: 'delete' };
+    }
+
+    // Map attributes to ChmsMember
+    const attrs = event.attributes.payload?.data?.attributes ?? {};
+    const member: ChmsMember = {
+      externalId,
+      firstName: String(attrs.first_name ?? ''),
+      lastName: String(attrs.last_name ?? ''),
+      email:
+        (attrs as { primary_email_address?: { address?: string } })
+          .primary_email_address?.address ?? null,
+      phone: null,
+      status: attrs.status === 'active' ? 'active' : 'inactive',
+      raw: event.attributes.payload?.data as unknown as Record<string, unknown>,
+    };
+
+    return { event: eventName, externalId, action: 'upsert', member };
   }
 }

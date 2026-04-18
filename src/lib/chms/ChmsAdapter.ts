@@ -33,6 +33,8 @@ export interface ChmsConfig {
   apiKey?: string;
   subdomain?: string;
   webhookSecret?: string;
+  /** Planning Center organization ID — stored at OAuth time, used for webhook church lookup. */
+  pcoOrgId?: string;
   connectedAt: string;
   lastSyncedAt?: string;
   groupsAvailable?: boolean;
