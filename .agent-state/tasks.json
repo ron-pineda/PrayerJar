@@ -4697,7 +4697,7 @@
     "id": "pj-s19-01",
     "sprint": "19",
     "title": "PrayerJar component upgrade",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Add size/mode/countLabel props. SlipDropAnimation export. CSS keyframes in globals.css.",
@@ -4706,8 +4706,13 @@
       "src/app/globals.css"
     ],
     "blockers": [],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "Implemented size/mode/countLabel props, SlipDropAnimation export, CSS keyframes for slip-drop and light-escape",
+      "Fixed: countLabel moved outside aria-hidden boundary for screen reader access",
+      "Fixed: SlipDropAnimation fires onComplete immediately under prefers-reduced-motion",
+      "Reviewer approved — commit ae12544"
+    ],
+    "last_touched": "2026-04-18T01:00:00.000Z"
   },
   {
     "id": "pj-s19-02",
