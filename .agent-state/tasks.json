@@ -4317,7 +4317,7 @@
     "id": "pj-s18-05-pco-adapter-oauth",
     "sprint": "18",
     "title": "PlanningCenterAdapter — OAuth flow + connect/disconnect",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Integrations",
     "priority": "high",
     "description": "Create src/lib/chms/ChmsAdapter.ts interface per architecture spec §1. Create src/lib/chms/providers.ts with ChmsProviderSlug + CHMS_ADAPTERS registry. Implement src/lib/chms/adapters/PlanningCenterAdapter.ts covering: OAuth 2.0 authorization-code flow; access_token + refresh_token exchange; token refresh on 401; connect() stores encrypted config; disconnect() revokes and clears config. Callback route /api/auth/chms/callback/planning-center handles redirect. Required env vars: CHMS_PLANNING_CENTER_CLIENT_ID, CHMS_PLANNING_CENTER_CLIENT_SECRET. Scopes requested: people, groups.",
@@ -4344,7 +4344,8 @@
     ],
     "blockers": [],
     "notes": [
-      "[2026-04-18] PM: Core of the sprint. This is why the Integrations specialist agent exists."
+      "[2026-04-18] PM: Core of the sprint. This is why the Integrations specialist agent exists.",
+      "[2026-04-18] Integrations: Implemented ChmsAdapter interface, providers registry, PlanningCenterAdapter OAuth (connect/disconnect/token exchange/refresh with 401 retry), callback route /api/auth/chms/callback/planning-center, connect initiation route /api/auth/chms/connect/planning-center, and 5 unit tests all passing. No TS errors in new files. Ready for Reviewer."
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"

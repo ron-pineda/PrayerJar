@@ -1,3 +1,4 @@
+[2026-04-18] Integrations → PM: pj-s18-05-pco-adapter-oauth ready for review — ChmsAdapter interface, providers registry, PlanningCenterAdapter OAuth (connect/disconnect/token exchange/refresh), callback + connect routes, 5 tests passing.
 [2026-04-18] Security → PM: pj-s18-04-security-encrypt-review PASS — Integrations unblocked for pj-s18-05 (PCO OAuth adapter).
 [2026-04-18] Backend → Security: pj-s18-03-encrypt-lib ready for review — AES-256-GCM encrypt.ts + 8 tests passing. Security sign-off (pj-s18-04) required before Integrations can use it.
 [2026-04-18] Database → PM: pj-s18-02-schema-migrations ready for review — 0030_chms_integration.sql + schema.ts updated. TypeScript clean.
