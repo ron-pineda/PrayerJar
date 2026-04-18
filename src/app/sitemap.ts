@@ -1,6 +1,4 @@
 import type { MetadataRoute } from 'next'
-import { db } from '@/db'
-import { churches } from '@/db/schema'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl =
@@ -36,22 +34,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/docs/paid`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
   ]
 
-  // Dynamic: one entry per registered church profile
-  let churchRoutes: MetadataRoute.Sitemap = []
-  try {
-    const rows = await db
-      .select({ slug: churches.slug, updatedAt: churches.updatedAt })
-      .from(churches)
-    churchRoutes = rows.map((c) => ({
-      url: `${baseUrl}/church/${c.slug}`,
-      lastModified: c.updatedAt ?? new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    }))
-  } catch (err) {
-    // Don't let a DB blip nuke the whole sitemap
-    console.error('[sitemap] failed to load churches:', err)
-  }
-
-  return [...staticRoutes, ...churchRoutes]
+  // Note: /church/[slug]/* routes are all member/admin-gated (auth-required).
+  // robots.ts correctly disallows /church/. Submitting these URLs to the sitemap
+  // while blocking them in robots causes GSC "submitted URL blocked by robots.txt"
+  // warnings and wastes crawl budget. Church slug URLs are intentionally omitted.
+  return staticRoutes
 }
