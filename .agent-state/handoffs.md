@@ -1,3 +1,5 @@
+[2026-04-18] Reviewer → PM: pj-s19-09 Sprint 19 APPROVED. All 9 tasks done. 2 known deviations: stats strip shows Active not Submitted (PM to document); LightEscapeAnimation not a named export (accepted). Commit 868d64d.
+[2026-04-18] Reviewer → Frontend Engineer: pj-s19-09 NEEDS-REWORK. 1 blocking fix required: signed-in greeting "prayed for you" line must lose text-muted-foreground (spec Part 3 explicit). 2 additional deviations documented in task notes (Active vs Submitted label — PM decision; LightEscapeAnimation not exported — low severity). Return to Reviewer after fix.
 [2026-04-18] QA → Reviewer: pj-s19-08 QA PASS. All 5 surfaces verified. Fixed SlipDropAnimation zIndex (50→100) + animation fill (forwards→both). Commit 3f07f6e.
 [2026-04-18] Frontend Engineer → QA: pj-s19-07 /praise-wall DONE. Lights jar hero + light-escape orb on each praise card. 359/5 tests. Commit 0319a4e. All 7 impl tasks complete — ready for QA.
 [2026-04-18] Frontend Engineer → Reviewer: pj-s19-06 /pray DONE. Slips jar hero + "Someone wrote this for you." + live active count. Commit 51aabad.

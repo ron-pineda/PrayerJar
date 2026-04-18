@@ -4867,15 +4867,23 @@
     "id": "pj-s19-09",
     "sprint": "19",
     "title": "Reviewer Sprint 19 sign-off",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "Final review against spec at docs/superpowers/specs/2026-04-18-ui-modernization-design.md. Confirm backwards compat, reduced-motion, no fake testimonials.",
-    "files": [],
+    "files": [
+      "src/app/(public)/page.tsx"
+    ],
     "blockers": [
       "pj-s19-08"
     ],
-    "notes": [],
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "notes": [
+      "APPROVED after rework. All 9 Sprint 19 tasks done.",
+      "Fixed: prayed-for count now text-base font-semibold text-amber-600 (visual prominence per spec)",
+      "Known deviation: stats strip shows 'Active' (activePrayerCount) not 'Submitted' — PM decision to document",
+      "Known deviation: LightEscapeAnimation not exported as named component — accepted debt, CSS class works",
+      "Reviewer approved — commit 868d64d"
+    ],
+    "last_touched": "2026-04-18T06:00:00.000Z"
   }
 ]

@@ -358,7 +358,7 @@
     "name": "UI Modernization",
     "features": 9,
     "size": "M",
-    "status": "active",
-    "notes": "Jar-first approach: upgrade PrayerJar component (size/mode/countLabel/SlipDropAnimation), then redesign 5 surfaces: homepage signed-out, homepage signed-in, /for-churches, /pray, /praise-wall. Brainstormed 2026-04-18. Spec: docs/superpowers/specs/2026-04-18-ui-modernization-design.md. Plan: docs/superpowers/plans/2026-04-18-ui-modernization.md. 9 tasks: pj-s19-01 through pj-s19-09."
+    "status": "done",
+    "notes": "CLOSED 2026-04-18. All 9 tasks done, Reviewer APPROVED. Jar-first: PrayerJar size/mode/countLabel/SlipDropAnimation upgraded. 5 surfaces redesigned. Personal stats on signed-in homepage. Live trust strip on /for-churches. Slip-drop + light-escape animations. Known deviations: stats strip shows Active not Submitted (PM to document); LightEscapeAnimation not exported as named component (accepted debt). Spec: docs/superpowers/specs/2026-04-18-ui-modernization-design.md."
   }
 ]
