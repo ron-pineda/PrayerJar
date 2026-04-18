@@ -3479,7 +3479,7 @@
     "id": "pj-s17-plans-gating-fix",
     "sprint": "17",
     "title": "Update src/lib/plans.ts to match approved tier map",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Execute the gating change decided in pj-s17-tier-redesign. Update `src/lib/plans.ts` feature flags, member caps, and any related guards (middleware, server actions that check plan level) so the code matches the approved marketing page. Includes unit coverage for the gating predicates. Small mechanical change — blocked on Strategist sign-off, not technically hard.",
@@ -3506,16 +3506,17 @@
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Fast-follow on Strategist — do NOT let Backend start before the tier map is final or we'll rework twice.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: kicked off after tier-redesign PM sign-off.",
-      "[2026-04-18] Backend: DONE. plans.ts fully updated per pricing doc: display names (Free/Small Church/Growing Church/Network), Free cap 25→50 members/1→3 groups, PASTORAL_DASHBOARD_TIER pro→starter, PASTORAL_CARE_INBOX_TIER=starter (new), PRAYER_TEAM_ASSIGNMENTS_TIER=pro (new), TESTIMONY_APPROVAL_QUEUE_TIER=pro (new), yearlyPriceCents starter 18000→19380/pro 46800→49980, yearlyMonthlyEquivalentCents display helpers, ANNUAL_DISCOUNT_PERCENT=15, enterprise displayPrice field. Three dashboard routes (care/team/testimony) now plan-gated via the new predicates — were previously role-only. 44/44 tests pass. No new TS errors in touched files."
+      "[2026-04-18] Backend: DONE. plans.ts fully updated per pricing doc: display names (Free/Small Church/Growing Church/Network), Free cap 25→50 members/1→3 groups, PASTORAL_DASHBOARD_TIER pro→starter, PASTORAL_CARE_INBOX_TIER=starter (new), PRAYER_TEAM_ASSIGNMENTS_TIER=pro (new), TESTIMONY_APPROVAL_QUEUE_TIER=pro (new), yearlyPriceCents starter 18000→19380/pro 46800→49980, yearlyMonthlyEquivalentCents display helpers, ANNUAL_DISCOUNT_PERCENT=15, enterprise displayPrice field. Three dashboard routes (care/team/testimony) now plan-gated via the new predicates — were previously role-only. 44/44 tests pass. No new TS errors in touched files.",
+      "[2026-04-17] Reviewed and approved — 2026-04-17. All 6 AC met. PASTORAL_DASHBOARD_TIER='starter' confirmed; Free caps 50/3 confirmed; display names Free/Small Church/Growing Church/Network confirmed; annual discount math verified (15% within $0.01, $193.80/yr and $499.80/yr); all three predicates (hasPastoralCareInbox, hasPrayerTeamAssignments, hasTestimonyApprovalQueue) present and exercised; 44/44 tests pass; all three dashboard routes (care/team/testimony) call plans.ts predicates — verified by file read."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-18T00:00:00.000Z"
+    "last_touched": "2026-04-17"
   },
   {
     "id": "pj-s17-for-churches-rewrite",
     "sprint": "17",
     "title": "Rewrite /for-churches marketing copy — accurate tiers + hidden features surfaced",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Copywriter",
     "priority": "high",
     "description": "Rewrite the marketing page copy to match the approved tier map (audit findings #1, #3). Specifically: (a) correctly attribute Pastoral Dashboard to its actual tier, (b) surface the hidden features — Pastoral Care Inbox, Prayer Team Assignments, Testimony Approval Queue, Small Groups — with short benefit-led descriptions, (c) add the new Free/Starter member caps, (d) add a pricing FAQ covering trial, overages, and migration. Strategist reviews voice/positioning before Frontend implements.",
@@ -3536,18 +3537,16 @@
       "pj-s17-tier-redesign",
       "pj-s17-brand-guide-v1"
     ],
-    "blockers": [
-      "pj-s17-tier-redesign",
-      "pj-s17-brand-guide-v1"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-17] PM: proposed as part of Sprint 17 kickoff. Strategist pairs on positioning; Frontend implements the final copy in pj-s17-for-churches-build.",
       "[2026-04-17] PM: approved after Architect acceptance-criteria pass.",
       "[2026-04-17] PM: kicked off after tier-redesign PM sign-off.",
-      "[2026-04-17] Copywriter: Copy complete. Deliverable at docs/marketing/for-churches-copy-v2.md. All 7 acceptance criteria addressed: tier cards for Free/Small Church/Growing Church/Network with fit-statements; Pastoral Dashboard and Pastoral Care Inbox at Small Church tier; Prayer Team Assignments and Testimony Approval Queue at Growing Church; Small Groups cap noted; 8-item FAQ (trial, overages, migration, annual billing, plan growth, cancellation, 501c3); social proof placeholder slots; Enterprise demo section with all 5 qualification fields. No AI-Flagged Care, SSO/SLA/dedicated-support, or Most Popular badge. Annual discount is 15% throughout. Handing to Reviewer."
+      "[2026-04-17] Copywriter: Copy complete. Deliverable at docs/marketing/for-churches-copy-v2.md. All 7 acceptance criteria addressed: tier cards for Free/Small Church/Growing Church/Network with fit-statements; Pastoral Dashboard and Pastoral Care Inbox at Small Church tier; Prayer Team Assignments and Testimony Approval Queue at Growing Church; Small Groups cap noted; 8-item FAQ (trial, overages, migration, annual billing, plan growth, cancellation, 501c3); social proof placeholder slots; Enterprise demo section with all 5 qualification fields. No AI-Flagged Care, SSO/SLA/dedicated-support, or Most Popular badge. Annual discount is 15% throughout. Handing to Reviewer.",
+      "[2026-04-17] Reviewed and approved — 2026-04-17. All 7 AC met. Hero headline present; 4 tier cards with fit-statements and no 'Most Popular' badge; all features attributed to correct tiers (Pastoral Dashboard/Care Inbox at Small Church, Prayer Team Assignments/Testimony Approval Queue at Growing Church); no SSO/SAML/SLA/AI-Flagged Care claims (SSO/custom-subdomain appear only with 'coming soon' qualifier on Network card); FAQ contains 8 Q&As covering all required topics (trial, overages, migration, annual discount, plan growth, cancellation, 501c3); enterprise contact section present; BLOCK cleared: pj-s17-hotfix-ai-claim, pj-s17-hotfix-enterprise-claims, and pj-s17-hotfix-pastoral-consistency all status=done."
     ],
     "created_at": "2026-04-17",
-    "last_touched": "2026-04-17"
+    "last_touched": "2026-04-18T02:34:35.165Z"
   },
   {
     "id": "pj-s17-for-churches-build",
@@ -4053,7 +4052,7 @@
     "id": "pj-s17-dpa-subprocessor",
     "sprint": "17",
     "title": "Data Processing Addendum + sub-processor list (public page)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Legal",
     "priority": "high",
     "description": "Legal audit: current ToS is a 4-paragraph consumer ToS. No DPA, no sub-processor disclosure, no 501(c)(3) handling. Any church >100 members or any church's lawyer will ask for all three. Deliverables: (1) DPA template at /legal/dpa (click-through accept, stored per-church), (2) public sub-processor list at /legal/subprocessors (Vercel, Resend, Anthropic, Neon/Supabase, Stripe, etc. — with purpose + data categories), (3) `church_legal_acceptances` table, (4) 501(c)(3) verification flow on enterprise signup (upload determination letter, Admin approves).",
@@ -4092,7 +4091,8 @@
       "[2026-04-17] PM: kicked off — dispatched to specialist (Sprint 17 wave 2 after hotfixes closed).",
       "[2026-04-17] PM: agent hit usage limit mid-task. Partial work committed (089587f) — subprocessors page + DPA template + migration 0027. Remaining: /legal/dpa public page + 501(c)(3) flow. Reset to approved for re-dispatch.",
       "[2026-04-17] PM: kicked off after tier-redesign PM sign-off.",
-      "[2026-04-17] Legal → Reviewer: DPA page (/legal/dpa) + click-through accept server action (ip_address captured) + 501(c)(3) upload flow (nonprofit_verifications table, Vercel Blob PDF upload, /admin/legal-verifications review queue). Migration 0027 already included nonprofit_verifications table — no column added to churches table. Auth pattern reused from settings page (admin|pastor role check via churchMembers join). 19 tests pass. Footer updated with sub-processors link."
+      "[2026-04-17] Legal → Reviewer: DPA page (/legal/dpa) + click-through accept server action (ip_address captured) + 501(c)(3) upload flow (nonprofit_verifications table, Vercel Blob PDF upload, /admin/legal-verifications review queue). Migration 0027 already included nonprofit_verifications table — no column added to churches table. Auth pattern reused from settings page (admin|pastor role check via churchMembers join). 19 tests pass. Footer updated with sub-processors link.",
+      "[2026-04-17] Reviewed and approved — 2026-04-17. All 8 AC met. /legal/dpa page renders with AI-drafted disclaimer and click-through accept button (acceptDpa() server action inserts into churchLegalAcceptances with church_id/user_id/document_type/document_version/ip_address); /legal/subprocessors lists Vercel/Neon/Resend/Stripe/Anthropic/Sentry/Google/APNs with name+purpose+dataCategories+region+DPA link and SUBPROCESSOR_LIST_LAST_UPDATED constant; nonprofit verification settings page at /church/[slug]/settings/nonprofit and admin review queue at /admin/legal-verifications both present with correct auth gating; AI-drafted disclaimer visible on DPA page; 19/19 tests pass (6 DPA + 5 subprocessors + 8 nonprofit)."
     ],
     "created_at": "2026-04-17",
     "last_touched": "2026-04-17"

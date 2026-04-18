@@ -1,5 +1,14 @@
 <!-- Appended on every merged PR. -->
 
+## 2026-04-17 pj-s17-plans-gating-fix Update src/lib/plans.ts to match approved tier map
+Updated plans.ts with Sprint 17 tier map: display names Free/Small Church/Growing Church/Network; Free caps raised to 50 members/3 groups; PASTORAL_DASHBOARD_TIER moved pro→starter; three new gating predicates (hasPastoralCareInbox, hasPrayerTeamAssignments, hasTestimonyApprovalQueue); 15% annual discount math; three dashboard routes (care/team/testimony) now plan-gated via plans.ts predicates. 44/44 tests pass.
+
+## 2026-04-17 pj-s17-for-churches-rewrite Rewrite /for-churches marketing copy — accurate tiers + hidden features surfaced
+Delivered docs/marketing/for-churches-copy-v2.md: hero headline, verse strip, 8 feature blocks with tier attribution, 4 tier cards (Free/Small Church/Growing Church/Network) with fit-statements and no "Most Popular" badge, 8-item FAQ, social proof placeholder slots, enterprise/network contact section with qualification fields. No AI-Flagged Care, SSO/SAML/SLA claims; annual discount 15% throughout.
+
+## 2026-04-17 pj-s17-dpa-subprocessor Data Processing Addendum + sub-processor list (public page)
+Shipped /legal/dpa with AI-drafted DPA text (14 sections), AI-drafted disclaimer, and click-through accept button (acceptDpa() server action inserts into churchLegalAcceptances with ip_address); /legal/subprocessors with 9 processor entries, purpose/dataCategories/region/DPA-link per entry, and versioned SUBPROCESSOR_LIST_LAST_UPDATED constant; 501(c)(3) nonprofit upload flow at /church/[slug]/settings/nonprofit (Vercel Blob PDF, nonprofitVerifications table) and admin review queue at /admin/legal-verifications; sub-processors linked from footer. 19/19 tests pass.
+
 ## 2026-04-17
 
 ### pj-s17-competitor-pricing — Competitor pricing & feature benchmark
