@@ -4448,7 +4448,7 @@
     "id": "pj-s18-09-push-summary",
     "sprint": "18",
     "title": "PlanningCenterAdapter.pushPrayerSummary \u2014 weekly person notes",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Integrations",
     "priority": "medium",
     "description": "Implement pushPrayerSummary(churchId, externalMemberId, summary) via POST /people/v2/people/{id}/notes. Used to write weekly prayer summary back to PCO. Graceful degradation: if note creation fails with 403 (scope missing) or 404 (person deleted), log but don't fail the whole sprint job. Summary content follows a brief template (e.g. \"This week {name} was prayed for by {count} members at {church}.\").",
@@ -4465,7 +4465,9 @@
       "pj-s18-06-pco-adapter-sync"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[2026-04-18] Integrations: Implementation complete. pushPrayerSummary POSTs a Note to PCO People API with plain-text header 'Prayer Summary from PrayerJar \u2014 Month Year' (no emoji, per brand-guide \u00a73.2). Catches 403/404 and returns void with console.warn; other errors propagate. authRequest updated to attach .status to generic error objects so catch blocks can discriminate. 3 new tests added (tests 12\u201314); total adapter tests: 14 passing. Committed: 2c4d3ac."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
