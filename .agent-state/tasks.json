@@ -4918,10 +4918,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[Frontend, 2026-04-18T00:00:00Z] DONE. Files: src/app/(public)/know-jesus/page.tsx, src/components/salvation-client.tsx. AC: all pass. Deviations: PrayerJar CTA uses href=/ fallback (PrayerDialog trigger copy hard-coded); per brief this is acceptable."
+      "[Frontend, 2026-04-18T00:00:00Z] DONE. Files: src/app/(public)/know-jesus/page.tsx, src/components/salvation-client.tsx. AC: all pass. Deviations: PrayerJar CTA uses href=/ fallback (PrayerDialog trigger copy hard-coded); per brief this is acceptable.",
+      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. href=/ fallback accepted for ship; inline PrayerDialog wiring backlogged as non-blocking follow-up."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T00:00:00Z"
+    "last_touched": "2026-04-18T23:00:00Z"
   },
   {
     "id": "pj-s20-03",
@@ -4939,10 +4940,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[Frontend, 2026-04-18T21:00:00Z] DONE. Files: src/app/(public)/give/page.tsx. AC: all pass. Deviations: dropped 'Support the mission' eyebrow (brief Hero spec lists only H1+subheadline); typecheck run via direct node.exe — baseline preserved, 0 errors on touched file; QA should re-run pnpm typecheck on sign-off."
+      "[Frontend, 2026-04-18T21:00:00Z] DONE. Files: src/app/(public)/give/page.tsx. AC: all pass. Deviations: dropped 'Support the mission' eyebrow (brief Hero spec lists only H1+subheadline); typecheck run via direct node.exe — baseline preserved, 0 errors on touched file; QA should re-run pnpm typecheck on sign-off.",
+      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. Open questions resolved: (1) keep 'What your gift does' visible after success=1 — thesis, not pitch; (2) split alignment (centered heading / left-aligned body) correct, left-aligned body is more readable; (3) plain border-t/border-b verse strip is correct per brief + brand §4.3 — sacred-strip reserved for CTA/stat regions."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T21:00:00Z"
+    "last_touched": "2026-04-18T23:00:00Z"
   },
   {
     "id": "pj-s20-04",
