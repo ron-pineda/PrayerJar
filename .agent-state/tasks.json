@@ -4826,15 +4826,13 @@
       "src/app/(public)/praise-wall/page.tsx",
       "src/components/lights-released-client.tsx"
     ],
-    "blockers": [
-      "pj-s19-01"
-    ],
+    "blockers": [],
     "notes": [
       "getAnsweredCount() queries prayers status=answered. PrayerJar lights + countLabel in header.",
       "Each PraiseCard wrapped in relative div with animate-light-escape orb, staggered delay.",
       "359/5 tests. Reviewer approved — commit 0319a4e"
     ],
-    "last_touched": "2026-04-18T05:00:00.000Z"
+    "last_touched": "2026-04-19T02:48:13.382Z"
   },
   {
     "id": "pj-s19-08",
@@ -4845,15 +4843,7 @@
     "priority": "high",
     "description": "Verify all surfaces at 375/768/1280px. Check jar modes, animations play once, personal stats correct, no placeholder text, CTAs route correctly.",
     "files": [],
-    "blockers": [
-      "pj-s19-01",
-      "pj-s19-02",
-      "pj-s19-03",
-      "pj-s19-04",
-      "pj-s19-05",
-      "pj-s19-06",
-      "pj-s19-07"
-    ],
+    "blockers": [],
     "notes": [
       "Static QA PASS on all 7 surfaces. All checklist items verified.",
       "Fixed: SlipDropAnimation zIndex 50→100 to clear dialog stacking context",
@@ -4861,7 +4851,7 @@
       "Browser verification still recommended for z-index + animation timing",
       "QA approved — commit 3f07f6e"
     ],
-    "last_touched": "2026-04-18T05:30:00.000Z"
+    "last_touched": "2026-04-19T02:48:13.382Z"
   },
   {
     "id": "pj-s19-09",
@@ -4874,9 +4864,7 @@
     "files": [
       "src/app/(public)/page.tsx"
     ],
-    "blockers": [
-      "pj-s19-08"
-    ],
+    "blockers": [],
     "notes": [
       "APPROVED after rework. All 9 Sprint 19 tasks done.",
       "Fixed: prayed-for count now text-base font-semibold text-amber-600 (visual prominence per spec)",
@@ -4884,7 +4872,7 @@
       "Known deviation: LightEscapeAnimation not exported as named component — accepted debt, CSS class works",
       "Reviewer approved — commit 868d64d"
     ],
-    "last_touched": "2026-04-18T06:00:00.000Z"
+    "last_touched": "2026-04-19T02:48:13.382Z"
   },
   {
     "id": "pj-s20-01",
@@ -5025,7 +5013,7 @@
     "id": "pj-s20-07",
     "sprint": "20",
     "title": "/world-prayer refresh",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Replace hero globe emoji and 8 region emoji with Lucide icons (HandHelping/Globe/Users/Church/Scale/Leaf/Landmark/Cross). Remove any 'join the movement' language. Apply amber palette.",
@@ -5036,7 +5024,9 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend 2026-04-18] Complete — hero 🌐 replaced with Globe icon (h-12 w-12 text-amber-600). All 8 region emoji replaced with Lucide icons: Feather (Middle East — Dove not in lucide-react@1.7.0, used Feather fallback per brief), Leaf, Users, Church, Scale, Landmark (Oceania), Gavel (Global leaders — verified present), Cross. WORLD_REGIONS array refactored: `emoji: string` → `icon: LucideIcon`. Banned copy 'Join believers around the globe…' replaced with brief subheadline 'Intercession crosses every border. Stand with the people carrying these burdens tonight.' 1 Timothy 2:1–2 verse strip added between hero and region cards using standard pattern. Sentence-case: 'Global leaders', 'Persecuted church', 'Pray now' (×8), 'Go to the prayer feed'. Bottom CTA lead copy updated to 'Have a specific request in your own community?'. ScrollReveal wraps each card with delay={i*80} stagger (0/80/160/240/320/400/480/560) and also wraps verse strip + bottom CTA; hero intentionally not wrapped. No jar motif. `tsc --noEmit` shows zero errors in world-prayer/page.tsx (pre-existing errors exist only in unrelated *.test.ts files). Ready for Reviewer."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
