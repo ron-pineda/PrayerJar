@@ -4960,7 +4960,7 @@
     "id": "pj-s20-04",
     "sprint": "20",
     "title": "/about refresh",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Brand storytelling, jar motif once (hero), one verse strip, strip banned phrases. Copy per brief.",
@@ -4971,9 +4971,11 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend, 2026-04-18T22:00:00Z] DONE. Files: src/app/(public)/about/page.tsx. AC: all pass. PrayerJar size=sm count={0} renders clean empty jar. Deviations: HandHelping icon skipped — PrayerDialog trigger hard-coded; brief marks icon optional. Typecheck: 0 errors on file; baseline 144 preserved."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T22:00:00Z"
   },
   {
     "id": "pj-s20-05",
