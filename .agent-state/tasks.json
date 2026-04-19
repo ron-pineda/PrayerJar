@@ -5241,7 +5241,7 @@
     "id": "pj-s21r-02",
     "sprint": "21-review",
     "title": "Architect: Claims-vs-implementation audit of /for-churches",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Architect",
     "priority": "high",
     "description": "For every feature claim on /for-churches (page at src/app/(public)/for-churches/page.tsx) and every feature listed in src/lib/plans.ts, trace to actual code to verify it ships. Produce a claims-matrix table: FEATURE | TIER | MARKETING-CLAIM LOCATION | IMPLEMENTATION FILE(S) | STATE (built / partial / stub / missing / coming-soon-labeled). Flag any gap where we market something that doesn't exist, or exists but is degraded. This is the Q2 answer in full. Legal context: Sprint 17 already did one of these (hotfix AI-Flagged Care, hotfix Enterprise Claims) — confirm those fixes still hold and look for NEW drift introduced by Sprints 18/19/20.",
@@ -5260,10 +5260,11 @@
     ],
     "blockers": [],
     "notes": [
-      "[PM, 2026-04-19] This is Q2 in full. Sprint 17's hotfix work already killed the AI-Flagged Care claim and marked SSO/SAML/subdomain as coming-soon — verify those are still accurate. New risk surface: anything Sprint 18 (PCO) marketed that depends on webhookSecret or sandbox credentials is in the 'partial/stub' column, not 'built'."
+      "[PM, 2026-04-19] This is Q2 in full. Sprint 17's hotfix work already killed the AI-Flagged Care claim and marked SSO/SAML/subdomain as coming-soon — verify those are still accurate. New risk surface: anything Sprint 18 (PCO) marketed that depends on webhookSecret or sandbox credentials is in the 'partial/stub' column, not 'built'.",
+      "[Architect, 2026-04-19] DONE. Verdict: YES — WITH CONDITIONS. /for-churches materially overstates capability on 3 Pro-tier PCO/analytics claims (PDF reports, group sync, weekly-summary-to-PCO) and 1 billing-UX FAQ claim (monthly/annual switch). Sprint 17 hotfixes still hold except the hero phrase 'falls through the cracks' has been reintroduced. 22 claims audited: 14 built, 3 partial, 3 stub, 1 missing, 1 coming-soon-labeled. 3 ship-stoppers, all Pro-tier. See docs/church-review/architect-findings.md."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19T00:10:00Z"
+    "last_touched": "2026-04-19T04:00:00Z"
   },
   {
     "id": "pj-s21r-03",
