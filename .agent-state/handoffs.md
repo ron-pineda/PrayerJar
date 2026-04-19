@@ -246,3 +246,17 @@
 [2026-04-18] Frontend → Reviewer: pj-s20-11 /docs light pass — ready for review.
 
 [2026-04-18] QA → Reviewer: pj-s20-12 Sprint 20 QA — FAIL. 8 of 10 pages PASS and ready for final. pj-s20-09 (/help) and pj-s20-11 (/docs) returned to Frontend as needs-rework: 3 banned-phrase hits total. pj-s20-11 also carries a scope-escalation to PM (light-pass vs spec §4 conflict). Report: docs/sprint20/qa-report.md.
+
+[2026-04-18] Reviewer → PM: pj-s20-01 Copywriter briefs APPROVED. All 8 briefs at docs/sprint20/copy-briefs/ delivered and consumed by Frontend.
+[2026-04-18] Reviewer → PM: pj-s20-02 /know-jesus refresh APPROVED. Commit 7e065dd; Designer + QA both PASS; no jar + no verse strip both deliberate per brief and brand §4.2.
+[2026-04-18] Reviewer → PM: pj-s20-03 /give refresh APPROVED. Commit dacf006; Designer + QA both PASS; Ps 24:1 verse + amber palette + no jar (donation surface).
+[2026-04-18] Reviewer → PM: pj-s20-04 /about refresh APPROVED. Commit 4d8e6c6; jar hero-only, one verse strip, all prior banned phrases cleared.
+[2026-04-18] Reviewer → PM: pj-s20-05 /browse refresh APPROVED. Commit 3cb217b; emoji → Lucide swap on category tiles + collections, ScrollReveal stagger correct.
+[2026-04-18] Reviewer → PM: pj-s20-06 /find-a-church refresh APPROVED. Commit 5397355; warm zero-result empty state, ChurchCard emoji swapped to Lucide.
+[2026-04-18] Reviewer → PM: pj-s20-07 /world-prayer refresh APPROVED. Commit de09d85; hero + 8 region emoji all on Lucide, "join the movement" copy gone, 1 Tim 2:1–2 verse strip.
+[2026-04-18] Reviewer → PM: pj-s20-08 /contact refresh APPROVED. Commit b04979f; Mail icon, plain form labels, backend enum preserved via display-only label map.
+[2026-04-18] Reviewer → PM: pj-s20-09 /help refresh APPROVED. Commits c91b6f5 + 3be08c0; accordion + jump-nav anchors land cleanly, §7 #2 phrase cleared in rework.
+[2026-04-18] Reviewer → PM: pj-s20-10 /sign-in light pass APPROVED. Commit 5cd12ee; PrayerJar size=sm + Lucide Mail, OAuth copy untouched.
+[2026-04-18] Reviewer → PM: pj-s20-11 /docs light pass APPROVED. Commits 5cd12ee + 3be08c0; 26-emoji Lucide swap clean; PM-authorized two-line copy fix cleared §7 #2 and §7 #5.
+[2026-04-18] Reviewer → PM: pj-s20-12 QA sign-off APPROVED. Thorough 5-pass report + rework addendum at docs/sprint20/qa-report.md.
+[2026-04-18] Reviewer → PM: pj-s20-13 Reviewer final approval DONE. Sign-off doc at docs/sprint20/reviewer-signoff.md. Sprint 20 ready to close — handing to PM for pj-s20-14.
