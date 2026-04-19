@@ -4981,7 +4981,7 @@
     "id": "pj-s20-05",
     "sprint": "20",
     "title": "/browse refresh",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Strip emoji from filters and empty states. Warm empty-state copy. Amber palette on active filters. Lucide icons.",
@@ -4992,7 +4992,9 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[2026-04-18] Frontend: /browse refreshed per copy brief. CATEGORY_EMOJIS replaced with CATEGORY_ICONS (Lucide map). 10 category tiles render amber-600 h-6 w-6 icons (HeartPulse/Users/Wallet/Feather/Sparkles/Compass/Heart/Briefcase/Leaf/Star) + Circle fallback. Collection cover 📚 → BookMarked (coverEmoji DB column preserved, just not rendered). Category fallback 🙏 → Circle. Sentence-case: 'Browse by category' + 'Recent prayers'. LayoutGrid icon added to category header. 'Clear' → 'Clear filters'. Prayer card CTA → 'Pray for a request like this' + trailing ArrowRight h-3.5 w-3.5. Both empty states rewritten per brief (search-no-match + filter-no-match headings and bodies). ScrollReveal wraps Collections (delay 0), Category grid (80), Results (160). Hero + search bar untouched. No jar motif. No verse strip. Typecheck clean on browse/page.tsx. No banned phrases. No emoji left on page (grepped 🩺👨💰🕊🙏🧭❤💼✨⭐📚→ — zero hits)."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
