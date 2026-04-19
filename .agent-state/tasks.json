@@ -4917,20 +4917,23 @@
     "id": "pj-s20-02",
     "sprint": "20",
     "title": "/know-jesus refresh (HIGH)",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Full visual + content refresh per brief. No jar (evangelism surface, not product). ScrollReveal, amber palette, Lucide icons. Designer spot-check required.",
     "files": [
       "src/app/(public)/know-jesus/page.tsx",
+      "src/components/salvation-client.tsx",
       "docs/sprint20/copy-briefs/know-jesus.md"
     ],
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend, 2026-04-18T00:00:00Z] DONE. Files: src/app/(public)/know-jesus/page.tsx, src/components/salvation-client.tsx. AC: all pass. Deviations: PrayerJar CTA uses href=/ fallback (PrayerDialog trigger copy hard-coded); per brief this is acceptable."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T00:00:00Z"
   },
   {
     "id": "pj-s20-03",

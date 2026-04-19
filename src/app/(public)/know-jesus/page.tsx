@@ -1,7 +1,6 @@
 import { db } from '@/db';
 import { salvationDecisions } from '@/db/schema';
 import { sql } from 'drizzle-orm';
-import { getDailyVerse } from '@/lib/daily-verse';
 import { SalvationClient } from '@/components/salvation-client';
 
 export const dynamic = 'force-dynamic';
@@ -12,8 +11,6 @@ export default async function KnowJesusPage() {
     .select({ count: sql<number>`count(*)` })
     .from(salvationDecisions);
 
-  const verse = getDailyVerse();
-
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       <div className="mb-8 text-center">
@@ -23,7 +20,7 @@ export default async function KnowJesusPage() {
         </p>
       </div>
 
-      <SalvationClient initialCount={Number(count)} verse={verse} />
+      <SalvationClient initialCount={Number(count)} />
     </main>
   );
 }

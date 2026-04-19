@@ -2,18 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { Church, HandHelping } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SalvationCross } from '@/components/salvation-cross';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { logSalvationDecisionAction } from '@/app/actions/salvation.actions';
-
-type Verse = { text: string; reference: string };
 
 export function SalvationClient({
   initialCount,
-  verse,
 }: {
   initialCount: number;
-  verse: Verse;
 }) {
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -42,79 +40,81 @@ export function SalvationClient({
         <SalvationCross count={count} />
       </div>
       <p className="text-2xl font-bold text-primary mb-1 text-center">{count.toLocaleString()}</p>
-      <p className="text-sm text-muted-foreground mb-10 text-center">lives transformed</p>
-
-      {/* Daily verse */}
-      <div className="border-t border-b py-4 mb-10 max-w-md mx-auto text-center">
-        <p className="text-sm italic text-muted-foreground leading-relaxed">
-          &ldquo;{verse.text}&rdquo;
-        </p>
-        <p className="text-xs text-primary mt-2">{verse.reference}</p>
-      </div>
+      <p className="text-sm text-muted-foreground mb-10 text-center">lives changed here</p>
 
       {/* Gospel sections */}
       <div className="space-y-8 max-w-xl mx-auto mb-12">
-        <section>
-          <h2 className="text-xl font-semibold mb-3">God loves you</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Before you had a name, God knew you. Before you made a single choice, good or bad,
-            he loved you.{' '}
-            <em>
-              &ldquo;For God so loved the world that he gave his one and only Son, that whoever
-              believes in him shall not perish but have eternal life.&rdquo;
-            </em>{' '}
-            — John 3:16
-          </p>
-        </section>
+        <ScrollReveal delay={0}>
+          <section>
+            <h2 className="text-xl font-semibold mb-3">God loves you</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Before you had a name, God knew you. Before you made a single choice — good or bad
+              — he loved you.{' '}
+              <em>
+                &ldquo;For God so loved the world that he gave his one and only Son, that whoever
+                believes in him shall not perish but have eternal life.&rdquo;
+              </em>{' '}
+              — John 3:16
+            </p>
+          </section>
+        </ScrollReveal>
 
-        <section>
-          <h2 className="text-xl font-semibold mb-3">We all drift</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Here&rsquo;s something honest: every one of us has wandered. Not because we&rsquo;re
-            terrible — but because we&rsquo;re human.{' '}
-            <em>
-              &ldquo;For all have sinned and fall short of the glory of God.&rdquo;
-            </em>{' '}
-            — Romans 3:23. That&rsquo;s not shame. That&rsquo;s just the truth about all of us.
-          </p>
-        </section>
+        <ScrollReveal delay={80}>
+          <section>
+            <h2 className="text-xl font-semibold mb-3">We all drift</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Here&rsquo;s the honest part: every one of us has wandered. Not because we&rsquo;re
+              terrible — because we&rsquo;re human.{' '}
+              <em>
+                &ldquo;For all have sinned and fall short of the glory of God.&rdquo;
+              </em>{' '}
+              — Romans 3:23. That isn&rsquo;t shame. It&rsquo;s just the truth about all of us.
+            </p>
+          </section>
+        </ScrollReveal>
 
-        <section>
-          <h2 className="text-xl font-semibold mb-3">Jesus is the bridge</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            God didn&rsquo;t leave us there. He sent Jesus — not to judge, but to rescue. Jesus
-            lived the life we couldn&rsquo;t live, died the death we deserved, and rose again.{' '}
-            <em>
-              &ldquo;But God demonstrates his own love for us in this: while we were still
-              sinners, Christ died for us.&rdquo;
-            </em>{' '}
-            — Romans 5:8
-          </p>
-        </section>
+        <ScrollReveal delay={160}>
+          <section>
+            <h2 className="text-xl font-semibold mb-3">Jesus is the bridge</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              God didn&rsquo;t leave us there. He sent Jesus — not to judge, but to rescue. Jesus
+              lived the life we couldn&rsquo;t live, died the death we deserved, and rose again.{' '}
+              <em>
+                &ldquo;But God demonstrates his own love for us in this: while we were still
+                sinners, Christ died for us.&rdquo;
+              </em>{' '}
+              — Romans 5:8
+            </p>
+          </section>
+        </ScrollReveal>
 
-        <section>
-          <h2 className="text-xl font-semibold mb-3">It&rsquo;s a gift, not an earning</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            You don&rsquo;t have to clean yourself up first. You don&rsquo;t have to be good
-            enough.{' '}
-            <em>
-              &ldquo;For it is by grace you have been saved, through faith — and this is not from
-              yourselves, it is the gift of God — not by works, so that no one can boast.&rdquo;
-            </em>{' '}
-            — Ephesians 2:8-9
-          </p>
-        </section>
+        <ScrollReveal delay={240}>
+          <section>
+            <h2 className="text-xl font-semibold mb-3">It&rsquo;s a gift, not an earning</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              You don&rsquo;t have to clean yourself up first. You don&rsquo;t have to be good
+              enough.{' '}
+              <em>
+                &ldquo;For it is by grace you have been saved, through faith — and this is not from
+                yourselves, it is the gift of God — not by works, so that no one can boast.&rdquo;
+              </em>{' '}
+              — Ephesians 2:8&ndash;9
+            </p>
+          </section>
+        </ScrollReveal>
 
-        <section>
-          <h2 className="text-xl font-semibold mb-3">How to receive it</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            <em>
-              &ldquo;If you declare with your mouth, &lsquo;Jesus is Lord,&rsquo; and believe in
-              your heart that God raised him from the dead, you will be saved.&rdquo;
-            </em>{' '}
-            — Romans 10:9. That&rsquo;s it. A prayer, a turning, a yes.
-          </p>
-        </section>
+        <ScrollReveal delay={320}>
+          <section>
+            <h2 className="text-xl font-semibold mb-3">How to receive it</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              <em>
+                &ldquo;If you declare with your mouth, &lsquo;Jesus is Lord,&rsquo; and believe in
+                your heart that God raised him from the dead, you will be saved.&rdquo;
+              </em>{' '}
+              — Romans 10:9. That&rsquo;s it. A prayer, a turning, a yes.
+            </p>
+          </section>
+        </ScrollReveal>
       </div>
 
       {/* Salvation prayer */}
@@ -150,32 +150,44 @@ export function SalvationClient({
       ) : (
         <div className="text-center max-w-sm mx-auto">
           <p className="text-lg font-semibold mb-2">
-            Welcome to the family{name.trim() ? `, ${name.trim()}` : ''}. 🙏
+            Welcome home{name.trim() ? `, ${name.trim()}` : ''}.
           </p>
           <p className="text-sm text-muted-foreground mb-8">
             Heaven is celebrating right now. — Luke 15:7
           </p>
-          {/* Find a Community — next step card */}
-          <div className="mt-10 mx-auto max-w-md">
-            <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-emerald-950/30 to-blue-950/30 p-6 text-center">
-              <h3 className="text-slate-100 text-lg font-semibold mt-3 mb-2">Find a Community</h3>
-              <p className="text-slate-400 text-sm leading-relaxed mb-5">
-                One of the best next steps in your faith journey is finding a church where you
-                can grow, ask questions, and be encouraged. When you&rsquo;re ready:
-              </p>
-              <Button size="lg" render={<Link href="/find-a-church" />} className="bg-emerald-600 hover:bg-emerald-700 text-white px-8">
-                Find a Church Near You
-              </Button>
-              <p className="text-slate-600 text-xs mt-4">
-                No pressure — you can always find this in the menu.
-              </p>
+
+          {/* Find a community — next step card (amber sacred-strip treatment) */}
+          <ScrollReveal delay={400}>
+            <div className="mt-10 mx-auto max-w-md">
+              <div className="rounded-2xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 p-6 text-center">
+                <h3 className="text-lg font-semibold mt-3 mb-2 inline-flex items-center justify-center gap-2">
+                  <Church className="h-5 w-5 text-amber-600" />
+                  Find a community
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                  One of the best next steps is finding a church where you can grow, ask
+                  questions, and be prayed for by people who will know your name. When
+                  you&rsquo;re ready:
+                </p>
+                <Button size="lg" render={<Link href="/find-a-church" />} className="px-8">
+                  Find a church near you
+                </Button>
+                <p className="text-xs text-muted-foreground mt-4">
+                  No pressure — you can always find this in the menu.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="mt-4">
-            <Button size="lg" variant="outline" render={<Link href="/" />}>
-              Go to the Prayer Jar
-            </Button>
-          </div>
+          </ScrollReveal>
+
+          {/* PrayerJar as a next step */}
+          <ScrollReveal delay={480}>
+            <div className="mt-4">
+              <Button size="lg" variant="outline" render={<Link href="/" />}>
+                <HandHelping className="h-4 w-4" />
+                Ask someone to pray for you
+              </Button>
+            </div>
+          </ScrollReveal>
         </div>
       )}
     </>
