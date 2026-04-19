@@ -48,13 +48,14 @@ Client page with a centered hero ("Support The Prayer Jar"), a preset-amount gri
 **No emoji.** Replace 🙏 with a Lucide `HeartHandshake` icon (h-6 w-6 text-amber-600).
 
 ### Footer note (below everything)
-**Copy:** PrayerJar is a project, not a 501(c)(3). Gifts are not tax-deductible. Questions? [Contact us](/contact).
+**Copy:** Questions? [Contact us](/contact).
+*(Tax-deductibility line deferred — PM decision 2026-04-18: omit until Legal signs off. Do not add tax claims on ship.)*
 
 ## Verse strip (if used)
-> "Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver."
-> — 2 Corinthians 9:7
+> "The earth is the Lord's, and everything in it, the world, and all who live in it."
+> — Psalm 24:1
 
-Place after "What your gift does" and before the amount selector. One verse, sacred-strip treatment.
+Place after "What your gift does" and before the amount selector. One verse, sacred-strip treatment. *(PM decision 2026-04-18: chose Ps 24:1 over 2 Cor 9:7 — stewardship framing before the ask reads less on-the-nose than the "cheerful giver" verse on a donation page.)*
 
 ## Lucide icon suggestions
 - **Hero:** no icon. Let the headline carry.
@@ -81,5 +82,5 @@ Place after "What your gift does" and before the amount selector. One verse, sac
 - **Character limits:** Hero headline 28 chars. Pre-amount section ~55 words. Keep the hero narrow (`max-w-xl`, already in place).
 - **Verse strip:** use the established pattern from brand guide §4.3 — `border-t border-b py-4 mb-8 max-w-md mx-auto px-4`, italic muted body, amber reference line.
 - **Do not imply recurring donations.** Checkout is one-time (`/api/v1/checkout` POSTs a `amountCents` once). Do not add "monthly" language.
-- **Footer note about tax-deductibility** is a claim that needs PM confirmation before ship. If PrayerJar IS a 501(c)(3), change to "Gifts are tax-deductible to the extent allowed by law. EIN [X]." If unknown, strip the tax sentence and keep the "questions → Contact us" link. Flagging — do not ship either version without PM sign-off.
+- **Tax-deductibility line: OMIT.** PM decision 2026-04-18: ship without any tax-deductibility claim. Footer note is now just "Questions? [Contact us](/contact)." Legal sign-off required before adding any tax language in a future sprint.
 - **"No account required"** line is accurate per current checkout flow (verified against `/api/v1/checkout` POST).
