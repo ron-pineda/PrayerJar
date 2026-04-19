@@ -40,7 +40,7 @@ const SECTIONS: Section[] = [
       },
       {
         q: 'Is it really free?',
-        a: 'Yes — completely. There are no ads, no paywalls on prayer, and no data brokers. We offer paid plans for churches that want pastoral tools, but asking for prayer and praying for others is always free.',
+        a: 'Yes — completely. There are no ads, no paywalls on prayer, and no data brokers. Churches can subscribe for pastoral features, but asking for prayer and praying for others is always free.',
       },
       {
         q: 'How do I submit a prayer request?',

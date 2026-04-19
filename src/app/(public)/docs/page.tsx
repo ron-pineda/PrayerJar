@@ -213,10 +213,10 @@ export default async function DocsOverviewPage() {
         <Sparkles className="h-10 w-10 text-amber-600 dark:text-amber-400" aria-hidden="true" />
         <h2 className="text-xl font-bold">What is The Prayer Jar?</h2>
         <p className="text-muted-foreground leading-relaxed">
-          The Prayer Jar is a community prayer platform built on a simple idea: everyone deserves to have someone pray for them. You write a request — as specific or as brief as you need — and the community intercedes. When your prayer is answered, you release a light to celebrate with others.
+          The Prayer Jar is a place for people to be prayed for, built on a simple idea: everyone deserves to have someone intercede for them. You write a request — as specific or as brief as you need — and the community prays. When your prayer is answered, you release a light to celebrate with others.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Prayer is free — always. There are no ads, no data brokers, and no paywall on asking for prayer or praying for others. We offer paid plans for churches that want pastoral tools and private prayer walls, but the core experience is free for everyone.
+          Prayer is free — always. There are no ads, no data brokers, and no paywall on asking for prayer or praying for others. Churches can subscribe for pastoral features like a private prayer wall, pastoral notes, and a care dashboard — but the core is free for everyone.
         </p>
       </section>
 
