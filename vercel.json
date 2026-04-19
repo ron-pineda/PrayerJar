@@ -46,7 +46,7 @@
     },
     {
       "path": "/api/cron/chms-sync-runner",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 4 * * *"
     },
     {
       "path": "/api/cron/chms-full-sync-scheduler",
