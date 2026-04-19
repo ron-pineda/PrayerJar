@@ -5213,7 +5213,7 @@
     "id": "pj-s21r-01",
     "sprint": "21-review",
     "title": "Research: Competitor pricing & feature delta refresh (since 2026-04-17)",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Research",
     "priority": "high",
     "description": "REFRESH, not full rescan. The 2026-04-17 competitor survey (Research handoff line 75) already established PrayerJar's $19/$49/$199+ ladder as correctly segmented. Task: check 8 named competitors (Prayer Platform, PrayerMate, Praytell, Pushpray, Echo Prayer, Prayer Mate, Instapray, YouVersion prayer surface — confirm list in existing doc) for (a) price changes since 2026-04-17, (b) new tier/feature additions in that window, (c) any new entrants in the small-to-medium church segment. Output is a DELTA REPORT — what changed, what didn't. Feeds Strategist's Q3 verdict. Question answered: partial input to Q3 (pricing fairness — competitive side).",
@@ -5231,10 +5231,11 @@
     ],
     "blockers": [],
     "notes": [
-      "[PM, 2026-04-19] Scope explicitly framed as refresh vs 2026-04-17 baseline, not fresh scan. Do not duplicate prior work — read docs/strategy/pricing-prayerjar-2026-04.md first and call out only what has moved. Target length: under 2 pages."
+      "[PM, 2026-04-19] Scope explicitly framed as refresh vs 2026-04-17 baseline, not fresh scan. Do not duplicate prior work — read docs/strategy/pricing-prayerjar-2026-04.md first and call out only what has moved. Target length: under 2 pages.",
+      "[Research, 2026-04-19] DONE. 1 material change: Breeze $67→$72/mo (indirect ChMS competitor, non-decisive). Direct prayer set (Prayer Platform, PrayerMate, Echo, Uplift) unchanged. No new entrants. PCO integration still category-unique among direct competitors. HOLD ladder. See docs/church-review/research-findings.md."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19T00:10:00Z"
+    "last_touched": "2026-04-19T04:00:00Z"
   },
   {
     "id": "pj-s21r-02",
