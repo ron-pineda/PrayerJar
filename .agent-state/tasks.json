@@ -5192,7 +5192,7 @@
     "id": "pj-s20-14",
     "sprint": "20",
     "title": "PM closes Sprint 20",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "PM",
     "priority": "high",
     "description": "Set sprints.json entry to status: done with notes block summarizing outcome. Update memory/MEMORY.md if new intent surfaced. Log sprint-close to handoffs.md.",
@@ -5203,8 +5203,10 @@
     "blockers": [
       "pj-s20-13"
     ],
-    "notes": [],
+    "notes": [
+      "[PM, 2026-04-18] Sprint 20 CLOSED. 10 public pages refreshed, §7 banned phrases cleared, amber palette + Lucide site-wide, brand voice consistent. Close-out doc at docs/sprint20/sprint-close.md; sprints.json flipped to done; memory index updated."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:59:00Z"
   }
 ]

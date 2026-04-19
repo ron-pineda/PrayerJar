@@ -367,6 +367,7 @@
     "name": "Full Visual Audit (Public Pages)",
     "features": 13,
     "size": "M",
-    "status": "active"
+    "status": "done",
+    "notes": "CLOSED 2026-04-18. All 14 tasks done (pj-s20-01 through pj-s20-14). 10 public pages refreshed: /know-jesus, /give, /about, /browse, /find-a-church, /world-prayer, /contact, /help, /sign-in, /docs. Amber palette site-wide, all brand-guide §7 banned phrases cleared across scope files, emoji fully swapped to Lucide icons, brand voice consistent. Copywriter delivered 8 briefs; Designer spot-checked both HIGH pages (/know-jesus, /give); QA caught two §7 #2 ship-stoppers in /help and /docs (rework landed in commit 3be08c0); Reviewer approved with 10 accepted deviations logged. Notable mid-sprint PM ruling: /docs scope expanded from light-pass to include two-line copy fix to satisfy spec §4. Carry-forward: Phase 2 visual audit of secondary public pages (/wrapped, /press, /trust, /terms, /legal/*, /campaigns, /praise-wall, /find-a-church/[placeId], /testimony/[id], /docs sub-pages) — /press has same §7 banned phrase but was out of scope. Spec: docs/superpowers/specs/2026-04-18-sprint20-visual-audit-design.md. Close-out: docs/sprint20/sprint-close.md."
   }
 ]
