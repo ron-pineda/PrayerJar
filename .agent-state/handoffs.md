@@ -243,3 +243,5 @@
 
 [2026-04-18] Frontend → Reviewer: pj-s20-10 /sign-in light pass — ready for review.
 [2026-04-18] Frontend → Reviewer: pj-s20-11 /docs light pass — ready for review.
+
+[2026-04-18] QA → Reviewer: pj-s20-12 Sprint 20 QA — FAIL. 8 of 10 pages PASS and ready for final. pj-s20-09 (/help) and pj-s20-11 (/docs) returned to Frontend as needs-rework: 3 banned-phrase hits total. pj-s20-11 also carries a scope-escalation to PM (light-pass vs spec §4 conflict). Report: docs/sprint20/qa-report.md.

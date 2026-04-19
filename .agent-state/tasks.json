@@ -4919,10 +4919,11 @@
     ],
     "notes": [
       "[Frontend, 2026-04-18T00:00:00Z] DONE. Files: src/app/(public)/know-jesus/page.tsx, src/components/salvation-client.tsx. AC: all pass. Deviations: PrayerJar CTA uses href=/ fallback (PrayerDialog trigger copy hard-coded); per brief this is acceptable.",
-      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. href=/ fallback accepted for ship; inline PrayerDialog wiring backlogged as non-blocking follow-up."
+      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. href=/ fallback accepted for ship; inline PrayerDialog wiring backlogged as non-blocking follow-up.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T23:00:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-03",
@@ -4941,10 +4942,11 @@
     ],
     "notes": [
       "[Frontend, 2026-04-18T21:00:00Z] DONE. Files: src/app/(public)/give/page.tsx. AC: all pass. Deviations: dropped 'Support the mission' eyebrow (brief Hero spec lists only H1+subheadline); typecheck run via direct node.exe — baseline preserved, 0 errors on touched file; QA should re-run pnpm typecheck on sign-off.",
-      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. Open questions resolved: (1) keep 'What your gift does' visible after success=1 — thesis, not pitch; (2) split alignment (centered heading / left-aligned body) correct, left-aligned body is more readable; (3) plain border-t/border-b verse strip is correct per brief + brand §4.3 — sacred-strip reserved for CTA/stat regions."
+      "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. Open questions resolved: (1) keep 'What your gift does' visible after success=1 — thesis, not pitch; (2) split alignment (centered heading / left-aligned body) correct, left-aligned body is more readable; (3) plain border-t/border-b verse strip is correct per brief + brand §4.3 — sacred-strip reserved for CTA/stat regions.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T23:00:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-04",
@@ -4962,10 +4964,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[Frontend, 2026-04-18T22:00:00Z] DONE. Files: src/app/(public)/about/page.tsx. AC: all pass. PrayerJar size=sm count={0} renders clean empty jar. Deviations: HandHelping icon skipped — PrayerDialog trigger hard-coded; brief marks icon optional. Typecheck: 0 errors on file; baseline 144 preserved."
+      "[Frontend, 2026-04-18T22:00:00Z] DONE. Files: src/app/(public)/about/page.tsx. AC: all pass. PrayerJar size=sm count={0} renders clean empty jar. Deviations: HandHelping icon skipped — PrayerDialog trigger hard-coded; brief marks icon optional. Typecheck: 0 errors on file; baseline 144 preserved.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T22:00:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-05",
@@ -4983,10 +4986,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[2026-04-18] Frontend: /browse refreshed per copy brief. CATEGORY_EMOJIS replaced with CATEGORY_ICONS (Lucide map). 10 category tiles render amber-600 h-6 w-6 icons (HeartPulse/Users/Wallet/Feather/Sparkles/Compass/Heart/Briefcase/Leaf/Star) + Circle fallback. Collection cover 📚 → BookMarked (coverEmoji DB column preserved, just not rendered). Category fallback 🙏 → Circle. Sentence-case: 'Browse by category' + 'Recent prayers'. LayoutGrid icon added to category header. 'Clear' → 'Clear filters'. Prayer card CTA → 'Pray for a request like this' + trailing ArrowRight h-3.5 w-3.5. Both empty states rewritten per brief (search-no-match + filter-no-match headings and bodies). ScrollReveal wraps Collections (delay 0), Category grid (80), Results (160). Hero + search bar untouched. No jar motif. No verse strip. Typecheck clean on browse/page.tsx. No banned phrases. No emoji left on page (grepped 🩺👨💰🕊🙏🧭❤💼✨⭐📚→ — zero hits)."
+      "[2026-04-18] Frontend: /browse refreshed per copy brief. CATEGORY_EMOJIS replaced with CATEGORY_ICONS (Lucide map). 10 category tiles render amber-600 h-6 w-6 icons (HeartPulse/Users/Wallet/Feather/Sparkles/Compass/Heart/Briefcase/Leaf/Star) + Circle fallback. Collection cover 📚 → BookMarked (coverEmoji DB column preserved, just not rendered). Category fallback 🙏 → Circle. Sentence-case: 'Browse by category' + 'Recent prayers'. LayoutGrid icon added to category header. 'Clear' → 'Clear filters'. Prayer card CTA → 'Pray for a request like this' + trailing ArrowRight h-3.5 w-3.5. Both empty states rewritten per brief (search-no-match + filter-no-match headings and bodies). ScrollReveal wraps Collections (delay 0), Category grid (80), Results (160). Hero + search bar untouched. No jar motif. No verse strip. Typecheck clean on browse/page.tsx. No banned phrases. No emoji left on page (grepped 🩺👨💰🕊🙏🧭❤💼✨⭐📚→ — zero hits).",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-06",
@@ -5006,10 +5010,11 @@
     ],
     "notes": [
       "[Frontend 2026-04-18] Starting — baseline tsc clean on affected files (pre-existing errors only in *.test.ts).",
-      "[Frontend 2026-04-18] Done → review. Files touched: src/app/(public)/find-a-church/page.tsx, src/components/church/church-card.tsx. Changes: (1) Lucide imports added (MapPin, SearchX, AlertCircle, ChevronDown, List, Map). (2) Pre-search idle state — new copy + centered MapPin (h-8 w-8 text-muted-foreground). (3) Count line 'N churches nearby' (was 'found'). (4) Denomination select aria-label 'Denomination', 'All denominations' option label. (5) Sort select aria-label 'Sort by', options 'Distance' / 'Community verified first'. (6) Mobile tabs now have leading List / Map icons. (7) Zero-results empty state: heading 'No churches in that radius yet.', body + 'Expand to 30 miles' CTA, centered SearchX. Conditional on lastRadius ≥ 30 → heading 'No churches found near there.', body 'Try a different city.', CTA hidden. New lastRadius state tracks the in-flight radius. (8) Error state now fixed string 'We couldn't complete that search. Check your connection and try again.' with leading AlertCircle; raw error sent to console.error. (9) Show more button has trailing ChevronDown. (10) Intro block above ChurchSearchBar SKIPPED — the search bar already owns the hero-equivalent space with its own H1 ('Find a Church Near You'), and layering an intro above would duplicate. Brief §90 explicitly allows this. (11) ChurchCard emoji audit: ✓ → BadgeCheck; 👋 → HandHeart; 👥 → Users. ChurchSearchBar — no emoji, no banned phrases. Typecheck: no new errors on affected files (pre-existing test-file errors unchanged)."
+      "[Frontend 2026-04-18] Done → review. Files touched: src/app/(public)/find-a-church/page.tsx, src/components/church/church-card.tsx. Changes: (1) Lucide imports added (MapPin, SearchX, AlertCircle, ChevronDown, List, Map). (2) Pre-search idle state — new copy + centered MapPin (h-8 w-8 text-muted-foreground). (3) Count line 'N churches nearby' (was 'found'). (4) Denomination select aria-label 'Denomination', 'All denominations' option label. (5) Sort select aria-label 'Sort by', options 'Distance' / 'Community verified first'. (6) Mobile tabs now have leading List / Map icons. (7) Zero-results empty state: heading 'No churches in that radius yet.', body + 'Expand to 30 miles' CTA, centered SearchX. Conditional on lastRadius ≥ 30 → heading 'No churches found near there.', body 'Try a different city.', CTA hidden. New lastRadius state tracks the in-flight radius. (8) Error state now fixed string 'We couldn't complete that search. Check your connection and try again.' with leading AlertCircle; raw error sent to console.error. (9) Show more button has trailing ChevronDown. (10) Intro block above ChurchSearchBar SKIPPED — the search bar already owns the hero-equivalent space with its own H1 ('Find a Church Near You'), and layering an intro above would duplicate. Brief §90 explicitly allows this. (11) ChurchCard emoji audit: ✓ → BadgeCheck; 👋 → HandHeart; 👥 → Users. ChurchSearchBar — no emoji, no banned phrases. Typecheck: no new errors on affected files (pre-existing test-file errors unchanged).",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T20:30:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-07",
@@ -5027,10 +5032,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[Frontend 2026-04-18] Complete — hero 🌐 replaced with Globe icon (h-12 w-12 text-amber-600). All 8 region emoji replaced with Lucide icons: Feather (Middle East — Dove not in lucide-react@1.7.0, used Feather fallback per brief), Leaf, Users, Church, Scale, Landmark (Oceania), Gavel (Global leaders — verified present), Cross. WORLD_REGIONS array refactored: `emoji: string` → `icon: LucideIcon`. Banned copy 'Join believers around the globe…' replaced with brief subheadline 'Intercession crosses every border. Stand with the people carrying these burdens tonight.' 1 Timothy 2:1–2 verse strip added between hero and region cards using standard pattern. Sentence-case: 'Global leaders', 'Persecuted church', 'Pray now' (×8), 'Go to the prayer feed'. Bottom CTA lead copy updated to 'Have a specific request in your own community?'. ScrollReveal wraps each card with delay={i*80} stagger (0/80/160/240/320/400/480/560) and also wraps verse strip + bottom CTA; hero intentionally not wrapped. No jar motif. `tsc --noEmit` shows zero errors in world-prayer/page.tsx (pre-existing errors exist only in unrelated *.test.ts files). Ready for Reviewer."
+      "[Frontend 2026-04-18] Complete — hero 🌐 replaced with Globe icon (h-12 w-12 text-amber-600). All 8 region emoji replaced with Lucide icons: Feather (Middle East — Dove not in lucide-react@1.7.0, used Feather fallback per brief), Leaf, Users, Church, Scale, Landmark (Oceania), Gavel (Global leaders — verified present), Cross. WORLD_REGIONS array refactored: `emoji: string` → `icon: LucideIcon`. Banned copy 'Join believers around the globe…' replaced with brief subheadline 'Intercession crosses every border. Stand with the people carrying these burdens tonight.' 1 Timothy 2:1–2 verse strip added between hero and region cards using standard pattern. Sentence-case: 'Global leaders', 'Persecuted church', 'Pray now' (×8), 'Go to the prayer feed'. Bottom CTA lead copy updated to 'Have a specific request in your own community?'. ScrollReveal wraps each card with delay={i*80} stagger (0/80/160/240/320/400/480/560) and also wraps verse strip + bottom CTA; hero intentionally not wrapped. No jar motif. `tsc --noEmit` shows zero errors in world-prayer/page.tsx (pre-existing errors exist only in unrelated *.test.ts files). Ready for Reviewer.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-08",
@@ -5049,16 +5055,17 @@
     ],
     "notes": [
       "[Frontend 2026-04-18] Starting — keeping backend SUBJECTS enum values (General/Church Partnership/Feedback/Bug Report/Other) and rendering sentence-case labels via {value,label} map to preserve strict-match in contact.actions.ts + routing strings used in Resend subject + admin panel.",
-      "[Frontend 2026-04-18] Ready for review. Files changed: src/app/(public)/contact/page.tsx only — contact.actions.ts NOT touched (backend z.enum still strict-matches the same values 'General'/'Church Partnership'/'Feedback'/'Bug Report'/'Other' which are now the .value keys; display labels are .label keys). AC pass: ✉️ → Mail (h-10 w-10 text-amber-600 mx-auto), headline 'Get in touch', subhead per brief, response-time line with Clock icon (hero + this line NOT wrapped in ScrollReveal per brief), labels 'Your name'/'Email'/'What's this about?'/'What's on your mind?' with placeholders 'First and last'/'you@example.com'/'Choose a topic'/'Tell us what's going on.', submit 'Send message' + 'Sending\\u2026', toasts unified to 'Message sent. We'll read it and get back to you.' / 'We couldn't send that. Please try again.' (both error paths, raw details logged to console), ScrollReveal wraps form block + footer note. Typecheck: unable to run node/tsc in this bash session (node.exe not accessible from msys bash), no TS changes beyond standard JSX/imports that match existing patterns in world-prayer/page.tsx — flagging for Reviewer to verify tsc --noEmit on their side."
+      "[Frontend 2026-04-18] Ready for review. Files changed: src/app/(public)/contact/page.tsx only — contact.actions.ts NOT touched (backend z.enum still strict-matches the same values 'General'/'Church Partnership'/'Feedback'/'Bug Report'/'Other' which are now the .value keys; display labels are .label keys). AC pass: ✉️ → Mail (h-10 w-10 text-amber-600 mx-auto), headline 'Get in touch', subhead per brief, response-time line with Clock icon (hero + this line NOT wrapped in ScrollReveal per brief), labels 'Your name'/'Email'/'What's this about?'/'What's on your mind?' with placeholders 'First and last'/'you@example.com'/'Choose a topic'/'Tell us what's going on.', submit 'Send message' + 'Sending\\u2026', toasts unified to 'Message sent. We'll read it and get back to you.' / 'We couldn't send that. Please try again.' (both error paths, raw details logged to console), ScrollReveal wraps form block + footer note. Typecheck: unable to run node/tsc in this bash session (node.exe not accessible from msys bash), no TS changes beyond standard JSX/imports that match existing patterns in world-prayer/page.tsx — flagging for Reviewer to verify tsc --noEmit on their side.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS (tsc clean on contact/page.tsx — zero new errors; baseline preserved). Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T21:10:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-09",
     "sprint": "20",
     "title": "/help refresh + accordion anchors",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Strip 5 section emoji and replace with Lucide icons. Add jump-nav pills above accordion with anchor IDs per section.",
@@ -5070,10 +5077,11 @@
       "pj-s20-01"
     ],
     "notes": [
-      "[Frontend 2026-04-18] Done. Section `icon: string` emoji refactored to `icon: LucideIcon` with new `anchor: string` field (Sparkles/HandHelping/Shield/Settings/Church). Section headings sentence-cased. Each <section> now has id={section.anchor} plus scroll-mt-24 for comfortable anchor landing under sticky nav. New jump-nav <nav> below hero renders 5 pill anchors (rounded-full border, h-4 w-4 amber icon, center-justified, flex-wrap on mobile). 'unlock' → 'add' in the free-tier FAQ. 5 accordion sections wrapped in ScrollReveal with delay={index * 80} (0/80/160/240/320). Hero subheadline keeps 'Contact us' link to /contact. Bottom CTA heading unchanged; button label lowercased to 'Contact support' per brief. Typecheck clean on file."
+      "[Frontend 2026-04-18] Done. Section `icon: string` emoji refactored to `icon: LucideIcon` with new `anchor: string` field (Sparkles/HandHelping/Shield/Settings/Church). Section headings sentence-cased. Each <section> now has id={section.anchor} plus scroll-mt-24 for comfortable anchor landing under sticky nav. New jump-nav <nav> below hero renders 5 pill anchors (rounded-full border, h-4 w-4 amber icon, center-justified, flex-wrap on mobile). 'unlock' → 'add' in the free-tier FAQ. 5 accordion sections wrapped in ScrollReveal with delay={index * 80} (0/80/160/240/320). Hero subheadline keeps 'Contact us' link to /contact. Bottom CTA heading unchanged; button label lowercased to 'Contact support' per brief. Typecheck clean on file.",
+      "[QA, 2026-04-18] FAIL. Banned phrase §7 #2 'churches that want pastoral tools' at src/app/(public)/help/page.tsx:43 (inside the 'Is it really free?' FAQ body). Verbatim-ban per brand guide. Copy brief audit missed this phrase (brief only flagged 'unlock'). One-line FAQ body rewrite needed. Suggested alternative: replace 'We offer paid plans for churches that want pastoral tools' with brand-safe paraphrase such as 'Churches can subscribe for private prayer walls and pastoral features' or similar. See docs/sprint20/qa-report.md for full findings."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T22:00:00Z"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-10",
@@ -5088,16 +5096,17 @@
     ],
     "blockers": [],
     "notes": [
-      "[Frontend, 2026-04-18] DONE. Files: src/app/(auth)/sign-in/page.tsx. AC: no-emoji PASS, amber palette PASS, OAuth unchanged PASS, tsc clean PASS. 🫙 -> PrayerJar size=sm count=0; 📬 -> Lucide Mail in amber pill. Deviations: file lives at (auth)/sign-in not (public)/sign-in — updated files[] accordingly."
+      "[Frontend, 2026-04-18] DONE. Files: src/app/(auth)/sign-in/page.tsx. AC: no-emoji PASS, amber palette PASS, OAuth unchanged PASS, tsc clean PASS. 🫙 -> PrayerJar size=sm count=0; 📬 -> Lucide Mail in amber pill. Deviations: file lives at (auth)/sign-in not (public)/sign-in — updated files[] accordingly.",
+      "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-11",
     "sprint": "20",
     "title": "/docs light pass",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Replace 26 emoji with Lucide icons. Amber palette. No content changes.",
@@ -5106,21 +5115,23 @@
     ],
     "blockers": [],
     "notes": [
-      "[Frontend, 2026-04-18] DONE. Files: src/app/(public)/docs/page.tsx. AC: no-emoji PASS, amber palette PASS, copy unchanged PASS, tsc clean PASS. Mappings: 🙏HandHelping 🤲HandHeart ✨Sparkles ✍️PenLine 🤝Handshake 👥Users ⚡Zap ☀️Sun 💛/💚Heart 🙋UserRound ⛪Church 🌱Sprout 🛡️Shield 🚫Ban 🔒Lock 🥷EyeOff 🤖Bot 🗑️Trash2 🌐Globe 📚BookOpen 📖Book 👑Crown ✅CircleCheck ❓CircleQuestionMark ✉️Mail. Deviations: none."
+      "[Frontend, 2026-04-18] DONE. Files: src/app/(public)/docs/page.tsx. AC: no-emoji PASS, amber palette PASS, copy unchanged PASS, tsc clean PASS. Mappings: 🙏HandHelping 🤲HandHeart ✨Sparkles ✍️PenLine 🤝Handshake 👥Users ⚡Zap ☀️Sun 💛/💚Heart 🙋UserRound ⛪Church 🌱Sprout 🛡️Shield 🚫Ban 🔒Lock 🥷EyeOff 🤖Bot 🗑️Trash2 🌐Globe 📚BookOpen 📖Book 👑Crown ✅CircleCheck ❓CircleQuestionMark ✉️Mail. Deviations: none.",
+      "[QA, 2026-04-18] FAIL. Two banned-phrase hits at src/app/(public)/docs/page.tsx — line 216 'community prayer platform' (§7 #5 'platform') and line 219 'churches that want pastoral tools' (§7 #2 verbatim-ban). Both pre-existed Sprint 20 (git blame: commit dbdcb75, Sprint 8) and fell outside this task's 'light pass, no content changes' scope. SCOPE ESCALATION TO PM: Sprint 20 spec §4 Success Criteria requires 'banned phrases cleared across every Sprint 20 page' as an absolute requirement. That criterion conflicts with this task's light-pass scope. QA position: spec §4 wins — the page cannot ship with §7 violations. Options: (a) expand pj-s20-11 scope to permit the two-line content fix, (b) reassign copy rewrite to Copywriter, (c) spin off a small follow-up task. Requires PM call before Frontend re-engages. See docs/sprint20/qa-report.md for full findings."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-12",
     "sprint": "20",
     "title": "QA sign-off across all pages",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Banned-phrase Ctrl+F list (16 phrases from brand guide §7). Visual regression desktop + mobile. Amber palette applied. No emoji visible. Report per-page pass/fail.",
     "files": [
-      "docs/brand/brand-guide.md"
+      "docs/brand/brand-guide.md",
+      "docs/sprint20/qa-report.md"
     ],
     "blockers": [
       "pj-s20-02",
@@ -5134,9 +5145,11 @@
       "pj-s20-10",
       "pj-s20-11"
     ],
-    "notes": [],
+    "notes": [
+      "[QA, 2026-04-18] COMPLETE. Verdict: FAIL. Report at docs/sprint20/qa-report.md. Summary: 5 passes run (emoji / banned-phrase / typecheck / per-page success criteria / git+handoffs). 8 of 10 page-refresh tasks PASS and are ready for Reviewer (pj-s20-02/03/04/05/06/07/08/10). 2 tasks returned to Frontend as needs-rework: pj-s20-09 (help page — 1 banned-phrase hit at line 43) and pj-s20-11 (docs page — 2 banned-phrase hits at lines 216 and 219, with scope-escalation to PM for the light-pass vs spec §4 conflict). Sprint 20 cannot close until the two needs-rework tasks are fixed, re-QAd, and flipped to done."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T23:30:00Z"
   },
   {
     "id": "pj-s20-13",
