@@ -8,6 +8,7 @@ import { ChurchCard } from "@/components/church/church-card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ChurchResult } from "@/services/church.service";
+import { MapPin, SearchX, AlertCircle, ChevronDown, List, Map as MapIcon } from "lucide-react";
 
 const ChurchMap = lazy(() =>
   import("@/components/church/church-map").then((m) => ({ default: m.ChurchMap }))
@@ -26,6 +27,7 @@ export default function FindAChurchPage() {
   const [searched, setSearched] = useState(false);
   const [searchCoords, setSearchCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [searchAddress, setSearchAddress] = useState("");
+  const [lastRadius, setLastRadius] = useState<number>(25);
   const [highlightedPlaceId, setHighlightedPlaceId] = useState<string | null>(null);
   const [sort, setSort] = useState<SortOption>("distance");
   const [denomination, setDenomination] = useState("all");
@@ -36,6 +38,7 @@ export default function FindAChurchPage() {
   const fetchResults = useCallback(async (lat: number, lng: number, radiusMiles: number) => {
     setLoading(true);
     setError(null);
+    setLastRadius(radiusMiles);
     try {
       const res = await fetch(`/api/v1/churches/search?lat=${lat}&lng=${lng}&radius=${radiusMiles}`);
       if (!res.ok) throw new Error(`Search failed (${res.status})`);
@@ -44,7 +47,8 @@ export default function FindAChurchPage() {
       setDenomination("all");
       setSearched(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
+      console.error("Church search failed:", e);
+      setError("We couldn't complete that search. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -127,15 +131,15 @@ export default function FindAChurchPage() {
       {/* Sort + count bar */}
       {searched && (
         <div className="flex items-center justify-between px-4 py-2 bg-background border-b border-border text-xs text-muted-foreground">
-          <span>{filtered.length} churches found</span>
+          <span>{filtered.length} churches nearby</span>
           <div className="flex items-center gap-2">
             {denominations.length > 0 && (
               <Select value={denomination} onValueChange={(v) => { setDenomination(v ?? "all"); setPage(0); }}>
-                <SelectTrigger className="h-7 text-xs px-2" aria-label="Filter by denomination">
+                <SelectTrigger className="h-7 text-xs px-2" aria-label="Denomination">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Denomination: All</SelectItem>
+                  <SelectItem value="all">All denominations</SelectItem>
                   {denominations.map((d) => (
                     <SelectItem key={d} value={d}>{d}</SelectItem>
                   ))}
@@ -143,12 +147,12 @@ export default function FindAChurchPage() {
               </Select>
             )}
             <Select value={sort} onValueChange={(v) => setSort((v ?? "distance") as SortOption)}>
-              <SelectTrigger className="h-7 text-xs px-2" aria-label="Sort order">
+              <SelectTrigger className="h-7 text-xs px-2" aria-label="Sort by">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="distance">Sort: Distance</SelectItem>
-                <SelectItem value="verified">Sort: Community Verified First</SelectItem>
+                <SelectItem value="distance">Distance</SelectItem>
+                <SelectItem value="verified">Community verified first</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -162,13 +166,23 @@ export default function FindAChurchPage() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2.5 text-sm capitalize ${
+              className={`flex-1 py-2.5 text-sm inline-flex items-center justify-center gap-1.5 ${
                 activeTab === tab
                   ? "text-primary border-b-2 border-primary"
                   : "text-muted-foreground"
               }`}
             >
-              {tab === "list" ? `List (${filtered.length})` : "Map"}
+              {tab === "list" ? (
+                <>
+                  <List className="h-4 w-4" />
+                  <span>List ({filtered.length})</span>
+                </>
+              ) : (
+                <>
+                  <MapIcon className="h-4 w-4" />
+                  <span>Map</span>
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -176,15 +190,19 @@ export default function FindAChurchPage() {
 
       {/* Error message */}
       {error && (
-        <div className="px-4 py-3 text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg mx-4 mt-2">
-          {error}
+        <div className="px-4 py-3 text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg mx-4 mt-2 flex items-start gap-2">
+          <AlertCircle className="h-4 w-4 mt-0.5 flex-none" />
+          <span>{error}</span>
         </div>
       )}
 
       {/* Results area */}
       {!searched ? (
-        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-          Search for churches above to get started.
+        <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground text-sm text-center px-6 py-12">
+          <MapPin className="h-8 w-8 text-muted-foreground mb-3" />
+          <p className="max-w-md">
+            Enter a city, zip, or address above. We&rsquo;ll show churches near you and how they serve their community.
+          </p>
         </div>
       ) : (
         <div className="flex-1 flex overflow-hidden">
@@ -199,14 +217,31 @@ export default function FindAChurchPage() {
                 <div key={i} className="bg-muted rounded-xl h-28 animate-pulse" />
               ))
             ) : filtered.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground text-sm">
-                <p className="mb-3">No churches found in this area.</p>
-                <button
-                  onClick={() => fetchResults(searchCoords!.lat, searchCoords!.lng, 30)}
-                  className="text-primary hover:underline"
-                >
-                  Try expanding to 30 miles
-                </button>
+              <div className="text-center py-12 text-muted-foreground text-sm flex flex-col items-center">
+                <SearchX className="h-8 w-8 text-muted-foreground mb-3" />
+                {lastRadius >= 30 ? (
+                  <>
+                    <h3 className="text-base font-semibold text-foreground mb-1">
+                      No churches found near there.
+                    </h3>
+                    <p className="max-w-xs">Try a different city.</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-base font-semibold text-foreground mb-1">
+                      No churches in that radius yet.
+                    </h3>
+                    <p className="mb-4 max-w-xs">
+                      Try expanding the search to 30 miles, or search another city.
+                    </p>
+                    <button
+                      onClick={() => fetchResults(searchCoords!.lat, searchCoords!.lng, 30)}
+                      className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg"
+                    >
+                      Expand to 30 miles
+                    </button>
+                  </>
+                )}
               </div>
             ) : (
               <>
@@ -223,9 +258,10 @@ export default function FindAChurchPage() {
                 {paginated.length < filtered.length && (
                   <button
                     onClick={() => setPage((p) => p + 1)}
-                    className="w-full py-3 text-sm text-primary hover:text-primary/80 border border-border rounded-xl"
+                    className="w-full py-3 text-sm text-primary hover:text-primary/80 border border-border rounded-xl inline-flex items-center justify-center gap-1.5"
                   >
-                    Show more ({filtered.length - paginated.length} remaining)
+                    <span>Show more ({filtered.length - paginated.length} remaining)</span>
+                    <ChevronDown className="h-4 w-4" />
                   </button>
                 )}
               </>

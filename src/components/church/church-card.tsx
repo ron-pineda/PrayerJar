@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, ExternalLink, MapPin } from "lucide-react";
+import { Heart, ExternalLink, MapPin, BadgeCheck, HandHeart, Users } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { ChurchResult } from "@/services/church.service";
@@ -80,9 +80,10 @@ export function ChurchCard({
           {isVerified && (
             <span
               title="This church has been claimed by a verified leader and recommended by the community."
-              className="bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-900 cursor-help"
+              className="inline-flex items-center gap-1 bg-emerald-950 text-emerald-400 text-[10px] px-2 py-0.5 rounded border border-emerald-900 cursor-help"
             >
-              ✓ Community Verified
+              <BadgeCheck className="h-3 w-3" />
+              Community Verified
             </span>
           )}
           {church.claim?.denomination && (
@@ -92,7 +93,10 @@ export function ChurchCard({
             <span className="bg-blue-950 text-blue-300 text-[10px] px-2 py-0.5 rounded">{church.claim.worshipStyle}</span>
           )}
           {church.newcomerFriendly && (
-            <span className="bg-amber-950 text-amber-400 text-[10px] px-2 py-0.5 rounded">👋 Newcomer Friendly</span>
+            <span className="inline-flex items-center gap-1 bg-amber-950 text-amber-400 text-[10px] px-2 py-0.5 rounded">
+              <HandHeart className="h-3 w-3" />
+              Newcomer Friendly
+            </span>
           )}
         </div>
       )}
@@ -100,7 +104,10 @@ export function ChurchCard({
       {/* Recommendation snippet */}
       {church.recommendations.length > 0 && (
         <p className="text-slate-400 text-xs mt-1 mb-2">
-          <span className="text-emerald-400">👥 {church.recommendations.length} recommend</span>
+          <span className="inline-flex items-center gap-1 text-emerald-400">
+            <Users className="h-3 w-3" />
+            {church.recommendations.length} recommend
+          </span>
           {" · "}
           <span className="italic">
             &ldquo;{church.recommendations[0].note.slice(0, 60)}{church.recommendations[0].note.length > 60 ? "..." : ""}&rdquo;

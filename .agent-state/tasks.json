@@ -5002,20 +5002,24 @@
     "id": "pj-s20-06",
     "sprint": "20",
     "title": "/find-a-church refresh",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Strip emoji. Warm zero-results empty state. Lucide search/filter icons. Visual consistency pass.",
     "files": [
       "src/app/(public)/find-a-church/page.tsx",
+      "src/components/church/church-card.tsx",
       "docs/sprint20/copy-briefs/find-a-church.md"
     ],
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend 2026-04-18] Starting — baseline tsc clean on affected files (pre-existing errors only in *.test.ts).",
+      "[Frontend 2026-04-18] Done → review. Files touched: src/app/(public)/find-a-church/page.tsx, src/components/church/church-card.tsx. Changes: (1) Lucide imports added (MapPin, SearchX, AlertCircle, ChevronDown, List, Map). (2) Pre-search idle state — new copy + centered MapPin (h-8 w-8 text-muted-foreground). (3) Count line 'N churches nearby' (was 'found'). (4) Denomination select aria-label 'Denomination', 'All denominations' option label. (5) Sort select aria-label 'Sort by', options 'Distance' / 'Community verified first'. (6) Mobile tabs now have leading List / Map icons. (7) Zero-results empty state: heading 'No churches in that radius yet.', body + 'Expand to 30 miles' CTA, centered SearchX. Conditional on lastRadius ≥ 30 → heading 'No churches found near there.', body 'Try a different city.', CTA hidden. New lastRadius state tracks the in-flight radius. (8) Error state now fixed string 'We couldn't complete that search. Check your connection and try again.' with leading AlertCircle; raw error sent to console.error. (9) Show more button has trailing ChevronDown. (10) Intro block above ChurchSearchBar SKIPPED — the search bar already owns the hero-equivalent space with its own H1 ('Find a Church Near You'), and layering an intro above would duplicate. Brief §90 explicitly allows this. (11) ChurchCard emoji audit: ✓ → BadgeCheck; 👋 → HandHeart; 👥 → Users. ChurchSearchBar — no emoji, no banned phrases. Typecheck: no new errors on affected files (pre-existing test-file errors unchanged)."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T20:30:00Z"
   },
   {
     "id": "pj-s20-07",
