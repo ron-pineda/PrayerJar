@@ -1,18 +1,34 @@
 'use client';
 
-import type { Metadata } from 'next';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import {
+  ChevronDown,
+  Sparkles,
+  HandHelping,
+  Shield,
+  Settings,
+  Church,
+  type LucideIcon,
+} from 'lucide-react';
 import Link from 'next/link';
+import { ScrollReveal } from '@/components/scroll-reveal';
 import { PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
 
 // metadata can't be exported from a 'use client' component — see generateMetadata pattern
 // For now this is a client component for accordion interactivity
 
-const SECTIONS = [
+type Section = {
+  title: string;
+  anchor: string;
+  icon: LucideIcon;
+  faqs: { q: string; a: string }[];
+};
+
+const SECTIONS: Section[] = [
   {
-    title: 'Getting Started',
-    icon: '🙏',
+    title: 'Getting started',
+    anchor: 'getting-started',
+    icon: Sparkles,
     faqs: [
       {
         q: 'What is The Prayer Jar?',
@@ -33,8 +49,9 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'Praying for Others',
-    icon: '✝️',
+    title: 'Praying for others',
+    anchor: 'praying-for-others',
+    icon: HandHelping,
     faqs: [
       {
         q: 'How do I pray for someone?',
@@ -55,8 +72,9 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'Community & Safety',
-    icon: '🛡️',
+    title: 'Community & safety',
+    anchor: 'community-safety',
+    icon: Shield,
     faqs: [
       {
         q: 'How is content moderated?',
@@ -77,8 +95,9 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'Account & Settings',
-    icon: '⚙️',
+    title: 'Account & settings',
+    anchor: 'account-settings',
+    icon: Settings,
     faqs: [
       {
         q: 'How do I change my email notification settings?',
@@ -99,8 +118,9 @@ const SECTIONS = [
     ],
   },
   {
-    title: 'For Churches',
-    icon: '⛪',
+    title: 'For churches',
+    anchor: 'for-churches',
+    icon: Church,
     faqs: [
       {
         q: "What church features are available?",
@@ -112,7 +132,7 @@ const SECTIONS = [
       },
       {
         q: 'Is there a free tier for churches?',
-        a: "Yes. Small congregations can use the free tier with core features. Paid plans unlock higher member limits, pastoral tools, analytics, and event walls. See our For Churches page for details.",
+        a: "Yes. Small congregations can use the free tier with core features. Paid plans add higher member limits, pastoral tools, analytics, and event walls. See our For Churches page for details.",
       },
       {
         q: 'Who do I contact for a demo or enterprise pricing?',
@@ -146,7 +166,7 @@ function AccordionItem({ q, a }: { q: string; a: string }) {
 export default function HelpPage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
-      <div className="text-center mb-12">
+      <div className="text-center mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-3">Help & FAQ</h1>
         <p className="text-muted-foreground">
           Common questions about The Prayer Jar. Still need help?{' '}
@@ -157,19 +177,40 @@ export default function HelpPage() {
         </p>
       </div>
 
+      <nav aria-label="Jump to section" className="mb-10">
+        <ul className="flex flex-wrap justify-center gap-2">
+          {SECTIONS.map((section) => {
+            const Icon = section.icon;
+            return (
+              <li key={section.anchor}>
+                <a
+                  href={`#${section.anchor}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted hover:text-foreground transition-colors"
+                >
+                  <Icon className="h-4 w-4 text-amber-600" />
+                  {section.title}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
       <div className="space-y-8">
-        {SECTIONS.map((section) => (
-          <section key={section.title}>
-            <h2 className="flex items-center gap-2 text-base font-semibold mb-2">
-              <span>{section.icon}</span>
-              {section.title}
-            </h2>
-            <div className="rounded-xl border bg-card px-4">
-              {section.faqs.map((faq) => (
-                <AccordionItem key={faq.q} q={faq.q} a={faq.a} />
-              ))}
-            </div>
-          </section>
+        {SECTIONS.map((section, index) => (
+          <ScrollReveal key={section.anchor} delay={index * 80}>
+            <section id={section.anchor} className="scroll-mt-24">
+              <h2 className="flex items-center gap-2 text-base font-semibold mb-2">
+                <section.icon className="h-5 w-5 text-amber-600" />
+                {section.title}
+              </h2>
+              <div className="rounded-xl border bg-card px-4">
+                {section.faqs.map((faq) => (
+                  <AccordionItem key={faq.q} q={faq.q} a={faq.a} />
+                ))}
+              </div>
+            </section>
+          </ScrollReveal>
         ))}
       </div>
 
@@ -182,7 +223,7 @@ export default function HelpPage() {
           href="/contact"
           className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
         >
-          Contact Support
+          Contact support
         </Link>
       </div>
     </main>

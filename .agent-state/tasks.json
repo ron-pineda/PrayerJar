@@ -5056,7 +5056,7 @@
     "id": "pj-s20-09",
     "sprint": "20",
     "title": "/help refresh + accordion anchors",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Strip 5 section emoji and replace with Lucide icons. Add jump-nav pills above accordion with anchor IDs per section.",
@@ -5067,9 +5067,11 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend 2026-04-18] Done. Section `icon: string` emoji refactored to `icon: LucideIcon` with new `anchor: string` field (Sparkles/HandHelping/Shield/Settings/Church). Section headings sentence-cased. Each <section> now has id={section.anchor} plus scroll-mt-24 for comfortable anchor landing under sticky nav. New jump-nav <nav> below hero renders 5 pill anchors (rounded-full border, h-4 w-4 amber icon, center-justified, flex-wrap on mobile). 'unlock' → 'add' in the free-tier FAQ. 5 accordion sections wrapped in ScrollReveal with delay={index * 80} (0/80/160/240/320). Hero subheadline keeps 'Contact us' link to /contact. Bottom CTA heading unchanged; button label lowercased to 'Contact support' per brief. Typecheck clean on file."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T22:00:00Z"
   },
   {
     "id": "pj-s20-10",
