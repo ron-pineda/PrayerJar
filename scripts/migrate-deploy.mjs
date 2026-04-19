@@ -140,31 +140,37 @@ async function main() {
      )`,
   );
 
-  // Count existing rows. If > 0, seed has already happened (or was done manually).
-  const countRows = await client.query(
-    `SELECT COUNT(*)::int AS n FROM drizzle.__drizzle_migrations`,
+  // Read current max(created_at) from the table. Any journal entry with when > that
+  // is either a genuinely-new migration (should be applied) or a past migration the
+  // DB already has but that was never recorded (drift — should be seeded, not applied).
+  //
+  // We assume: if prod DDL was hand-applied via ops runner scripts, the DDL exists
+  // but the bookkeeping row doesn't. Seeding is the correct response — re-applying
+  // would fail on non-idempotent ALTER TABLE.
+  const maxRows = await client.query(
+    `SELECT COUNT(*)::int AS n, COALESCE(MAX(created_at), 0)::bigint AS max_ts
+     FROM drizzle.__drizzle_migrations`,
   );
-  const countArr = Array.isArray(countRows) ? countRows : countRows.rows;
-  const existingCount = Number(countArr[0].n);
+  const maxArr = Array.isArray(maxRows) ? maxRows : maxRows.rows;
+  const existingCount = Number(maxArr[0].n);
+  const dbMaxTs = Number(maxArr[0].max_ts);
+  log(`DB has ${existingCount} recorded migration(s), max created_at=${dbMaxTs}.`);
 
-  if (existingCount === 0) {
-    log(`Table empty. Seeding ${journal.entries.length} rows from journal...`);
-    const seedRows = buildSeedRows(journal);
-    // Insert in a single transaction semantically — but neon HTTP driver executes
-    // each query() as its own statement. We guard by checking that no rows exist
-    // at the start; a concurrent seed is extremely unlikely since this runs only
-    // in deploy. Still, insert in sorted order by created_at so a partial failure
-    // leaves a sensible prefix of applied migrations.
-    seedRows.sort((a, b) => a.created_at - b.created_at);
-    for (const row of seedRows) {
+  const allSeedRows = buildSeedRows(journal).sort((a, b) => a.created_at - b.created_at);
+  const missing = allSeedRows.filter((r) => r.created_at > dbMaxTs);
+
+  if (missing.length === 0) {
+    log('Bookkeeping is caught up to journal. No seed needed.');
+  } else {
+    log(`Seeding ${missing.length} missing row(s) (DDL assumed already applied on prod):`);
+    for (const row of missing) {
+      log(`  → ${row.tag} (created_at=${row.created_at})`);
       await client.query(
         `INSERT INTO drizzle.__drizzle_migrations (hash, created_at) VALUES ($1, $2)`,
         [row.hash, row.created_at],
       );
     }
-    log(`Seeded ${seedRows.length} rows. Max created_at=${seedRows[seedRows.length - 1].created_at} (${seedRows[seedRows.length - 1].tag}).`);
-  } else {
-    log(`Table has ${existingCount} row(s). Skipping seed.`);
+    log(`Seeded ${missing.length} rows. Max created_at now=${missing[missing.length - 1].created_at}.`);
   }
 
   // ---- Phase 2: run drizzle migrator ----
