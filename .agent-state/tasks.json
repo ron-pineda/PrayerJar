@@ -5299,7 +5299,7 @@
     "id": "pj-s21r-04",
     "sprint": "21-review",
     "title": "Strategist: Synthesis — tier ladder verdict + go/no-go on church channel",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Strategist",
     "priority": "high",
     "description": "Read all three specialist findings docs (Research, Architect, CustomerSuccess). Deliver two verdicts: (1) Is the 2026-04-17 tier ladder (Free / $19 / $49 / $199+) still correct, or do findings invalidate it? Stake a position with evidence. (2) Is PrayerJar ready to actively push the church channel (sales outreach, content marketing, partnerships), or are there gating gaps that should be closed first? If gating gaps — list them, ordered by ship-cost. Do not re-do pricing from scratch — the 2026-04-17 decision doc is the baseline; deviate only if findings force it.",
@@ -5323,10 +5323,11 @@
       "pj-s21r-03"
     ],
     "notes": [
-      "[PM, 2026-04-19] Sequencing: Research + Architect + CustomerSuccess run in parallel; Strategist starts only after all three land. No Finance in this review — if Strategist returns ADJUST or REDO on the tier ladder, PM will spin up a Finance follow-up task at that time."
+      "[PM, 2026-04-19] Sequencing: Research + Architect + CustomerSuccess run in parallel; Strategist starts only after all three land. No Finance in this review — if Strategist returns ADJUST or REDO on the tier ladder, PM will spin up a Finance follow-up task at that time.",
+      "[Strategist, 2026-04-19] DONE. Tier ladder: HOLD (Sprint 17 ladder survives intact — Research confirms no material pressure, CS confirms $49 is strongest rung). Channel readiness: GO-WITH-CONDITIONS (Small/Medium ready; Large HOLD pending SSO+subdomain; 3 Pro-tier ship-stopper claims must be stripped or shipped first). Top rec: reconcile the 3 Pro-tier ship-stoppers (PDF / PCO group sync / PCO weekly summary) — strip today, ship over Sprint 22. Synthesis at docs/church-review/strategist-synthesis.md. No Finance follow-up needed."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19T00:10:00Z"
+    "last_touched": "2026-04-19T06:50:00Z"
   },
   {
     "id": "pj-s21r-05",
