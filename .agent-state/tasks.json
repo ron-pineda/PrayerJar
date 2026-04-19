@@ -4890,7 +4890,7 @@
     "id": "pj-s20-01",
     "sprint": "20",
     "title": "Copywriter briefs for all 8 full-treatment pages",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Copywriter",
     "priority": "high",
     "description": "Write copy briefs at docs/sprint20/copy-briefs/<page>.md for know-jesus, give, about, browse, find-a-church, world-prayer, contact, help. Voice per docs/brand/brand-guide.md. No banned phrases. Each brief includes: hero copy, section copy, CTA copy, verse (if any), Lucide icon choices.",
@@ -4906,9 +4906,12 @@
       "docs/brand/brand-guide.md"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[2026-04-18] Copywriter: 8 briefs written at docs/sprint20/copy-briefs/. Banned-phrase audit complete per brand guide §7. 5 hits found total across the 8 pages: /about x3 (platform x2, 'churches that want pastoral tools' verbatim), /give x1 (platform), /help x1 (unlock), plus /world-prayer 'Join believers around the globe' flagged as adjacent-to-banned. Ready for Frontend handoff.",
+      "[2026-04-18] PM decisions needed before Frontend ships: (1) /know-jesus brief recommends DROPPING the daily verse strip to resolve §15 scripture-density (page already has 5 gospel scriptures) — Frontend will silently take this if unchallenged, please approve or reject. (2) /know-jesus brief swaps 'Welcome to the family' → 'Welcome home' post-decision heading — subtle brand/theological shift, PM call. (3) /give brief uses 2 Corinthians 9:7 ('cheerful giver') for the verse strip — on-the-nose for a donation page; PM may prefer a less ask-shaped verse. (4) /give tax-deductibility footer line needs PM confirmation re: 501(c)(3) status. (5) /contact Subject dropdown: brief keeps it (relabeled 'What's this about?') for routing; PM may prefer free-text-only — decision documented, not forced."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T20:30:00.000Z"
   },
   {
     "id": "pj-s20-02",

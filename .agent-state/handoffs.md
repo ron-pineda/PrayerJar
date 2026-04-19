@@ -227,3 +227,4 @@
 [2026-04-18] Legal → PM: pj-s18-01-legal-pco-subprocessor ready for review — GO decision with 6 conditions on Integrations. Memo at docs/legal/sprint18-chms-signoff.md. Subprocessor list v1.1-2026-04-18 (added PCO). DPA v1.1-2026-04-18 (ChMS bullet in Section 3). Re-consent required for existing Churches before PCO toggle enabled. Integrations unblocked for pj-s18-05/06 subject to pj-s18-04 (Security/encryption) also signing off.
 
 [2026-04-18T19:38:43.340Z] Dashboard sync — 0 fix(es): 
+[2026-04-18] Copywriter → PM: pj-s20-01 Sprint 20 copy briefs — 8 briefs ready at docs/sprint20/copy-briefs/. Banned-phrase audit complete. Ready for Frontend handoff.
