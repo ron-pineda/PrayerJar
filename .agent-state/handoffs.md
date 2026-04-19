@@ -229,3 +229,5 @@
 
 [2026-04-18T19:38:43.340Z] Dashboard sync — 0 fix(es): 
 [2026-04-18] Copywriter → PM: pj-s20-01 Sprint 20 copy briefs — 8 briefs ready at docs/sprint20/copy-briefs/. Banned-phrase audit complete. Ready for Frontend handoff.
+
+[2026-04-18] Frontend → Designer: pj-s20-03 /give refresh — visual + content complete, ready for design spot-check.

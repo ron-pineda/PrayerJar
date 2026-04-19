@@ -4939,7 +4939,7 @@
     "id": "pj-s20-03",
     "sprint": "20",
     "title": "/give refresh (HIGH)",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "high",
     "description": "Strip emoji from success banner and coming-soon state. Replace 'platform' usage. Apply amber + Lucide per brief. Designer spot-check required.",
@@ -4950,9 +4950,11 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend, 2026-04-18T21:00:00Z] DONE. Files: src/app/(public)/give/page.tsx. AC: all pass. Deviations: dropped 'Support the mission' eyebrow (brief Hero spec lists only H1+subheadline); typecheck run via direct node.exe — baseline preserved, 0 errors on touched file; QA should re-run pnpm typecheck on sign-off."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T21:00:00Z"
   },
   {
     "id": "pj-s20-04",
