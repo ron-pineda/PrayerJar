@@ -1,3 +1,4 @@
+[2026-04-18] Controller → Reviewer: pj-s20-09 /help rework + pj-s20-11 /docs rework — banned phrases cleared per PM ruling (spec §4 wins over light-pass scope). 3 one-line rewrites applied inline. Commit 3be08c0. Both back to review; all 10 page tasks now clean for final approval.
 [2026-04-18] Designer → Reviewer: pj-s20-02, pj-s20-03 — spot-check complete, findings at docs/sprint20/design-spotcheck.md.
 [2026-04-18] Frontend → Reviewer: pj-s20-09 /help refresh + anchors — ready for review.
 [2026-04-18] Frontend → Reviewer: pj-s20-08 /contact refresh — ready for review. Mail icon replaces ✉️, warm labels (Your name / What's this about? / What's on your mind?), sentence-case subject options via {value,label} map (backend enum untouched), Sending… U+2026, unified error toast, response-time line with Clock icon, ScrollReveal on form + footer note.

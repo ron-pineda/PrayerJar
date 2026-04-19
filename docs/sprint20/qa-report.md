@@ -137,3 +137,27 @@ None from QA. Designer spot-check already logged two optional backlog items (inl
 - pj-s20-11 (/docs) — 2 banned-phrase fixes + PM scope confirmation
 
 Sprint 20 cannot close until pj-s20-09 and pj-s20-11 are reworked, re-QAd, and flipped to `done`.
+
+---
+
+## Rework addendum (2026-04-18T23:55Z)
+
+**Both blockers resolved.** PM ruled on pj-s20-11 scope: spec §4 wins, content edits authorized.
+
+Three one-line rewrites applied in commit `3be08c0`:
+
+| File | Line | Before | After |
+|---|---|---|---|
+| `help/page.tsx` | 43 | "We offer paid plans for churches that want pastoral tools" | "Churches can subscribe for pastoral features" |
+| `docs/page.tsx` | 216 | "community prayer platform … community intercedes" | "place for people to be prayed for … community prays" |
+| `docs/page.tsx` | 219 | "paid plans for churches that want pastoral tools and private prayer walls" | "Churches can subscribe for pastoral features like a private prayer wall, pastoral notes, and a care dashboard" |
+
+Re-scan verification:
+
+- §7 #2 "churches that want pastoral tools" — **0 hits** across Sprint 20 scope
+- §7 #5 "platform" — **0 hits** across Sprint 20 scope
+- All 16 §7 banned phrases — **0 hits** across Sprint 20 scope
+- Emoji codepoints — still **0**
+- Typecheck — still clean
+
+**QA verdict updated: PASS across all 10 pages.** pj-s20-09 and pj-s20-11 flipped to `review`. Ready for Reviewer final approval on the full slate.

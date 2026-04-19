@@ -5065,7 +5065,7 @@
     "id": "pj-s20-09",
     "sprint": "20",
     "title": "/help refresh + accordion anchors",
-    "status": "needs-rework",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Strip 5 section emoji and replace with Lucide icons. Add jump-nav pills above accordion with anchor IDs per section.",
@@ -5078,10 +5078,11 @@
     ],
     "notes": [
       "[Frontend 2026-04-18] Done. Section `icon: string` emoji refactored to `icon: LucideIcon` with new `anchor: string` field (Sparkles/HandHelping/Shield/Settings/Church). Section headings sentence-cased. Each <section> now has id={section.anchor} plus scroll-mt-24 for comfortable anchor landing under sticky nav. New jump-nav <nav> below hero renders 5 pill anchors (rounded-full border, h-4 w-4 amber icon, center-justified, flex-wrap on mobile). 'unlock' → 'add' in the free-tier FAQ. 5 accordion sections wrapped in ScrollReveal with delay={index * 80} (0/80/160/240/320). Hero subheadline keeps 'Contact us' link to /contact. Bottom CTA heading unchanged; button label lowercased to 'Contact support' per brief. Typecheck clean on file.",
-      "[QA, 2026-04-18] FAIL. Banned phrase §7 #2 'churches that want pastoral tools' at src/app/(public)/help/page.tsx:43 (inside the 'Is it really free?' FAQ body). Verbatim-ban per brand guide. Copy brief audit missed this phrase (brief only flagged 'unlock'). One-line FAQ body rewrite needed. Suggested alternative: replace 'We offer paid plans for churches that want pastoral tools' with brand-safe paraphrase such as 'Churches can subscribe for private prayer walls and pastoral features' or similar. See docs/sprint20/qa-report.md for full findings."
+      "[QA, 2026-04-18] FAIL. Banned phrase §7 #2 'churches that want pastoral tools' at src/app/(public)/help/page.tsx:43 (inside the 'Is it really free?' FAQ body). Verbatim-ban per brand guide. Copy brief audit missed this phrase (brief only flagged 'unlock'). One-line FAQ body rewrite needed. Suggested alternative: replace 'We offer paid plans for churches that want pastoral tools' with brand-safe paraphrase such as 'Churches can subscribe for private prayer walls and pastoral features' or similar. See docs/sprint20/qa-report.md for full findings.",
+      "[Controller 2026-04-18] REWORK APPLIED. Trivial one-line FAQ body rewrite executed inline: 'We offer paid plans for churches that want pastoral tools' → 'Churches can subscribe for pastoral features'. Banned phrase §7 #2 cleared. Commit 3be08c0. Back to review."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T23:30:00Z"
+    "last_touched": "2026-04-18T23:55:00Z"
   },
   {
     "id": "pj-s20-10",
@@ -5106,7 +5107,7 @@
     "id": "pj-s20-11",
     "sprint": "20",
     "title": "/docs light pass",
-    "status": "needs-rework",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Replace 26 emoji with Lucide icons. Amber palette. No content changes.",
@@ -5116,10 +5117,12 @@
     "blockers": [],
     "notes": [
       "[Frontend, 2026-04-18] DONE. Files: src/app/(public)/docs/page.tsx. AC: no-emoji PASS, amber palette PASS, copy unchanged PASS, tsc clean PASS. Mappings: 🙏HandHelping 🤲HandHeart ✨Sparkles ✍️PenLine 🤝Handshake 👥Users ⚡Zap ☀️Sun 💛/💚Heart 🙋UserRound ⛪Church 🌱Sprout 🛡️Shield 🚫Ban 🔒Lock 🥷EyeOff 🤖Bot 🗑️Trash2 🌐Globe 📚BookOpen 📖Book 👑Crown ✅CircleCheck ❓CircleQuestionMark ✉️Mail. Deviations: none.",
-      "[QA, 2026-04-18] FAIL. Two banned-phrase hits at src/app/(public)/docs/page.tsx — line 216 'community prayer platform' (§7 #5 'platform') and line 219 'churches that want pastoral tools' (§7 #2 verbatim-ban). Both pre-existed Sprint 20 (git blame: commit dbdcb75, Sprint 8) and fell outside this task's 'light pass, no content changes' scope. SCOPE ESCALATION TO PM: Sprint 20 spec §4 Success Criteria requires 'banned phrases cleared across every Sprint 20 page' as an absolute requirement. That criterion conflicts with this task's light-pass scope. QA position: spec §4 wins — the page cannot ship with §7 violations. Options: (a) expand pj-s20-11 scope to permit the two-line content fix, (b) reassign copy rewrite to Copywriter, (c) spin off a small follow-up task. Requires PM call before Frontend re-engages. See docs/sprint20/qa-report.md for full findings."
+      "[QA, 2026-04-18] FAIL. Two banned-phrase hits at src/app/(public)/docs/page.tsx — line 216 'community prayer platform' (§7 #5 'platform') and line 219 'churches that want pastoral tools' (§7 #2 verbatim-ban). Both pre-existed Sprint 20 (git blame: commit dbdcb75, Sprint 8) and fell outside this task's 'light pass, no content changes' scope. SCOPE ESCALATION TO PM: Sprint 20 spec §4 Success Criteria requires 'banned phrases cleared across every Sprint 20 page' as an absolute requirement. That criterion conflicts with this task's light-pass scope. QA position: spec §4 wins — the page cannot ship with §7 violations. Options: (a) expand pj-s20-11 scope to permit the two-line content fix, (b) reassign copy rewrite to Copywriter, (c) spin off a small follow-up task. Requires PM call before Frontend re-engages. See docs/sprint20/qa-report.md for full findings.",
+      "[PM 2026-04-18] RULING: spec §4 wins. Expanding pj-s20-11 scope to permit the two-line content fix. Two trivial rewrites authorized: line 216 'community prayer platform'→'place for people to be prayed for' + 'community intercedes'→'community prays'; line 219 'paid plans for churches that want pastoral tools and private prayer walls'→'Churches can subscribe for pastoral features like a private prayer wall, pastoral notes, and a care dashboard'. Preserves product claims, clears §7 #2 and §7 #5.",
+      "[Controller 2026-04-18] REWORK APPLIED inline per PM ruling. Commit 3be08c0. Both banned phrases cleared. Back to review."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T23:30:00Z"
+    "last_touched": "2026-04-18T23:55:00Z"
   },
   {
     "id": "pj-s20-12",
