@@ -360,5 +360,13 @@
     "size": "M",
     "status": "done",
     "notes": "CLOSED 2026-04-18. All 9 tasks done, Reviewer APPROVED. Jar-first: PrayerJar size/mode/countLabel/SlipDropAnimation upgraded. 5 surfaces redesigned. Personal stats on signed-in homepage. Live trust strip on /for-churches. Slip-drop + light-escape animations. Known deviations: stats strip shows Active not Submitted (PM to document); LightEscapeAnimation not exported as named component (accepted debt). Spec: docs/superpowers/specs/2026-04-18-ui-modernization-design.md."
+  },
+  {
+    "id": "20",
+    "phase": 20,
+    "name": "Full Visual Audit (Public Pages)",
+    "features": 13,
+    "size": "M",
+    "status": "active"
   }
 ]
