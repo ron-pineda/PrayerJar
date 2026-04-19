@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { InAppBrowserWarning } from '@/components/in-app-browser-warning';
+import { PrayerJar } from '@/components/prayer-jar';
+import { Mail } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata = { title: "Sign In | The Prayer Jar" };
@@ -23,7 +25,9 @@ export default async function SignInPage({
       <div className="min-h-screen flex items-center justify-center px-4">
         <Card className="w-full max-w-sm text-center">
           <CardHeader>
-            <div className="text-4xl mb-2">📬</div>
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-950/40">
+              <Mail className="h-6 w-6 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+            </div>
             <CardTitle>Check your email</CardTitle>
             <CardDescription>
               We sent a sign-in link to your email. Click the link to sign in — it expires in 10 minutes.
@@ -41,7 +45,9 @@ export default async function SignInPage({
       <div className="w-full max-w-sm space-y-6">
         {/* Branding */}
         <div className="text-center">
-          <Link href="/" className="text-4xl">🫙</Link>
+          <Link href="/" aria-label="The Prayer Jar home" className="inline-flex items-center justify-center">
+            <PrayerJar size="sm" count={0} />
+          </Link>
           <h1 className="text-2xl font-bold tracking-tight mt-3">The Prayer Jar</h1>
           <p className="text-sm text-muted-foreground mt-1">
             A global place to share your heart and intercede for others.

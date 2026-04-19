@@ -5077,15 +5077,17 @@
     "id": "pj-s20-10",
     "sprint": "20",
     "title": "/sign-in light pass",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Visual consistency only. Replace jar and envelope emoji with PrayerJar size=sm + Lucide Mail. Amber palette. No copy changes.",
     "files": [
-      "src/app/(public)/sign-in/page.tsx"
+      "src/app/(auth)/sign-in/page.tsx"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[Frontend, 2026-04-18] DONE. Files: src/app/(auth)/sign-in/page.tsx. AC: no-emoji PASS, amber palette PASS, OAuth unchanged PASS, tsc clean PASS. 🫙 -> PrayerJar size=sm count=0; 📬 -> Lucide Mail in amber pill. Deviations: file lives at (auth)/sign-in not (public)/sign-in — updated files[] accordingly."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },
@@ -5093,7 +5095,7 @@
     "id": "pj-s20-11",
     "sprint": "20",
     "title": "/docs light pass",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Replace 26 emoji with Lucide icons. Amber palette. No content changes.",
@@ -5101,7 +5103,9 @@
       "src/app/(public)/docs/page.tsx"
     ],
     "blockers": [],
-    "notes": [],
+    "notes": [
+      "[Frontend, 2026-04-18] DONE. Files: src/app/(public)/docs/page.tsx. AC: no-emoji PASS, amber palette PASS, copy unchanged PASS, tsc clean PASS. Mappings: 🙏HandHelping 🤲HandHeart ✨Sparkles ✍️PenLine 🤝Handshake 👥Users ⚡Zap ☀️Sun 💛/💚Heart 🙋UserRound ⛪Church 🌱Sprout 🛡️Shield 🚫Ban 🔒Lock 🥷EyeOff 🤖Bot 🗑️Trash2 🌐Globe 📚BookOpen 📖Book 👑Crown ✅CircleCheck ❓CircleQuestionMark ✉️Mail. Deviations: none."
+    ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18"
   },

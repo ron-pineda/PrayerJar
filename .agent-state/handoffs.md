@@ -239,3 +239,6 @@
 [2026-04-18] Frontend → Designer: pj-s20-03 /give refresh — visual + content complete, ready for design spot-check.
 
 [2026-04-19T02:48:13.382Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-18] Frontend → Reviewer: pj-s20-10 /sign-in light pass — ready for review.
+[2026-04-18] Frontend → Reviewer: pj-s20-11 /docs light pass — ready for review.
