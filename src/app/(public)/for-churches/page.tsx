@@ -89,14 +89,14 @@ const FEATURES = [
     icon: BarChart2,
     title: 'Know what your congregation is carrying, week by week.',
     description:
-      'Weekly digests show which prayers are active, which have been answered, and where engagement is rising or falling. Growing Church adds downloadable PDF reports for leadership meetings.',
-    tierLabel: `Basic analytics — ${PLANS.starter.name} and above; Advanced & PDF — ${PLANS.pro.name} and above`,
+      'Weekly digests show which prayers are active, which have been answered, and where engagement is rising or falling. Growing Church adds advanced analytics and CSV exports for leadership meetings.',
+    tierLabel: `Basic analytics — ${PLANS.starter.name} and above; Advanced analytics + CSV exports — ${PLANS.pro.name} and above`,
   },
   {
     icon: Link2,
     title: 'Integrates with Planning Center.',
     description:
-      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. Small groups sync too. A brief weekly prayer summary appears as a note on each person\'s PCO record so your pastoral picture stays current.',
+      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. New members show up the next day, so your pastoral picture stays current.',
     tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
 ];
