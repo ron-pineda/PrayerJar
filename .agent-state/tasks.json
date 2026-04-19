@@ -5208,5 +5208,151 @@
     ],
     "created_at": "2026-04-18",
     "last_touched": "2026-04-18T23:59:00Z"
+  },
+  {
+    "id": "pj-s21r-01",
+    "sprint": "21-review",
+    "title": "Research: Competitor pricing & feature delta refresh (since 2026-04-17)",
+    "status": "proposed",
+    "assigned_to": "Research",
+    "priority": "high",
+    "description": "REFRESH, not full rescan. The 2026-04-17 competitor survey (Research handoff line 75) already established PrayerJar's $19/$49/$199+ ladder as correctly segmented. Task: check 8 named competitors (Prayer Platform, PrayerMate, Praytell, Pushpray, Echo Prayer, Prayer Mate, Instapray, YouVersion prayer surface — confirm list in existing doc) for (a) price changes since 2026-04-17, (b) new tier/feature additions in that window, (c) any new entrants in the small-to-medium church segment. Output is a DELTA REPORT — what changed, what didn't. Feeds Strategist's Q3 verdict. Question answered: partial input to Q3 (pricing fairness — competitive side).",
+    "acceptance_criteria": [
+      "Delta report at docs/church-review/research-findings.md exists",
+      "Each of the 8 prior competitors has a '{price in April}' → '{price today}' line with source URL and date checked",
+      "Any new entrants in the ChMS-adjacent prayer/pastoral care segment are listed or explicitly noted as none-found",
+      "Integration-landscape check: PCO is now live (Sprint 18) — note which competitors have also added ChMS integration since April",
+      "Deliverable clearly states 'no material changes' OR 'N material changes' — Strategist must be able to read the top of the doc and know whether to revisit the tier ladder"
+    ],
+    "files": [
+      "docs/church-review/research-findings.md",
+      "docs/strategy/pricing-prayerjar-2026-04.md",
+      "docs/integrations/chms-landscape.md"
+    ],
+    "blockers": [],
+    "notes": [
+      "[PM, 2026-04-19] Scope explicitly framed as refresh vs 2026-04-17 baseline, not fresh scan. Do not duplicate prior work — read docs/strategy/pricing-prayerjar-2026-04.md first and call out only what has moved. Target length: under 2 pages."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T00:00:00Z"
+  },
+  {
+    "id": "pj-s21r-02",
+    "sprint": "21-review",
+    "title": "Architect: Claims-vs-implementation audit of /for-churches",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "high",
+    "description": "For every feature claim on /for-churches (page at src/app/(public)/for-churches/page.tsx) and every feature listed in src/lib/plans.ts, trace to actual code to verify it ships. Produce a claims-matrix table: FEATURE | TIER | MARKETING-CLAIM LOCATION | IMPLEMENTATION FILE(S) | STATE (built / partial / stub / missing / coming-soon-labeled). Flag any gap where we market something that doesn't exist, or exists but is degraded. This is the Q2 answer in full. Legal context: Sprint 17 already did one of these (hotfix AI-Flagged Care, hotfix Enterprise Claims) — confirm those fixes still hold and look for NEW drift introduced by Sprints 18/19/20.",
+    "acceptance_criteria": [
+      "Claims matrix at docs/church-review/architect-findings.md with a row per feature claim",
+      "Every row has a state verdict: built / partial / stub / missing / coming-soon-labeled",
+      "PCO integration (Sprint 18) status confirmed — webhookSecret gap + sandbox-test gap both noted (see Sprint 18 notes in sprints.json)",
+      "Any gap labeled 'missing' or 'stub' includes a severity (ship-stopper / ship-allowed-with-label / cosmetic)",
+      "Top-of-doc verdict: overall does /for-churches materially overstate capability? Yes / No / With-conditions"
+    ],
+    "files": [
+      "docs/church-review/architect-findings.md",
+      "src/app/(public)/for-churches/page.tsx",
+      "src/lib/plans.ts",
+      "docs/legal/sprint17-hotfix-signoff-2026-04-17.md"
+    ],
+    "blockers": [],
+    "notes": [
+      "[PM, 2026-04-19] This is Q2 in full. Sprint 17's hotfix work already killed the AI-Flagged Care claim and marked SSO/SAML/subdomain as coming-soon — verify those are still accurate. New risk surface: anything Sprint 18 (PCO) marketed that depends on webhookSecret or sandbox credentials is in the 'partial/stub' column, not 'built'."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T00:00:00Z"
+  },
+  {
+    "id": "pj-s21r-03",
+    "sprint": "21-review",
+    "title": "CustomerSuccess: Fit-by-size assessment — small / medium / large churches",
+    "status": "proposed",
+    "assigned_to": "CustomerSuccess",
+    "priority": "high",
+    "description": "For each church-size segment (small <100 members / medium 100-500 / large 500+), answer: does the current /for-churches feature set + pricing tier match what they actually need to say yes? Use the Sprint 17 onboarding audit (docs/users/church-onboarding-audit.md) as the muscle memory for this. Small-church judgment: is Free (50/3) + Small Church ($19) enough? Do they need anything they can't get? Medium-church: is Growing Church ($49) feature-rich enough vs pain? Large-church: is Network ($199+) justified, and is the Enterprise demo gate (500+ members) attractive or a wall? Deliverable is a per-segment fit-rubric — green/yellow/red on features, tier value, onboarding friction.",
+    "acceptance_criteria": [
+      "Doc at docs/church-review/customersuccess-findings.md with per-segment section (Small / Medium / Large)",
+      "Each segment has a rubric: features (green/yellow/red), tier price (green/yellow/red), onboarding friction (green/yellow/red), PCO integration relevance (green/yellow/red)",
+      "Explicit 'yes/no/conditional' verdict per segment: can this church sign up today and get value?",
+      "Any missing feature for a segment is named AND mapped to competitor that has it (pull from Research findings if available, else note 'assumes competitor parity')",
+      "Top-3 quick-win recommendations per segment, each under 1-day build estimate"
+    ],
+    "files": [
+      "docs/church-review/customersuccess-findings.md",
+      "docs/users/church-onboarding-audit.md",
+      "src/app/(public)/for-churches/page.tsx",
+      "src/lib/plans.ts"
+    ],
+    "blockers": [],
+    "notes": [
+      "[PM, 2026-04-19] This is Q1 in full. Parallel with Research + Architect — no dependency. If Research delta report comes in first, fold competitor-feature parity into the per-segment rubric; if not, note assumption."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T00:00:00Z"
+  },
+  {
+    "id": "pj-s21r-04",
+    "sprint": "21-review",
+    "title": "Strategist: Synthesis — tier ladder verdict + go/no-go on church channel",
+    "status": "proposed",
+    "assigned_to": "Strategist",
+    "priority": "high",
+    "description": "Read all three specialist findings docs (Research, Architect, CustomerSuccess). Deliver two verdicts: (1) Is the 2026-04-17 tier ladder (Free / $19 / $49 / $199+) still correct, or do findings invalidate it? Stake a position with evidence. (2) Is PrayerJar ready to actively push the church channel (sales outreach, content marketing, partnerships), or are there gating gaps that should be closed first? If gating gaps — list them, ordered by ship-cost. Do not re-do pricing from scratch — the 2026-04-17 decision doc is the baseline; deviate only if findings force it.",
+    "acceptance_criteria": [
+      "Doc at docs/church-review/strategist-synthesis.md",
+      "Section 1: Tier ladder verdict — HOLD / ADJUST / REDO, with one-paragraph rationale per verdict tied to cited evidence from the three input docs",
+      "Section 2: Church-channel readiness verdict — GO / GO-WITH-CONDITIONS / HOLD, with a numbered list of gating gaps (if any) each with an owner and effort estimate (S/M/L)",
+      "Section 3: Max-3-item recommendation list for the user — ordered by business impact, not effort",
+      "Every claim references a specific line or section from the three specialist docs (no uncited assertions)"
+    ],
+    "files": [
+      "docs/church-review/strategist-synthesis.md",
+      "docs/church-review/research-findings.md",
+      "docs/church-review/architect-findings.md",
+      "docs/church-review/customersuccess-findings.md",
+      "docs/strategy/pricing-prayerjar-2026-04.md"
+    ],
+    "blockers": [
+      "pj-s21r-01",
+      "pj-s21r-02",
+      "pj-s21r-03"
+    ],
+    "notes": [
+      "[PM, 2026-04-19] Sequencing: Research + Architect + CustomerSuccess run in parallel; Strategist starts only after all three land. No Finance in this review — if Strategist returns ADJUST or REDO on the tier ladder, PM will spin up a Finance follow-up task at that time."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T00:00:00Z"
+  },
+  {
+    "id": "pj-s21r-05",
+    "sprint": "21-review",
+    "title": "PM: Consolidate findings into single user-facing recommendation doc",
+    "status": "proposed",
+    "assigned_to": "PM",
+    "priority": "high",
+    "description": "Read all four specialist deliverables. Write a single user-facing doc at docs/church-review/recommendations.md that directly answers the three user questions (feature sufficiency by size / claims-vs-implementation / pricing fairness) with a top-line verdict and a prioritized action list. Keep it under 2 pages. This is the doc the user actually reads — the specialist findings are the supporting appendix. Close the sprint in sprints.json and log the final handoff.",
+    "acceptance_criteria": [
+      "docs/church-review/recommendations.md exists and is under 2 pages",
+      "All 3 user questions have a direct one-line answer at the top (yes/no/conditional with one-line rationale each)",
+      "Prioritized action list — each action has owner, effort (S/M/L), and expected impact",
+      "Every claim links back to a specific specialist findings doc — this is the user's summary, the specialist docs are the receipts",
+      "sprints.json entry for 21-review flipped to done with close-out notes",
+      "Handoff logged to handoffs.md"
+    ],
+    "files": [
+      "docs/church-review/recommendations.md",
+      ".agent-state/sprints.json",
+      ".agent-state/handoffs.md"
+    ],
+    "blockers": [
+      "pj-s21r-04"
+    ],
+    "notes": [
+      "[PM, 2026-04-19] Final consolidation — no new analysis, just synthesis. If Strategist returned ADJUST/REDO verdict on tier ladder, flag the Finance follow-up task as a next-step in the recommendations doc (don't expand this review's scope)."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T00:00:00Z"
   }
 ]
