@@ -97,7 +97,7 @@ export function PrayerJar({
 
   return (
     <div className="flex flex-col items-center">
-      <div aria-hidden="true">
+      <div aria-hidden="true" className="flex flex-col items-center">
         <div
           style={{
             width: dims.neckW,
