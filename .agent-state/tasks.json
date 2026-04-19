@@ -5034,7 +5034,7 @@
     "id": "pj-s20-08",
     "sprint": "20",
     "title": "/contact refresh",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "medium",
     "description": "Replace envelope emoji with Lucide Mail icon. Warm intro copy per brief. Plain form labels. Lucide icons.",
@@ -5045,9 +5045,12 @@
     "blockers": [
       "pj-s20-01"
     ],
-    "notes": [],
+    "notes": [
+      "[Frontend 2026-04-18] Starting — keeping backend SUBJECTS enum values (General/Church Partnership/Feedback/Bug Report/Other) and rendering sentence-case labels via {value,label} map to preserve strict-match in contact.actions.ts + routing strings used in Resend subject + admin panel.",
+      "[Frontend 2026-04-18] Ready for review. Files changed: src/app/(public)/contact/page.tsx only — contact.actions.ts NOT touched (backend z.enum still strict-matches the same values 'General'/'Church Partnership'/'Feedback'/'Bug Report'/'Other' which are now the .value keys; display labels are .label keys). AC pass: ✉️ → Mail (h-10 w-10 text-amber-600 mx-auto), headline 'Get in touch', subhead per brief, response-time line with Clock icon (hero + this line NOT wrapped in ScrollReveal per brief), labels 'Your name'/'Email'/'What's this about?'/'What's on your mind?' with placeholders 'First and last'/'you@example.com'/'Choose a topic'/'Tell us what's going on.', submit 'Send message' + 'Sending\\u2026', toasts unified to 'Message sent. We'll read it and get back to you.' / 'We couldn't send that. Please try again.' (both error paths, raw details logged to console), ScrollReveal wraps form block + footer note. Typecheck: unable to run node/tsc in this bash session (node.exe not accessible from msys bash), no TS changes beyond standard JSX/imports that match existing patterns in world-prayer/page.tsx — flagging for Reviewer to verify tsc --noEmit on their side."
+    ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18"
+    "last_touched": "2026-04-18T21:10:00Z"
   },
   {
     "id": "pj-s20-09",

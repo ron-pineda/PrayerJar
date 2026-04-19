@@ -10,8 +10,18 @@ import {
 } from "@/components/ui/select";
 import { submitContactAction } from "@/app/actions/contact.actions";
 import { toast } from "sonner";
+import { Mail, Clock } from "lucide-react";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
-const SUBJECTS = ["General", "Church Partnership", "Feedback", "Bug Report", "Other"] as const;
+// Backend strict-matches these `value` strings (see contact.actions.ts z.enum).
+// Labels are sentence-case display copy per sprint 20 brief.
+const SUBJECTS: ReadonlyArray<{ value: string; label: string }> = [
+  { value: "General", label: "General question" },
+  { value: "Church Partnership", label: "Church partnership" },
+  { value: "Feedback", label: "Feedback" },
+  { value: "Bug Report", label: "Bug report" },
+  { value: "Other", label: "Other" },
+] as const;
 
 export default function ContactPage() {
   const [pending, setPending] = useState(false);
@@ -40,13 +50,15 @@ export default function ContactPage() {
     try {
       const result = await submitContactAction(fd);
       if ("success" in result) {
-        toast.success("Message sent! We'll get back to you soon.");
+        toast.success("Message sent. We'll read it and get back to you.");
         resetForm();
       } else {
-        toast.error(result.error);
+        console.error("[contact] submit returned error:", result.error);
+        toast.error("We couldn't send that. Please try again.");
       }
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      console.error("[contact] submit threw:", err);
+      toast.error("We couldn't send that. Please try again.");
     } finally {
       setPending(false);
     }
@@ -55,79 +67,94 @@ export default function ContactPage() {
   return (
     <main className="max-w-xl mx-auto px-4 py-16">
       <div className="text-center mb-8">
-        <span className="text-5xl" aria-hidden="true">&#x2709;&#xFE0F;</span>
-        <h1 className="text-3xl font-bold tracking-tight mt-4 mb-3">Get in Touch</h1>
+        <Mail
+          className="h-10 w-10 text-amber-600 mx-auto"
+          aria-hidden="true"
+        />
+        <h1 className="text-3xl font-bold tracking-tight mt-4 mb-3">
+          Get in touch
+        </h1>
         <p className="text-muted-foreground leading-relaxed">
-          Have a question, feedback, or want to partner with us? We'd love to hear from you.
+          Questions, feedback, church partnerships — we read every message.
+        </p>
+        <p className="mt-4 text-sm text-muted-foreground flex items-center justify-center gap-1.5">
+          <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <span>A real person reads these. We reply within one business day.</span>
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="space-y-1.5">
-          <Label htmlFor="contact-name">Name</Label>
-          <Input
-            id="contact-name"
-            placeholder="Your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            maxLength={100}
-          />
-        </div>
+      <ScrollReveal>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1.5">
+            <Label htmlFor="contact-name">Your name</Label>
+            <Input
+              id="contact-name"
+              placeholder="First and last"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              maxLength={100}
+            />
+          </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="contact-email">Email</Label>
-          <Input
-            id="contact-email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="contact-email">Email</Label>
+            <Input
+              id="contact-email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="space-y-1.5">
-          <Label>Subject</Label>
-          <Select value={subject} onValueChange={(v) => setSubject(v ?? "")}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a subject" />
-            </SelectTrigger>
-            <SelectContent>
-              {SUBJECTS.map((s) => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          <div className="space-y-1.5">
+            <Label>What&apos;s this about?</Label>
+            <Select value={subject} onValueChange={(v) => setSubject(v ?? "")}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose a topic" />
+              </SelectTrigger>
+              <SelectContent>
+                {SUBJECTS.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="contact-message">Message</Label>
-          <Textarea
-            id="contact-message"
-            placeholder="How can we help?"
-            value={message}
-            onChange={(e) => setMessage(e.target.value.slice(0, 2000))}
-            required
-            rows={5}
-          />
-          <p className="text-xs text-muted-foreground text-right">{message.length}/2000</p>
-        </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="contact-message">What&apos;s on your mind?</Label>
+            <Textarea
+              id="contact-message"
+              placeholder="Tell us what's going on."
+              value={message}
+              onChange={(e) => setMessage(e.target.value.slice(0, 2000))}
+              required
+              rows={5}
+            />
+            <p className="text-xs text-muted-foreground text-right">{message.length}/2000</p>
+          </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={pending || !name.trim() || !email.trim() || !subject || !message.trim()}
-        >
-          {pending ? "Sending..." : "Send Message"}
-        </Button>
-      </form>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={pending || !name.trim() || !email.trim() || !subject || !message.trim()}
+          >
+            {pending ? "Sending\u2026" : "Send message"}
+          </Button>
+        </form>
+      </ScrollReveal>
 
-      <p className="text-xs text-muted-foreground mt-8 text-center">
-        For prayer-related support, please use the app directly.
-        For data deletion requests, see our{" "}
-        <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>.
-      </p>
+      <ScrollReveal>
+        <p className="text-xs text-muted-foreground mt-8 text-center">
+          For prayer-related support, please use the app directly.
+          For data deletion requests, see our{" "}
+          <a href="/privacy" className="underline underline-offset-4">Privacy Policy</a>.
+        </p>
+      </ScrollReveal>
     </main>
   );
 }
