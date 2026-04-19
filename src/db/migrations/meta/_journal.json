@@ -94,6 +94,13 @@
       "breakpoints": true
     },
     {
+      "idx": 12,
+      "version": "7",
+      "when": 1775942500000,
+      "tag": "0012_trigram_search",
+      "breakpoints": true
+    },
+    {
       "idx": 13,
       "version": "7",
       "when": 1775945940509,
@@ -203,6 +210,20 @@
       "version": "7",
       "when": 1776480905228,
       "tag": "0028_enterprise_leads",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1776481014000,
+      "tag": "0029_audit_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1776527113000,
+      "tag": "0030_chms_integration",
       "breakpoints": true
     }
   ]

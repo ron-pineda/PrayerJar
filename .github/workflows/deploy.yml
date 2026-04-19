@@ -5,11 +5,21 @@ on:
     branches:
       - feature/prayer-jar
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: npm }
+
+      - name: Install deps (for migrate runner)
+        run: npm ci
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
@@ -19,6 +29,18 @@ jobs:
 
       - name: Build
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Apply pending DB migrations BEFORE publishing the new build.
+      # If this step fails, `vercel deploy` below never runs, so the new code
+      # can't serve traffic against an unmigrated DB. See docs/ops/deploy-migrations.md.
+      - name: Apply DB migrations (production)
+        env:
+          VERCEL_ENV: production
+        run: |
+          set -a
+          . .vercel/.env.production.local
+          set +a
+          npm run db:migrate:deploy
 
       - name: Deploy to production
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
@@ -32,3 +54,32 @@ jobs:
         with:
           environment: production
           version: ${{ github.sha }}
+
+      # Observable alert: if any step above fails, open a GitHub issue so the
+      # failure isn't silent. See docs/ops/vercel-deploy.md for recurrence
+      # prevention plan.
+      - name: Alert on deploy failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.sha.slice(0, 7);
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `Deploy failed on ${context.ref.replace('refs/heads/', '')} @ ${sha}`;
+            const body = [
+              `Deploy to Vercel failed.`,
+              ``,
+              `- Commit: ${context.sha}`,
+              `- Branch: ${context.ref}`,
+              `- Run: ${runUrl}`,
+              `- Actor: @${context.actor}`,
+              ``,
+              `Production was not updated by this push. Inspect the run logs, fix the root cause, and push again (or roll forward with a revert commit). Do NOT manually \`vercel --prod\` without first confirming the build is green locally — manual deploys mask the underlying CI failure.`,
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['deploy-failure', 'ops'],
+            });

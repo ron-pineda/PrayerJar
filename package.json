@@ -12,6 +12,8 @@
     "test:integration": "VITEST_MODE=integration vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:migrate:deploy": "node scripts/migrate-deploy.mjs",
+    "db:migrate:dry-run": "node scripts/migrate-dry-run.mjs",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "cap:sync": "cap sync",

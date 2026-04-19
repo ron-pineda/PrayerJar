@@ -1,0 +1,8 @@
+# Normalize line endings for SQL migrations so their sha256 hashes are
+# byte-stable across Windows contributors and Linux CI runners.
+# Drizzle records hash = sha256(file bytes); a stray CRLF would cause a
+# benign-but-confusing mismatch during audits.
+*.sql text eol=lf
+
+# Be strict about meta files that drive migration replay.
+src/db/migrations/meta/_journal.json text eol=lf
