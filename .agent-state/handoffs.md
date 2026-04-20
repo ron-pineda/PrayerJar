@@ -1,3 +1,4 @@
+[2026-04-20] QA → Reviewer: pj-s22-19 PCO summary QA complete — PASS
 [2026-04-20] Integrations → QA: pj-s22-09 PCO summary scheduler — in review, ready for pj-s22-19
 [2026-04-20] Integrations → QA: pj-s22-08 PCO group persistence — in review, ready for pj-s22-18. Migration 0031_chms_groups.sql. Limitation: stale membership removal not implemented (deferred). Two-table model note: groups.externalChmsId from Sprint 18 is unused/separate.
 [2026-04-20] Backend → QA: pj-s22-16 subdomain routing — in review, ready for pj-s22-17. Ron must complete subdomain-launch-checklist.md before DNS-dependent tests. Note: API matcher (proxy.ts config) excludes /api paths — x-pj-church-id header not injected for API requests; handlers read Host directly if needed.

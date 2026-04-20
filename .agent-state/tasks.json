@@ -5626,7 +5626,7 @@
     "id": "pj-s22-09-pco-summary-scheduler",
     "sprint": "22",
     "title": "Integrations: PCO weekly-summary scheduler (queue push_summary jobs)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Integrations",
     "priority": "high",
     "description": "Per architect-findings.md row 9d, the PCO 'push weekly prayer summary to each person's PCO record' adapter method AND runner branch exist, but no scheduler queues the push_summary jobs. Build: (1) cron or scheduled-job runner that enumerates Pro-tier churches with PCO enabled, (2) per-church job enqueue for weekly summary, (3) retry + dead-letter handling, (4) admin visibility (were summaries pushed this week?), (5) feature flag so this can land dark and be flipped on per church. Once live, copy about 'weekly PCO summary' can be restored to /for-churches in a paired Copywriter task.",
@@ -5649,7 +5649,8 @@
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #7. Integrations' lane. If Sprint 19 webhookSecret work is prereq for 'automatic' behavior, that's acceptable — this task only needs to schedule the existing adapter method; webhook is orthogonal. If Integrations finds a dependency during build, escalate to Architect for a dependency call.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Integrations, 2026-04-20] SHIPPED. Scheduler: src/app/api/cron/chms-summary-scheduler/route.ts. Cron: 0 5 * * 0 (Sun 05:00 UTC). Tier gate: churches.currentPlan IN ('pro','enterprise') + chmsProvider='planning-center'. Feature flag: global kill-switch 'pco_summary_scheduler' — opt-out (missing=enabled; set isEnabled=false to pause). Per-church: one push_summary job per active PCO-linked member (externalChmsId set), capped 500/church/run, oldest chmsSyncedAt first. Dedup: skip member if pending/running job exists for same church+member in past 7 days. Payload: {externalMemberId, summary:'weekly'}. Admin: /admin/chms-sync shows full-sync + push_summary stats + dead-job table. 13 tests. No new migrations."
+      "[Integrations, 2026-04-20] SHIPPED. Scheduler: src/app/api/cron/chms-summary-scheduler/route.ts. Cron: 0 5 * * 0 (Sun 05:00 UTC). Tier gate: churches.currentPlan IN ('pro','enterprise') + chmsProvider='planning-center'. Feature flag: global kill-switch 'pco_summary_scheduler' — opt-out (missing=enabled; set isEnabled=false to pause). Per-church: one push_summary job per active PCO-linked member (externalChmsId set), capped 500/church/run, oldest chmsSyncedAt first. Dedup: skip member if pending/running job exists for same church+member in past 7 days. Payload: {externalMemberId, summary:'weekly'}. Admin: /admin/chms-sync shows full-sync + push_summary stats + dead-job table. 13 tests. No new migrations.",
+      "[QA, 2026-04-20] APPROVED. 15/15 unit tests pass. 11 PASS, 0 FAIL, 2 CANNOT_VERIFY (500-cap and retry/DLQ — code review confirms correctness). No rework needed."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -5934,7 +5935,7 @@
     "id": "pj-s22-19-pco-summary-qa",
     "sprint": "22",
     "title": "QA: PCO weekly-summary scheduler test plan + execution",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "QA pass for PCO weekly-summary scheduler (pj-s22-09). Cases: scheduler fires on cadence, per-church enqueue correct, tier gating correct, retry on transient failure, DLQ on permanent failure, feature flag on/off, admin visibility correct.",
@@ -5952,10 +5953,11 @@
     ],
     "notes": [
       "[PM, 2026-04-19] Integrations → QA. Standard pattern.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[QA, 2026-04-20] DONE. Test plan written at docs/sprint22/qa/pco-summary-test-plan.md. 15/15 tests pass. 13 cases evaluated: 11 PASS, 0 FAIL, 2 CANNOT_VERIFY (cap + DLQ — code-review confirmed). pj-s22-09 marked done."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-20-pdf-qa",
@@ -5988,7 +5990,7 @@
     "id": "pj-s22-21-copy-network-reposition",
     "sprint": "22",
     "title": "Copywriter: Network-tier reposition — custom subdomain live, enterprise login + custom analytics reports honestly labeled coming-soon",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Copywriter",
     "priority": "medium",
     "description": "Sprint 21-review recommendations.md action #3, re-scoped 2026-04-19: reposition Network tier for Large-church (500+) marketing. What actually ships this sprint: custom subdomain. What does NOT ship this sprint: SSO/SAML (deferred) AND downloadable PDF analytics reports (PDF chain deferred to Sprint 23 per Ron on 2026-04-19 — on-screen analytics remain live today; only the PDF download is missing). The Network card must honestly reflect all three. **Required labeling discipline (per Ron): two explicit honest-gap labels must appear — 'enterprise login coming soon' AND 'custom analytics reports coming soon'. Neither is a removed claim; neither is a dated promise. Both must clearly communicate: (1) we know this is wanted, (2) we don't have it today, (3) we'll build it when demand warrants.** Target state end of Sprint 22: Network card shows 'custom subdomain' as live, shows 'enterprise login coming soon' AND 'custom analytics reports coming soon' as honestly-labeled gaps (no dates), and strips any currently-implied SSO-is-live OR PDF-report-is-live language. Brief respects brand-guide §7. Frontend applies verbatim, QA sweeps, Reviewer gates. DO NOT overclaim — Sprint 21-review just cost us a hotfix for claims-vs-implementation drift; do not re-create that violation.",
@@ -6014,10 +6016,11 @@
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #8. RE-SCOPE: SSO deferred — copy must ship with 'enterprise login coming soon' as an honestly-labeled gap. Do not re-create the Sprint 21-review claims-vs-implementation violation. If subdomain slips, both lines shift to 'coming soon' — but enterprise-login labeling stays 'coming soon' regardless.",
       "[PM, 2026-04-19] PDF chain deferred to Sprint 23 per Ron. Added second honest-gap label: 'custom analytics reports coming soon'. Both labels required. On-screen analytics stays live — the gap is specifically the downloadable PDF. Copywriter must not confuse the two.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Copywriter, 2026-04-20] Starting work. Reading brand guide, plans.ts, and for-churches page."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-22-reviewer-sprint-close",
