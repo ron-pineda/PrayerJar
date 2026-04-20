@@ -185,6 +185,20 @@ export function hasTestimonyApprovalQueue(tier: PlanTier): boolean {
   return TIER_RANK[tier] >= TIER_RANK[TESTIMONY_APPROVAL_QUEUE_TIER];
 }
 
+/** The minimum plan tier that grants the Custom Subdomain feature. pj-s22-16 */
+export const CUSTOM_SUBDOMAIN_TIER: PlanTier = 'pro';
+
+/**
+ * Returns true if the given plan tier can claim a custom subdomain.
+ * Server-side gating (branding route) and UI (BrandingForm) both derive
+ * from this predicate so they stay in sync.
+ *
+ * Tier floor: Growing Church (pro) and above.
+ */
+export function hasCustomSubdomain(tier: PlanTier): boolean {
+  return TIER_RANK[tier] >= TIER_RANK[CUSTOM_SUBDOMAIN_TIER];
+}
+
 /**
  * Returns the number of days audit events are retained for a given plan tier.
  *
