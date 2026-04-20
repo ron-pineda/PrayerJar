@@ -5626,7 +5626,7 @@
     "id": "pj-s22-09-pco-summary-scheduler",
     "sprint": "22",
     "title": "Integrations: PCO weekly-summary scheduler (queue push_summary jobs)",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Integrations",
     "priority": "high",
     "description": "Per architect-findings.md row 9d, the PCO 'push weekly prayer summary to each person's PCO record' adapter method AND runner branch exist, but no scheduler queues the push_summary jobs. Build: (1) cron or scheduled-job runner that enumerates Pro-tier churches with PCO enabled, (2) per-church job enqueue for weekly summary, (3) retry + dead-letter handling, (4) admin visibility (were summaries pushed this week?), (5) feature flag so this can land dark and be flipped on per church. Once live, copy about 'weekly PCO summary' can be restored to /for-churches in a paired Copywriter task.",
@@ -5639,16 +5639,17 @@
       "Copy brief to re-introduce the 'weekly PCO summary' line once feature lands — handed to Copywriter as a follow-up"
     ],
     "files": [
-      "src/app/api/chms-sync-runner/route.ts",
-      "src/lib/chms/"
+      "src/app/api/cron/chms-summary-scheduler/route.ts",
+      "src/app/api/cron/chms-summary-scheduler/route.test.ts",
+      "src/app/admin/chms-sync/page.tsx",
+      "src/lib/feature-flags.ts",
+      "vercel.json"
     ],
-    "blockers": [
-      "pj-s22-01-drizzle-pipeline"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #7. Integrations' lane. If Sprint 19 webhookSecret work is prereq for 'automatic' behavior, that's acceptable — this task only needs to schedule the existing adapter method; webhook is orthogonal. If Integrations finds a dependency during build, escalate to Architect for a dependency call.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Integrations, 2026-04-20] Starting implementation: new cron route at src/app/api/cron/chms-summary-scheduler/route.ts, filtering planning-center + pro/enterprise tier, per-member enqueue with 500/church cap, global kill-switch flag pco_summary_scheduler, admin visibility at /admin/chms-sync, weekly cron 0 5 * * 0."
+      "[Integrations, 2026-04-20] SHIPPED. Scheduler: src/app/api/cron/chms-summary-scheduler/route.ts. Cron: 0 5 * * 0 (Sun 05:00 UTC). Tier gate: churches.currentPlan IN ('pro','enterprise') + chmsProvider='planning-center'. Feature flag: global kill-switch 'pco_summary_scheduler' — opt-out (missing=enabled; set isEnabled=false to pause). Per-church: one push_summary job per active PCO-linked member (externalChmsId set), capped 500/church/run, oldest chmsSyncedAt first. Dedup: skip member if pending/running job exists for same church+member in past 7 days. Payload: {externalMemberId, summary:'weekly'}. Admin: /admin/chms-sync shows full-sync + push_summary stats + dead-job table. 13 tests. No new migrations."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"

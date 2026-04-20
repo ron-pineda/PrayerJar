@@ -1,3 +1,4 @@
+[2026-04-20] Integrations → QA: pj-s22-09 PCO summary scheduler — in review, ready for pj-s22-19
 [2026-04-20] Integrations → QA: pj-s22-08 PCO group persistence — in review, ready for pj-s22-18. Migration 0031_chms_groups.sql. Limitation: stale membership removal not implemented (deferred). Two-table model note: groups.externalChmsId from Sprint 18 is unused/separate.
 [2026-04-20] Backend+Copywriter → QA: pj-s22-03 Free cap 50→75 + pj-s22-04 hero/PCO copy — in review
 [2026-04-20] Architect → Backend: pj-s22-05 subdomain design revised — SSO deferred, per-subdomain auth model documented, ready for pj-s22-16 implementation

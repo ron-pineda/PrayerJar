@@ -30,4 +30,7 @@ export const FLAGS = {
   WRAPPED: 'wrapped',
   WORLD_PRAYER: 'world_prayer',
   CAMPAIGNS: 'campaigns',
+  /** Global kill-switch for the PCO weekly summary scheduler (pj-s22-09).
+   *  Opt-out model: missing row = enabled. Set isEnabled = false to pause. */
+  PCO_SUMMARY_SCHEDULER: 'pco_summary_scheduler',
 } as const;

@@ -51,6 +51,10 @@
     {
       "path": "/api/cron/chms-full-sync-scheduler",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/chms-summary-scheduler",
+      "schedule": "0 5 * * 0"
     }
   ]
 }

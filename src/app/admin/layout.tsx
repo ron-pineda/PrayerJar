@@ -41,6 +41,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       count: counts.legalVerifications,
       critical: false,
     },
+    { href: '/admin/chms-sync', label: 'ChMS Jobs', count: null, critical: false },
   ];
 
   return (
