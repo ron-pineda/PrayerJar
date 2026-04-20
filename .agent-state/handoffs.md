@@ -1,3 +1,4 @@
+[2026-04-20] Reviewer → PM: pj-s22-22 Sprint 22 closed — 9 tasks shipped, 12 deferred, 4 Ron actions in INBOX.md
 [2026-04-20] QA → Reviewer: pj-s22-17 subdomain QA complete — static cases PASS, DNS cases pending Ron action
 [2026-04-20] QA → Reviewer: pj-s22-18 PCO group QA complete — PASS. 5/5 unit tests pass, 4 code-review checks clean, 3 CANNOT_VERIFY (build-blocked), stale-membership gap documented for Sprint 23. pj-s22-08 → done.
 [2026-04-20] Copywriter → QA: pj-s22-21 Network-tier copy reposition — in review

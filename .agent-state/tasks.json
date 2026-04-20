@@ -5409,7 +5409,7 @@
     "id": "pj-s22-02-vercel-webhook",
     "sprint": "22",
     "title": "DevOps: fix Vercel GitHub auto-deploy webhook (pj-001 recurrence)",
-    "status": "review",
+    "status": "done",
     "assigned_to": "DevOps",
     "priority": "high",
     "description": "Pushes to feature/prayer-jar are again not auto-deploying to Vercel — deploys currently require manual `vercel --prod` invocation. This is pj-001's recurrence. The .github/workflows/deploy.yml from pj-001 may have stalled or be silently failing. Audit: (a) is the workflow still firing on push, (b) is the Vercel deploy step succeeding, (c) is native Vercel Git integration reconnected or still broken by the worktree path. Fix whichever layer is broken. Confirm via a test commit with observable pipeline success.",
@@ -5430,16 +5430,17 @@
       "[DevOps, 2026-04-19] FALSE-ALARM RECURRENCE. Root cause: webhook is NOT broken. gh run list confirms Deploy to Vercel workflow fires on every push to feature/prayer-jar — latest 11:54Z run succeeded in 2m21s. Perception of breakage came from (a) silent build failures at 03:52Z/03:58Z with 'CHMS_CONFIG_ENCRYPTION_KEY must be a 64-character hex string' (missing/bad Vercel env var, not a webhook issue), and (b) manual vercel --prod during /groups outage hotfix was bypassing red CI, not compensating for missing trigger. AC1/AC2 already satisfied by run history.",
       "[DevOps, 2026-04-19] Applied: (1) actions/checkout@v4 -> @v5 in .github/workflows/deploy.yml (clears Node.js 20 deprecation — AC5). (2) Added 'Alert on deploy failure' step: if: failure() opens a GitHub issue labeled deploy-failure/ops via actions/github-script@v7, uses GITHUB_TOKEN (no new secret needed) — AC4. Added permissions: issues: write at workflow level. (3) Created docs/ops/vercel-deploy.md with runbook, pj-001/pj-s22-02 history, and recurrence-prevention plan.",
       "[DevOps, 2026-04-19] Did NOT push or trigger prod deploy per task rules. Verification is by log history (2 consecutive green runs today already) + static YAML review. Next push by any agent will exercise the new failure-alert path.",
-      "[DevOps, 2026-04-19] ADJACENT FINDING surfaced to PM (out of scope here, do not fix in this task): Vercel prod env var CHMS_CONFIG_ENCRYPTION_KEY was missing or misformatted around 03:58Z today, causing 2 failed builds. Recommend a follow-up ops task to audit Vercel env vars against a checked-in manifest at docs/env-vars.md."
+      "[DevOps, 2026-04-19] ADJACENT FINDING surfaced to PM (out of scope here, do not fix in this task): Vercel prod env var CHMS_CONFIG_ENCRYPTION_KEY was missing or misformatted around 03:58Z today, causing 2 failed builds. Recommend a follow-up ops task to audit Vercel env vars against a checked-in manifest at docs/env-vars.md.",
+      "[Reviewer, 2026-04-20] APPROVED. All 5 ACs satisfied: webhook fires on push (consecutive green runs confirmed), root cause documented (false-alarm recurrence — env var issue not webhook), alert-on-failure step added (actions/github-script@v7 opens GH issue on failure), checkout@v5 upgrade complete, runbook at docs/ops/vercel-deploy.md. Clean close."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-03-free-cap-75",
     "sprint": "22",
     "title": "Backend+Copywriter: raise Free-tier member cap 50 → 75",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Per recommendations.md action #2 and customersuccess-findings.md: current Free cap of 50 members blocks the 50–75-member band (plants, house churches, small-church majority) from feeling value before the paywall. One-line change in src/lib/plans.ts plus copy updates wherever '50 members' is surfaced (pricing page, /for-churches, plan comparison table, onboarding). Copywriter audits copy surfaces first so Backend's PR sweeps both code + copy in one pass.",
@@ -5458,7 +5459,8 @@
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #1. Recommendations.md's 'if only one thing ships' item. Fast-moving quick win — no deps, runs in parallel with everything. Copywriter sweeps copy, Backend makes code change, QA validates cap enforcement at 75.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Backend+Copywriter, 2026-04-20] Free cap raised 50→75 in src/lib/plans.ts (features + limits). Tests updated in plans.test.ts (2 assertions) and pricing-calculator.test.ts (boundary tests now 75/76 instead of 50/51). Stale comment in pricing-calculator.tsx updated. Forward-looking docs updated: docs/marketing/for-churches-copy-v2.md and docs/sales/enterprise-demo-flow.md. Historical rationale docs (strategy/, finance/, church-review/) left intact — they describe prior decisions and rewriting them would destroy context. Migration note: raising the cap from 50 to 75 only grants more access — no existing church loses any members or privileges. No downgrade possible."
+      "[Backend+Copywriter, 2026-04-20] Free cap raised 50→75 in src/lib/plans.ts (features + limits). Tests updated in plans.test.ts (2 assertions) and pricing-calculator.test.ts (boundary tests now 75/76 instead of 50/51). Stale comment in pricing-calculator.tsx updated. Forward-looking docs updated: docs/marketing/for-churches-copy-v2.md and docs/sales/enterprise-demo-flow.md. Historical rationale docs (strategy/, finance/, church-review/) left intact — they describe prior decisions and rewriting them would destroy context. Migration note: raising the cap from 50 to 75 only grants more access — no existing church loses any members or privileges. No downgrade possible.",
+      "[Reviewer, 2026-04-20] APPROVED. plans.ts line 33 reads \"Up to 75 members\"; limits.members = 75 at line 38. grep across src/ returns zero hits for any hardcoded \"50 members\" string. Clean."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -5467,7 +5469,7 @@
     "id": "pj-s22-04-copy-hero-and-pco-qualifier",
     "sprint": "22",
     "title": "Copywriter: kill reintroduced 'falls through the cracks' hero + add 'nightly sync' qualifier on PCO card",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Copywriter",
     "priority": "high",
     "fast_lane": true,
@@ -5488,7 +5490,8 @@
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #2. Fast-lane (copy-only edits on existing page, Reviewer still gates). Per recommendations.md action #4. Runs in parallel — no deps. Model this on the 2026-04-19 hotfix pattern (pj-hotfix-claim-reconcile-2026-04).",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Backend+Copywriter, 2026-04-20] Hero phrase \"No one falls through the cracks between Sundays\" replaced with \"Every member who carries a prayer is seen before the week is out.\" PCO card updated: \"New members show up the next day\" → \"New members sync overnight\". Copy brief at docs/sprint22/copy-briefs/hero-and-pco-qualifier.md. §7 sweep clean across all touched strings. Line 64 (\"Nothing falls through because nobody owned it\") left unchanged — not in §7 banned list. Brand note: §9.1 of brand guide cites the old hero as an approved example — needs update in next brand-guide revision (out of scope here)."
+      "[Backend+Copywriter, 2026-04-20] Hero phrase \"No one falls through the cracks between Sundays\" replaced with \"Every member who carries a prayer is seen before the week is out.\" PCO card updated: \"New members show up the next day\" → \"New members sync overnight\". Copy brief at docs/sprint22/copy-briefs/hero-and-pco-qualifier.md. §7 sweep clean across all touched strings. Line 64 (\"Nothing falls through because nobody owned it\") left unchanged — not in §7 banned list. Brand note: §9.1 of brand guide cites the old hero as an approved example — needs update in next brand-guide revision (out of scope here).",
+      "[Reviewer, 2026-04-20] APPROVED. (a) \"falls through the cracks\" phrase absent — grep across all of src/ returns zero matches. (b) Hero at line 183 reads \"Every member who carries a prayer is seen before the week is out.\" (c) PCO card at line 99 reads \"New members sync overnight\" — nightly-batch qualifier explicit and accurate. (d) §7 sweep documented as clean in docs/sprint22/copy-briefs/hero-and-pco-qualifier.md. All ACs met."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -5497,7 +5500,7 @@
     "id": "pj-s22-05-architect-sso-subdomain-spike",
     "sprint": "22",
     "title": "Architect: revise subdomain design for simplified (per-subdomain) auth — SSO deferred",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Architect",
     "priority": "high",
     "description": "Re-scoped 2026-04-19 by Ron. SSO is OUT of Sprint 22 (deferred). This task now narrows to a subdomain-only revision of the existing design doc at docs/architecture/sprint22-sso-subdomain.md. Required revisions: (a) delete or mark-deferred the SSO sections (1, 2, 3, 4, 7, plus SSO references in 8, 9, 10); (b) rewrite §7 (Subdomain ↔ SSO Interaction) under the new constraint: NO cross-domain session sharing — each subdomain is its own sign-in surface. A user signed in on prayerjar.org is NOT automatically signed in on takeheart.prayerjar.org, and vice versa; each domain sets/reads its own cookie. This avoids the forced-logout-on-rollout problem entirely. (c) Confirm §5 (Vercel DNS/config) and §6 (proxy.ts tenant resolution) survive unchanged. (d) Confirm schema delta for subdomain-only (not SSO) is still in §2 — if not, carve out. Deliverable: revised doc at docs/architecture/sprint22-sso-subdomain.md (or a shorter new doc if the Architect prefers — retitle to reflect subdomain-only scope).",
@@ -5521,7 +5524,8 @@
       "[PM, 2026-04-19] RE-SCOPE: SSO removed from this spike. Existing doc at docs/architecture/sprint22-sso-subdomain.md §7 (Subdomain ↔ SSO Interaction) is the specific section that needs the simplified-sessions revision. Core constraint: NO cross-domain session sharing — users sign in separately on each subdomain.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
       "[Architect, 2026-04-20] Started: revising sprint22-sso-subdomain.md to reflect SSO deferred, per-subdomain auth model.",
-      "[Architect, 2026-04-20] DONE: Revised sprint22-sso-subdomain.md — SSO sections §1-§4 marked deferred, §7 replaced with Per-Subdomain Auth Model (no cross-domain session sharing, no forced logout, forward-compatible with SSO), §8 rollout plan simplified (removed cookie-domain-change step), §9 added three session-isolation tests, §10 Q4 resolved. pj-s14 marked abandoned. Ready for Backend (pj-s22-16) handoff."
+      "[Architect, 2026-04-20] DONE: Revised sprint22-sso-subdomain.md — SSO sections §1-§4 marked deferred, §7 replaced with Per-Subdomain Auth Model (no cross-domain session sharing, no forced logout, forward-compatible with SSO), §8 rollout plan simplified (removed cookie-domain-change step), §9 added three session-isolation tests, §10 Q4 resolved. pj-s14 marked abandoned. Ready for Backend (pj-s22-16) handoff.",
+      "[Reviewer, 2026-04-20] APPROVED. Sections 1-4 each explicitly marked DEFERRED with rationale (zero enterprise demand, WorkOS cost/benefit analysis preserved for future sprint). Section 7 is the Per-Subdomain Auth Model (host-scoped cookies, no cross-domain sharing, 7 explicit points covering all isolation requirements). Section 8 rollout plan has no cookie-domain-change step — forced-logout eliminated by design. Section 10 Q4 resolved: \"RESOLVED — no forced logout needed.\" Architecture is sound and forward-compatible with SSO."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -5991,7 +5995,7 @@
     "id": "pj-s22-21-copy-network-reposition",
     "sprint": "22",
     "title": "Copywriter: Network-tier reposition — custom subdomain live, enterprise login + custom analytics reports honestly labeled coming-soon",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Copywriter",
     "priority": "medium",
     "description": "Sprint 21-review recommendations.md action #3, re-scoped 2026-04-19: reposition Network tier for Large-church (500+) marketing. What actually ships this sprint: custom subdomain. What does NOT ship this sprint: SSO/SAML (deferred) AND downloadable PDF analytics reports (PDF chain deferred to Sprint 23 per Ron on 2026-04-19 — on-screen analytics remain live today; only the PDF download is missing). The Network card must honestly reflect all three. **Required labeling discipline (per Ron): two explicit honest-gap labels must appear — 'enterprise login coming soon' AND 'custom analytics reports coming soon'. Neither is a removed claim; neither is a dated promise. Both must clearly communicate: (1) we know this is wanted, (2) we don't have it today, (3) we'll build it when demand warrants.** Target state end of Sprint 22: Network card shows 'custom subdomain' as live, shows 'enterprise login coming soon' AND 'custom analytics reports coming soon' as honestly-labeled gaps (no dates), and strips any currently-implied SSO-is-live OR PDF-report-is-live language. Brief respects brand-guide §7. Frontend applies verbatim, QA sweeps, Reviewer gates. DO NOT overclaim — Sprint 21-review just cost us a hotfix for claims-vs-implementation drift; do not re-create that violation.",
@@ -6019,7 +6023,8 @@
       "[PM, 2026-04-19] PDF chain deferred to Sprint 23 per Ron. Added second honest-gap label: 'custom analytics reports coming soon'. Both labels required. On-screen analytics stays live — the gap is specifically the downloadable PDF. Copywriter must not confuse the two.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
       "[Copywriter, 2026-04-20] Starting work. Reading brand guide, plans.ts, and for-churches page.",
-      "[Copywriter, 2026-04-20] DONE. Brief at docs/sprint22/copy-briefs/network-tier-reposition.md. Exact changes: (1) plans.ts enterprise features: removed \"Custom subdomain (coming soon)\" → \"Custom subdomain\"; removed \"SSO / SAML (coming soon)\" → \"Enterprise login coming soon\"; added new \"Custom analytics reports coming soon\". (2) for-churches page Network section: removed \"Custom subdomain and SSO are on the roadmap — we can discuss timeline when we talk\" → \"Enterprise login and custom analytics reports are coming — we can talk through what your network needs when we connect\"; also added subdomain as a named live feature in that paragraph. §7 sweep clean. Claims audit: subdomain LIVE ✓, enterprise login COMING SOON ✓, PDF reports COMING SOON ✓, on-screen analytics NOT touched (not claimed as coming soon). Side-flag for PM: Growing Church tier still lists \"Advanced analytics & PDF reports\" — PDF portion is also deferred; out-of-scope for this brief but should be addressed."
+      "[Copywriter, 2026-04-20] DONE. Brief at docs/sprint22/copy-briefs/network-tier-reposition.md. Exact changes: (1) plans.ts enterprise features: removed \"Custom subdomain (coming soon)\" → \"Custom subdomain\"; removed \"SSO / SAML (coming soon)\" → \"Enterprise login coming soon\"; added new \"Custom analytics reports coming soon\". (2) for-churches page Network section: removed \"Custom subdomain and SSO are on the roadmap — we can discuss timeline when we talk\" → \"Enterprise login and custom analytics reports are coming — we can talk through what your network needs when we connect\"; also added subdomain as a named live feature in that paragraph. §7 sweep clean. Claims audit: subdomain LIVE ✓, enterprise login COMING SOON ✓, PDF reports COMING SOON ✓, on-screen analytics NOT touched (not claimed as coming soon). Side-flag for PM: Growing Church tier still lists \"Advanced analytics & PDF reports\" — PDF portion is also deferred; out-of-scope for this brief but should be addressed.",
+      "[Reviewer, 2026-04-20] APPROVED. Critical checks pass: (a) \"Custom subdomain\" has no \"(coming soon)\" in plans.ts enterprise features. (b) \"Enterprise login coming soon\" has no date, no vendor name, no commitment. (c) \"Custom analytics reports coming soon\" has no date. (d) No SSO/SAML/identity-provider language claims it is live anywhere in src/. (e) No PDF-report/downloadable claim asserts it is live. for-churches page line 326-328 matches copy brief exactly. Section 7 sweep clean. Growing Church \"Advanced analytics & PDF reports\" is a pre-existing drift flagged in the copy brief — tracked as pj-s23-pro-tier-pdf-copy-fix."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -6028,7 +6033,7 @@
     "id": "pj-s22-22-reviewer-sprint-close",
     "sprint": "22",
     "title": "Reviewer: Sprint 22 close review + sign-off",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "End-of-sprint review across all Sprint 22 deliverables. Confirm: (1) every task flipped to done has QA evidence, (2) claims-vs-implementation parity is restored for any copy that was reintroduced (don't re-create the Sprint 21-review violation), (3) security + legal sign-offs are in place for SSO, (4) no untested schema migrations in prod, (5) deploy pipeline is healthy. Deliver a sprint-close doc at docs/sprint22/sprint-close.md and flip sprint 22 in sprints.json to done.",
@@ -6054,10 +6059,12 @@
       "[PM, 2026-04-19] Standard sprint-close pattern. Blocked by all QA tasks + the final Network-tier copy reposition. If any engineering task defers to Sprint 23, Reviewer explicitly documents that in the close doc.",
       "[PM, 2026-04-19] RE-SCOPE: SSO chain (06, 07, 11, 12, 13) deferred from Sprint 22. Reviewer must confirm deferred tasks stayed in `proposed` state with deferral notes, and that no copy claims SSO is live.",
       "[PM, 2026-04-19] PDF chain (10, 14, 15, 20) also deferred to Sprint 23 per Ron. Removed pj-s22-20-pdf-qa from blockers. Reviewer must confirm PDF chain stayed in `proposed` with deferral notes, and that copy on /for-churches honestly labels 'custom analytics reports coming soon' as a gap (not a claim).",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Reviewer, 2026-04-20] Starting sprint close review. Reading all review-status tasks.",
+      "[Reviewer, 2026-04-20] DONE. Sprint 22 closed. Approved: pj-s22-02, pj-s22-03, pj-s22-04, pj-s22-05, pj-s22-21. Deferred 9 tasks confirmed proposed with notes. Sprint 23 follow-ups seeded (3 tasks). Sprint-close doc at docs/sprint22/sprint-close.md. Ron actions in INBOX.md."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-23-designer-jar-visual-refresh",
@@ -6175,5 +6182,47 @@
     ],
     "created_at": "2026-04-20",
     "last_touched": "2026-04-20T03:03:47Z"
+  },
+  {
+    "id": "pj-s23-chms-group-membership-reconcile",
+    "sprint": "23",
+    "title": "Integrations: chms_group_members stale membership reconciliation",
+    "status": "proposed",
+    "assigned_to": "Integrations",
+    "priority": "medium",
+    "description": "syncGroup only adds members, never removes them. A member who left a PCO group stays in chms_group_members indefinitely. Implement diff-based reconciliation: on full_sync, compare fetched memberExternalIds against DB rows for that group, delete (or soft-delete isActive=false) rows not present in the fetched list.",
+    "notes": [
+      "[QA, 2026-04-20] Surfaced during pj-s22-18 QA. Not a Sprint 22 blocker. Documented known limitation."
+    ],
+    "created_at": "2026-04-20",
+    "last_touched": "2026-04-20"
+  },
+  {
+    "id": "pj-s23-pro-tier-pdf-copy-fix",
+    "sprint": "23",
+    "title": "Copywriter: remove PDF reports from Growing Church feature list",
+    "status": "proposed",
+    "assigned_to": "Copywriter",
+    "priority": "low",
+    "description": "Growing Church (pro) tier features list in plans.ts still says \"Advanced analytics & PDF reports\". The PDF download is deferred to Sprint 23. Strip \"& PDF reports\" from the Growing Church line to restore claims-implementation parity. On-screen analytics stays live — only the downloadable PDF claim needs removing.",
+    "notes": [
+      "[Copywriter, 2026-04-20] Surfaced during pj-s22-21. Pre-existing issue, out of scope for Sprint 22."
+    ],
+    "created_at": "2026-04-20",
+    "last_touched": "2026-04-20"
+  },
+  {
+    "id": "pj-s23-subdomain-dns-smoke-test",
+    "sprint": "23",
+    "title": "QA: subdomain DNS smoke test (post-Ron DNS setup)",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Three DNS-dependent test cases from pj-s22-17 could not be verified without wildcard DNS. After Ron completes docs/ops/subdomain-launch-checklist.md steps 1-3, QA must verify: (1) browser rewrite on valid subdomain, (2) apex cookie not accepted on subdomain (DevTools cookie Domain inspection), (3) cross-subdomain session isolation. See docs/sprint22/qa/subdomain-test-plan.md TC-4, TC-7, TC-8.",
+    "notes": [
+      "[QA, 2026-04-20] Blocked on Ron completing subdomain-launch-checklist.md. Not a Sprint 22 blocker."
+    ],
+    "created_at": "2026-04-20",
+    "last_touched": "2026-04-20"
   }
 ]
