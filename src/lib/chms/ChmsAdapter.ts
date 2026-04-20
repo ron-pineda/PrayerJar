@@ -46,6 +46,8 @@ export interface ChmsAdapter {
   listMembers(churchId: string): Promise<ChmsMember[]>;
   listGroups(churchId: string): Promise<ChmsGroup[]>;
   syncMember(churchId: string, member: ChmsMember): Promise<void>;
+  /** Upsert a group record and its member references into chms_groups / chms_group_members. */
+  syncGroup(churchId: string, group: ChmsGroup): Promise<void>;
   pushPrayerSummary(churchId: string, externalMemberId: string, summary: string): Promise<void>;
   handleWebhook(payload: unknown, headers: Record<string, string>): Promise<ChmsWebhookResult | null>;
 }

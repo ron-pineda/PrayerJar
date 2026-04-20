@@ -63,12 +63,15 @@ export async function GET(req: NextRequest) {
       const adapter = await getAdapterForChurch(job.churchId);
 
       if (job.jobType === 'full_sync') {
-        const [members, _groups] = await Promise.all([
+        const [members, groups] = await Promise.all([
           adapter.listMembers(job.churchId),
           adapter.listGroups(job.churchId),
         ]);
         for (const member of members) {
           await adapter.syncMember(job.churchId, member);
+        }
+        for (const group of groups) {
+          await adapter.syncGroup(job.churchId, group);
         }
       } else if (job.jobType === 'delta_sync') {
         const result = job.payload as ChmsWebhookResult;

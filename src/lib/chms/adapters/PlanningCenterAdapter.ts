@@ -7,7 +7,7 @@ import type {
   ChmsWebhookResult,
 } from '../ChmsAdapter';
 import { db } from '@/db';
-import { churches, churchMembers, users, chmsSyncJobs } from '@/db/schema';
+import { churches, churchMembers, users, chmsSyncJobs, chmsGroups, chmsGroupMembers } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { encrypt } from '@/lib/encrypt';
 import { notifyAdmins } from '@/lib/admin-notify';
@@ -503,6 +503,62 @@ export class PlanningCenterAdapter implements ChmsAdapter {
           chmsSyncedAt: new Date(),
         },
       });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // syncGroup — pj-s22-08
+  // ─────────────────────────────────────────────────────────────
+
+  async syncGroup(churchId: string, group: ChmsGroup): Promise<void> {
+    // 1. Upsert the group record
+    const [groupRow] = await db
+      .insert(chmsGroups)
+      .values({
+        churchId,
+        provider: 'planning-center',
+        externalId: group.externalId,
+        name: group.name,
+        description: group.description ?? null,
+        raw: group.raw,
+        syncedAt: new Date(),
+        isActive: true,
+      })
+      .onConflictDoUpdate({
+        target: [chmsGroups.churchId, chmsGroups.provider, chmsGroups.externalId],
+        set: {
+          name: group.name,
+          description: group.description ?? null,
+          raw: group.raw,
+          syncedAt: new Date(),
+          isActive: true,
+        },
+      })
+      .returning();
+
+    // 2. Sync member references for this group.
+    //    We upsert each external member ID. stale memberships (person left the group)
+    //    are NOT removed by this sync — removal support is deferred to a future sprint.
+    for (const externalMemberId of group.memberExternalIds) {
+      // Look up the local church_member row by externalChmsId
+      const [member] = await db
+        .select({ id: churchMembers.id })
+        .from(churchMembers)
+        .where(
+          and(
+            eq(churchMembers.churchId, churchId),
+            eq(churchMembers.externalChmsId, externalMemberId),
+          )
+        );
+
+      await db
+        .insert(chmsGroupMembers)
+        .values({
+          groupId: groupRow.id,
+          churchMemberId: member?.id ?? null,
+          externalMemberId,
+        })
+        .onConflictDoNothing();
+    }
   }
 
   // ─────────────────────────────────────────────────────────────
