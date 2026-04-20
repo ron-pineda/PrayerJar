@@ -973,3 +973,41 @@ export const chmsSyncJobs = pgTable('chms_sync_jobs', {
 
 export type ChmsSyncJob = typeof chmsSyncJobs.$inferSelect;
 export type NewChmsSyncJob = typeof chmsSyncJobs.$inferInsert;
+
+// --- ChMS Groups (pj-s22-08) ---
+// Separate from the app-native `groups` table — these rows mirror groups imported
+// from a CHMS provider. The app-native groups table has unused externalChmsId /
+// chmsProvider columns from Sprint 18 that were never written to; these tables are
+// the designated home for CHMS-sourced group data.
+
+export const chmsGroups = pgTable('chms_groups', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }),
+  provider: text('provider').notNull(),           // 'planning-center' | 'breeze'
+  externalId: text('external_id').notNull(),
+  name: text('name').notNull(),
+  description: text('description'),
+  isActive: boolean('is_active').notNull().default(true),
+  raw: jsonb('raw').$type<Record<string, unknown>>(),
+  syncedAt: timestamp('synced_at', { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  uniqueIndex('chms_groups_church_provider_ext_idx').on(t.churchId, t.provider, t.externalId),
+  index('chms_groups_church_id_idx').on(t.churchId),
+]);
+
+export const chmsGroupMembers = pgTable('chms_group_members', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  groupId: uuid('group_id').notNull().references(() => chmsGroups.id, { onDelete: 'cascade' }),
+  churchMemberId: uuid('church_member_id').references(() => churchMembers.id, { onDelete: 'set null' }),
+  externalMemberId: text('external_member_id').notNull(),  // CHMS-side person ID
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  uniqueIndex('chms_group_members_group_ext_idx').on(t.groupId, t.externalMemberId),
+  index('chms_group_members_group_id_idx').on(t.groupId),
+]);
+
+export type ChmsGroup = typeof chmsGroups.$inferSelect;
+export type NewChmsGroup = typeof chmsGroups.$inferInsert;
+export type ChmsGroupMember = typeof chmsGroupMembers.$inferSelect;
+export type NewChmsGroupMember = typeof chmsGroupMembers.$inferInsert;
