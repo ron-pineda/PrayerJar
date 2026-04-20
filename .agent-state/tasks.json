@@ -5586,7 +5586,7 @@
     "id": "pj-s22-08-pco-group-persistence",
     "sprint": "22",
     "title": "Integrations: PCO group persistence (syncGroup on adapter + runner)",
-    "status": "approved",
+    "status": "review",
     "assigned_to": "Integrations",
     "priority": "high",
     "description": "The PCO sync runner at src/app/api/chms-sync-runner/route.ts:66 currently destructures groups to `_groups` and discards them. Per architect-findings.md row 9c, this is why the 'small groups sync too' claim was stripped in the 2026-04-19 hotfix. Build: (1) `syncGroup` method on the PCO ChMS adapter, (2) new table(s) for synced group membership (design in pj-s22-05 spike or new migration, depending on schema), (3) runner branch that persists instead of discarding, (4) idempotency + re-sync handling, (5) surfacing synced groups in the church-admin UI where relevant. Once this ships, the stripped copy on /for-churches can be restored in a paired Copywriter task.",
@@ -5607,16 +5607,26 @@
     ],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #6. Assigned to Integrations per advisor — PCO is Integrations' lane, not generic Backend. Blocked by drizzle-pipeline (needs safe migration path for new tables). Not blocked by SSO spike — independent backend work. Architect may want to approve the schema before Integrations ships the migration; add as a review step, not a hard block.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      {
+        "date": "2026-04-20",
+        "agent": "Integrations",
+        "note": "Starting implementation: migration 0031_chms_groups.sql, syncGroup method, runner persistence, admin UI groups tab, tests."
+      },
+      {
+        "date": "2026-04-20",
+        "agent": "Integrations",
+        "note": "Implementation complete. Migration: 0031_chms_groups.sql — creates chms_groups (upsert key: church_id+provider+external_id) and chms_group_members (junction, unique on group_id+external_member_id). syncGroup added to ChmsAdapter interface + implemented in PlanningCenterAdapter. Runner fixed: _groups → groups, loops syncGroup after syncMember. Admin UI: /church/[slug]/dashboard/groups shows groups + member counts + last synced, gated behind hasPastoralDashboard (starter+). 5 tests in PlanningCenterAdapter.syncGroup.test.ts. Limitation: stale membership removal (person left group) NOT implemented — noted for QA. Note: existing groups.externalChmsId/chmsProvider columns from Sprint 18 are unused and distinct from these new tables."
+      }
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-09-pco-summary-scheduler",
     "sprint": "22",
     "title": "Integrations: PCO weekly-summary scheduler (queue push_summary jobs)",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Integrations",
     "priority": "high",
     "description": "Per architect-findings.md row 9d, the PCO 'push weekly prayer summary to each person's PCO record' adapter method AND runner branch exist, but no scheduler queues the push_summary jobs. Build: (1) cron or scheduled-job runner that enumerates Pro-tier churches with PCO enabled, (2) per-church job enqueue for weekly summary, (3) retry + dead-letter handling, (4) admin visibility (were summaries pushed this week?), (5) feature flag so this can land dark and be flipped on per church. Once live, copy about 'weekly PCO summary' can be restored to /for-churches in a paired Copywriter task.",
@@ -5637,10 +5647,11 @@
     ],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #7. Integrations' lane. If Sprint 19 webhookSecret work is prereq for 'automatic' behavior, that's acceptable — this task only needs to schedule the existing adapter method; webhook is orthogonal. If Integrations finds a dependency during build, escalate to Architect for a dependency call.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Integrations, 2026-04-20] Starting implementation: new cron route at src/app/api/cron/chms-summary-scheduler/route.ts, filtering planning-center + pro/enterprise tier, per-member enqueue with 500/church cap, global kill-switch flag pco_summary_scheduler, admin visibility at /admin/chms-sync, weekly cron 0 5 * * 0."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-10-analytics-pdf-content-design",
@@ -5823,7 +5834,7 @@
     "id": "pj-s22-16-subdomain-unpark",
     "sprint": "22",
     "title": "Backend: un-park pj-s14-wildcard-subdomains — ship custom church subdomain (per-subdomain auth, no session sharing)",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Un-park the parked pj-s14-wildcard-subdomains work and ship per the revised Architect design (pj-s22-05). Scope: wildcard DNS on prayerjar.org, request routing by subdomain, church context resolution from subdomain, admin UI for configuring custom subdomain, tier gating (Network-tier only), conflict detection (someone can't take 'www' or reserved words), fallback to apex if subdomain missing. **CONSTRAINT (re-scope 2026-04-19): No cross-domain session sharing. Each subdomain is its own auth surface — session cookies are scoped to the exact host, not the parent domain. A user signed in on prayerjar.org does NOT get a session on takeheart.prayerjar.org; they sign in separately on each host.** This avoids the forced-logout-on-rollout problem and simplifies cookie/CSRF handling. Does NOT include SSO integration — SSO is deferred to a future sprint.",
@@ -5852,7 +5863,7 @@
       "[Ron, 2026-04-19] Approved. Go engineers."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-17-subdomain-qa",
