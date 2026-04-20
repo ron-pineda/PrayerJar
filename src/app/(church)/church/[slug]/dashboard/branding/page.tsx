@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
+import { hasCustomSubdomain } from '@/lib/plans';
 import BrandingForm from './BrandingForm';
 
 interface Props {
@@ -70,6 +71,7 @@ export default async function BrandingPage({ params }: Props) {
           initialLogoUrl={church.logoUrl ?? null}
           initialPrimaryColor={church.primaryColor}
           initialSubdomain={church.subdomain ?? null}
+          canClaimSubdomain={hasCustomSubdomain(church.currentPlan)}
         />
       </section>
     </div>

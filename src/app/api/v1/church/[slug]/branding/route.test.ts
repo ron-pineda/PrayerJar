@@ -16,7 +16,7 @@ vi.mock('@/db', () => ({
 }));
 
 vi.mock('@/db/schema', () => ({
-  churches: { id: 'id' },
+  churches: { id: 'id', subdomain: 'subdomain', currentPlan: 'current_plan' },
 }));
 
 import { auth } from '@/lib/auth';
@@ -36,10 +36,18 @@ const mockChurch = {
   logoUrl: null,
   subdomain: null,
   primaryColor: '#d4a843',
+  currentPlan: 'pro' as const,   // pro = hasCustomSubdomain() → true
   createdBy: 'user-1',
   subscriptionId: null,
   createdAt: new Date(),
   updatedAt: new Date(),
+};
+
+const mockChurchFree = {
+  ...mockChurch,
+  id: 'church-2',
+  slug: 'free-church-ab99',
+  currentPlan: 'free' as const,  // free = hasCustomSubdomain() → false
 };
 
 const adminMember = {
@@ -182,5 +190,140 @@ describe('PUT /api/v1/church/[slug]/branding', () => {
     );
 
     expect(res.status).toBe(400);
+  });
+
+  // ── pj-s22-16: reserved-word, hyphen, and tier-gate tests ─────────────────
+
+  it('returns 400 when subdomain is a reserved word (www)', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'www' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/reserved/i);
+  });
+
+  it('returns 400 when subdomain is a reserved word (api)', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'api' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/reserved/i);
+  });
+
+  it('returns 400 when subdomain has a leading hyphen', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    // The zod schema also rejects leading hyphens (they don't match /^[a-z0-9-]{1,32}$/)
+    // because a leading hyphen IS captured by [a-z0-9-] but the hasInvalidHyphen
+    // check adds an extra, explicit error message.
+    // To bypass zod and reach the hyphen check we need a subdomain that zod passes
+    // but hasInvalidHyphen catches — however the zod regex /^[a-z0-9-]{1,32}$/ actually
+    // DOES allow leading hyphens (hyphen is in the char class). So we test the explicit
+    // backend rejection path here.
+    const res = await PUT(
+      makeRequest({ subdomain: '-grace' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    // -grace passes the zod regex, fails hasInvalidHyphen → 400
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/hyphen/i);
+  });
+
+  it('returns 400 when subdomain has a trailing hyphen', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'grace-' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/hyphen/i);
+  });
+
+  it('returns 403 when church is on free plan and tries to set subdomain', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+    vi.mocked(getChurchBySlug).mockResolvedValueOnce(mockChurchFree);
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'grace-chapel' }),
+      { params: Promise.resolve({ slug: 'free-church-ab99' }) },
+    );
+
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.error).toMatch(/Growing Church/i);
+  });
+
+  it('returns 403 when church is on starter plan and tries to set subdomain', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+    vi.mocked(getChurchBySlug).mockResolvedValueOnce({
+      ...mockChurch,
+      currentPlan: 'starter' as const,
+    });
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'grace-chapel' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.error).toMatch(/Growing Church/i);
+  });
+
+  it('returns 200 when pro church sets a valid subdomain', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+
+    const res = await PUT(
+      makeRequest({ subdomain: 'grace-chapel' }),
+      { params: Promise.resolve({ slug: 'grace-chapel-ab12' }) },
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('success', true);
+  });
+
+  it('returns 200 when subdomain is null (clearing subdomain is always allowed)', async () => {
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+    // Even a free-plan church can clear its subdomain (tier gate only fires on set)
+    vi.mocked(getChurchBySlug).mockResolvedValueOnce(mockChurchFree);
+
+    const res = await PUT(
+      makeRequest({ subdomain: null }),
+      { params: Promise.resolve({ slug: 'free-church-ab99' }) },
+    );
+
+    expect(res.status).toBe(200);
   });
 });

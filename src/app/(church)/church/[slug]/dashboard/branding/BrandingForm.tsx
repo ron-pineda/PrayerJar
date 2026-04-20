@@ -7,6 +7,8 @@ interface BrandingFormProps {
   initialLogoUrl: string | null;
   initialPrimaryColor: string;
   initialSubdomain: string | null;
+  /** Whether the church's current plan grants access to custom subdomains. */
+  canClaimSubdomain: boolean;
 }
 
 const SUBDOMAIN_REGEX = /^[a-z0-9-]{1,32}$/;
@@ -16,6 +18,7 @@ export default function BrandingForm({
   initialLogoUrl,
   initialPrimaryColor,
   initialSubdomain,
+  canClaimSubdomain,
 }: BrandingFormProps) {
   const [logoUrl, setLogoUrl] = useState(initialLogoUrl ?? '');
   const [primaryColor, setPrimaryColor] = useState(initialPrimaryColor);
@@ -111,30 +114,56 @@ export default function BrandingForm({
       {/* Subdomain */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="subdomain" className="text-sm font-medium">
-          Subdomain
+          Custom subdomain
         </label>
-        <input
-          id="subdomain"
-          type="text"
-          value={subdomain}
-          onChange={(e) => handleSubdomainChange(e.target.value.toLowerCase())}
-          placeholder="grace-chapel"
-          maxLength={32}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-        {subdomainError && (
-          <p className="text-xs text-destructive">{subdomainError}</p>
+        {canClaimSubdomain ? (
+          <>
+            <div className="flex items-center rounded-md border border-input bg-background overflow-hidden focus-within:ring-2 focus-within:ring-ring">
+              <input
+                id="subdomain"
+                type="text"
+                value={subdomain}
+                onChange={(e) => handleSubdomainChange(e.target.value.toLowerCase())}
+                placeholder="grace-chapel"
+                maxLength={32}
+                className="flex-1 px-3 py-2 text-sm bg-transparent placeholder:text-muted-foreground focus:outline-none"
+              />
+              <span className="px-3 py-2 text-sm text-muted-foreground bg-muted border-l border-input select-none">
+                .prayerjar.org
+              </span>
+            </div>
+            {subdomainError && (
+              <p className="text-xs text-destructive">{subdomainError}</p>
+            )}
+            {!subdomainError && subdomain && (
+              <p className="text-xs text-muted-foreground">
+                Your church will be available at{' '}
+                <span className="font-mono">{subdomain}.prayerjar.org</span>
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Lowercase letters, numbers, and hyphens only. Max 32 characters.
+              No leading or trailing hyphens.
+            </p>
+          </>
+        ) : (
+          <div className="rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+            Custom subdomain requires{' '}
+            <span className="font-medium">Growing Church plan</span> or above.{' '}
+            <a href="/for-churches" className="text-primary hover:underline">
+              Upgrade your plan
+            </a>{' '}
+            to claim a subdomain like{' '}
+            <span className="font-mono">yourchurch.prayerjar.org</span>.
+          </div>
         )}
-        <p className="text-xs text-muted-foreground">
-          Lowercase letters, numbers, and hyphens only. Max 32 characters.
-        </p>
       </div>
 
       {/* Save button + feedback */}
       <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
-          disabled={status === 'saving' || !!subdomainError}
+          disabled={status === 'saving' || !!subdomainError || (!canClaimSubdomain && !!subdomain)}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {status === 'saving' ? 'Saving…' : 'Save branding'}
