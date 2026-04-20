@@ -30,12 +30,12 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
     stripePriceIdMonthly: null,
     stripePriceIdYearly: null,
     features: [
-      'Up to 50 members',
+      'Up to 75 members',
       '3 groups',
       'Public prayer wall',
       'Basic notifications',
     ],
-    limits: { members: 50, groups: 3, events: 0, admins: 1 },
+    limits: { members: 75, groups: 3, events: 0, admins: 1 },
   },
   starter: {
     tier: 'starter',

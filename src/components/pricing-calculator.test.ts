@@ -12,12 +12,12 @@ describe('recommendTier', () => {
     expect(recommendTier(0)).toBe('free');
   });
 
-  it('returns "free" for 50 members (at the free cap)', () => {
-    expect(recommendTier(50)).toBe('free');
+  it('returns "free" for 75 members (at the free cap)', () => {
+    expect(recommendTier(75)).toBe('free');
   });
 
-  it('returns "starter" for 51 members (just above free cap)', () => {
-    expect(recommendTier(51)).toBe('starter');
+  it('returns "starter" for 76 members (just above free cap)', () => {
+    expect(recommendTier(76)).toBe('starter');
   });
 
   it('returns "starter" for 150 members (at the starter cap)', () => {

@@ -8,7 +8,7 @@ import { trackCalculatorInteracted } from '@/lib/analytics';
 
 // Thresholds read from plans.ts where available; pro.limits.members is null
 // (no hard cap), so the enterprise boundary is a local business-rule constant.
-const FREE_CAP = PLANS.free.limits.members!;         // 50
+const FREE_CAP = PLANS.free.limits.members!;         // 75
 const STARTER_CAP = PLANS.starter.limits.members!;   // 150
 // pro.limits.members === null (Growing Church has no hard cap).
 // >500 members signals enterprise (Network) territory.

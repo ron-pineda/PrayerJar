@@ -183,16 +183,16 @@ describe('hasTestimonyApprovalQueue()', () => {
 // Tier caps — Sprint 17: Free cap raised from 25/1 to 50/3
 // ---------------------------------------------------------------------
 describe('Free tier limits', () => {
-  it('has a member cap of 50', () => {
-    expect(PLANS.free.limits.members).toBe(50);
+  it('has a member cap of 75', () => {
+    expect(PLANS.free.limits.members).toBe(75);
   });
 
   it('has a group cap of 3', () => {
     expect(PLANS.free.limits.groups).toBe(3);
   });
 
-  it('features list reflects 50 members', () => {
-    const hasIt = PLANS.free.features.some((f) => f.includes('50 members'));
+  it('features list reflects 75 members', () => {
+    const hasIt = PLANS.free.features.some((f) => f.includes('75 members'));
     expect(hasIt).toBe(true);
   });
 
