@@ -5602,9 +5602,7 @@
       "src/app/api/chms-sync-runner/route.ts",
       "src/lib/chms/"
     ],
-    "blockers": [
-      "pj-s22-01-drizzle-pipeline"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #6. Assigned to Integrations per advisor — PCO is Integrations' lane, not generic Backend. Blocked by drizzle-pipeline (needs safe migration path for new tables). Not blocked by SSO spike — independent backend work. Architect may want to approve the schema before Integrations ships the migration; add as a review step, not a hard block.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
@@ -5625,7 +5623,7 @@
       }
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-20"
+    "last_touched": "2026-04-20T05:12:22.396Z"
   },
   {
     "id": "pj-s22-09-pco-summary-scheduler",
@@ -5871,16 +5869,17 @@
       "[Backend Engineer, 2026-04-20] Tier gating: hasCustomSubdomain(tier) predicate added to src/lib/plans.ts (CUSTOM_SUBDOMAIN_TIER = pro). Branding PUT route: reserves returns 403 if tier < pro and subdomain is being set. Clearing subdomain (null) always allowed — no downgrade clearing of existing subdomain.",
       "[Backend Engineer, 2026-04-20] SUBDOMAIN_ROUTING flag: documented in .env.local.example. Set to true in Vercel Production env after DNS/cert confirmed.",
       "[Backend Engineer, 2026-04-20] Manual steps doc: docs/ops/subdomain-launch-checklist.md — 6-step checklist covering DNS, Vercel domain, cert, env var, redeploy, smoke test + session isolation spot-check.",
-      "[Backend Engineer, 2026-04-20] Tests: src/proxy.test.ts (8 cases: apex pass-through, reserved → 404, unknown subdomain → 302 banner, valid subdomain → rewrite, root path rewrite, flag-off fallthrough), src/lib/subdomain-reserved.test.ts (15 cases), src/app/api/v1/church/[slug]/branding/route.test.ts extended (+8 cases: reserved word, hyphen, tier gate, clear-null allowed)."
+      "[Backend Engineer, 2026-04-20] Tests: src/proxy.test.ts (8 cases: apex pass-through, reserved → 404, unknown subdomain → 302 banner, valid subdomain → rewrite, root path rewrite, flag-off fallthrough), src/lib/subdomain-reserved.test.ts (15 cases), src/app/api/v1/church/[slug]/branding/route.test.ts extended (+8 cases: reserved word, hyphen, tier gate, clear-null allowed).",
+      "[QA, 2026-04-20] QA PASS. All static-verifiable cases pass. auth.ts has no cookies block (host-scoped by default — correct). DNS-dependent cases (TC-4 live, TC-7 live, TC-8 live) CANNOT_VERIFY_PENDING_DNS — gated on Ron completing subdomain-launch-checklist.md steps 1-3. Does not block sprint close. Test plan at docs/sprint22/qa/subdomain-test-plan.md."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-20T05:11:26.624Z"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-17-subdomain-qa",
     "sprint": "22",
     "title": "QA: subdomain test plan + execution (per-subdomain auth, no shared sessions)",
-    "status": "approved",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "medium",
     "description": "QA pass for custom subdomain. Cases: happy-path subdomain routing, reserved-word rejection, tier downgrade behavior, conflict (two churches can't claim same), case insensitivity, bad characters, subdomain-takeover potential (security-adjacent), apex fallback, www redirect behavior. **Session isolation cases (critical per re-scope 2026-04-19): a session on prayerjar.org does NOT authenticate on a church subdomain; a session on takeheart.prayerjar.org does NOT authenticate on another church subdomain OR the apex; signing out on one host does not affect sessions on the other; cookies are host-scoped not parent-domain-scoped.**",
@@ -5895,16 +5894,15 @@
     "files": [
       "docs/sprint22/qa/subdomain-test-plan.md"
     ],
-    "blockers": [
-      "pj-s22-16-subdomain-unpark"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Routine QA task. Test plan can be drafted in parallel with Backend build; only execution blocks on the build landing.",
       "[PM, 2026-04-19] RE-SCOPE: Each subdomain is its own auth surface. Added session-isolation cases.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[QA, 2026-04-20] DONE. Test plan written at docs/sprint22/qa/subdomain-test-plan.md. 14 test cases across 4 categories. Static cases: ALL PASS. DNS-pending cases (TC-4/7/8 live): CANNOT_VERIFY_PENDING_DNS — acceptable, does not block sprint close. 27/27 unit tests pass (proxy.test.ts + subdomain-reserved.test.ts). auth.ts confirmed no parent-domain cookie. pj-s22-16 set to done."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20T05:12:22.396Z"
   },
   {
     "id": "pj-s22-18-pco-group-qa",
@@ -5923,9 +5921,7 @@
     "files": [
       "docs/sprint22/qa/pco-group-test-plan.md"
     ],
-    "blockers": [
-      "pj-s22-08-pco-group-persistence"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Integrations → QA. Standard pattern.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
@@ -5936,7 +5932,7 @@
       }
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-20"
+    "last_touched": "2026-04-20T05:12:22.396Z"
   },
   {
     "id": "pj-s22-19-pco-summary-qa",

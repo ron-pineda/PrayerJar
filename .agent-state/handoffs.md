@@ -1,3 +1,4 @@
+[2026-04-20] QA → Reviewer: pj-s22-17 subdomain QA complete — static cases PASS, DNS cases pending Ron action
 [2026-04-20] QA → Reviewer: pj-s22-18 PCO group QA complete — PASS. 5/5 unit tests pass, 4 code-review checks clean, 3 CANNOT_VERIFY (build-blocked), stale-membership gap documented for Sprint 23. pj-s22-08 → done.
 [2026-04-20] Copywriter → QA: pj-s22-21 Network-tier copy reposition — in review
 [2026-04-20] QA → Reviewer: pj-s22-19 PCO summary QA complete — PASS
@@ -300,3 +301,5 @@
 [2026-04-20T05:10:30.674Z] Dashboard sync — 0 fix(es): 
 
 [2026-04-20T05:11:26.624Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-20T05:12:22.396Z] Dashboard sync — 0 fix(es): 
