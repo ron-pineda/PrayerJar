@@ -323,9 +323,10 @@ export default async function ForChurchesPage() {
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               A Network plan is a bespoke agreement. You get unlimited
-              everything, volume pricing, and a contract that fits how your
-              denomination actually operates. Custom subdomain and SSO are on
-              the roadmap — we can discuss timeline when we talk.
+              everything, a custom subdomain for your network, volume pricing,
+              and a contract that fits how your denomination actually operates.
+              Enterprise login and custom analytics reports are coming — we can
+              talk through what your network needs when we connect.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               We do not put Network through self-serve checkout. We want to

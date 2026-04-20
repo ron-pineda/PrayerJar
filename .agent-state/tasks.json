@@ -5948,16 +5948,14 @@
     "files": [
       "docs/sprint22/qa/pco-summary-test-plan.md"
     ],
-    "blockers": [
-      "pj-s22-09-pco-summary-scheduler"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Integrations → QA. Standard pattern.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
       "[QA, 2026-04-20] DONE. Test plan written at docs/sprint22/qa/pco-summary-test-plan.md. 15/15 tests pass. 13 cases evaluated: 11 PASS, 0 FAIL, 2 CANNOT_VERIFY (cap + DLQ — code-review confirmed). pj-s22-09 marked done."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-20"
+    "last_touched": "2026-04-20T05:10:30.674Z"
   },
   {
     "id": "pj-s22-20-pdf-qa",
@@ -5990,7 +5988,7 @@
     "id": "pj-s22-21-copy-network-reposition",
     "sprint": "22",
     "title": "Copywriter: Network-tier reposition — custom subdomain live, enterprise login + custom analytics reports honestly labeled coming-soon",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Copywriter",
     "priority": "medium",
     "description": "Sprint 21-review recommendations.md action #3, re-scoped 2026-04-19: reposition Network tier for Large-church (500+) marketing. What actually ships this sprint: custom subdomain. What does NOT ship this sprint: SSO/SAML (deferred) AND downloadable PDF analytics reports (PDF chain deferred to Sprint 23 per Ron on 2026-04-19 — on-screen analytics remain live today; only the PDF download is missing). The Network card must honestly reflect all three. **Required labeling discipline (per Ron): two explicit honest-gap labels must appear — 'enterprise login coming soon' AND 'custom analytics reports coming soon'. Neither is a removed claim; neither is a dated promise. Both must clearly communicate: (1) we know this is wanted, (2) we don't have it today, (3) we'll build it when demand warrants.** Target state end of Sprint 22: Network card shows 'custom subdomain' as live, shows 'enterprise login coming soon' AND 'custom analytics reports coming soon' as honestly-labeled gaps (no dates), and strips any currently-implied SSO-is-live OR PDF-report-is-live language. Brief respects brand-guide §7. Frontend applies verbatim, QA sweeps, Reviewer gates. DO NOT overclaim — Sprint 21-review just cost us a hotfix for claims-vs-implementation drift; do not re-create that violation.",
@@ -6017,7 +6015,8 @@
       "[PM, 2026-04-19] Sprint 22 scope item #8. RE-SCOPE: SSO deferred — copy must ship with 'enterprise login coming soon' as an honestly-labeled gap. Do not re-create the Sprint 21-review claims-vs-implementation violation. If subdomain slips, both lines shift to 'coming soon' — but enterprise-login labeling stays 'coming soon' regardless.",
       "[PM, 2026-04-19] PDF chain deferred to Sprint 23 per Ron. Added second honest-gap label: 'custom analytics reports coming soon'. Both labels required. On-screen analytics stays live — the gap is specifically the downloadable PDF. Copywriter must not confuse the two.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Copywriter, 2026-04-20] Starting work. Reading brand guide, plans.ts, and for-churches page."
+      "[Copywriter, 2026-04-20] Starting work. Reading brand guide, plans.ts, and for-churches page.",
+      "[Copywriter, 2026-04-20] DONE. Brief at docs/sprint22/copy-briefs/network-tier-reposition.md. Exact changes: (1) plans.ts enterprise features: removed \"Custom subdomain (coming soon)\" → \"Custom subdomain\"; removed \"SSO / SAML (coming soon)\" → \"Enterprise login coming soon\"; added new \"Custom analytics reports coming soon\". (2) for-churches page Network section: removed \"Custom subdomain and SSO are on the roadmap — we can discuss timeline when we talk\" → \"Enterprise login and custom analytics reports are coming — we can talk through what your network needs when we connect\"; also added subdomain as a named live feature in that paragraph. §7 sweep clean. Claims audit: subdomain LIVE ✓, enterprise login COMING SOON ✓, PDF reports COMING SOON ✓, on-screen analytics NOT touched (not claimed as coming soon). Side-flag for PM: Growing Church tier still lists \"Advanced analytics & PDF reports\" — PDF portion is also deferred; out-of-scope for this brief but should be addressed."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
