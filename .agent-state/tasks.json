@@ -4915,9 +4915,7 @@
       "src/components/salvation-client.tsx",
       "docs/sprint20/copy-briefs/know-jesus.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend, 2026-04-18T00:00:00Z] DONE. Files: src/app/(public)/know-jesus/page.tsx, src/components/salvation-client.tsx. AC: all pass. Deviations: PrayerJar CTA uses href=/ fallback (PrayerDialog trigger copy hard-coded); per brief this is acceptable.",
       "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. href=/ fallback accepted for ship; inline PrayerDialog wiring backlogged as non-blocking follow-up.",
@@ -4925,7 +4923,7 @@
       "[Reviewer, 2026-04-18] APPROVED. Commit 7e065dd; amber palette, Lucide icons, no jar (correct per brand §4.2), no verse strip (brief §15 — 5 gospel scriptures are the page substance); Designer + QA both PASS."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-03",
@@ -4939,9 +4937,7 @@
       "src/app/(public)/give/page.tsx",
       "docs/sprint20/copy-briefs/give.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend, 2026-04-18T21:00:00Z] DONE. Files: src/app/(public)/give/page.tsx. AC: all pass. Deviations: dropped 'Support the mission' eyebrow (brief Hero spec lists only H1+subheadline); typecheck run via direct node.exe — baseline preserved, 0 errors on touched file; QA should re-run pnpm typecheck on sign-off.",
       "[Designer, 2026-04-18] Spot-check: APPROVED. See docs/sprint20/design-spotcheck.md. Open questions resolved: (1) keep 'What your gift does' visible after success=1 — thesis, not pitch; (2) split alignment (centered heading / left-aligned body) correct, left-aligned body is more readable; (3) plain border-t/border-b verse strip is correct per brief + brand §4.3 — sacred-strip reserved for CTA/stat regions.",
@@ -4949,7 +4945,7 @@
       "[Reviewer, 2026-04-18] APPROVED. Commit dacf006; amber palette + Lucide icons verified, platform/emoji both gone, one verse strip (Ps 24:1) with correct plain border-t/-b treatment, no jar motif per brand §4.2 — Designer + QA both PASS."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-04",
@@ -4963,16 +4959,14 @@
       "src/app/(public)/about/page.tsx",
       "docs/sprint20/copy-briefs/about.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend, 2026-04-18T22:00:00Z] DONE. Files: src/app/(public)/about/page.tsx. AC: all pass. PrayerJar size=sm count={0} renders clean empty jar. Deviations: HandHelping icon skipped — PrayerDialog trigger hard-coded; brief marks icon optional. Typecheck: 0 errors on file; baseline 144 preserved.",
       "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md.",
       "[Reviewer, 2026-04-18] APPROVED. Commit 4d8e6c6; jar hero-only, one verse strip, prior banned phrases ('platform' x2, 'churches that want pastoral tools') all cleared per QA scan; optional-icon deviation is within brief."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-05",
@@ -4986,16 +4980,14 @@
       "src/app/(public)/browse/page.tsx",
       "docs/sprint20/copy-briefs/browse.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[2026-04-18] Frontend: /browse refreshed per copy brief. CATEGORY_EMOJIS replaced with CATEGORY_ICONS (Lucide map). 10 category tiles render amber-600 h-6 w-6 icons (HeartPulse/Users/Wallet/Feather/Sparkles/Compass/Heart/Briefcase/Leaf/Star) + Circle fallback. Collection cover 📚 → BookMarked (coverEmoji DB column preserved, just not rendered). Category fallback 🙏 → Circle. Sentence-case: 'Browse by category' + 'Recent prayers'. LayoutGrid icon added to category header. 'Clear' → 'Clear filters'. Prayer card CTA → 'Pray for a request like this' + trailing ArrowRight h-3.5 w-3.5. Both empty states rewritten per brief (search-no-match + filter-no-match headings and bodies). ScrollReveal wraps Collections (delay 0), Category grid (80), Results (160). Hero + search bar untouched. No jar motif. No verse strip. Typecheck clean on browse/page.tsx. No banned phrases. No emoji left on page (grepped 🩺👨💰🕊🙏🧭❤💼✨⭐📚→ — zero hits).",
       "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md.",
       "[Reviewer, 2026-04-18] APPROVED. Commit 3cb217b; CATEGORY_EMOJIS → CATEGORY_ICONS swap clean, ScrollReveal stagger 0/80/160 correct, warm empty states match brief, no emoji or banned phrases."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-06",
@@ -5010,9 +5002,7 @@
       "src/components/church/church-card.tsx",
       "docs/sprint20/copy-briefs/find-a-church.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend 2026-04-18] Starting — baseline tsc clean on affected files (pre-existing errors only in *.test.ts).",
       "[Frontend 2026-04-18] Done → review. Files touched: src/app/(public)/find-a-church/page.tsx, src/components/church/church-card.tsx. Changes: (1) Lucide imports added (MapPin, SearchX, AlertCircle, ChevronDown, List, Map). (2) Pre-search idle state — new copy + centered MapPin (h-8 w-8 text-muted-foreground). (3) Count line 'N churches nearby' (was 'found'). (4) Denomination select aria-label 'Denomination', 'All denominations' option label. (5) Sort select aria-label 'Sort by', options 'Distance' / 'Community verified first'. (6) Mobile tabs now have leading List / Map icons. (7) Zero-results empty state: heading 'No churches in that radius yet.', body + 'Expand to 30 miles' CTA, centered SearchX. Conditional on lastRadius ≥ 30 → heading 'No churches found near there.', body 'Try a different city.', CTA hidden. New lastRadius state tracks the in-flight radius. (8) Error state now fixed string 'We couldn't complete that search. Check your connection and try again.' with leading AlertCircle; raw error sent to console.error. (9) Show more button has trailing ChevronDown. (10) Intro block above ChurchSearchBar SKIPPED — the search bar already owns the hero-equivalent space with its own H1 ('Find a Church Near You'), and layering an intro above would duplicate. Brief §90 explicitly allows this. (11) ChurchCard emoji audit: ✓ → BadgeCheck; 👋 → HandHeart; 👥 → Users. ChurchSearchBar — no emoji, no banned phrases. Typecheck: no new errors on affected files (pre-existing test-file errors unchanged).",
@@ -5020,7 +5010,7 @@
       "[Reviewer, 2026-04-18] APPROVED. Commit 5397355; emoji-to-Lucide swap on both page + ChurchCard verified, warm zero-result empty state correct; ScrollReveal stagger n/a accepted (search-results UI pattern)."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-07",
@@ -5034,16 +5024,14 @@
       "src/app/(public)/world-prayer/page.tsx",
       "docs/sprint20/copy-briefs/world-prayer.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend 2026-04-18] Complete — hero 🌐 replaced with Globe icon (h-12 w-12 text-amber-600). All 8 region emoji replaced with Lucide icons: Feather (Middle East — Dove not in lucide-react@1.7.0, used Feather fallback per brief), Leaf, Users, Church, Scale, Landmark (Oceania), Gavel (Global leaders — verified present), Cross. WORLD_REGIONS array refactored: `emoji: string` → `icon: LucideIcon`. Banned copy 'Join believers around the globe…' replaced with brief subheadline 'Intercession crosses every border. Stand with the people carrying these burdens tonight.' 1 Timothy 2:1–2 verse strip added between hero and region cards using standard pattern. Sentence-case: 'Global leaders', 'Persecuted church', 'Pray now' (×8), 'Go to the prayer feed'. Bottom CTA lead copy updated to 'Have a specific request in your own community?'. ScrollReveal wraps each card with delay={i*80} stagger (0/80/160/240/320/400/480/560) and also wraps verse strip + bottom CTA; hero intentionally not wrapped. No jar motif. `tsc --noEmit` shows zero errors in world-prayer/page.tsx (pre-existing errors exist only in unrelated *.test.ts files). Ready for Reviewer.",
       "[QA, 2026-04-18] VERIFIED. Emoji/banned-phrase/typecheck all PASS. Ready for Reviewer. See docs/sprint20/qa-report.md.",
       "[Reviewer, 2026-04-18] APPROVED. Commit de09d85; hero + 8 region emoji all swapped to Lucide, 'join the movement' language removed, ScrollReveal 8-card stagger correct, 1 Tim 2:1–2 verse strip uses standard pattern."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-08",
@@ -5057,9 +5045,7 @@
       "src/app/(public)/contact/page.tsx",
       "docs/sprint20/copy-briefs/contact.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend 2026-04-18] Starting — keeping backend SUBJECTS enum values (General/Church Partnership/Feedback/Bug Report/Other) and rendering sentence-case labels via {value,label} map to preserve strict-match in contact.actions.ts + routing strings used in Resend subject + admin panel.",
       "[Frontend 2026-04-18] Ready for review. Files changed: src/app/(public)/contact/page.tsx only — contact.actions.ts NOT touched (backend z.enum still strict-matches the same values 'General'/'Church Partnership'/'Feedback'/'Bug Report'/'Other' which are now the .value keys; display labels are .label keys). AC pass: ✉️ → Mail (h-10 w-10 text-amber-600 mx-auto), headline 'Get in touch', subhead per brief, response-time line with Clock icon (hero + this line NOT wrapped in ScrollReveal per brief), labels 'Your name'/'Email'/'What's this about?'/'What's on your mind?' with placeholders 'First and last'/'you@example.com'/'Choose a topic'/'Tell us what's going on.', submit 'Send message' + 'Sending\\u2026', toasts unified to 'Message sent. We'll read it and get back to you.' / 'We couldn't send that. Please try again.' (both error paths, raw details logged to console), ScrollReveal wraps form block + footer note. Typecheck: unable to run node/tsc in this bash session (node.exe not accessible from msys bash), no TS changes beyond standard JSX/imports that match existing patterns in world-prayer/page.tsx — flagging for Reviewer to verify tsc --noEmit on their side.",
@@ -5067,7 +5053,7 @@
       "[Reviewer, 2026-04-18] APPROVED. Commit b04979f; ✉️ → Mail icon, plain form labels match brief, backend enum values preserved (display-only label map is the right call), warm error/success toasts."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-09",
@@ -5081,9 +5067,7 @@
       "src/app/(public)/help/page.tsx",
       "docs/sprint20/copy-briefs/help.md"
     ],
-    "blockers": [
-      "pj-s20-01"
-    ],
+    "blockers": [],
     "notes": [
       "[Frontend 2026-04-18] Done. Section `icon: string` emoji refactored to `icon: LucideIcon` with new `anchor: string` field (Sparkles/HandHelping/Shield/Settings/Church). Section headings sentence-cased. Each <section> now has id={section.anchor} plus scroll-mt-24 for comfortable anchor landing under sticky nav. New jump-nav <nav> below hero renders 5 pill anchors (rounded-full border, h-4 w-4 amber icon, center-justified, flex-wrap on mobile). 'unlock' → 'add' in the free-tier FAQ. 5 accordion sections wrapped in ScrollReveal with delay={index * 80} (0/80/160/240/320). Hero subheadline keeps 'Contact us' link to /contact. Bottom CTA heading unchanged; button label lowercased to 'Contact support' per brief. Typecheck clean on file.",
       "[QA, 2026-04-18] FAIL. Banned phrase §7 #2 'churches that want pastoral tools' at src/app/(public)/help/page.tsx:43 (inside the 'Is it really free?' FAQ body). Verbatim-ban per brand guide. Copy brief audit missed this phrase (brief only flagged 'unlock'). One-line FAQ body rewrite needed. Suggested alternative: replace 'We offer paid plans for churches that want pastoral tools' with brand-safe paraphrase such as 'Churches can subscribe for private prayer walls and pastoral features' or similar. See docs/sprint20/qa-report.md for full findings.",
@@ -5091,7 +5075,7 @@
       "[Reviewer, 2026-04-18] APPROVED. Commits c91b6f5 + 3be08c0; verified line 43 now reads 'Churches can subscribe for pastoral features', §7 #2 cleared, accordion + anchor jump-nav work correctly, ScrollReveal stagger 5 sections."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-10",
@@ -5147,25 +5131,14 @@
       "docs/brand/brand-guide.md",
       "docs/sprint20/qa-report.md"
     ],
-    "blockers": [
-      "pj-s20-02",
-      "pj-s20-03",
-      "pj-s20-04",
-      "pj-s20-05",
-      "pj-s20-06",
-      "pj-s20-07",
-      "pj-s20-08",
-      "pj-s20-09",
-      "pj-s20-10",
-      "pj-s20-11"
-    ],
+    "blockers": [],
     "notes": [
       "[QA, 2026-04-18] COMPLETE. Verdict: FAIL. Report at docs/sprint20/qa-report.md. Summary: 5 passes run (emoji / banned-phrase / typecheck / per-page success criteria / git+handoffs). 8 of 10 page-refresh tasks PASS and are ready for Reviewer (pj-s20-02/03/04/05/06/07/08/10). 2 tasks returned to Frontend as needs-rework: pj-s20-09 (help page — 1 banned-phrase hit at line 43) and pj-s20-11 (docs page — 2 banned-phrase hits at lines 216 and 219, with scope-escalation to PM for the light-pass vs spec §4 conflict). Sprint 20 cannot close until the two needs-rework tasks are fixed, re-QAd, and flipped to done.",
       "[QA, 2026-04-18T23:55Z] Rework addendum: both blockers fixed in commit 3be08c0; re-scan PASS across all 16 §7 banned phrases and zero emoji codepoints. QA verdict updated: PASS across all 10 pages.",
       "[Reviewer, 2026-04-18] APPROVED. QA report is thorough (5 distinct passes, per-page matrix, severity ranking, rework addendum). Catching the §7 #2 verbatim-ban hits on /help and /docs prevented two ship-stoppers."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-13",
@@ -5179,14 +5152,12 @@
       "docs/superpowers/specs/2026-04-18-sprint20-visual-audit-design.md",
       "docs/sprint20/reviewer-signoff.md"
     ],
-    "blockers": [
-      "pj-s20-12"
-    ],
+    "blockers": [],
     "notes": [
       "[Reviewer, 2026-04-18] APPROVED. All 12 prior Sprint 20 tasks (pj-s20-01 through pj-s20-12) verified and flipped to done. Per-task verdict table + deviations recorded at docs/sprint20/reviewer-signoff.md. Sprint 20 ready for PM close (pj-s20-14)."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-19T00:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s20-14",
@@ -5200,14 +5171,12 @@
       ".agent-state/sprints.json",
       ".agent-state/handoffs.md"
     ],
-    "blockers": [
-      "pj-s20-13"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-18] Sprint 20 CLOSED. 10 public pages refreshed, §7 banned phrases cleared, amber palette + Lucide site-wide, brand voice consistent. Close-out doc at docs/sprint20/sprint-close.md; sprints.json flipped to done; memory index updated."
     ],
     "created_at": "2026-04-18",
-    "last_touched": "2026-04-18T23:59:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s21r-01",
@@ -5320,18 +5289,14 @@
       "docs/church-review/customersuccess-findings.md",
       "docs/strategy/pricing-prayerjar-2026-04.md"
     ],
-    "blockers": [
-      "pj-s21r-01",
-      "pj-s21r-02",
-      "pj-s21r-03"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sequencing: Research + Architect + CustomerSuccess run in parallel; Strategist starts only after all three land. No Finance in this review — if Strategist returns ADJUST or REDO on the tier ladder, PM will spin up a Finance follow-up task at that time.",
       "[Strategist, 2026-04-19] DONE. Tier ladder: HOLD (Sprint 17 ladder survives intact — Research confirms no material pressure, CS confirms $49 is strongest rung). Channel readiness: GO-WITH-CONDITIONS (Small/Medium ready; Large HOLD pending SSO+subdomain; 3 Pro-tier ship-stopper claims must be stripped or shipped first). Top rec: reconcile the 3 Pro-tier ship-stoppers (PDF / PCO group sync / PCO weekly summary) — strip today, ship over Sprint 22. Synthesis at docs/church-review/strategist-synthesis.md. No Finance follow-up needed.",
       "[PM, 2026-04-19] Marked done. Strategist synthesis at commit d5b06b7 — HOLD + GO-WITH-CONDITIONS + top-3 recs accepted into recommendations.md without modification. No Finance follow-up (HOLD verdict on tier ladder)."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19T07:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-s21r-05",
@@ -5354,15 +5319,13 @@
       ".agent-state/sprints.json",
       ".agent-state/handoffs.md"
     ],
-    "blockers": [
-      "pj-s21r-04"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Final consolidation — no new analysis, just synthesis. If Strategist returned ADJUST/REDO verdict on tier ladder, flag the Finance follow-up task as a next-step in the recommendations doc (don't expand this review's scope).",
       "[PM, 2026-04-19] DONE. recommendations.md committed at 779e5e3. Verdicts: Q1 CONDITIONAL (Small yes-with-caveat, Medium yes, Large no-today), Q2 CONDITIONAL (3 Pro-tier ship-stopper claims), Q3 HOLD. Top-5 prioritized action list delivered — #1 reconcile 3 Pro-tier claims, #2 Free cap 50→75, #3 reposition Network. Sprint 21-review closed."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19T07:30:00Z"
+    "last_touched": "2026-04-19T23:36:32.351Z"
   },
   {
     "id": "pj-hotfix-claim-reconcile-2026-04",
@@ -6065,5 +6028,73 @@
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-19"
+  },
+  {
+    "id": "pj-s22-23-designer-jar-visual-refresh",
+    "title": "Designer review: replace glass jar with earthen clay vessel (brand sign-off)",
+    "status": "review",
+    "assigned_to": "Designer",
+    "priority": "high",
+    "description": "Ron picked a new visual direction for the PrayerJar brand anchor: swap the translucent glass jar (currently in src/components/prayer-jar.tsx) with an earthen clay/terracotta vessel with abstract amber lights inside and a soft overflow glow rising from the rim. Direction is scripturally grounded (2 Cor 4:7 — 'treasure in earthen vessels'). Two working HTML mockups live at tmp-preview/clay-deep-dive.html (dark + light background variants, scale comparison at 1/12/30 prayers). Designer needs to: (1) review against docs/brand/brand-guide.md — does it honor the voice attributes (warm, reverent, specific, faith-confident, plainspoken) and the amber palette?; (2) confirm it reads correctly on both light-mode and dark-mode pages since the jar appears on the homepage, /my-prayers, /prayed-for, /profile, church dashboard cards, and OG/share images; (3) specify any adjustments (palette tweaks, proportion changes, motion refinement); (4) write a design spec at docs/design/clay-vessel-spec.md that Frontend Engineer can implement against without interpretation. If sign-off: spec gets handed to Frontend; Frontend task (pj-s22-24) gets created for the swap. If reject: Designer proposes alternative or redirects.",
+    "acceptance_criteria": [
+      "Designer has reviewed tmp-preview/clay-deep-dive.html against docs/brand/brand-guide.md",
+      "Design spec saved to docs/design/clay-vessel-spec.md covering: palette tokens (dark+light), dimensions and proportions, motion/animation specs, contents (abstract lights), overflow-glow treatment, behavior at low/high prayer counts, how the 🫙 emoji in the nav header should change",
+      "Spec explicitly addresses brand-guide §3 voice attributes and §4 visual motifs",
+      "Decision logged in tasks.json notes: approved / approved-with-changes / rejected-with-alternative",
+      "If approved: Frontend follow-up task pj-s22-24-frontend-jar-swap created with the spec linked"
+    ],
+    "files": [
+      "docs/design/clay-vessel-spec.md",
+      "docs/brand/brand-guide.md",
+      "tmp-preview/clay-deep-dive.html",
+      "src/components/prayer-jar.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "[Claude, 2026-04-19] Dispatched by Ron after seeing clay-deep-dive mockup. Direction selected: lights inside (not paper slips) + must work on light AND dark backgrounds. All other Sprint 22 engineering work continues in parallel; this is not on the critical path but wants to land before Sprint 22 close.",
+      "[Designer, 2026-04-19] DECISION: APPROVED WITH CHANGES. Spec at docs/design/clay-vessel-spec.md. Voice-attribute assessment: clay vessel is an unambiguous brand win over the glass jar on all five §3 attributes (warm, reverent, specific, faith-confident, plainspoken) — 2 Cor 4:7 anchor replaces a lifestyle-product metaphor. Changes beyond the mockup: (1) RESOLVES the Sprint-18-deferred two-amber tension from brand-guide §4.1 — lights inside use OKLCH --primary (same slot as pray-ring/candle-flicker), clay body gets a new --clay-* token family in OKLCH, and the rgba(212,168,67,…) literals in the current component are retired entirely. (2) Anchors light-mode to the real brand parchment token oklch(0.975 0.007 72), not the mockup's #f7f3ec. (3) Extends 🫙 swap to all 4 emoji sites (nav, sign-in email, error boundary, 404) via a shared <PrayerJarMark> SVG component — nav-only swap would leave inconsistent chrome. (4) Breaks the sm size from 100×120 to 170×210 — clay textures don't survive at 100px. Only caller is sign-in page, still fits. (5) mode='slips' silently collapses to lights (API preserved, call-site sweep is Sprint 23). SlipDropAnimation export stays as-is (semantic rename to LightDropAnimation flagged for Sprint 23). All 8 consumer files untouched by design — API-preserving swap. Clay vessel unlocks jar-as-hero on light-mode pages, closing brand-guide §4.2's top visual-identity gap. Follow-up task pj-s22-24-frontend-jar-swap created with spec linked."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-19T20:00:00.000Z"
+  },
+  {
+    "id": "pj-s22-24-frontend-jar-swap",
+    "title": "Frontend: replace glass jar with earthen clay vessel per Designer spec",
+    "status": "review",
+    "assigned_to": "Frontend Engineer",
+    "priority": "high",
+    "description": "Implement the clay-vessel design spec at docs/design/clay-vessel-spec.md. Rewrites src/components/prayer-jar.tsx in place — translucent glass jar out, earthen terracotta vessel with abstract amber lights and overflow glow in. Preserves the public API (props: count, size, mode, countLabel) so the 8 consuming files stay untouched. Also: adds 11 new --clay-* OKLCH tokens to globals.css (resolves the Sprint-18-deferred two-amber tension per brand-guide §4.1), adds a shared <PrayerJarMark> SVG component, and swaps the 🫙 emoji at 4 sites (nav header, magic-link email, error boundary, 404). Full implementation checklist in spec §14.",
+    "acceptance_criteria": [
+      "src/components/prayer-jar.tsx rewritten per spec §4 — rim, body (with mottling, throwing lines, inner highlight), lights using oklch(var(--primary)), new overflow-glow element with count-responsive opacity per spec §5",
+      "11 --clay-* tokens added to :root and .dark in src/app/globals.css per spec §2",
+      "@keyframes clay-overflow-pulse added to globals.css; prefers-reduced-motion rule extended; forced-colors @media rule added",
+      "No rgba(212,168,67,…) or rgba(10,10,20,0.8) literals remain in prayer-jar.tsx",
+      "sm size grows to 170×210 body / 100×16 rim; sign-in page (src/app/(auth)/sign-in/page.tsx:49) still renders cleanly",
+      "mode='slips' silently collapses to lights rendering (no slips drawn); @deprecated JSDoc added to the prop",
+      "SlipDropAnimation export preserved unchanged (prayer-dialog.tsx still imports it)",
+      "src/components/prayer-jar-mark.tsx created per spec §7 — 24×24 SVG, currentColor body, oklch(var(--primary)) inner dot",
+      "🫙 emoji replaced at all 4 sites per spec §7 table: src/app/layout.tsx:66, src/emails/sign-in.tsx:18, src/app/error.tsx:19, src/app/not-found.tsx:7",
+      "Email PNG export saved at src/emails/assets/prayer-jar-mark.png, 72×72, wired into sign-in.tsx",
+      "Visual regression checked at sm (sign-in), md (homepage), lg (/for-churches hero); light-mode AND dark-mode",
+      "prefers-reduced-motion: reduce stops light pulse/float and overflow pulse, but overflow glow stays at base opacity (it's a fill-state signal, not decorative motion)",
+      "TypeScript clean, no lint warnings, tests pass"
+    ],
+    "files": [
+      "src/components/prayer-jar.tsx",
+      "src/components/prayer-jar-mark.tsx",
+      "src/app/globals.css",
+      "src/app/layout.tsx",
+      "src/emails/sign-in.tsx",
+      "src/emails/assets/prayer-jar-mark.png",
+      "src/app/error.tsx",
+      "src/app/not-found.tsx"
+    ],
+    "blockers": [],
+    "notes": [
+      "[Designer, 2026-04-19] Spec at docs/design/clay-vessel-spec.md. Approved-with-changes by Designer; changes are fully captured in the spec — Frontend does not need to re-interpret. Section §14 is a sequenced implementation checklist. Out-of-scope items explicitly enumerated in spec §13 — do not sweep call sites, do not rename SlipDropAnimation, do not touch favicon/OG image, do not audit Tailwind amber usage; those are Sprint 23. Before merging: confirm with Ron whether src/app/preview/jar-slips/ should be deleted (it's a stale Sprint 19 A/B preview).",
+      "[Frontend Engineer, 2026-04-20] Shipped in 4 commits on feature/prayer-jar. (1) 6de07ed — added 11 --clay-* OKLCH tokens as raw triplets (so oklch(var(--clay-*) / alpha) works per spec), @keyframes clay-overflow-pulse, extended prefers-reduced-motion, and added forced-colors @media rule. (2) cac5b1c — rewrote prayer-jar.tsx: amphora-silhouette body with mottling + throwing lines + inner highlight, 5-stop rim gradient with dark mouth ellipse, overflow glow above rim with count-responsive opacity per spec §5 (DOM absent when count===0), lights now use oklch(var(--primary)/alpha) via color-mix-free nested form, size dims are plain px with sm grown 100x120→170x210, mode='slips' silently collapses to lights with @deprecated JSDoc, SlipDropAnimation export preserved byte-for-byte. Dropped SLIP_SLOTS and SlipItem since slips rendering is gone. (3) 622ba57 — created src/components/prayer-jar-mark.tsx (24x24 two-path SVG with currentColor body + oklch(var(--primary)) dot) and swapped 🫙 at layout.tsx/error.tsx/not-found.tsx. (4) 8962ddf — generated 72x72 baked-fill PNG via existing @resvg/resvg-wasm dep (new scripts/generate-jar-mark-png.mjs for regen), committed at both src/emails/assets/prayer-jar-mark.png (source-of-truth) AND public/email-assets/prayer-jar-mark.png (served URL), wired into sign-in.tsx via <Img src={siteUrl+'/email-assets/prayer-jar-mark.png'} width='36' height='36'> since React Email <Img> needs a URL not a local import. Verified: (a) `npx tsc --noEmit` is clean on all 8 changed files — pre-existing test-file errors unrelated to this task persist repo-wide. (b) `npx eslint` on all 6 changed TS/TSX files is clean (0 errors, 0 warnings). (c) `npm test -- --run` shows 5 pre-existing failures in db/Stripe/event tests that do not reference any file I touched; 46 of 51 test files pass. (d) Grep confirms no 🫙 remain in src/, no rgba(212,168,67,…) or rgba(10,10,20,0.8) literals remain in prayer-jar.tsx. Could NOT verify visually: dev server not run on Windows per AGENTS.md (Sentry+Turbopack corruption); QA must do visual regression at sm (sign-in), md (homepage), lg (/for-churches hero) × light/dark. Spec deviation I had to resolve: existing --primary token is stored as a full oklch(...) expression (not a raw triplet), so the spec's `oklch(var(--primary)/α)` syntax would produce invalid nested oklch(). Resolved via commit d900e89 — `color-mix(in oklch, var(--primary) α%, transparent)` for alpha stops in lightStyle + overflow-glow; `var(--primary)` directly at 100%; inner dot on the mark likewise. color-mix is supported in all target browsers (Chrome 111+, Safari 16.2+, FF 113+). Flag for Ron: src/app/preview/jar-slips/ still exists; Designer flagged it as a stale Sprint-19 A/B preview candidate for deletion — left untouched, Ron to decide."
+    ],
+    "created_at": "2026-04-19",
+    "last_touched": "2026-04-20T02:54:00.000Z"
   }
 ]

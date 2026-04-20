@@ -1,3 +1,5 @@
+[2026-04-19] PM/Ron → Frontend Engineer: pj-s22-24-frontend-jar-swap APPROVED — implement clay vessel per docs/design/clay-vessel-spec.md. 13 acceptance criteria, 8 target files, spec §14 has sequenced checklist. Out-of-scope items in spec §13 are Sprint 23.
+[2026-04-19] Designer → Frontend Engineer: pj-s22-23 — Clay vessel brand review APPROVED-WITH-CHANGES. Spec at docs/design/clay-vessel-spec.md. Clay is an on-brand upgrade over glass across all §3 voice attributes. Resolves Sprint-18-deferred two-amber tension: lights = OKLCH --primary, body = new --clay-* tokens, rgba(212,168,67) literals retired. Mark swap extended to 4 sites (nav+email+error+404) via new <PrayerJarMark> SVG. sm size bumped 100→170px (clay textures don't survive below 170). mode='slips' collapses to lights silently (API preserved). Follow-up task pj-s22-24-frontend-jar-swap created (proposed, awaiting PM/Ron approval).
 [2026-04-19] DevOps → QA: pj-s22-01-drizzle-pipeline — wired drizzle migrate into deploy.yml (new step between vercel build + vercel deploy, gated VERCEL_ENV=production). Strategy: journal-seed via scripts/migrate-deploy.mjs on first prod run (creates drizzle schema + table, inserts 32 rows matching reality, then migrate no-ops). Repaired meta/_journal.json (added 0012_trigram_search, 0029, 0030). Dry-run at scripts/migrate-dry-run.mjs — verified against dev DB (27 rows, reports 5 pending matching known drift). Prod dry-run NOT run (no creds this session). Known gotcha documented: 0012_trigram_search uses CREATE INDEX CONCURRENTLY, breaks fresh-DB runs. docs/ops/deploy-migrations.md covers all. No prod DDL executed.
 [2026-04-19] DevOps → QA: pj-s22-02-vercel-webhook — false-alarm recurrence; webhook was never broken (gh run list shows latest deploy succeeded 2m21s). Bumped checkout v4->v5, added failure-alert GitHub issue step, wrote docs/ops/vercel-deploy.md. Surfaced CHMS_CONFIG_ENCRYPTION_KEY missing in Vercel as separate PM follow-up.
 [2026-04-19] Ron → PM: Sprint 22 scoping kickoff — make PrayerJar ready for Large-church marketing (10-item scope)
@@ -275,3 +277,9 @@
 [2026-04-19] Ron → PM: Sprint 22 re-scoped — park SSO/SCIM/BYO-domain, keep subdomains without shared sessions, ship with "enterprise login coming soon" label.
 
 [2026-04-19] Ron → PM: PDF chain deferred to Sprint 23 — Sprint 22 now 13 tasks, ships with "custom analytics reports coming soon" as additional honest-gap label.
+
+[2026-04-19T23:36:32.351Z] Dashboard sync — 0 fix(es): 
+
+[2026-04-20T02:43:47.000Z] Frontend Engineer -> (self): pj-s22-24-frontend-jar-swap -- starting clay vessel implementation
+
+[2026-04-20T02:54:00.000Z] Frontend Engineer -> QA: pj-s22-24-frontend-jar-swap -- clay vessel shipped, ready for visual regression at sm/md/lg x light/dark. Preview route src/app/preview/jar-slips/ still exists -- Ron to decide.
