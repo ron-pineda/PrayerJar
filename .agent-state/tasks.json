@@ -5835,7 +5835,7 @@
     "id": "pj-s22-16-subdomain-unpark",
     "sprint": "22",
     "title": "Backend: un-park pj-s14-wildcard-subdomains — ship custom church subdomain (per-subdomain auth, no session sharing)",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Un-park the parked pj-s14-wildcard-subdomains work and ship per the revised Architect design (pj-s22-05). Scope: wildcard DNS on prayerjar.org, request routing by subdomain, church context resolution from subdomain, admin UI for configuring custom subdomain, tier gating (Network-tier only), conflict detection (someone can't take 'www' or reserved words), fallback to apex if subdomain missing. **CONSTRAINT (re-scope 2026-04-19): No cross-domain session sharing. Each subdomain is its own auth surface — session cookies are scoped to the exact host, not the parent domain. A user signed in on prayerjar.org does NOT get a session on takeheart.prayerjar.org; they sign in separately on each host.** This avoids the forced-logout-on-rollout problem and simplifies cookie/CSRF handling. Does NOT include SSO integration — SSO is deferred to a future sprint.",
@@ -5861,7 +5861,14 @@
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #4. pj-s14-wildcard-subdomains task from parked state — this task supersedes it. Architect spike must explicitly address the pj-s14 work (noted in pj-s22-05 acceptance criteria).",
       "[PM, 2026-04-19] RE-SCOPE: No cross-domain session sharing. Each subdomain is its own sign-in surface. See docs/architecture/sprint22-sso-subdomain.md §7 (to be revised in pj-s22-05). This drops the shared-session assumption the original design carried.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Backend Engineer, 2026-04-20] proxy.ts: added subdomain tenant resolution as Step 1 (before admin/auth checks). Reads Host header, matches *.prayerjar.org, checks RESERVED_SUBDOMAINS (src/lib/subdomain-reserved.ts), gates on SUBDOMAIN_ROUTING env var, DB-looks up church by subdomain, rewrites /path → /church/<slug>/<path> and injects x-pj-church-id + x-pj-church-slug headers. Unknown subdomain → 302 to apex with ?unknown_subdomain=1.",
+      "[Backend Engineer, 2026-04-20] auth.ts cookie check: No cookies config block exists — NextAuth default is host-scoped. Per-subdomain auth model works correctly with zero auth.ts changes. Comment added to proxy.ts.",
+      "[Backend Engineer, 2026-04-20] Reserved words: src/lib/subdomain-reserved.ts — exports RESERVED_SUBDOMAINS Set, isReservedSubdomain(), hasInvalidHyphen(). Used by both proxy.ts and branding route. Tests: src/lib/subdomain-reserved.test.ts.",
+      "[Backend Engineer, 2026-04-20] Tier gating: hasCustomSubdomain(tier) predicate added to src/lib/plans.ts (CUSTOM_SUBDOMAIN_TIER = pro). Branding PUT route: reserves returns 403 if tier < pro and subdomain is being set. Clearing subdomain (null) always allowed — no downgrade clearing of existing subdomain.",
+      "[Backend Engineer, 2026-04-20] SUBDOMAIN_ROUTING flag: documented in .env.local.example. Set to true in Vercel Production env after DNS/cert confirmed.",
+      "[Backend Engineer, 2026-04-20] Manual steps doc: docs/ops/subdomain-launch-checklist.md — 6-step checklist covering DNS, Vercel domain, cert, env var, redeploy, smoke test + session isolation spot-check.",
+      "[Backend Engineer, 2026-04-20] Tests: src/proxy.test.ts (8 cases: apex pass-through, reserved → 404, unknown subdomain → 302 banner, valid subdomain → rewrite, root path rewrite, flag-off fallthrough), src/lib/subdomain-reserved.test.ts (15 cases), src/app/api/v1/church/[slug]/branding/route.test.ts extended (+8 cases: reserved word, hyphen, tier gate, clear-null allowed)."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
