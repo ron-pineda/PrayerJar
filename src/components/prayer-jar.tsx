@@ -15,27 +15,69 @@ const LIGHT_SLOTS = [
   { left: 62, bottom: 88 }, { left: 8, bottom: 85 }, { left: 42, bottom: 50 },
 ];
 
-const SLIP_SLOTS = [
-  { left: 12, bottom: 10, rotate: -12 }, { left: 40, bottom: 15, rotate: 6 },
-  { left: 64, bottom: 8, rotate: -4 },  { left: 22, bottom: 38, rotate: 10 },
-  { left: 55, bottom: 35, rotate: -8 }, { left: 30, bottom: 58, rotate: 4 },
-  { left: 68, bottom: 62, rotate: -14 },{ left: 12, bottom: 68, rotate: 7 },
-  { left: 47, bottom: 80, rotate: -6 }, { left: 75, bottom: 75, rotate: 9 },
-];
-
 const FLOAT_ANIMS = ['light-float-a', 'light-float-b', 'light-float-c'];
 const SIZES = [10, 12, 14, 16, 18, 20, 22, 24];
 
 type JarSize = 'sm' | 'md' | 'lg';
+
+/**
+ * @deprecated `mode` is retained for API compatibility with existing callers.
+ * The clay vessel is lights-only; `mode='slips'` silently collapses to the
+ * lights rendering. Will be removed once call sites are swept (Sprint 23+).
+ */
 type JarMode = 'lights' | 'slips';
 
-const SIZE_DIMS: Record<JarSize, {
-  neckW: string; neckH: number; bodyW: string; bodyH: string;
-}> = {
-  sm: { neckW: '60px',             neckH: 18, bodyW: '100px',           bodyH: '120px' },
-  md: { neckW: 'min(200px, 52vw)', neckH: 55, bodyW: 'min(350px, 90vw)', bodyH: 'min(450px, 115vw)' },
-  lg: { neckW: 'min(210px, 54vw)', neckH: 58, bodyW: 'min(370px, 91vw)', bodyH: 'min(470px, 116vw)' },
+type SizeDim = {
+  rimW: number;
+  rimH: number;
+  bodyW: number;
+  bodyH: number;
+  overflowW: number;
+  overflowH: number;
+  innerHighlightW: number;
+  innerHighlightH: number;
+  suppressThrowingLines: boolean;
+  suppressMidWarmMottle: boolean;
+  intensifyWarm: boolean;
 };
+
+const SIZE_DIMS: Record<JarSize, SizeDim> = {
+  sm: {
+    rimW: 100, rimH: 16, bodyW: 170, bodyH: 210,
+    overflowW: 120, overflowH: 40,
+    innerHighlightW: 12, innerHighlightH: 72,
+    suppressThrowingLines: true,
+    suppressMidWarmMottle: true,
+    intensifyWarm: false,
+  },
+  md: {
+    rimW: 150, rimH: 22, bodyW: 260, bodyH: 320,
+    overflowW: 180, overflowH: 70,
+    innerHighlightW: 20, innerHighlightH: 140,
+    suppressThrowingLines: false,
+    suppressMidWarmMottle: false,
+    intensifyWarm: false,
+  },
+  lg: {
+    rimW: 170, rimH: 26, bodyW: 300, bodyH: 370,
+    overflowW: 210, overflowH: 82,
+    innerHighlightW: 24, innerHighlightH: 162,
+    suppressThrowingLines: false,
+    suppressMidWarmMottle: false,
+    intensifyWarm: true,
+  },
+};
+
+type OverflowLevel = { base: number; peak: number };
+
+function overflowLevel(count: number): OverflowLevel {
+  if (count <= 0) return { base: 0, peak: 0 };
+  if (count <= 2) return { base: 0.10, peak: 0.15 };
+  if (count <= 8) return { base: 0.30, peak: 0.45 };
+  if (count <= 19) return { base: 0.50, peak: 0.75 };
+  if (count <= 29) return { base: 0.65, peak: 0.90 };
+  return { base: 0.80, peak: 1.00 };
+}
 
 function lightStyle(index: number, slot: { left: number; bottom: number }): React.CSSProperties {
   const floatAnim = FLOAT_ANIMS[index % FLOAT_ANIMS.length];
@@ -50,85 +92,177 @@ function lightStyle(index: number, slot: { left: number; bottom: number }): Reac
     width: size,
     height: size,
     borderRadius: '50%',
-    background: 'radial-gradient(circle at 35% 35%, rgba(255,220,120,1), rgba(212,168,67,0.6) 50%, transparent 70%)',
-    boxShadow: '0 0 12px 4px rgba(212,168,67,0.5), 0 0 30px 8px rgba(212,168,67,0.2)',
+    background:
+      'radial-gradient(circle at 35% 35%, oklch(var(--primary) / 1) 0%, oklch(var(--primary) / 0.6) 50%, transparent 70%)',
+    boxShadow:
+      '0 0 12px 4px oklch(var(--primary) / 0.5), 0 0 30px 8px oklch(var(--primary) / 0.2)',
     animation: `${floatAnim} ${floatDur}s ease-in-out infinite ${delay}s, light-pulse ${pulseDur}s ease-in-out infinite ${delay * 0.7}s`,
   };
 }
 
-function SlipItem({ slot, index }: { slot: typeof SLIP_SLOTS[0]; index: number }) {
-  const w = 26 + (index % 3) * 4;
-  const h = 16 + (index % 3) * 2;
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        left: `${slot.left}%`,
-        bottom: `${slot.bottom}%`,
-        width: w,
-        height: h,
-        borderRadius: 2,
-        background: 'rgba(254,243,199,0.88)',
-        transform: `rotate(${slot.rotate}deg)`,
-      }}
-    >
-      <div style={{ position: 'absolute', top: 3, left: 4, right: 4 }}>
-        <div style={{ height: 1.5, background: 'rgba(120,80,20,0.3)', borderRadius: 1, marginBottom: 2.5 }} />
-        <div style={{ height: 1.5, background: 'rgba(120,80,20,0.2)', borderRadius: 1, width: '70%' }} />
-      </div>
-    </div>
-  );
+function rimStyle(dims: SizeDim): React.CSSProperties {
+  return {
+    position: 'relative',
+    width: dims.rimW,
+    height: dims.rimH,
+    // Overlap body top by 6px so rim + body read as one piece.
+    marginBottom: -6,
+    zIndex: 2,
+    borderRadius: '50% / 50%',
+    background:
+      'linear-gradient(180deg,' +
+      ' oklch(var(--clay-rim-hi)) 0%,' +
+      ' oklch(var(--clay-rim-mid)) 15%,' +
+      ' oklch(var(--clay-rim-lo)) 50%,' +
+      ' oklch(var(--clay-rim-mid)) 85%,' +
+      ' oklch(var(--clay-rim-hi)) 100%)',
+    boxShadow: '0 2px 4px oklch(var(--clay-shadow) / 0.40)',
+  };
+}
+
+function rimMouthStyle(dims: SizeDim): React.CSSProperties {
+  // Dark inner ellipse: the mouth of the vessel reads like looking into a jar.
+  return {
+    position: 'absolute',
+    top: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: dims.rimW * 0.9,
+    height: 8,
+    borderRadius: '50%',
+    background: 'oklch(var(--clay-rim-lo) / 0.80)',
+    pointerEvents: 'none',
+  };
+}
+
+function bodyStyle(dims: SizeDim): React.CSSProperties {
+  const warmOpacity = dims.intensifyWarm ? 0.35 : 0.30;
+  const coolOpacity = 0.30;
+  const warmMidOpacity = dims.suppressMidWarmMottle ? 0 : 0.30;
+  // Light-mode uses slightly richer mottle alpha; we stay with a single alpha
+  // and let OKLCH tokens differ per theme. The spec permits either.
+  const mottling = [
+    `radial-gradient(ellipse at 22% 18%, oklch(var(--clay-mottle-warm) / ${warmOpacity}) 0%, transparent 35%)`,
+    `radial-gradient(ellipse at 78% 30%, oklch(var(--clay-mottle-cool) / ${coolOpacity}) 0%, transparent 40%)`,
+    warmMidOpacity > 0
+      ? `radial-gradient(ellipse at 35% 62%, oklch(var(--clay-mottle-warm) / ${warmMidOpacity}) 0%, transparent 30%)`
+      : null,
+    `radial-gradient(ellipse at 72% 78%, oklch(var(--clay-mottle-cool) / ${coolOpacity}) 0%, transparent 45%)`,
+  ].filter(Boolean) as string[];
+
+  const base =
+    'linear-gradient(180deg,' +
+    ' oklch(var(--clay-body-hi)) 0%,' +
+    ' oklch(var(--clay-body-mid)) 40%,' +
+    ' oklch(var(--clay-body-lo)) 100%)';
+
+  return {
+    position: 'relative',
+    width: dims.bodyW,
+    height: dims.bodyH,
+    border: '1.5px solid oklch(var(--clay-edge))',
+    borderRadius: '40% 40% 48% 48% / 16% 16% 58% 58%',
+    // Stacked: mottle washes painted on top of the base gradient.
+    backgroundImage: [...mottling, base].join(', '),
+    boxShadow:
+      'inset -14px 0 24px oklch(var(--clay-shadow) / 0.40),' +
+      ' inset 14px 0 20px oklch(var(--clay-mottle-warm) / 0.22),' +
+      ' 0 8px 18px oklch(var(--clay-shadow) / 0.40)',
+    overflow: 'hidden',
+  };
+}
+
+function throwingLinesStyle(): React.CSSProperties {
+  // Horizontal throwing-line striations — a ::before via inline div.
+  return {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none',
+    backgroundImage:
+      'repeating-linear-gradient(180deg, transparent 0px, transparent 10px, oklch(var(--clay-throwing) / 0.10) 10px, oklch(var(--clay-throwing) / 0.10) 11px)',
+    opacity: 1,
+    zIndex: 0,
+  };
+}
+
+function innerHighlightStyle(dims: SizeDim): React.CSSProperties {
+  return {
+    position: 'absolute',
+    top: 16,
+    left: 26,
+    width: dims.innerHighlightW,
+    height: dims.innerHighlightH,
+    borderRadius: '50%',
+    background:
+      'linear-gradient(180deg, oklch(var(--clay-mottle-warm) / 0.30) 0%, transparent 100%)',
+    transform: 'rotate(-8deg)',
+    pointerEvents: 'none',
+    zIndex: 1,
+  };
+}
+
+function overflowGlowStyle(dims: SizeDim, level: OverflowLevel): React.CSSProperties {
+  return {
+    position: 'absolute',
+    top: -20,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: dims.overflowW,
+    height: dims.overflowH,
+    background:
+      'radial-gradient(ellipse at 50% 100%, oklch(var(--primary) / 0.50) 0%, oklch(var(--primary) / 0.20) 40%, transparent 70%)',
+    filter: 'blur(10px)',
+    pointerEvents: 'none',
+    zIndex: 3,
+    opacity: level.base,
+    // CSS custom properties consumed by @keyframes clay-overflow-pulse.
+    ['--overflow-base' as string]: level.base,
+    ['--overflow-peak' as string]: level.peak,
+    animation: 'clay-overflow-pulse 3.5s ease-in-out infinite',
+  };
 }
 
 export function PrayerJar({
   count,
   size = 'md',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   mode = 'lights',
   countLabel,
 }: {
   count: number;
   size?: JarSize;
+  /**
+   * @deprecated Clay vessel is lights-only. `mode='slips'` silently collapses
+   * to the lights rendering. Will be removed once call sites are swept.
+   */
   mode?: JarMode;
   countLabel?: string;
 }) {
   const dims = SIZE_DIMS[size];
   const lightCount = Math.min(count, 30);
-  const slipCount = Math.min(count, SLIP_SLOTS.length);
+  const level = overflowLevel(count);
+  const showOverflow = count > 0;
 
   return (
     <div className="flex flex-col items-center">
-      <div aria-hidden="true" className="flex flex-col items-center">
-        <div
-          style={{
-            width: dims.neckW,
-            height: dims.neckH,
-            border: '2.5px solid rgba(212,168,67,0.5)',
-            borderBottom: 'none',
-            borderRadius: '12px 12px 0 0',
-            background: 'rgba(255,255,255,0.02)',
-          }}
-        />
-        <div
-          style={{
-            position: 'relative',
-            width: dims.bodyW,
-            height: dims.bodyH,
-            border: '2.5px solid rgba(212,168,67,0.5)',
-            borderTop: 'none',
-            borderRadius: '0 0 80px 80px',
-            background: 'rgba(10,10,20,0.8)',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ position: 'absolute', top: 24, left: 22, width: 28, height: 110, background: 'rgba(255,255,255,0.05)', borderRadius: 14, transform: 'rotate(-8deg)' }} />
-          <div style={{ position: 'absolute', top: 16, right: 36, width: 14, height: 55, background: 'rgba(255,255,255,0.03)', borderRadius: 7, transform: 'rotate(5deg)' }} />
+      <div aria-hidden="true" className="relative flex flex-col items-center">
+        {/* Overflow glow — sits above the rim, scaled to count. Hidden entirely when empty. */}
+        {showOverflow && (
+          <div className="clay-overflow-glow" style={overflowGlowStyle(dims, level)} />
+        )}
 
-          {mode === 'lights' && LIGHT_SLOTS.slice(0, lightCount).map((slot, i) => (
+        {/* Rim */}
+        <div className="clay-rim" style={rimStyle(dims)}>
+          <div style={rimMouthStyle(dims)} />
+        </div>
+
+        {/* Body */}
+        <div className="clay-body" style={bodyStyle(dims)}>
+          {!dims.suppressThrowingLines && <div style={throwingLinesStyle()} />}
+          <div style={innerHighlightStyle(dims)} />
+
+          {LIGHT_SLOTS.slice(0, lightCount).map((slot, i) => (
             <div key={i} className="prayer-jar-light" style={lightStyle(i, slot)} />
-          ))}
-
-          {mode === 'slips' && SLIP_SLOTS.slice(0, slipCount).map((slot, i) => (
-            <SlipItem key={i} slot={slot} index={i} />
           ))}
         </div>
       </div>
