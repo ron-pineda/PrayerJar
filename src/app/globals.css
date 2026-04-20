@@ -77,6 +77,21 @@
   --sidebar-accent-foreground: oklch(0.21 0.009 58);
   --sidebar-border: oklch(0.845 0.011 67);
   --sidebar-ring: oklch(0.50 0.14 54);
+
+  /* Clay vessel tokens — stored as raw OKLCH triplets so they can be
+     consumed via oklch(var(--clay-*)) and oklch(var(--clay-*) / alpha).
+     Light mode: warmer, lighter terracotta for parchment backgrounds. */
+  --clay-rim-hi: 0.62 0.11 48;
+  --clay-rim-mid: 0.52 0.10 45;
+  --clay-rim-lo: 0.34 0.07 40;
+  --clay-body-hi: 0.64 0.11 47;
+  --clay-body-mid: 0.55 0.10 45;
+  --clay-body-lo: 0.42 0.09 42;
+  --clay-mottle-warm: 0.86 0.08 62;
+  --clay-mottle-cool: 0.38 0.07 38;
+  --clay-edge: 0.22 0.05 36;
+  --clay-throwing: 0.32 0.06 38;
+  --clay-shadow: 0.20 0.04 38;
 }
 
 /* Dark mode — deep charcoal, warm amber accent, candlelight */
@@ -107,6 +122,19 @@
   --sidebar-accent-foreground: oklch(0.915 0.010 70);
   --sidebar-border: oklch(1 0 0 / 9%);
   --sidebar-ring: oklch(0.65 0.11 62);
+
+  /* Clay vessel tokens — dark mode: deeper, cooler terracotta for charcoal backgrounds. */
+  --clay-rim-hi: 0.58 0.09 45;
+  --clay-rim-mid: 0.46 0.08 42;
+  --clay-rim-lo: 0.26 0.06 38;
+  --clay-body-hi: 0.56 0.09 44;
+  --clay-body-mid: 0.46 0.09 42;
+  --clay-body-lo: 0.33 0.07 38;
+  --clay-mottle-warm: 0.82 0.08 62;
+  --clay-mottle-cool: 0.32 0.06 36;
+  --clay-edge: 0.18 0.04 34;
+  --clay-throwing: 0.28 0.05 36;
+  --clay-shadow: 0 0 0;
 }
 
 @layer base {
@@ -242,6 +270,11 @@
   50% { opacity: 1; }
 }
 
+@keyframes clay-overflow-pulse {
+  0%, 100% { opacity: var(--overflow-base); transform: translateX(-50%) scaleY(1); }
+  50%      { opacity: var(--overflow-peak); transform: translateX(-50%) scaleY(1.15); }
+}
+
 @keyframes star-twinkle {
   0%, 100% { opacity: 0.2; }
   50% { opacity: 0.7; }
@@ -295,7 +328,17 @@
 
   .prayer-jar-light,
   .sky-light,
-  .sky-star {
+  .sky-star,
+  .clay-overflow-glow {
     animation: none !important;
+  }
+}
+
+/* Windows High Contrast Mode — let the OS resolve clay surfaces to system colors. */
+@media (forced-colors: active) {
+  .clay-body,
+  .clay-rim {
+    forced-color-adjust: none;
+    border-color: CanvasText;
   }
 }
