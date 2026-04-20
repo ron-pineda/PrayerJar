@@ -180,12 +180,12 @@ Every feature below is available now — no waitlist, no setup fees.
 
 **Display name:** Free
 **Price:** $0 / mo
-**Member cap label:** Up to 50 members
+**Member cap label:** Up to 75 members
 **Fit statement:** None (omit — no badge, no statement needed for Free)
 **Highlight ring:** None
 
 **Feature bullets (5):**
-- Up to 50 members
+- Up to 75 members
 - 3 groups
 - Public prayer wall
 - Basic notifications
@@ -293,7 +293,7 @@ Yes, always. Any member can submit and pray for requests at no cost. Plans cover
 ---
 
 **Q: Is there a trial period?**
-No timed trial. The Free tier is your on-ramp: up to 50 members and 3 groups, with no credit card and no expiration. Upgrade when you need more people, more groups, or pastoral tools.
+No timed trial. The Free tier is your on-ramp: up to 75 members and 3 groups, with no credit card and no expiration. Upgrade when you need more people, more groups, or pastoral tools.
 
 ---
 

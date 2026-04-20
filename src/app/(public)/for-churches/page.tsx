@@ -96,7 +96,7 @@ const FEATURES = [
     icon: Link2,
     title: 'Integrates with Planning Center.',
     description:
-      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. New members show up the next day, so your pastoral picture stays current.',
+      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. New members sync overnight, so your pastoral picture stays current.',
     tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
 ];
@@ -180,7 +180,7 @@ export default async function ForChurchesPage() {
         </div>
 
         <h1 className="text-4xl font-bold tracking-tight mb-4">
-          No one falls through the cracks between Sundays.
+          Every member who carries a prayer is seen before the week is out.
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto">
           PrayerJar is the private prayer wall your congregation already wanted

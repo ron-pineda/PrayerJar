@@ -272,7 +272,7 @@ Recommended action: Book a discovery call within 24h. See rep brief template bel
 
 ## Internal Notes
 - Minimum deal size: $199/mo. Do not go below $149/mo without PM approval (Finance floor).
-- If they're not ready: leave the door open. Say "The free tier is always there — 50 members, no card. Come back when the timing is right."
+- If they're not ready: leave the door open. Say "The free tier is always there — 75 members, no card. Come back when the timing is right."
 - Handoff SLA: Internal notification fires T+1h. Rep should attempt first contact within 24 hours of the notification. If no response from lead after 72h, touch 4 triggers automatically; rep can follow up with a personal email on day 5.
 ```
 

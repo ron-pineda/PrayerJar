@@ -5439,7 +5439,7 @@
     "id": "pj-s22-03-free-cap-75",
     "sprint": "22",
     "title": "Backend+Copywriter: raise Free-tier member cap 50 → 75",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Per recommendations.md action #2 and customersuccess-findings.md: current Free cap of 50 members blocks the 50–75-member band (plants, house churches, small-church majority) from feeling value before the paywall. One-line change in src/lib/plans.ts plus copy updates wherever '50 members' is surfaced (pricing page, /for-churches, plan comparison table, onboarding). Copywriter audits copy surfaces first so Backend's PR sweeps both code + copy in one pass.",
@@ -5457,7 +5457,8 @@
     "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #1. Recommendations.md's 'if only one thing ships' item. Fast-moving quick win — no deps, runs in parallel with everything. Copywriter sweeps copy, Backend makes code change, QA validates cap enforcement at 75.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Backend+Copywriter, 2026-04-20] Free cap raised 50→75 in src/lib/plans.ts (features + limits). Tests updated in plans.test.ts (2 assertions) and pricing-calculator.test.ts (boundary tests now 75/76 instead of 50/51). Stale comment in pricing-calculator.tsx updated. Forward-looking docs updated: docs/marketing/for-churches-copy-v2.md and docs/sales/enterprise-demo-flow.md. Historical rationale docs (strategy/, finance/, church-review/) left intact — they describe prior decisions and rewriting them would destroy context. Migration note: raising the cap from 50 to 75 only grants more access — no existing church loses any members or privileges. No downgrade possible."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
@@ -5466,7 +5467,7 @@
     "id": "pj-s22-04-copy-hero-and-pco-qualifier",
     "sprint": "22",
     "title": "Copywriter: kill reintroduced 'falls through the cracks' hero + add 'nightly sync' qualifier on PCO card",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Copywriter",
     "priority": "high",
     "fast_lane": true,
@@ -5486,7 +5487,8 @@
     "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #2. Fast-lane (copy-only edits on existing page, Reviewer still gates). Per recommendations.md action #4. Runs in parallel — no deps. Model this on the 2026-04-19 hotfix pattern (pj-hotfix-claim-reconcile-2026-04).",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Backend+Copywriter, 2026-04-20] Hero phrase \"No one falls through the cracks between Sundays\" replaced with \"Every member who carries a prayer is seen before the week is out.\" PCO card updated: \"New members show up the next day\" → \"New members sync overnight\". Copy brief at docs/sprint22/copy-briefs/hero-and-pco-qualifier.md. §7 sweep clean across all touched strings. Line 64 (\"Nothing falls through because nobody owned it\") left unchanged — not in §7 banned list. Brand note: §9.1 of brand guide cites the old hero as an approved example — needs update in next brand-guide revision (out of scope here)."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
