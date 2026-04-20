@@ -1,3 +1,4 @@
+[2026-04-20] Reviewer → PM: pj-s22-01 drizzle-pipeline — approved with Ron dry-run action pending
 [2026-04-20T03:03:47Z] Reviewer → Human: pj-s22-24 — APPROVED, ready to deploy on next push. 2 Sprint-23 follow-ups recorded (pj-s23-clay-token-alpha-tune, pj-s23-jar-mark-png-script-sync) — both low-priority observations, not blockers.
 [2026-04-20T03:03:47Z] Reviewer → (self): pj-s22-24 — starting final review
 [2026-04-20T03:15:00.000Z] QA → Reviewer: pj-s22-24 — clay vessel verified. 12/13 criteria PASS; visual regression UNVERIFIABLE (build fails on missing ADMIN_EMAILS env, dev server blocked by Windows Sentry+Turbopack issue). Ron must eyeball on next local session or Vercel preview. tsc/eslint clean on the 8 changed files; 5 failing test files are all pre-existing Stripe/DB-mock issues unrelated to jar/mark/sign-in/error/not-found.

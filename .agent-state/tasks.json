@@ -2630,7 +2630,7 @@
     "id": "pj-s14-wildcard-subdomains",
     "sprint": "14",
     "title": "Custom church subdomains (e.g. takeheartchurch.prayerjar.org)",
-    "status": "proposed",
+    "status": "abandoned",
     "assigned_to": null,
     "priority": "low",
     "description": "Give each paying church its own vanity subdomain mapped to their public church page and wall. Uses Vercel wildcard domains + middleware rewrite — no per-church DNS config needed. churches.subdomain column already exists on the schema.",
@@ -2643,9 +2643,10 @@
       "Validation: 3–63 chars, a-z0-9-, DNS-safe, must start/end with alphanumeric.",
       "Auth: set NextAuth cookie domain to .prayerjar.org so session works across subdomains.",
       "Canonical: decide between /church/{slug} 301→ subdomain, or both coexist with rel=canonical.",
-      "Gate behind a paid tier (nice upsell lever). Build when 20+ churches and custom branding becomes a real ask."
+      "Gate behind a paid tier (nice upsell lever). Build when 20+ churches and custom branding becomes a real ask.",
+      "[Architect, 2026-04-20] Superseded by pj-s22-16. pj-s22-05 doc explicitly addresses the pj-s14 work."
     ],
-    "last_touched": "2026-04-14T19:30:00.000Z"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s11-fix-moderation-timeout",
@@ -5367,7 +5368,7 @@
     "id": "pj-s22-01-drizzle-pipeline",
     "sprint": "22",
     "title": "DevOps: wire drizzle-kit migrate into deploy pipeline",
-    "status": "review",
+    "status": "done",
     "assigned_to": "DevOps",
     "priority": "high",
     "description": "Prod Neon has drifted from SQL migrations repeatedly — 5 unapplied migrations were detected on 2026-04-19; today's /groups outage was the visible symptom. Must wire `drizzle-kit migrate` (or equivalent runner) into the deploy pipeline so every prod push applies pending migrations atomically before the new code serves traffic. Audit current deploy path (Vercel + GitHub Action at .github/workflows/deploy.yml from pj-001), identify the correct hook (pre-deploy vs post-deploy step), handle rollback on migration failure, and document. Reference: scripts/apply-NNNN-runner.mjs pattern used ad-hoc on 2026-04-19 for migration 0030 — that manual process is what this task replaces.",
@@ -5398,10 +5399,11 @@
       "[DevOps, 2026-04-19] End-to-end verification: ran scripts/migrate-dry-run.mjs against the dev Neon DB (read-only). Result: dev has 27 rows, max_ts=1776291656398, dry-run correctly reports 5 pending (0026-0030) which matches the known prod-drift story. Prod dry-run was NOT run (no prod creds available in this session); QA/Ron must run `node scripts/migrate-dry-run.mjs` with prod DATABASE_URL in .env.production.tmp and confirm: (a) schema 'drizzle' missing, (b) table missing, (c) would seed 32 rows.",
       "[DevOps, 2026-04-19] KNOWN GOTCHA (documented, not fixed): 0012_trigram_search.sql contains CREATE INDEX CONCURRENTLY which Postgres rejects inside a transaction. Drizzle's migrator wraps all statements in one transaction. Fine for prod (seeded as already-applied); will FAIL on any fresh DB run-through (preview branch provisioning, DR recovery). Flagged in docs/ops/deploy-migrations.md for a future-sprint fix.",
       "[DevOps, 2026-04-19] Preview/staging gap: neon-branch.yml creates bare Neon branches per PR but does not migrate them. Existing pre-prod migration check is ci.yml integration job which runs `npm run db:migrate` against long-lived NEON_INTEGRATION_DB_URL. Documented as known gap; not wired to preview branches in this task (out of scope and blocked by 0012_trigram_search gotcha above).",
-      "[DevOps, 2026-04-19] No DDL run against prod by this task (per task rule 5). Pipeline is wired but inactive until the next push to feature/prayer-jar triggers deploy.yml, at which point the first production run will create the drizzle schema + table, seed 32 rows, and no-op the migrator. Added `*.sql text eol=lf` to new .gitattributes for hash stability across CRLF/LF checkouts."
+      "[DevOps, 2026-04-19] No DDL run against prod by this task (per task rule 5). Pipeline is wired but inactive until the next push to feature/prayer-jar triggers deploy.yml, at which point the first production run will create the drizzle schema + table, seed 32 rows, and no-op the migrator. Added `*.sql text eol=lf` to new .gitattributes for hash stability across CRLF/LF checkouts.",
+      "[Reviewer, 2026-04-20] CODE APPROVED. AC1 PASS: deploy.yml has migrate step correctly placed between vercel build and vercel deploy. AC2 PASS: step failure (non-zero exit) halts the job before deploy runs; new bundle never ships against unmigrated DB. AC3 DOCUMENTED GAP: preview/staging migration is out of scope — pre-prod check runs via ci.yml integration job against NEON_INTEGRATION_DB_URL; acceptable and documented in docs/ops/deploy-migrations.md. AC4 PASS: runbook at docs/ops/deploy-migrations.md covers behavior, rollback, manual override, dry-run, and all known gotchas. AC5 SELF-VERIFIES: pipeline code is correct; e2e confirmation occurs on next prod push. AC6 PASS: DATABASE_URL sourced via shell-source (not echoed); redact() helper strips postgres URLs from all error log paths; only Neon host is printed in diagnostics. Journal repair confirmed: 32 entries, zero orphans, monotonic when. ACTION FOR RON: Run `node scripts/migrate-dry-run.mjs` with prod DATABASE_URL in a `.env.production.tmp` file before next deploy to confirm prod DB state. Expected output: schema 'drizzle' missing, table missing, would seed 32 rows, migrate would no-op."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-02-vercel-webhook",
@@ -5493,7 +5495,7 @@
     "id": "pj-s22-05-architect-sso-subdomain-spike",
     "sprint": "22",
     "title": "Architect: revise subdomain design for simplified (per-subdomain) auth — SSO deferred",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Architect",
     "priority": "high",
     "description": "Re-scoped 2026-04-19 by Ron. SSO is OUT of Sprint 22 (deferred). This task now narrows to a subdomain-only revision of the existing design doc at docs/architecture/sprint22-sso-subdomain.md. Required revisions: (a) delete or mark-deferred the SSO sections (1, 2, 3, 4, 7, plus SSO references in 8, 9, 10); (b) rewrite §7 (Subdomain ↔ SSO Interaction) under the new constraint: NO cross-domain session sharing — each subdomain is its own sign-in surface. A user signed in on prayerjar.org is NOT automatically signed in on takeheart.prayerjar.org, and vice versa; each domain sets/reads its own cookie. This avoids the forced-logout-on-rollout problem entirely. (c) Confirm §5 (Vercel DNS/config) and §6 (proxy.ts tenant resolution) survive unchanged. (d) Confirm schema delta for subdomain-only (not SSO) is still in §2 — if not, carve out. Deliverable: revised doc at docs/architecture/sprint22-sso-subdomain.md (or a shorter new doc if the Architect prefers — retitle to reflect subdomain-only scope).",
@@ -5515,10 +5517,11 @@
       "[PM, 2026-04-19] Sprint 22 scope driver — gates item #4 (custom subdomain only). SSO deferred per Ron re-scope.",
       "[PM, 2026-04-19] Reference: pj-s14-wildcard-subdomains (parked) and Sprint 14 (Church Subdomains, status=done) — spike must address interaction.",
       "[PM, 2026-04-19] RE-SCOPE: SSO removed from this spike. Existing doc at docs/architecture/sprint22-sso-subdomain.md §7 (Subdomain ↔ SSO Interaction) is the specific section that needs the simplified-sessions revision. Core constraint: NO cross-domain session sharing — users sign in separately on each subdomain.",
-      "[Ron, 2026-04-19] Approved. Go engineers."
+      "[Ron, 2026-04-19] Approved. Go engineers.",
+      "[Architect, 2026-04-20] Started: revising sprint22-sso-subdomain.md to reflect SSO deferred, per-subdomain auth model."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-06-security-sso-review",
