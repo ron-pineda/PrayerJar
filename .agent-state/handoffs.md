@@ -1,3 +1,4 @@
+[2026-04-20] Architect → Backend: pj-s22-05 subdomain design revised — SSO deferred, per-subdomain auth model documented, ready for pj-s22-16 implementation
 [2026-04-20] Reviewer → PM: pj-s22-01 drizzle-pipeline — approved with Ron dry-run action pending
 [2026-04-20T03:03:47Z] Reviewer → Human: pj-s22-24 — APPROVED, ready to deploy on next push. 2 Sprint-23 follow-ups recorded (pj-s23-clay-token-alpha-tune, pj-s23-jar-mark-png-script-sync) — both low-priority observations, not blockers.
 [2026-04-20T03:03:47Z] Reviewer → (self): pj-s22-24 — starting final review

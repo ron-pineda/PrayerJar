@@ -5439,7 +5439,7 @@
     "id": "pj-s22-03-free-cap-75",
     "sprint": "22",
     "title": "Backend+Copywriter: raise Free-tier member cap 50 → 75",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Backend Engineer",
     "priority": "high",
     "description": "Per recommendations.md action #2 and customersuccess-findings.md: current Free cap of 50 members blocks the 50–75-member band (plants, house churches, small-church majority) from feeling value before the paywall. One-line change in src/lib/plans.ts plus copy updates wherever '50 members' is surfaced (pricing page, /for-churches, plan comparison table, onboarding). Copywriter audits copy surfaces first so Backend's PR sweeps both code + copy in one pass.",
@@ -5460,13 +5460,13 @@
       "[Ron, 2026-04-19] Approved. Go engineers."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-04-copy-hero-and-pco-qualifier",
     "sprint": "22",
     "title": "Copywriter: kill reintroduced 'falls through the cracks' hero + add 'nightly sync' qualifier on PCO card",
-    "status": "approved",
+    "status": "in-progress",
     "assigned_to": "Copywriter",
     "priority": "high",
     "fast_lane": true,
@@ -5489,13 +5489,13 @@
       "[Ron, 2026-04-19] Approved. Go engineers."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-04-19"
+    "last_touched": "2026-04-20"
   },
   {
     "id": "pj-s22-05-architect-sso-subdomain-spike",
     "sprint": "22",
     "title": "Architect: revise subdomain design for simplified (per-subdomain) auth — SSO deferred",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Architect",
     "priority": "high",
     "description": "Re-scoped 2026-04-19 by Ron. SSO is OUT of Sprint 22 (deferred). This task now narrows to a subdomain-only revision of the existing design doc at docs/architecture/sprint22-sso-subdomain.md. Required revisions: (a) delete or mark-deferred the SSO sections (1, 2, 3, 4, 7, plus SSO references in 8, 9, 10); (b) rewrite §7 (Subdomain ↔ SSO Interaction) under the new constraint: NO cross-domain session sharing — each subdomain is its own sign-in surface. A user signed in on prayerjar.org is NOT automatically signed in on takeheart.prayerjar.org, and vice versa; each domain sets/reads its own cookie. This avoids the forced-logout-on-rollout problem entirely. (c) Confirm §5 (Vercel DNS/config) and §6 (proxy.ts tenant resolution) survive unchanged. (d) Confirm schema delta for subdomain-only (not SSO) is still in §2 — if not, carve out. Deliverable: revised doc at docs/architecture/sprint22-sso-subdomain.md (or a shorter new doc if the Architect prefers — retitle to reflect subdomain-only scope).",
@@ -5518,7 +5518,8 @@
       "[PM, 2026-04-19] Reference: pj-s14-wildcard-subdomains (parked) and Sprint 14 (Church Subdomains, status=done) — spike must address interaction.",
       "[PM, 2026-04-19] RE-SCOPE: SSO removed from this spike. Existing doc at docs/architecture/sprint22-sso-subdomain.md §7 (Subdomain ↔ SSO Interaction) is the specific section that needs the simplified-sessions revision. Core constraint: NO cross-domain session sharing — users sign in separately on each subdomain.",
       "[Ron, 2026-04-19] Approved. Go engineers.",
-      "[Architect, 2026-04-20] Started: revising sprint22-sso-subdomain.md to reflect SSO deferred, per-subdomain auth model."
+      "[Architect, 2026-04-20] Started: revising sprint22-sso-subdomain.md to reflect SSO deferred, per-subdomain auth model.",
+      "[Architect, 2026-04-20] DONE: Revised sprint22-sso-subdomain.md — SSO sections §1-§4 marked deferred, §7 replaced with Per-Subdomain Auth Model (no cross-domain session sharing, no forced logout, forward-compatible with SSO), §8 rollout plan simplified (removed cookie-domain-change step), §9 added three session-isolation tests, §10 Q4 resolved. pj-s14 marked abandoned. Ready for Backend (pj-s22-16) handoff."
     ],
     "created_at": "2026-04-19",
     "last_touched": "2026-04-20"
