@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PrayerJarMark } from "@/components/prayer-jar-mark";
 
 export default function NotFound() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
-      <span className="text-6xl mb-6">🫙</span>
+      <PrayerJarMark size={60} className="mb-6" />
       <h1 className="text-4xl font-bold tracking-tight mb-2">Page not found</h1>
       <p className="text-muted-foreground mb-8 max-w-sm">
         This page doesn&apos;t exist or may have been moved. Let&apos;s get you back on track.

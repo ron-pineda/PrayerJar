@@ -15,6 +15,7 @@ import { getChurchForUser } from '@/services/church-platform.service';
 import { Analytics } from '@vercel/analytics/next';
 import { FeedbackWidget } from '@/components/feedback-widget';
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt';
+import { PrayerJarMark } from '@/components/prayer-jar-mark';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -62,8 +63,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeProvider>
         <header className="border-b relative z-10">
           <nav aria-label="Main navigation" className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-semibold text-lg">
-              <span aria-hidden="true">🫙</span> Prayer Jar
+            <Link href="/" className="font-semibold text-lg inline-flex items-center gap-2">
+              <PrayerJarMark size={20} />
+              <span>Prayer Jar</span>
             </Link>
 
             {/* Desktop nav — hidden on mobile */}

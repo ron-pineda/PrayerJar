@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { PrayerJarMark } from "@/components/prayer-jar-mark";
 
 export default function Error({
   error,
@@ -16,7 +17,7 @@ export default function Error({
 
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
-      <span className="text-6xl mb-6">🫙</span>
+      <PrayerJarMark size={60} className="mb-6" />
       <h1 className="text-3xl font-bold tracking-tight mb-2">Something went wrong</h1>
       <p className="text-muted-foreground mb-8 max-w-sm">
         An unexpected error occurred. Your prayers are safe — please try again.
