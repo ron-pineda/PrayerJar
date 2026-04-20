@@ -7,6 +7,8 @@ interface SignInEmailProps {
 }
 
 export default function SignInEmail({ url }: SignInEmailProps) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org';
+  const markSrc = `${siteUrl}/email-assets/prayer-jar-mark.png`;
   return (
     <Html>
       <Head />
@@ -15,7 +17,13 @@ export default function SignInEmail({ url }: SignInEmailProps) {
         <Container style={{ maxWidth: '480px', margin: '40px auto', padding: '0' }}>
           {/* Header */}
           <Section style={{ backgroundColor: '#1c1917', borderRadius: '8px 8px 0 0', padding: '32px 24px', textAlign: 'center' as const }}>
-            <Text style={{ fontSize: '36px', margin: '0 0 8px 0' }}>🫙</Text>
+            <Img
+              src={markSrc}
+              alt=""
+              width="36"
+              height="36"
+              style={{ display: 'inline-block', margin: '0 0 8px 0' }}
+            />
             <Heading style={{ fontSize: '22px', color: '#fef3c7', margin: '0', fontWeight: 600 }}>
               The Prayer Jar
             </Heading>
