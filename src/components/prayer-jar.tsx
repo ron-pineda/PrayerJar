@@ -92,10 +92,13 @@ function lightStyle(index: number, slot: { left: number; bottom: number }): Reac
     width: size,
     height: size,
     borderRadius: '50%',
+    // NOTE: --primary is stored as a full oklch(...) expression, so we cannot
+    // write oklch(var(--primary) / α) — that nests invalidly. Use color-mix for
+    // alpha, and var(--primary) directly at full opacity.
     background:
-      'radial-gradient(circle at 35% 35%, oklch(var(--primary) / 1) 0%, oklch(var(--primary) / 0.6) 50%, transparent 70%)',
+      'radial-gradient(circle at 35% 35%, var(--primary) 0%, color-mix(in oklch, var(--primary) 60%, transparent) 50%, transparent 70%)',
     boxShadow:
-      '0 0 12px 4px oklch(var(--primary) / 0.5), 0 0 30px 8px oklch(var(--primary) / 0.2)',
+      '0 0 12px 4px color-mix(in oklch, var(--primary) 50%, transparent), 0 0 30px 8px color-mix(in oklch, var(--primary) 20%, transparent)',
     animation: `${floatAnim} ${floatDur}s ease-in-out infinite ${delay}s, light-pulse ${pulseDur}s ease-in-out infinite ${delay * 0.7}s`,
   };
 }
@@ -210,7 +213,7 @@ function overflowGlowStyle(dims: SizeDim, level: OverflowLevel): React.CSSProper
     width: dims.overflowW,
     height: dims.overflowH,
     background:
-      'radial-gradient(ellipse at 50% 100%, oklch(var(--primary) / 0.50) 0%, oklch(var(--primary) / 0.20) 40%, transparent 70%)',
+      'radial-gradient(ellipse at 50% 100%, color-mix(in oklch, var(--primary) 50%, transparent) 0%, color-mix(in oklch, var(--primary) 20%, transparent) 40%, transparent 70%)',
     filter: 'blur(10px)',
     pointerEvents: 'none',
     zIndex: 3,

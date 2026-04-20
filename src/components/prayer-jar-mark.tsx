@@ -42,7 +42,7 @@ export function PrayerJarMark({
       {/* Rim — rounded rectangle across the top. */}
       <rect x="4" y="3" width="16" height="3" rx="1.5" fill="currentColor" />
       {/* Single amber light inside. */}
-      <circle cx="12" cy="15" r="1.5" fill="oklch(var(--primary))" />
+      <circle cx="12" cy="15" r="1.5" fill="var(--primary)" />
     </svg>
   );
 }
