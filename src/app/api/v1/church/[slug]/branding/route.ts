@@ -57,8 +57,13 @@ export async function PUT(
     return Response.json({ error: 'Invalid input' }, { status: 400 });
   }
 
-  // ── Subdomain-specific validation (only when a new value is being set) ──
-  if (parsed.data.subdomain != null) {
+  // ── Subdomain-specific validation (only when the value actually changes) ──
+  //
+  // Gate fires only when `subdomain` is being set to a NEW non-null value.
+  // Keeping an unchanged subdomain (e.g. a downgraded church saving only
+  // primaryColor while their historic subdomain rides along in the body)
+  // must NOT be blocked — that would prevent any branding save after downgrade.
+  if (parsed.data.subdomain != null && parsed.data.subdomain !== church.subdomain) {
     const sub = parsed.data.subdomain;
 
     // RFC-1035: no leading or trailing hyphen.

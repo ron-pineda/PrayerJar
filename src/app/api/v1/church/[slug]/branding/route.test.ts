@@ -326,4 +326,28 @@ describe('PUT /api/v1/church/[slug]/branding', () => {
 
     expect(res.status).toBe(200);
   });
+
+  it('returns 200 when downgraded church saves branding with its existing (unchanged) subdomain', async () => {
+    // Regression guard for the downgrade-save blocker:
+    // A church was Pro, set subdomain='grace', then downgraded to Free.
+    // When they save only primaryColor, BrandingForm also sends the historic
+    // subdomain value. The tier gate must NOT fire because subdomain hasn't changed.
+    vi.mocked(auth).mockResolvedValueOnce({
+      user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
+    } as Awaited<ReturnType<typeof auth>>);
+    vi.mocked(getChurchBySlug).mockResolvedValueOnce({
+      ...mockChurchFree,
+      subdomain: 'grace',        // church already has this subdomain from when it was Pro
+    });
+
+    const res = await PUT(
+      // sends the same subdomain value — not trying to change it
+      makeRequest({ primaryColor: '#aabbcc', subdomain: 'grace' }),
+      { params: Promise.resolve({ slug: 'free-church-ab99' }) },
+    );
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('success', true);
+  });
 });

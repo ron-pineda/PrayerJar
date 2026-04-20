@@ -67,10 +67,12 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
         .limit(1);
 
       if (rows.length === 0) {
-        // Unknown subdomain → redirect to apex with banner query param.
+        // Unknown subdomain → redirect to apex home with banner query param.
+        // Force pathname to '/' — subdomain paths like /wall don't exist on apex.
         const apexUrl = new URL(req.url);
         apexUrl.hostname = 'prayerjar.org';
         apexUrl.port = '';
+        apexUrl.pathname = '/';
         apexUrl.searchParams.set('unknown_subdomain', '1');
         return NextResponse.redirect(apexUrl, 302);
       }
