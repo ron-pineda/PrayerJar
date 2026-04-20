@@ -146,6 +146,13 @@ export default async function PastoralDashboardPage({ params }: Props) {
           <span className="text-muted-foreground text-sm">→</span>
         </Link>
         <Link
+          href={`/church/${slug}/dashboard/groups`}
+          className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
+        >
+          <span className="font-medium">Synced Groups</span>
+          <span className="text-muted-foreground text-sm">→</span>
+        </Link>
+        <Link
           href={`/church/${slug}/settings/nonprofit`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
