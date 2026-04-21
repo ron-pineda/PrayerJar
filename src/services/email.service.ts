@@ -9,8 +9,11 @@ import Welcome2Email from '@/emails/welcome-2';
 import Welcome3Email from '@/emails/welcome-3';
 import IntercessorThanksEmail from '@/emails/intercessor-thanks';
 import { db } from '@/db';
-import { prayerInteractions, prayers, users, welcomeDripStatus, type BadgeType } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { prayerInteractions, prayers, users, welcomeDripStatus, churchAdminDripStatus, type BadgeType } from '@/db/schema';
+import ChurchWelcome1Email from '@/emails/church-welcome-1';
+import ChurchWelcome2Email from '@/emails/church-welcome-2';
+import ChurchWelcome3Email from '@/emails/church-welcome-3';
+import { eq, and, isNull, lt, count, ne } from 'drizzle-orm';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
 const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
@@ -173,4 +176,69 @@ export async function sendIntercessorCareEmail(
     subject: 'Thank you for interceding 🙏',
     html,
   });
+}
+
+export async function sendChurchWelcome1Email(
+  churchId: string,
+  adminUserId: string,
+  adminEmail: string,
+  churchSlug: string,
+  adminName?: string,
+) {
+  const html = await render(ChurchWelcome1Email({ churchSlug, adminName }));
+
+  await resend.emails.send({
+    from: FROM,
+    to: adminEmail,
+    subject: 'Your church is live on PrayerJar',
+    html,
+  });
+
+  await db
+    .insert(churchAdminDripStatus)
+    .values({ churchId, adminUserId, email1SentAt: new Date() })
+    .onConflictDoUpdate({
+      target: churchAdminDripStatus.churchId,
+      set: { email1SentAt: new Date() },
+    });
+}
+
+export async function sendChurchWelcome2Email(
+  churchId: string,
+  adminEmail: string,
+  churchSlug: string,
+) {
+  const html = await render(ChurchWelcome2Email({ churchSlug }));
+
+  await resend.emails.send({
+    from: FROM,
+    to: adminEmail,
+    subject: 'Your prayer wall is waiting',
+    html,
+  });
+
+  await db
+    .update(churchAdminDripStatus)
+    .set({ email2SentAt: new Date() })
+    .where(eq(churchAdminDripStatus.churchId, churchId));
+}
+
+export async function sendChurchWelcome3Email(
+  churchId: string,
+  adminEmail: string,
+  churchSlug: string,
+) {
+  const html = await render(ChurchWelcome3Email({ churchSlug }));
+
+  await resend.emails.send({
+    from: FROM,
+    to: adminEmail,
+    subject: 'Quick wins before Sunday',
+    html,
+  });
+
+  await db
+    .update(churchAdminDripStatus)
+    .set({ email3SentAt: new Date() })
+    .where(eq(churchAdminDripStatus.churchId, churchId));
 }
