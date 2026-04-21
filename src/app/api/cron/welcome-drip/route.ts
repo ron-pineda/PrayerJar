@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { users, welcomeDripStatus, churchAdminDripStatus, churchMembers, churches } from '@/db/schema';
 import { sendWelcome2Email, sendWelcome3Email, sendChurchWelcome2Email, sendChurchWelcome3Email } from '@/services/email.service';
-import { eq, isNull, and, lt, count, ne } from 'drizzle-orm';
+import { eq, isNull, isNotNull, and, lt, count, ne } from 'drizzle-orm';
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
@@ -103,6 +103,7 @@ export async function GET(req: NextRequest) {
     .where(
       and(
         isNull(churchAdminDripStatus.email3SentAt),
+        isNotNull(churchAdminDripStatus.email2SentAt),
         lt(churchAdminDripStatus.createdAt, sevenDaysAgo),
       )
     );
