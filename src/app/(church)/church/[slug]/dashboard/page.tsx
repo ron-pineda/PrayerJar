@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import {
@@ -21,14 +21,7 @@ export default async function PastoralDashboardPage({ params }: Props) {
 
   const session = await auth();
   if (!session?.user?.id) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <p className="text-muted-foreground mb-4">You must be signed in to access the dashboard.</p>
-        <Link href="/sign-in" className="text-sm text-primary hover:underline">
-          Sign in
-        </Link>
-      </div>
-    );
+    redirect(`/sign-in?callbackUrl=/church/${slug}/dashboard`);
   }
 
   const church = await getChurchBySlug(slug);

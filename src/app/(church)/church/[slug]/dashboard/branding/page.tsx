@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
@@ -17,16 +17,7 @@ export default async function BrandingPage({ params }: Props) {
 
   const session = await auth();
   if (!session?.user?.id) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <p className="text-muted-foreground mb-4">
-          You must be signed in to manage branding.
-        </p>
-        <Link href="/sign-in" className="text-sm text-primary hover:underline">
-          Sign in
-        </Link>
-      </div>
-    );
+    redirect(`/sign-in?callbackUrl=/church/${slug}/dashboard/branding`);
   }
 
   const members = await getChurchMembers(church.id);
