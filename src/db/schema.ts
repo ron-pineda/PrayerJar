@@ -254,10 +254,10 @@ export const churchAdminDripStatus = pgTable('churchAdminDripStatus', {
   id: uuid('id').primaryKey().defaultRandom(),
   churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }).unique(),
   adminUserId: uuid('admin_user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  email1SentAt: timestamp('email1_sent_at'),
-  email2SentAt: timestamp('email2_sent_at'),
-  email3SentAt: timestamp('email3_sent_at'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  email1SentAt: timestamp('email1_sent_at', { withTimezone: true }),
+  email2SentAt: timestamp('email2_sent_at', { withTimezone: true }),
+  email3SentAt: timestamp('email3_sent_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type ChurchAdminDripStatus = typeof churchAdminDripStatus.$inferSelect;

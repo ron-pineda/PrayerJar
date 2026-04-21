@@ -185,6 +185,12 @@ export async function sendChurchWelcome1Email(
   churchSlug: string,
   adminName?: string,
 ) {
+  // Insert row first so the church is tracked even if send fails
+  await db
+    .insert(churchAdminDripStatus)
+    .values({ churchId, adminUserId })
+    .onConflictDoNothing();
+
   const html = await render(ChurchWelcome1Email({ churchSlug, adminName }));
 
   await resend.emails.send({
@@ -195,12 +201,9 @@ export async function sendChurchWelcome1Email(
   });
 
   await db
-    .insert(churchAdminDripStatus)
-    .values({ churchId, adminUserId, email1SentAt: new Date() })
-    .onConflictDoUpdate({
-      target: churchAdminDripStatus.churchId,
-      set: { email1SentAt: new Date() },
-    });
+    .update(churchAdminDripStatus)
+    .set({ email1SentAt: new Date() })
+    .where(eq(churchAdminDripStatus.churchId, churchId));
 }
 
 export async function sendChurchWelcome2Email(

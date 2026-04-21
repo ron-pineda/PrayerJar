@@ -1,15 +1,16 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // ── Hoist spy references so vi.mock factories can close over them ──
-const { mockEmailSend, mockWhere, mockSet, mockConflictUpdate, mockValues, mockInsert, mockUpdate } = vi.hoisted(() => {
+const { mockEmailSend, mockWhere, mockSet, mockConflictUpdate, mockConflictNothing, mockValues, mockInsert, mockUpdate } = vi.hoisted(() => {
   const mockEmailSend = vi.fn().mockResolvedValue({ id: 'mock-id' });
   const mockWhere = vi.fn().mockResolvedValue([]);
   const mockSet = vi.fn().mockReturnValue({ where: mockWhere });
   const mockConflictUpdate = vi.fn().mockResolvedValue([]);
-  const mockValues = vi.fn().mockReturnValue({ onConflictDoUpdate: mockConflictUpdate });
+  const mockConflictNothing = vi.fn().mockResolvedValue([]);
+  const mockValues = vi.fn().mockReturnValue({ onConflictDoUpdate: mockConflictUpdate, onConflictDoNothing: mockConflictNothing });
   const mockInsert = vi.fn().mockReturnValue({ values: mockValues });
   const mockUpdate = vi.fn().mockReturnValue({ set: mockSet });
-  return { mockEmailSend, mockWhere, mockSet, mockConflictUpdate, mockValues, mockInsert, mockUpdate };
+  return { mockEmailSend, mockWhere, mockSet, mockConflictUpdate, mockConflictNothing, mockValues, mockInsert, mockUpdate };
 });
 
 // ── Resend mock ──
@@ -39,11 +40,17 @@ describe('sendChurchWelcome1Email', () => {
     );
   });
 
-  it('inserts a drip row with email1SentAt', async () => {
+  it('inserts a drip row (without email1SentAt) then stamps email1SentAt via update', async () => {
     await sendChurchWelcome1Email('church-1', 'user-1', 'pastor@grace.org', 'grace-church');
+    // Row inserted first (idempotently) without email1SentAt
     expect(mockInsert).toHaveBeenCalled();
     expect(mockValues).toHaveBeenCalledWith(
       expect.objectContaining({ churchId: 'church-1', adminUserId: 'user-1' })
+    );
+    // email1SentAt stamped via update after successful send
+    expect(mockUpdate).toHaveBeenCalled();
+    expect(mockSet).toHaveBeenCalledWith(
+      expect.objectContaining({ email1SentAt: expect.any(Date) })
     );
   });
 });

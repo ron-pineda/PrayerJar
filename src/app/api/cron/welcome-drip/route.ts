@@ -68,25 +68,28 @@ export async function GET(req: NextRequest) {
 
   for (const row of email2Candidates) {
     if (!row.adminEmail || !row.churchSlug) continue;
+    try {
+      const [memberCount] = await db
+        .select({ count: count() })
+        .from(churchMembers)
+        .where(
+          and(
+            eq(churchMembers.churchId, row.churchId),
+            ne(churchMembers.role, 'admin'),
+          )
+        );
 
-    const [memberCount] = await db
-      .select({ count: count() })
-      .from(churchMembers)
-      .where(
-        and(
-          eq(churchMembers.churchId, row.churchId),
-          ne(churchMembers.role, 'admin'),
-        )
-      );
-
-    if ((memberCount?.count ?? 0) === 0) {
-      await sendChurchWelcome2Email(row.churchId, row.adminEmail, row.churchSlug);
-      churchSent2++;
-    } else {
-      await db
-        .update(churchAdminDripStatus)
-        .set({ email2SentAt: new Date() })
-        .where(eq(churchAdminDripStatus.churchId, row.churchId));
+      if ((memberCount?.count ?? 0) === 0) {
+        await sendChurchWelcome2Email(row.churchId, row.adminEmail, row.churchSlug);
+        churchSent2++;
+      } else {
+        await db
+          .update(churchAdminDripStatus)
+          .set({ email2SentAt: new Date() })
+          .where(eq(churchAdminDripStatus.churchId, row.churchId));
+      }
+    } catch (err) {
+      console.error('[welcome-drip] church email 2 failed', { churchId: row.churchId, err });
     }
   }
 
@@ -110,25 +113,28 @@ export async function GET(req: NextRequest) {
 
   for (const row of email3Candidates) {
     if (!row.adminEmail || !row.churchSlug) continue;
+    try {
+      const [memberCount] = await db
+        .select({ count: count() })
+        .from(churchMembers)
+        .where(
+          and(
+            eq(churchMembers.churchId, row.churchId),
+            ne(churchMembers.role, 'admin'),
+          )
+        );
 
-    const [memberCount] = await db
-      .select({ count: count() })
-      .from(churchMembers)
-      .where(
-        and(
-          eq(churchMembers.churchId, row.churchId),
-          ne(churchMembers.role, 'admin'),
-        )
-      );
-
-    if ((memberCount?.count ?? 0) === 0) {
-      await sendChurchWelcome3Email(row.churchId, row.adminEmail, row.churchSlug);
-      churchSent3++;
-    } else {
-      await db
-        .update(churchAdminDripStatus)
-        .set({ email3SentAt: new Date() })
-        .where(eq(churchAdminDripStatus.churchId, row.churchId));
+      if ((memberCount?.count ?? 0) === 0) {
+        await sendChurchWelcome3Email(row.churchId, row.adminEmail, row.churchSlug);
+        churchSent3++;
+      } else {
+        await db
+          .update(churchAdminDripStatus)
+          .set({ email3SentAt: new Date() })
+          .where(eq(churchAdminDripStatus.churchId, row.churchId));
+      }
+    } catch (err) {
+      console.error('[welcome-drip] church email 3 failed', { churchId: row.churchId, err });
     }
   }
 
