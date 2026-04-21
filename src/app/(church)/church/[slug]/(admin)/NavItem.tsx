@@ -9,6 +9,7 @@ interface NavItemProps {
   label: string;
   locked: boolean;
   tierName: string; // e.g. "Small Church" — shown in upgrade callout
+  exact?: boolean; // when true, only exact pathname match is active (prevents parent-child collision)
 }
 
 function LockIcon() {
@@ -27,13 +28,13 @@ function LockIcon() {
   );
 }
 
-export function NavItem({ href, label, locked, tierName }: NavItemProps) {
+export function NavItem({ href, label, locked, tierName, exact }: NavItemProps) {
   const pathname = usePathname();
   const [showCallout, setShowCallout] = useState(false);
 
-  const isActive =
-    pathname === href ||
-    (href.length > 1 && pathname.startsWith(href + '/'));
+  const isActive = exact
+    ? pathname === href
+    : pathname === href || (href.length > 1 && pathname.startsWith(href + '/'));
 
   if (locked) {
     return (
@@ -41,13 +42,19 @@ export function NavItem({ href, label, locked, tierName }: NavItemProps) {
         <button
           type="button"
           onClick={() => setShowCallout((v) => !v)}
+          aria-expanded={showCallout}
+          aria-controls={`callout-${href.replace(/\//g, '-')}`}
+          aria-label={`${label} — upgrade required`}
           className="w-full flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-left transition-colors text-muted-foreground hover:bg-muted/50"
         >
           <span>{label}</span>
           <LockIcon />
         </button>
         {showCallout && (
-          <div className="mx-2 mb-1 rounded-md border bg-muted/50 p-3 text-xs text-muted-foreground">
+          <div
+            id={`callout-${href.replace(/\//g, '-')}`}
+            className="mx-2 mb-1 rounded-md border bg-muted/50 p-3 text-xs text-muted-foreground"
+          >
             <p className="mb-2">
               Available on the{' '}
               <span className="font-medium text-foreground">{tierName}</span> plan.
