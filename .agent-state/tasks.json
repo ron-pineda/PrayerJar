@@ -6245,5 +6245,29 @@
     ],
     "created_at": "2026-04-20",
     "last_touched": "2026-04-20"
+  },
+  {
+    "id": "pj-s23-church-admin-welcome-drip",
+    "sprint": "23",
+    "title": "Church admin welcome drip — 3-email behavioral sequence",
+    "status": "done",
+    "assigned_to": "Backend Engineer",
+    "priority": "high",
+    "description": "3-email behavioral drip for new church admins. Email 1 fires at church creation. Email 2 fires at day 3 if 0 non-admin members. Email 3 fires at day 7 (gated on email 2 sent) if still 0 non-admin members.",
+    "files": [
+      "src/db/migrations/0032_church_admin_drip.sql",
+      "src/db/schema.ts",
+      "src/emails/church-welcome-1.tsx",
+      "src/emails/church-welcome-2.tsx",
+      "src/emails/church-welcome-3.tsx",
+      "src/services/email.service.ts",
+      "src/services/church-platform.service.ts",
+      "src/app/api/cron/welcome-drip/route.ts"
+    ],
+    "notes": [
+      "[Reviewer, 2026-04-21] All 7 implementation tasks complete. Final review approved after fixes: timestamptz, per-row cron error isolation, safe send order in email 1, email3 gate on email2SentAt. Migration 0032 pending prod apply via migrate-dry-run."
+    ],
+    "created_at": "2026-04-21",
+    "last_touched": "2026-04-21"
   }
 ]
