@@ -76,7 +76,7 @@ export async function createChurch(params: {
     role: 'admin',
   });
 
-  // Fire-and-forget — failure must never block church creation
+  // Best-effort send — swallowed so email failure never blocks church creation
   try {
     const [admin] = await db
       .select({ email: users.email, name: users.name })
@@ -93,8 +93,13 @@ export async function createChurch(params: {
         admin.name ?? undefined,
       );
     }
-  } catch {
-    // intentionally swallowed
+  } catch (err) {
+    // swallowed — email failure must not block church creation
+    console.error('[church-platform] welcome email 1 trigger failed', {
+      churchId: church.id,
+      createdBy: params.createdBy,
+      err,
+    });
   }
 
   return church;
