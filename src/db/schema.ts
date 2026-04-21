@@ -249,6 +249,19 @@ export type ChurchClaim = typeof churchClaims.$inferSelect;
 export type ChurchRecommendation = typeof churchRecommendations.$inferSelect;
 export type ChurchSearchCache = typeof churchSearchCache.$inferSelect;
 export type WelcomeDripStatus = typeof welcomeDripStatus.$inferSelect;
+
+export const churchAdminDripStatus = pgTable('churchAdminDripStatus', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  churchId: uuid('church_id').notNull().references(() => churches.id, { onDelete: 'cascade' }).unique(),
+  adminUserId: uuid('admin_user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  email1SentAt: timestamp('email1_sent_at'),
+  email2SentAt: timestamp('email2_sent_at'),
+  email3SentAt: timestamp('email3_sent_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export type ChurchAdminDripStatus = typeof churchAdminDripStatus.$inferSelect;
+
 export type CategoryValue = typeof categoryEnum.enumValues[number];
 export type BadgeType = typeof badgeTypeEnum.enumValues[number];
 
