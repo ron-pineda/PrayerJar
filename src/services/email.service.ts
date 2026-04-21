@@ -13,7 +13,7 @@ import { prayerInteractions, prayers, users, welcomeDripStatus, churchAdminDripS
 import ChurchWelcome1Email from '@/emails/church-welcome-1';
 import ChurchWelcome2Email from '@/emails/church-welcome-2';
 import ChurchWelcome3Email from '@/emails/church-welcome-3';
-import { eq, and, isNull, lt, count, ne } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 const resend = new Resend(process.env.AUTH_RESEND_KEY ?? 're_placeholder');
 const FROM = process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>';
