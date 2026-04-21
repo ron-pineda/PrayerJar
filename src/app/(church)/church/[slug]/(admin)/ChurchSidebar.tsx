@@ -42,7 +42,8 @@ function churchInitialColor(name: string): string {
     'bg-rose-100 text-rose-700',
     'bg-teal-100 text-teal-700',
   ];
-  return palette[name.charCodeAt(0) % palette.length];
+  const code = name.charCodeAt(0);
+  return isNaN(code) ? palette[0] : palette[code % palette.length];
 }
 
 function SidebarContent({ slug, churchName, tier, userName }: Props) {
@@ -54,7 +55,7 @@ function SidebarContent({ slug, churchName, tier, userName }: Props) {
           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${churchInitialColor(churchName)}`}
           aria-hidden="true"
         >
-          {churchName[0].toUpperCase()}
+          {(churchName[0] ?? '?').toUpperCase()}
         </div>
         <span className="truncate text-sm font-semibold">{churchName}</span>
       </div>
