@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { db } from '@/db';
 import { churches, churchMembers, prayers, groups, users, subscriptions } from '@/db/schema';
 import { eq, and, desc, count } from 'drizzle-orm';
@@ -22,7 +23,7 @@ function generateSlug(name: string): string {
 // Tier helpers
 // ---------------------------------------------------------------------------
 
-export async function getChurchTier(churchId: string): Promise<PlanTier> {
+export const getChurchTier = cache(async function getChurchTier(churchId: string): Promise<PlanTier> {
   const [row] = await db
     .select({ tier: subscriptions.tier, status: subscriptions.status })
     .from(churches)
@@ -32,7 +33,7 @@ export async function getChurchTier(churchId: string): Promise<PlanTier> {
 
   if (row?.tier && row.status === 'active') return row.tier as PlanTier;
   return 'free';
-}
+});
 
 // ---------------------------------------------------------------------------
 // Task pj-s5.1-64: Church platform service
@@ -116,14 +117,14 @@ export async function getChurchById(id: string): Promise<Church | null> {
 }
 
 // Get church by slug (returns null if not found)
-export async function getChurchBySlug(slug: string): Promise<Church | null> {
+export const getChurchBySlug = cache(async function getChurchBySlug(slug: string): Promise<Church | null> {
   const [church] = await db
     .select()
     .from(churches)
     .where(eq(churches.slug, slug))
     .limit(1);
   return church ?? null;
-}
+});
 
 // Get the church a user admins or is a member of (first active church)
 export async function getChurchForUser(
