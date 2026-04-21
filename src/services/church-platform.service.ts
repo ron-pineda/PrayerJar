@@ -5,6 +5,7 @@ import type { Church, ChurchMember } from '@/db/schema';
 import { PLANS } from '@/lib/plans';
 import type { PlanTier } from '@/lib/plans';
 import { logAuditEvent } from '@/lib/audit';
+import { sendChurchWelcome1Email } from '@/services/email.service';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -74,6 +75,27 @@ export async function createChurch(params: {
     userId: params.createdBy,
     role: 'admin',
   });
+
+  // Fire-and-forget — failure must never block church creation
+  try {
+    const [admin] = await db
+      .select({ email: users.email, name: users.name })
+      .from(users)
+      .where(eq(users.id, params.createdBy))
+      .limit(1);
+
+    if (admin?.email) {
+      await sendChurchWelcome1Email(
+        church.id,
+        params.createdBy,
+        admin.email,
+        church.slug,
+        admin.name ?? undefined,
+      );
+    }
+  } catch {
+    // intentionally swallowed
+  }
 
   return church;
 }
