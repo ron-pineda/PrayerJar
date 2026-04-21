@@ -54,12 +54,12 @@ export function SidebarDrawer({ churchName, children }: SidebarDrawerProps) {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40 bg-black/40"
+            className="fixed inset-0 z-50 bg-black/40"
             aria-hidden="true"
             onClick={() => setOpen(false)}
           />
           {/* Drawer panel */}
-          <div className="fixed inset-y-0 left-0 z-50 flex">
+          <div className="fixed inset-y-0 left-0 z-[60] flex">
             {children}
           </div>
         </>
