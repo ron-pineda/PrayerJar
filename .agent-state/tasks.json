@@ -6220,8 +6220,8 @@
     "id": "pj-s23-subdomain-auth-flow",
     "sprint": "23",
     "title": "Backend: subdomain sign-in flow — exclude public routes from rewrite, fix auth callback to subdomain",
-    "status": "proposed",
-    "assigned_to": "Backend Engineer",
+    "status": "review",
+    "assigned_to": "QA",
     "priority": "high",
     "description": "Two gaps in the Sprint 22 subdomain routing implementation: (1) /sign-in and other public routes get rewritten to /church/[slug]/sign-in which does not exist — proxy.ts needs to exclude public paths (/sign-in, /sign-up, /help, /docs, etc.) from the church-slug rewrite. (2) After magic-link sign-in on a subdomain, the NEXTAUTH_URL callback returns to prayerjar.org (apex), so the session cookie lands on the wrong host. The auth callback needs to detect the originating subdomain (via state param or cookie) and redirect back to it, minting the session on the subdomain host.",
     "acceptance_criteria": [
@@ -6241,10 +6241,11 @@
       "pj-s23-subdomain-dns-smoke-test"
     ],
     "notes": [
-      "[Ron, 2026-04-20] Confirmed during smoke test: routing rewrite works, but sign-in on subdomain fails because (a) /sign-in is rewritten to a non-existent church-scoped route and (b) magic-link callback returns to apex, not subdomain. Sprint 23 follow-up to pj-s22-16."
+      "[Ron, 2026-04-20] Confirmed during smoke test: routing rewrite works, but sign-in on subdomain fails because (a) /sign-in is rewritten to a non-existent church-scoped route and (b) magic-link callback returns to apex, not subdomain. Sprint 23 follow-up to pj-s22-16.",
+      "[Backend, 2026-04-21] Implemented: proxy.ts passes /sign-in through without slug prefix and strips /church/<slug> from callbackUrl. auth.ts sendVerificationRequest swaps magic-link hostname to subdomain when request comes from *.prayerjar.org. Commits: a10d724, 8621b4c. IMPORTANT QA NOTE: the highest-risk scenario is post-callback redirect — verify browser stays on <sub>.prayerjar.org/dashboard, not prayerjar.org, after clicking magic link from subdomain sign-in."
     ],
     "created_at": "2026-04-20",
-    "last_touched": "2026-04-20"
+    "last_touched": "2026-04-21"
   },
   {
     "id": "pj-s23-church-admin-welcome-drip",

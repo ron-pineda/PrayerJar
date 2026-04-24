@@ -1,3 +1,4 @@
+[2026-04-21] Backend → QA: pj-s23-subdomain-auth-flow — in review (commits a10d724, 8621b4c). QA must test magic-link sign-in from subdomain end-to-end: verify browser stays on <sub>.prayerjar.org after callback, session cookie Domain is the subdomain, and /wall loads while signed in.
 [2026-04-20] Reviewer → PM: pj-s22-22 Sprint 22 closed — 9 tasks shipped, 12 deferred, 4 Ron actions in INBOX.md
 [2026-04-20] QA → Reviewer: pj-s22-17 subdomain QA complete — static cases PASS, DNS cases pending Ron action
 [2026-04-20] QA → Reviewer: pj-s22-18 PCO group QA complete — PASS. 5/5 unit tests pass, 4 code-review checks clean, 3 CANNOT_VERIFY (build-blocked), stale-membership gap documented for Sprint 23. pj-s22-08 → done.
