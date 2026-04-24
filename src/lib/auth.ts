@@ -27,8 +27,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
       from: process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>',
-      async sendVerificationRequest({ identifier: to, url, provider }) {
-        const html = await render(SignInEmail({ url }));
+      async sendVerificationRequest({ identifier: to, url, provider, request }) {
+        let magicLinkUrl = url;
+        const host = request.headers.get('host') ?? '';
+        if (/^[a-z0-9-]{1,63}\.prayerjar\.org$/i.test(host)) {
+          const parsed = new URL(url);
+          parsed.hostname = host;
+          magicLinkUrl = parsed.toString();
+        }
+        const html = await render(SignInEmail({ url: magicLinkUrl }));
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {

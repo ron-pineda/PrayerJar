@@ -79,15 +79,24 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
 
       const church = rows[0];
 
-      // Inject church context headers and rewrite the path to /church/<slug>.
-      // The user's browser URL stays takeheart.prayerjar.org/wall while Next.js
-      // internally serves /church/takeheart/wall.
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set('x-pj-church-id', church.id);
       requestHeaders.set('x-pj-church-slug', church.slug);
 
       const url = req.nextUrl.clone();
       const originalPath = url.pathname;
+
+      if (originalPath === '/sign-in') {
+        const callbackUrl = url.searchParams.get('callbackUrl');
+        if (callbackUrl?.startsWith(`/church/${church.slug}`)) {
+          url.searchParams.set(
+            'callbackUrl',
+            callbackUrl.slice(`/church/${church.slug}`.length) || '/',
+          );
+        }
+        return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+      }
+
       url.pathname = `/church/${church.slug}${originalPath === '/' ? '' : originalPath}`;
 
       return NextResponse.rewrite(url, {
