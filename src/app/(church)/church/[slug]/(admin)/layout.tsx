@@ -25,7 +25,7 @@ export default async function AdminLayout({ children, params }: Props) {
   const userName = session?.user?.name ?? session?.user?.email ?? null;
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)]">
+    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-3.5rem)]">
       <ChurchSidebar
         slug={slug}
         churchName={church.name}
