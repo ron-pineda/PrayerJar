@@ -86,7 +86,10 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
       const url = req.nextUrl.clone();
       const originalPath = url.pathname;
 
-      if (originalPath === '/sign-in') {
+      // /sign-in lives at the apex route (/sign-in), not under /church/<slug>/sign-in.
+      // Pass through without the slug prefix. Strip /church/<slug> from callbackUrl
+      // so that protected-page redirects resolve correctly after sign-in.
+      if (originalPath === '/sign-in' || originalPath === '/sign-in/') {
         const callbackUrl = url.searchParams.get('callbackUrl');
         if (callbackUrl?.startsWith(`/church/${church.slug}`)) {
           url.searchParams.set(

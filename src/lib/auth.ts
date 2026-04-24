@@ -30,7 +30,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async sendVerificationRequest({ identifier: to, url, provider, request }) {
         let magicLinkUrl = url;
         const host = request.headers.get('host') ?? '';
-        if (/^[a-z0-9-]{1,63}\.prayerjar\.org$/i.test(host)) {
+        // Port-bearing dev hosts (e.g. localhost:3000) never match — safe by design.
+        if (/^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(host)) {
           const parsed = new URL(url);
           parsed.hostname = host;
           magicLinkUrl = parsed.toString();
