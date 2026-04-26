@@ -12,6 +12,7 @@ vi.mock('@/db', () => ({
     select: vi.fn(),
     update: vi.fn(),
     insert: vi.fn(),
+    delete: vi.fn(),
   },
 }));
 
@@ -90,6 +91,12 @@ function mockDbSelectSequence(rowSets: unknown[][]) {
   return mock;
 }
 
+function mockDbDelete() {
+  const whereFn = vi.fn().mockResolvedValue(undefined);
+  (db as any).delete = vi.fn().mockReturnValue({ where: whereFn });
+  return { whereFn };
+}
+
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
 const GROUP_FIXTURE = {
@@ -118,6 +125,10 @@ const GROUP_ROW_FIXTURE = {
 describe('PlanningCenterAdapter.syncGroup()', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set up a default delete mock so tests that don't call mockDbDelete()
+    // still have a working db.delete chain.
+    const whereFn = vi.fn().mockResolvedValue(undefined);
+    (db as any).delete = vi.fn().mockReturnValue({ where: whereFn });
   });
 
   // ── 1. Creates a new group row ────────────────────────────────────────────
@@ -231,5 +242,33 @@ describe('PlanningCenterAdapter.syncGroup()', () => {
 
     const insertArg = valuesFn.mock.calls[0][0];
     expect(insertArg.description).toBeNull();
+  });
+
+  // ── 6. Removes stale members on re-sync ─────────────────────────────────
+  it('deletes stale group members not present in the fetched list', async () => {
+    const adapter = makeAdapter();
+
+    mockDbInsertReturning([GROUP_ROW_FIXTURE]);
+    mockDbSelectSequence([[], []]);
+    const { whereFn } = mockDbDelete();
+
+    await adapter.syncGroup('church-test', GROUP_FIXTURE);
+
+    expect((db as any).delete).toHaveBeenCalledOnce();
+    expect(whereFn).toHaveBeenCalledOnce();
+  });
+
+  // ── 7. Deletes all members when memberExternalIds is empty ───────────────
+  it('deletes all group members when the fetched list is empty', async () => {
+    const adapter = makeAdapter();
+    const emptyGroup = { ...GROUP_FIXTURE, memberExternalIds: [] };
+
+    mockDbInsertReturning([GROUP_ROW_FIXTURE]);
+    const { whereFn } = mockDbDelete();
+
+    await adapter.syncGroup('church-test', emptyGroup);
+
+    expect((db as any).delete).toHaveBeenCalledOnce();
+    expect(whereFn).toHaveBeenCalledOnce();
   });
 });

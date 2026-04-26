@@ -8,7 +8,7 @@ import type {
 } from '../ChmsAdapter';
 import { db } from '@/db';
 import { churches, churchMembers, users, chmsSyncJobs, chmsGroups, chmsGroupMembers } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, notInArray } from 'drizzle-orm';
 import { encrypt } from '@/lib/encrypt';
 import { notifyAdmins } from '@/lib/admin-notify';
 import { RateLimiter } from '../rateLimiter';
@@ -535,11 +535,8 @@ export class PlanningCenterAdapter implements ChmsAdapter {
       })
       .returning();
 
-    // 2. Sync member references for this group.
-    //    We upsert each external member ID. stale memberships (person left the group)
-    //    are NOT removed by this sync — removal support is deferred to a future sprint.
+    // 2. Upsert current members.
     for (const externalMemberId of group.memberExternalIds) {
-      // Look up the local church_member row by externalChmsId
       const [member] = await db
         .select({ id: churchMembers.id })
         .from(churchMembers)
@@ -559,6 +556,16 @@ export class PlanningCenterAdapter implements ChmsAdapter {
         })
         .onConflictDoNothing();
     }
+
+    // 3. Remove stale memberships — rows for members no longer in the PCO group.
+    await db.delete(chmsGroupMembers).where(
+      group.memberExternalIds.length > 0
+        ? and(
+            eq(chmsGroupMembers.groupId, groupRow.id),
+            notInArray(chmsGroupMembers.externalMemberId, group.memberExternalIds),
+          )
+        : eq(chmsGroupMembers.groupId, groupRow.id),
+    );
   }
 
   // ─────────────────────────────────────────────────────────────
