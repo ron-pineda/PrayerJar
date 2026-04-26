@@ -74,7 +74,7 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
       'Testimony approval queue',
       'Live event prayer wall',
       'Custom branding',
-      'Advanced analytics & PDF reports',
+      'Advanced analytics',
       'Priority support',
     ],
     limits: { members: null, groups: null, events: 12, admins: 10 },

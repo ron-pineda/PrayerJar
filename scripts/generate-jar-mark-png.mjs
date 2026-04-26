@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-shot script to generate src/emails/assets/prayer-jar-mark.png
+ * One-shot script to generate prayer-jar-mark.png to both email asset locations
  *
  * Emails cannot reliably consume SVG with CSS custom properties (`--primary`),
  * so we bake a static amber fill into a 72x72 raster. The PNG is committed;
@@ -41,7 +41,7 @@ async function main() {
 
   const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 72 } });
   const png = resvg.render().asPng();
-  const outPath = path.resolve(
+  const outPath1 = path.resolve(
     __dirname,
     '..',
     'src',
@@ -49,8 +49,19 @@ async function main() {
     'assets',
     'prayer-jar-mark.png',
   );
-  await writeFile(outPath, png);
-  console.log(`Wrote ${outPath} (${png.length} bytes)`);
+  const outPath2 = path.resolve(
+    __dirname,
+    '..',
+    'public',
+    'email-assets',
+    'prayer-jar-mark.png',
+  );
+  await Promise.all([
+    writeFile(outPath1, png),
+    writeFile(outPath2, png),
+  ]);
+  console.log(`Wrote ${outPath1} (${png.length} bytes)`);
+  console.log(`Wrote ${outPath2} (${png.length} bytes)`);
 }
 
 main().catch((e) => {
