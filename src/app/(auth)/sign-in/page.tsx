@@ -19,12 +19,12 @@ export default async function SignInPage({
 }) {
   const params = await searchParams;
   const headersList = await headers();
-  const host = headersList.get('host') ?? '';
-  // For subdomain requests, make callbackUrl absolute so NextAuth's redirect
-  // lands back on the subdomain rather than the apex domain.
+  // x-pj-church-slug is set by the middleware on every subdomain request.
+  // 'host' is unreliable in this context (Vercel rewrites it to the apex domain).
+  const churchSlug = headersList.get('x-pj-church-slug') ?? '';
   const relativeCallback = params.callbackUrl ?? '/';
-  const callbackUrl = /^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(host)
-    ? `https://${host}${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
+  const callbackUrl = churchSlug
+    ? `https://${churchSlug}.prayerjar.org${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
     : relativeCallback;
 
   const session = await auth();
