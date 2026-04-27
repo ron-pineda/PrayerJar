@@ -1,5 +1,6 @@
 import { signIn, auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,8 +18,17 @@ export default async function SignInPage({
   searchParams: Promise<{ verify?: string; callbackUrl?: string }>;
 }) {
   const params = await searchParams;
+  const headersList = await headers();
+  const host = headersList.get('host') ?? '';
+  // For subdomain requests, make callbackUrl absolute so NextAuth's redirect
+  // lands back on the subdomain rather than the apex domain.
+  const relativeCallback = params.callbackUrl ?? '/';
+  const callbackUrl = /^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(host)
+    ? `https://${host}${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
+    : relativeCallback;
+
   const session = await auth();
-  if (session && !params.verify) redirect(params.callbackUrl ?? '/');
+  if (session && !params.verify) redirect(callbackUrl);
 
   if (params.verify) {
     return (
@@ -37,8 +47,6 @@ export default async function SignInPage({
       </div>
     );
   }
-
-  const callbackUrl = params.callbackUrl ?? '/';
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
