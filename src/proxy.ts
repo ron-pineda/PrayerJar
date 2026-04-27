@@ -97,6 +97,10 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
             callbackUrl.slice(`/church/${church.slug}`.length) || '/',
           );
         }
+        // Embed the church slug as an internal param so the sign-in page can
+        // construct an absolute subdomain callbackUrl for NextAuth. Custom
+        // request headers aren't reliably available via headers() in Next.js 16.
+        url.searchParams.set('_pj_sub', church.slug);
         return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
       }
 

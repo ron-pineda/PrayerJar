@@ -1,6 +1,5 @@
 import { signIn, auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,16 +14,15 @@ export const metadata = { title: "Sign In | The Prayer Jar" };
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ verify?: string; callbackUrl?: string }>;
+  searchParams: Promise<{ verify?: string; callbackUrl?: string; _pj_sub?: string }>;
 }) {
   const params = await searchParams;
-  const headersList = await headers();
-  // x-pj-church-slug is set by the middleware on every subdomain request.
-  // 'host' is unreliable in this context (Vercel rewrites it to the apex domain).
-  const churchSlug = headersList.get('x-pj-church-slug') ?? '';
+  // _pj_sub is injected by the middleware rewrite on subdomain sign-in requests.
+  // Using a URL param is more reliable than request headers in Next.js 16.
+  const sub = params._pj_sub ?? '';
   const relativeCallback = params.callbackUrl ?? '/';
-  const callbackUrl = churchSlug
-    ? `https://${churchSlug}.prayerjar.org${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
+  const callbackUrl = sub
+    ? `https://${sub}.prayerjar.org${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
     : relativeCallback;
 
   const session = await auth();
