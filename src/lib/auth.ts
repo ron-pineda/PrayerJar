@@ -34,6 +34,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (/^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(host)) {
           const parsed = new URL(url);
           parsed.hostname = host;
+          // Also rewrite callbackUrl so the post-auth redirect stays on the subdomain.
+          const cb = parsed.searchParams.get('callbackUrl');
+          if (cb) {
+            try {
+              const cbParsed = new URL(cb);
+              if (cbParsed.hostname === 'prayerjar.org') {
+                cbParsed.hostname = host;
+                parsed.searchParams.set('callbackUrl', cbParsed.toString());
+              }
+            } catch { /* non-URL callbackUrl — leave as-is */ }
+          }
           magicLinkUrl = parsed.toString();
         }
         const html = await render(SignInEmail({ url: magicLinkUrl }));
