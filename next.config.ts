@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
+  serverActions: {
+    // Allow sign-in Server Actions from church subdomains (e.g. testchurch.prayerjar.org).
+    // Without this, Next.js's CSRF check rejects POSTs where x-forwarded-host != origin.
+    allowedOrigins: ['*.prayerjar.org'],
+  },
   async headers() {
     return [
       {
