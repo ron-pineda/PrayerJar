@@ -27,26 +27,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Resend({
       apiKey: process.env.AUTH_RESEND_KEY,
       from: process.env.AUTH_EMAIL_FROM ?? 'Prayer Jar <noreply@prayerjar.org>',
-      async sendVerificationRequest({ identifier: to, url, provider, request }) {
+      async sendVerificationRequest({ identifier: to, url, provider }) {
         let magicLinkUrl = url;
-        const host = request.headers.get('host') ?? '';
-        // Port-bearing dev hosts (e.g. localhost:3000) never match — safe by design.
-        if (/^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(host)) {
+        // NextAuth constructs url with its base URL (prayerjar.org) even when
+        // sign-in originated from a subdomain. The sign-in page embeds the
+        // subdomain as an absolute callbackUrl — use that to rewrite the magic
+        // link so the callback is processed on the correct subdomain host.
+        try {
           const parsed = new URL(url);
-          parsed.hostname = host;
-          // Also rewrite callbackUrl so the post-auth redirect stays on the subdomain.
           const cb = parsed.searchParams.get('callbackUrl');
           if (cb) {
-            try {
-              const cbParsed = new URL(cb);
-              if (cbParsed.hostname === 'prayerjar.org') {
-                cbParsed.hostname = host;
-                parsed.searchParams.set('callbackUrl', cbParsed.toString());
-              }
-            } catch { /* non-URL callbackUrl — leave as-is */ }
+            const cbParsed = new URL(cb);
+            if (/^[a-z0-9-]{1,32}\.prayerjar\.org$/i.test(cbParsed.hostname)) {
+              parsed.hostname = cbParsed.hostname;
+              magicLinkUrl = parsed.toString();
+            }
           }
-          magicLinkUrl = parsed.toString();
-        }
+        } catch { /* malformed url — send as-is */ }
         const html = await render(SignInEmail({ url: magicLinkUrl }));
         const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
