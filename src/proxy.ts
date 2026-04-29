@@ -82,6 +82,10 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
       const requestHeaders = new Headers(req.headers);
       requestHeaders.set('x-pj-church-id', church.id);
       requestHeaders.set('x-pj-church-slug', church.slug);
+      // x-pj-subdomain = the hostname subdomain (e.g. "testchurch"), distinct
+      // from church.slug (e.g. "test-church-7l78"). Used by the sign-in page to
+      // construct absolute callbackUrls.
+      requestHeaders.set('x-pj-subdomain', sub);
 
       const url = req.nextUrl.clone();
       const originalPath = url.pathname;
@@ -97,14 +101,18 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
             callbackUrl.slice(`/church/${church.slug}`.length) || '/',
           );
         }
-        // Embed the church slug as an internal param so the sign-in page can
-        // construct an absolute subdomain callbackUrl for NextAuth. Custom
-        // request headers aren't reliably available via headers() in Next.js 16.
-        url.searchParams.set('_pj_sub', church.slug);
+        // Embed the subdomain as a URL param (fallback) — x-pj-subdomain header
+        // is the primary signal, but URL params survive any header-stripping.
+        url.searchParams.set('_pj_sub', sub);
         return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
       }
 
-      url.pathname = `/church/${church.slug}${originalPath === '/' ? '' : originalPath}`;
+      // Paths already starting with /church/ are apex-style routes (e.g.
+      // /church/join, /church/create). Don't double-nest them by prepending
+      // the slug — just forward with the church headers.
+      if (!originalPath.startsWith('/church/')) {
+        url.pathname = `/church/${church.slug}${originalPath === '/' ? '' : originalPath}`;
+      }
 
       return NextResponse.rewrite(url, {
         request: { headers: requestHeaders },

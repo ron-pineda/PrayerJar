@@ -18,9 +18,11 @@ export default async function SignInPage({
   searchParams: Promise<{ verify?: string; callbackUrl?: string; _pj_sub?: string }>;
 }) {
   const [params, headersList] = await Promise.all([searchParams, headers()]);
-  // x-pj-church-slug is set by the middleware rewrite's request headers (primary).
+  // x-pj-subdomain is the actual hostname subdomain ("testchurch"), set by
+  // middleware. x-pj-church-slug is the DB slug ("test-church-7l78") — do NOT
+  // use it here; it would construct a callbackUrl on a non-existent subdomain.
   // _pj_sub URL param is injected by the same rewrite as a fallback.
-  const sub = headersList.get('x-pj-church-slug') ?? params._pj_sub ?? '';
+  const sub = headersList.get('x-pj-subdomain') ?? params._pj_sub ?? '';
   const relativeCallback = params.callbackUrl ?? '/';
   const callbackUrl = sub
     ? `https://${sub}.prayerjar.org${relativeCallback.startsWith('/') ? relativeCallback : `/${relativeCallback}`}`
