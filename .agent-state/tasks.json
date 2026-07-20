@@ -6354,12 +6354,13 @@
     "id": "pj-s24-06-perf-audit-refresh",
     "sprint": "24",
     "title": "Performance: re-verify Sprint 14 audit findings, produce prioritized fix list",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Performance",
     "priority": "medium",
     "description": "Confirm against current code: unoptimized <img> in prayer-card.tsx + guided-prayer.tsx, find-a-church 100% client-side page, Sonner + 3 dialog imports bundled per PrayerCard. Deliverable: confirmed findings doc with impact ranking at docs/sprint24/perf-audit.md.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[Performance, 2026-07-19] DONE. All 3 Sprint-14 findings confirmed still present + 4 additional <img> sites found. Prioritized P1 (find-a-church server shell) > P2 (dynamic-import dialogs in prayer-card) > P3 (next/image sweep). Deliverable: docs/sprint24/perf-audit.md. pj-s24-07 unblocked."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-19"
