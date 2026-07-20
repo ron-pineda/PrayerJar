@@ -6116,7 +6116,7 @@
   {
     "id": "pj-s23-clay-token-alpha-tune",
     "title": "Tune --clay-* token alphas to match spec §2 per-theme values",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Follow-up from Reviewer sign-off on pj-s22-24. Spec docs/design/clay-vessel-spec.md §2 defines per-theme alphas for four --clay-* tokens (mottle-warm dark 0.22 / light 0.30; mottle-cool dark 0.35 / light 0.30; throwing dark 0.08 / light 0.10; shadow dark 0.40 / light 0.18). Current implementation stores these tokens as raw OKLCH triplets (no alpha) and applies a single hardcoded alpha at each consumption site in prayer-jar.tsx (warm 0.30, cool 0.30, throwing 0.10, shadow 0.40). The most visible divergence is light-mode shadow rendering at 0.40 instead of spec's 0.18 (~2.2× heavier than Designer called for on parchment). Two options: (a) tune the uniformly-applied alphas against the Vercel preview until both themes read correctly; (b) restore per-theme alphas via theme-conditional consumption (inline computed style keyed off a .dark ancestor check, or separate CSS classes). Option (a) is simpler; option (b) is more faithful to the spec. Decide after eyeballing the current state on a Vercel preview with both light and dark modes.",
@@ -6133,7 +6133,8 @@
     "blockers": [],
     "notes": [
       "[Reviewer, 2026-04-20] Observation surfaced during pj-s22-24 final review. Not a blocker for Sprint 22 ship — shadow at 0.40 in light mode is a visible deviation but the vessel is still on-brand, and visual regression was already unverifiable locally (Vercel preview was the gate). Ron can park this until he has the preview up and decides whether the deviation actually reads badly or is fine.",
-      "[Claude, 2026-07-19] Implemented per clay-vessel-spec §2: added per-theme --clay-*-a alpha tokens (mottle-warm .30/.22, mottle-cool .30/.35, throwing .10/.08, shadow .18/.40 light/dark) in globals.css; prayer-jar.tsx now consumes oklch(var(--clay-*) / var(--clay-*-a)) — no hard-coded alphas remain. intensifyWarm bump preserved via calc(+0.05). Vitest: 437 pass, 5 pre-existing failures in unrelated services (billing/events/flags — flagged for Sprint 24). Awaiting visual review on prod: homepage + /my-prayers, light + dark."
+      "[Claude, 2026-07-19] Implemented per clay-vessel-spec §2: added per-theme --clay-*-a alpha tokens (mottle-warm .30/.22, mottle-cool .30/.35, throwing .10/.08, shadow .18/.40 light/dark) in globals.css; prayer-jar.tsx now consumes oklch(var(--clay-*) / var(--clay-*-a)) — no hard-coded alphas remain. intensifyWarm bump preserved via calc(+0.05). Vitest: 437 pass, 5 pre-existing failures in unrelated services (billing/events/flags — flagged for Sprint 24). Awaiting visual review on prod: homepage + /my-prayers, light + dark.",
+      "[Reviewer, 2026-07-19] DONE. Ron visual sign-off light+dark on prod."
     ],
     "created_at": "2026-04-20",
     "last_touched": "2026-07-19"
@@ -6195,21 +6196,22 @@
     "id": "pj-s23-subdomain-dns-smoke-test",
     "sprint": "23",
     "title": "QA: subdomain DNS smoke test (post-Ron DNS setup)",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Three DNS-dependent test cases from pj-s22-17 could not be verified without wildcard DNS. After Ron completes docs/ops/subdomain-launch-checklist.md steps 1-3, QA must verify: (1) browser rewrite on valid subdomain, (2) apex cookie not accepted on subdomain (DevTools cookie Domain inspection), (3) cross-subdomain session isolation. See docs/sprint22/qa/subdomain-test-plan.md TC-4, TC-7, TC-8.",
     "notes": [
-      "[QA, 2026-04-20] Blocked on Ron completing subdomain-launch-checklist.md. Not a Sprint 22 blocker."
+      "[QA, 2026-04-20] Blocked on Ron completing subdomain-launch-checklist.md. Not a Sprint 22 blocker.",
+      "[QA, 2026-07-19] DONE. TC-4 live PASS (curl: rewrite + unknown-subdomain bounce + reserved 404). TC-7/TC-8 PASS via Ron two-tab check (apex/subdomain session isolation). testchurch subdomain row nulled post-test."
     ],
     "created_at": "2026-04-20",
-    "last_touched": "2026-04-20"
+    "last_touched": "2026-07-19"
   },
   {
     "id": "pj-s23-subdomain-auth-flow",
     "sprint": "23",
     "title": "Backend: subdomain sign-in flow — exclude public routes from rewrite, fix auth callback to subdomain",
-    "status": "review",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Two gaps in the Sprint 22 subdomain routing implementation: (1) /sign-in and other public routes get rewritten to /church/[slug]/sign-in which does not exist — proxy.ts needs to exclude public paths (/sign-in, /sign-up, /help, /docs, etc.) from the church-slug rewrite. (2) After magic-link sign-in on a subdomain, the NEXTAUTH_URL callback returns to prayerjar.org (apex), so the session cookie lands on the wrong host. The auth callback needs to detect the originating subdomain (via state param or cookie) and redirect back to it, minting the session on the subdomain host.",
@@ -6231,10 +6233,11 @@
     ],
     "notes": [
       "[Ron, 2026-04-20] Confirmed during smoke test: routing rewrite works, but sign-in on subdomain fails because (a) /sign-in is rewritten to a non-existent church-scoped route and (b) magic-link callback returns to apex, not subdomain. Sprint 23 follow-up to pj-s22-16.",
-      "[Backend, 2026-04-21] Implemented: proxy.ts passes /sign-in through without slug prefix and strips /church/<slug> from callbackUrl. auth.ts sendVerificationRequest swaps magic-link hostname to subdomain when request comes from *.prayerjar.org. Commits: a10d724, 8621b4c. IMPORTANT QA NOTE: the highest-risk scenario is post-callback redirect — verify browser stays on <sub>.prayerjar.org/dashboard, not prayerjar.org, after clicking magic link from subdomain sign-in."
+      "[Backend, 2026-04-21] Implemented: proxy.ts passes /sign-in through without slug prefix and strips /church/<slug> from callbackUrl. auth.ts sendVerificationRequest swaps magic-link hostname to subdomain when request comes from *.prayerjar.org. Commits: a10d724, 8621b4c. IMPORTANT QA NOTE: the highest-risk scenario is post-callback redirect — verify browser stays on <sub>.prayerjar.org/dashboard, not prayerjar.org, after clicking magic link from subdomain sign-in.",
+      "[Reviewer, 2026-07-19] DONE. Server-side flow verified by Claude (sign-in renders church-scoped, magic link sends, TC-4 rewrite live PASS); Ron browser click-test PASSED: stayed on testchurch.prayerjar.org post-callback, cookie scoped to subdomain, /wall loads, apex session isolated."
     ],
     "created_at": "2026-04-20",
-    "last_touched": "2026-04-21"
+    "last_touched": "2026-07-19"
   },
   {
     "id": "pj-s23-church-admin-welcome-drip",
@@ -6273,5 +6276,171 @@
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-01-test-suite-green",
+    "sprint": "24",
+    "title": "Backend: fix 5 pre-existing vitest failures — suite must be green",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "high",
+    "description": "Failing: billing.service (checkout URL), church-platform.service (addChurchMember x2), event.service (createEvent insert), feature-flags (file-level fail), api/v1/checkout route. Pre-date this sprint; likely stale mocks from Sprint 21-23 service changes. Red suite hides regressions — gates all other merges.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-02-verify-url-fix",
+    "sprint": "24",
+    "title": "Backend: fix malformed verify-request URL (/sign-in?verify=1?provider=...)",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "medium",
+    "description": "NextAuth pages.verifyRequest is /sign-in?verify=1; NextAuth appends its own ?provider=resend&type=email producing a double-? URL. The verify=1 param parses as \"1?provider=resend\" so the check-your-email banner logic likely never matches. Fix the page config or the banner param parsing; verify banner renders after requesting a magic link.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-03-drip-health-check",
+    "sprint": "24",
+    "title": "QA: welcome-drip end-to-end health check post email-outage fix",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Drip emails were dead Apr-Jul (Resend DNS outage fixed 2026-07-19). Verify: cron fires, email1 on church creation, email2 day-3 gate, email3 day-7 gate; check churchAdminDripStatus for churches created during the outage that are stuck mid-drip and decide catch-up policy.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-04-log-drain",
+    "sprint": "24",
+    "title": "DevOps: Better Stack log drain + alerting",
+    "status": "proposed",
+    "assigned_to": "DevOps",
+    "priority": "medium",
+    "description": "INBOX carry-over, now urgent-in-hindsight: the email outage ran silent for 3 months. Configure Vercel log drain to Better Stack, alert on 5xx rate and error=Configuration patterns.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-05-local-dev-restore",
+    "sprint": "24",
+    "title": "DevOps: fix npm run dev / npm run build failures on Windows",
+    "status": "proposed",
+    "assigned_to": "DevOps",
+    "priority": "medium",
+    "description": "Both fail on Ron's machine (see memory: windows-dev-blockers); all visual work detours through Vercel previews. Diagnose root cause, fix or document workaround.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-06-perf-audit-refresh",
+    "sprint": "24",
+    "title": "Performance: re-verify Sprint 14 audit findings, produce prioritized fix list",
+    "status": "proposed",
+    "assigned_to": "Performance",
+    "priority": "medium",
+    "description": "Confirm against current code: unoptimized <img> in prayer-card.tsx + guided-prayer.tsx, find-a-church 100% client-side page, Sonner + 3 dialog imports bundled per PrayerCard. Deliverable: confirmed findings doc with impact ranking at docs/sprint24/perf-audit.md.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-07-perf-fixes",
+    "sprint": "24",
+    "title": "Frontend: implement confirmed perf fixes",
+    "status": "proposed",
+    "assigned_to": "Frontend",
+    "priority": "medium",
+    "description": "Gated on pj-s24-06. Likely: next/image swaps, server-render find-a-church shell, dynamic-import dialogs/toaster.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19",
+    "blockers": [
+      "pj-s24-06-perf-audit-refresh"
+    ]
+  },
+  {
+    "id": "pj-s24-08-signedin-design-audit",
+    "sprint": "24",
+    "title": "Designer: signed-in surface audit vs brand guide — per-page delta specs",
+    "status": "proposed",
+    "assigned_to": "Designer",
+    "priority": "high",
+    "description": "Sprint 20 refreshed the signed-out surface; this is the matching members pass. Pages: /pray, /my-prayers, /profile, /journal, /notifications, /badges, /saved-churches, /settings, church dashboard. Audit against docs/brand/brand-guide.md (voice, amber palette, clay vessel usage, Lucide-not-emoji, banned phrases). Deliverable: docs/sprint24/design-audit.md with per-page deltas Frontend can implement without interpretation.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
+  },
+  {
+    "id": "pj-s24-09-signedin-polish",
+    "sprint": "24",
+    "title": "Frontend: implement signed-in design deltas",
+    "status": "proposed",
+    "assigned_to": "Frontend",
+    "priority": "high",
+    "description": "Gated on pj-s24-08. Fan out per-page subtasks if the audit is large.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19",
+    "blockers": [
+      "pj-s24-08-signedin-design-audit"
+    ]
+  },
+  {
+    "id": "pj-s24-10-qa-pass",
+    "sprint": "24",
+    "title": "QA: Sprint 24 test plan + execution",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Full pass over A/B/C workstreams incl. regression on auth flows (apex + subdomain) after any middleware/auth-adjacent change.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19",
+    "blockers": [
+      "pj-s24-01-test-suite-green"
+    ]
+  },
+  {
+    "id": "pj-s24-11-reviewer-close",
+    "sprint": "24",
+    "title": "Reviewer: final approvals + sprint close",
+    "status": "proposed",
+    "assigned_to": "Reviewer",
+    "priority": "high",
+    "description": "Per Definition of Done: all tasks reviewed, sign-off doc at docs/sprint24/reviewer-signoff.md.",
+    "notes": [
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19",
+    "blockers": [
+      "pj-s24-10-qa-pass"
+    ]
   }
 ]
