@@ -6325,13 +6325,14 @@
   {
     "id": "pj-s24-04-log-drain",
     "sprint": "24",
-    "title": "DevOps: Better Stack log drain + alerting",
-    "status": "proposed",
+    "title": "DevOps: observability — /api/health + Better Stack Uptime monitor (drains Pro-gated)",
+    "status": "review",
     "assigned_to": "DevOps",
     "priority": "medium",
     "description": "INBOX carry-over, now urgent-in-hindsight: the email outage ran silent for 3 months. Configure Vercel log drain to Better Stack, alert on 5xx rate and error=Configuration patterns.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[DevOps, 2026-07-19] RE-SCOPED with Ron: Vercel log drains (incl. integration-created) are Pro-gated; account is Hobby. Ron declined upgrade path per Claude rec. Shipped instead: GET /api/health (db SELECT 1 + Resend domain verification status, 200/503, boolean-only payload) — directly targets the failure class of the Apr-Jul email outage. 4/4 tests. Remaining: Ron creates free Better Stack Uptime monitor on https://prayerjar.org/api/health, then live-verify."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-19"
