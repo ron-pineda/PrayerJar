@@ -6342,15 +6342,16 @@
     "id": "pj-s24-05-local-dev-restore",
     "sprint": "24",
     "title": "DevOps: fix npm run dev / npm run build failures on Windows",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "DevOps",
     "priority": "medium",
     "description": "Both fail on Ron's machine (see memory: windows-dev-blockers); all visual work detours through Vercel previews. Diagnose root cause, fix or document workaround.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[DevOps, 2026-07-20] FIXED — both dev and build work locally now. Three stacked causes, each hiding the next: (1) stale .next/dev/types/validator.ts referencing pre-(admin)-route-group paths → rm -rf .next; (2) ADMIN_EMAILS missing from .env.local, tripping the deliberate NODE_ENV=production assertion in src/lib/env.ts during next build; (3) CHMS_CONFIG_ENCRYPTION_KEY missing (64-char hex asserted at module load). No production code changed — guards are correct and were kept. Verified: build compiles ~10s + TS passes ~14s + full route table; dev ready in 598ms, homepage 200. Documented at docs/ops/local-dev-setup.md; both vars added to .env.local.example. UNBLOCKS: local visual verification and bundle-analyzer runs (previously preview-URL-only)."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20"
   },
   {
     "id": "pj-s24-06-perf-audit-refresh",
