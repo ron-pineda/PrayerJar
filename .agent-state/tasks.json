@@ -6382,10 +6382,8 @@
       "[QA+Reviewer, 2026-07-20] APPROVED. P2/P3 landed; P1 declined with documented reasoning. Clean production build passes 108/108 pages."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-20",
-    "blockers": [
-      "pj-s24-06-perf-audit-refresh"
-    ]
+    "last_touched": "2026-07-20T19:23:45.869Z",
+    "blockers": []
   },
   {
     "id": "pj-s24-08-signedin-design-audit",
@@ -6416,10 +6414,8 @@
       "[QA+Reviewer, 2026-07-20] APPROVED. Verified by live render, not source reading: 12 public pages emoji-free on prod with Lucide in place. Extra stragglers (feedback-widget, share-buttons, prayer-search-bar, prayed-for, collections, praise-wall, testimony) fixed in 396d135."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-20",
-    "blockers": [
-      "pj-s24-08-signedin-design-audit"
-    ]
+    "last_touched": "2026-07-20T19:23:45.869Z",
+    "blockers": []
   },
   {
     "id": "pj-s24-10-qa-pass",
@@ -6434,10 +6430,8 @@
       "[QA, 2026-07-20] PASS. Report at docs/sprint24/qa-report.md. vitest 459/459 (was 455/5-fail); 0 app-code type errors; eslint 137/88 vs 138/93 baseline; next build restored and passing; prod health ok; 12 public pages verified emoji-free on the live deployment."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-20",
-    "blockers": [
-      "pj-s24-01-test-suite-green"
-    ]
+    "last_touched": "2026-07-20T19:23:45.869Z",
+    "blockers": []
   },
   {
     "id": "pj-s24-11-reviewer-close",
@@ -6452,9 +6446,7 @@
       "[Reviewer, 2026-07-20] SPRINT 24 CLOSED. All 11 tasks done. Sign-off: every gate improved or held vs baseline, nothing regressed. Three scope deviations (app-wide arrow sweep, emoji stragglers, P1 decline) each documented with reasoning in tasks.json and the sprint docs. Carry-forward listed in the QA report."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-20",
-    "blockers": [
-      "pj-s24-10-qa-pass"
-    ]
+    "last_touched": "2026-07-20T19:23:45.869Z",
+    "blockers": []
   }
 ]
