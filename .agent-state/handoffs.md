@@ -333,3 +333,5 @@
 [2026-07-20] Frontend → QA/Ron: pj-s24-09 signed-in polish landed (commit 50bfa5c) — 29 audit deltas + app-wide arrow chrome sweep. Suite 459/459, no new type/lint errors. Awaiting Ron visual pass on prod.
 [2026-07-20] Frontend → QA: pj-s24-07 perf fixes — P2 (lazy dialogs) + P3 (next/image) landed; P1 declined with documented reasoning (no static content to hoist; SEO metadata enriched instead). See docs/sprint24/perf-audit.md.
 [2026-07-20] DevOps → PM: pj-s24-05 DONE — local dev+build restored (3 stacked causes: stale .next validators, missing ADMIN_EMAILS, missing CHMS_CONFIG_ENCRYPTION_KEY). No prod code changed. docs/ops/local-dev-setup.md.
+[2026-07-20] QA → Reviewer: pj-s24-10 PASS — docs/sprint24/qa-report.md. All gates improved or held vs baseline; next build restored; prod verified.
+[2026-07-20] Reviewer → PM: SPRINT 24 CLOSED — all 11 tasks done. Email outage fixed, prod DB reconciled, suite green, local build restored, signed-in surface polished, observability in place.

@@ -6372,13 +6372,14 @@
     "id": "pj-s24-07-perf-fixes",
     "sprint": "24",
     "title": "Frontend: implement confirmed perf fixes",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend",
     "priority": "medium",
     "description": "Gated on pj-s24-06. Likely: next/image swaps, server-render find-a-church shell, dynamic-import dialogs/toaster.",
     "notes": [
       "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
-      "[Frontend, 2026-07-20] Implemented P2 + P3; P1 DECLINED with reasoning. P2: prayer-card dialogs + celebration → next/dynamic, mount only while open (4 components were bundled into every feed card). P3: next/image with fill+sizes on prayer-card x2, praise-card, guided-prayer, /p/[id]; added images.remotePatterns for Vercel Blob; 3 <img> deliberately kept (object-URL preview, Google avatar needs referrerPolicy, embed widget must not pull the Next loader). P1 (find-a-church server shell) NOT DONE — reading the full page shows no static content to hoist (pure search UI, no hero/copy), so the refactor would move an empty wrapper at real regression risk; the genuine gap was SEO metadata, now enriched in find-a-church/layout.tsx with description + OpenGraph. Reassessment documented inline at top of docs/sprint24/perf-audit.md. VERIFIED: vitest 459/459, 0 app-code type errors, eslint 137 err/88 warn vs 138/93 baseline. Commits 2e54a0e + this one."
+      "[Frontend, 2026-07-20] Implemented P2 + P3; P1 DECLINED with reasoning. P2: prayer-card dialogs + celebration → next/dynamic, mount only while open (4 components were bundled into every feed card). P3: next/image with fill+sizes on prayer-card x2, praise-card, guided-prayer, /p/[id]; added images.remotePatterns for Vercel Blob; 3 <img> deliberately kept (object-URL preview, Google avatar needs referrerPolicy, embed widget must not pull the Next loader). P1 (find-a-church server shell) NOT DONE — reading the full page shows no static content to hoist (pure search UI, no hero/copy), so the refactor would move an empty wrapper at real regression risk; the genuine gap was SEO metadata, now enriched in find-a-church/layout.tsx with description + OpenGraph. Reassessment documented inline at top of docs/sprint24/perf-audit.md. VERIFIED: vitest 459/459, 0 app-code type errors, eslint 137 err/88 warn vs 138/93 baseline. Commits 2e54a0e + this one.",
+      "[QA+Reviewer, 2026-07-20] APPROVED. P2/P3 landed; P1 declined with documented reasoning. Clean production build passes 108/108 pages."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-20",
@@ -6405,13 +6406,14 @@
     "id": "pj-s24-09-signedin-polish",
     "sprint": "24",
     "title": "Frontend: implement signed-in design deltas",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend",
     "priority": "high",
     "description": "Gated on pj-s24-08. Fan out per-page subtasks if the audit is large.",
     "notes": [
       "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
-      "[Frontend, 2026-07-20] Implemented. Agent session-limited mid-run; Claude verified and completed. Landed: emoji→Lucide across 9 audited pages + shared src/lib/category-icons.ts; §7 #9 banned phrase cleared from all 9 gate surfaces; palette (notification rainbow, journal green→amber); voice fixes; text-arrow chrome→Lucide swept app-wide (34 sites, beyond audit scope — half-swept chrome would be worse than none; prose arrows + email templates deliberately untouched). Fixed a latent flake: auth.test.ts heavy-import test given explicit 30s timeout. VERIFIED: vitest 459/459; tsc identical to baseline (193 pre-existing test-fixture errors, 0 app code); eslint 137 vs 138 baseline. Commit 50bfa5c. Needs Ron visual pass on prod."
+      "[Frontend, 2026-07-20] Implemented. Agent session-limited mid-run; Claude verified and completed. Landed: emoji→Lucide across 9 audited pages + shared src/lib/category-icons.ts; §7 #9 banned phrase cleared from all 9 gate surfaces; palette (notification rainbow, journal green→amber); voice fixes; text-arrow chrome→Lucide swept app-wide (34 sites, beyond audit scope — half-swept chrome would be worse than none; prose arrows + email templates deliberately untouched). Fixed a latent flake: auth.test.ts heavy-import test given explicit 30s timeout. VERIFIED: vitest 459/459; tsc identical to baseline (193 pre-existing test-fixture errors, 0 app code); eslint 137 vs 138 baseline. Commit 50bfa5c. Needs Ron visual pass on prod.",
+      "[QA+Reviewer, 2026-07-20] APPROVED. Verified by live render, not source reading: 12 public pages emoji-free on prod with Lucide in place. Extra stragglers (feedback-widget, share-buttons, prayer-search-bar, prayed-for, collections, praise-wall, testimony) fixed in 396d135."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-20",
@@ -6423,15 +6425,16 @@
     "id": "pj-s24-10-qa-pass",
     "sprint": "24",
     "title": "QA: Sprint 24 test plan + execution",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Full pass over A/B/C workstreams incl. regression on auth flows (apex + subdomain) after any middleware/auth-adjacent change.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[QA, 2026-07-20] PASS. Report at docs/sprint24/qa-report.md. vitest 459/459 (was 455/5-fail); 0 app-code type errors; eslint 137/88 vs 138/93 baseline; next build restored and passing; prod health ok; 12 public pages verified emoji-free on the live deployment."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-19",
+    "last_touched": "2026-07-20",
     "blockers": [
       "pj-s24-01-test-suite-green"
     ]
@@ -6440,15 +6443,16 @@
     "id": "pj-s24-11-reviewer-close",
     "sprint": "24",
     "title": "Reviewer: final approvals + sprint close",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "Per Definition of Done: all tasks reviewed, sign-off doc at docs/sprint24/reviewer-signoff.md.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[Reviewer, 2026-07-20] SPRINT 24 CLOSED. All 11 tasks done. Sign-off: every gate improved or held vs baseline, nothing regressed. Three scope deviations (app-wide arrow sweep, emoji stragglers, P1 decline) each documented with reasoning in tasks.json and the sprint docs. Carry-forward listed in the QA report."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-19",
+    "last_touched": "2026-07-20",
     "blockers": [
       "pj-s24-10-qa-pass"
     ]
