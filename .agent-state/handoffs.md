@@ -310,3 +310,5 @@
 [2026-04-20T05:20:26.571Z] Dashboard sync — 0 fix(es): 
 
 [2026-04-21] Backend → Reviewer: pj-s23-church-admin-welcome-drip — 7-task implementation complete, final review approved. Migration 0032 pending prod apply.
+[2026-04-27] Ron → done: pj-s22-23 clay vessel visual sign-off — LGTM in light+dark.
+[2026-07-19] Claude → Ron: prod DB reconciliation — 0031 (chms_groups) was NEVER applied to prod (journal timestamp typo'd to 2025 caused drizzle to sort it before applied migrations and skip it). Applied via scripts/apply-0031-runner.mjs, verified. 0032 table already existed in prod despite journal showing it pending (runner-vs-journal drift, expected). Journal timestamp fixed.
