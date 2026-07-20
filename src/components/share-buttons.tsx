@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Share2, Check, Copy } from 'lucide-react';
+import { Share2, Check, Copy, MessageCircle } from 'lucide-react';
 
 type ShareButtonsProps = {
   url: string;
@@ -60,7 +60,7 @@ export function ShareButtons({ url, text, variant = 'inline' }: ShareButtonsProp
         aria-label="Share on WhatsApp"
       >
         <Button type="button" size="sm" variant="outline" className="h-9 w-9 p-0">
-          <span className="text-sm">💬</span>
+          <MessageCircle className="h-4 w-4" aria-hidden="true" />
         </Button>
       </a>
       <Button

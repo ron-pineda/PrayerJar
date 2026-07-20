@@ -107,7 +107,7 @@ export function PrayerSearchBar() {
               : "border-border text-muted-foreground hover:text-foreground"
           }`}
         >
-          🚨 Urgent only
+          Urgent only
         </button>
       </div>
     </div>

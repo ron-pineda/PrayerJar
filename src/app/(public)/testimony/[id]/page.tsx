@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { BookOpen, ArrowLeft, Share2 } from 'lucide-react';
+import { BookOpen, ArrowLeft, Share2, Sparkles } from 'lucide-react';
 import { CopyButton } from '@/components/group/copy-button';
 import { getTestimonyById } from '@/services/prayer.service';
 
@@ -60,8 +60,9 @@ export default async function TestimonyPage({
       {/* Testimony story */}
       {prayer.testimonyStory ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 p-5 mb-8">
-          <p className="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase tracking-wide mb-3">
-            ✨ Their Testimony
+          <p className="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase tracking-wide mb-3 inline-flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+            Their Testimony
           </p>
           <p className="text-base leading-relaxed whitespace-pre-wrap">
             {prayer.testimonyStory}

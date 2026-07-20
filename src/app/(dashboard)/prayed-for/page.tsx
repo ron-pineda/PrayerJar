@@ -39,7 +39,7 @@ export default async function PrayedForPage() {
           {answered.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold mb-4 text-amber-700 dark:text-amber-400">
-                Answered ✨ ({answered.length})
+                Answered ({answered.length})
               </h2>
               <div className="grid gap-4">
                 {answered.map((prayer) => (

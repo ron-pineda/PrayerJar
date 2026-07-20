@@ -48,7 +48,7 @@ export default async function PraiseWallPage({
           countLabel={`${answeredCount.toLocaleString()} lights released`}
         />
         <h1 className="text-3xl font-bold tracking-tight mt-6 mb-2">
-          Lights Released ✨
+          Lights Released
         </h1>
         <p className="text-muted-foreground">
           Every light was once a prayer. God answered.

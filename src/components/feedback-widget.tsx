@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { MessageCircle } from 'lucide-react';
 
 type FeedbackType = 'bug' | 'feature' | 'general' | 'praise';
 type UIState = 'idle' | 'loading' | 'success' | 'error';
@@ -123,7 +124,7 @@ export function FeedbackWidget() {
         aria-label="Open feedback form"
         aria-haspopup="dialog"
       >
-        <span aria-hidden="true">💬</span> Feedback
+        <MessageCircle className="h-4 w-4" aria-hidden="true" /> Feedback
       </button>
 
       {/* Overlay + dialog */}

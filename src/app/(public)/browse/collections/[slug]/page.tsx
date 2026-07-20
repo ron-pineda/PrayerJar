@@ -104,7 +104,7 @@ export default async function CollectionPage({
                 )}
                 {prayer.answeredAt && (
                   <Badge variant="outline" className="text-xs text-amber-600 border-amber-300">
-                    ✨ Answered
+                    Answered
                   </Badge>
                 )}
               </div>
