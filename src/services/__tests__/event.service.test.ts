@@ -2,6 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('@/db', () => ({ db: {} }));
 
+// createEvent now gates on the church's plan tier (free = 0 events).
+// Mock the tier lookup so event tests exercise event logic, not billing.
+const { mockGetChurchTier } = vi.hoisted(() => ({
+  mockGetChurchTier: vi.fn().mockResolvedValue('pro'),
+}));
+
+vi.mock('@/services/church-platform.service', () => ({
+  getChurchTier: mockGetChurchTier,
+}));
+
 import {
   createEvent,
   getEvent,
@@ -57,6 +67,9 @@ describe('createEvent', () => {
       updatedAt: new Date(),
     };
 
+    // tier is 'pro' (limit 12) → createEvent counts non-ended events first
+    (db as Record<string, unknown>).select = vi.fn(() => makeChain([{ value: 0 }]));
+
     const chain = makeChain([fakeEvent]);
     (db as Record<string, unknown>).insert = vi.fn(() => chain);
 
@@ -68,6 +81,17 @@ describe('createEvent', () => {
 
     expect(result).toEqual(fakeEvent);
     expect(db.insert).toHaveBeenCalledOnce();
+  });
+
+  it('rejects event creation on the free tier', async () => {
+    mockGetChurchTier.mockResolvedValueOnce('free');
+    const insertMock = vi.fn(() => makeChain([]));
+    (db as Record<string, unknown>).insert = insertMock;
+
+    await expect(
+      createEvent({ churchId: 'church-1', name: 'Sunday Service', createdBy: 'user-1' }),
+    ).rejects.toThrow('Starter plan or higher');
+    expect(insertMock).not.toHaveBeenCalled();
   });
 });
 

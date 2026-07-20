@@ -10,6 +10,22 @@ vi.mock('@/lib/auth', () => ({
   auth: vi.fn().mockResolvedValue(null),
 }));
 
+// The subscription flow looks up the caller's admin church membership to
+// attach churchId to the checkout session. Default: no membership found.
+const { mockFindFirstChurchMember } = vi.hoisted(() => ({
+  mockFindFirstChurchMember: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('@/db', () => ({
+  db: {
+    query: {
+      churchMembers: {
+        findFirst: mockFindFirstChurchMember,
+      },
+    },
+  },
+}));
+
 import { POST } from './route';
 import { createCheckoutSession, createSubscriptionCheckout, createEventLicenseCheckout } from '@/services/billing.service';
 import { auth } from '@/lib/auth';
@@ -100,6 +116,20 @@ describe('POST /api/v1/checkout', () => {
     expect(createSubscriptionCheckout).toHaveBeenCalledWith(expect.objectContaining({
       userId: 'user-123',
       stripePriceId: 'price_abc',
+      churchId: null,
+    }));
+  });
+
+  it('passes the admin church id to the subscription checkout when a membership exists', async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-123' } } as any);
+    mockFindFirstChurchMember.mockResolvedValueOnce({ churchId: 'church-9', userId: 'user-123', role: 'admin' });
+    vi.mocked(createSubscriptionCheckout).mockResolvedValue('https://checkout.stripe.com/sub/test');
+
+    const res = await POST(makeRequest({ type: 'subscription', stripePriceId: 'price_abc' }));
+
+    expect(res.status).toBe(200);
+    expect(createSubscriptionCheckout).toHaveBeenCalledWith(expect.objectContaining({
+      churchId: 'church-9',
     }));
   });
 

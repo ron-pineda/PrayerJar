@@ -12,11 +12,6 @@ vi.mock('@/db', () => ({
   },
 }));
 
-// Mock drizzle-orm
-vi.mock('drizzle-orm', () => ({
-  eq: vi.fn((column, value) => ({ column, value })),
-}));
-
 import { db } from '@/db';
 
 describe('feature-flags', () => {

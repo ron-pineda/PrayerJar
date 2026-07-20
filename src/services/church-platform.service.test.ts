@@ -28,7 +28,7 @@ import { db } from '@/db';
 function makeChain(finalValue: unknown) {
   const chain: Record<string, unknown> = {};
   const methods = [
-    'select', 'from', 'where', 'limit', 'orderBy', 'innerJoin',
+    'select', 'from', 'where', 'limit', 'orderBy', 'innerJoin', 'leftJoin',
     'insert', 'values', 'returning', 'update', 'set', 'delete',
     'onConflictDoNothing',
   ];
@@ -117,7 +117,19 @@ describe('getChurchBySlug', () => {
 // ---------------------------------------------------------------------------
 
 describe('addChurchMember', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    // addChurchMember now enforces plan member limits (getChurchTier + count):
+    //   select 1: tier lookup — .from(churches).leftJoin(subscriptions)... → [] → 'free'
+    //   select 2: member count — .from(churchMembers)... → [{ value: 0 }] (under free limit)
+    let selectCallCount = 0;
+    (db as Record<string, unknown>).select = vi.fn(() => {
+      selectCallCount++;
+      if (selectCallCount === 1) return makeChain([]);
+      return makeChain([{ value: 0 }]);
+    });
+  });
 
   it('calls onConflictDoNothing to make the insert idempotent', async () => {
     const chain = makeChain(undefined);
@@ -139,6 +151,21 @@ describe('addChurchMember', () => {
     expect(chain.values).toHaveBeenCalledWith(
       expect.objectContaining({ role: 'pastor', churchId: 'church-1', userId: 'user-2' })
     );
+  });
+
+  it('throws when the plan member limit is reached', async () => {
+    // tier lookup → free (limit 75); count → 75 members already
+    let selectCallCount = 0;
+    (db as Record<string, unknown>).select = vi.fn(() => {
+      selectCallCount++;
+      if (selectCallCount === 1) return makeChain([]);
+      return makeChain([{ value: 75 }]);
+    });
+    const insertMock = vi.fn(() => makeChain(undefined));
+    (db as Record<string, unknown>).insert = insertMock;
+
+    await expect(addChurchMember('church-1', 'user-3')).rejects.toThrow('Member limit reached');
+    expect(insertMock).not.toHaveBeenCalled();
   });
 });
 

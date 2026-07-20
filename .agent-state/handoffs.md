@@ -323,3 +323,6 @@
 
 [2026-07-20T01:42:25.284Z] Dashboard sync — 0 fix(es): 
 [2026-07-19] Backend → QA: pj-s24-02-verify-url-fix — verify banner moved to clean /sign-in/verify route, proxy passes /sign-in/* through on subdomains. 11/11 proxy tests. Live check after deploy.
+[2026-07-19] Backend → QA: pj-s24-01-test-suite-green — 5 stale-test failures fixed (Sprint 21-23 service drift: churchId in billing, tier limits in addChurchMember/createEvent, drizzle sql import, checkout route db lookup). Suite green: 60 files / 455 tests / 0 fail. Test files only, no production changes.
+[2026-07-19] QA → PM: pj-s24-03-drip-health-check PASS — zero pending/stale drip rows in prod, no backfill needed. Flag for PM: 0 user signups during the 3-month email outage.
+[2026-07-19] Reviewer → PM: pj-s24-01 APPROVED (suite 455/455 green, stale mocks updated, no prod regression) + pj-s24-02 APPROVED (live-verified clean verify URL). Both done.

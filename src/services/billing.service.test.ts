@@ -32,6 +32,7 @@ describe('createSubscriptionCheckout', () => {
 
     const url = await createSubscriptionCheckout({
       userId: 'user-123',
+      churchId: 'church-1',
       stripePriceId: 'price_abc',
       successUrl: 'https://example.com/success',
       cancelUrl: 'https://example.com/cancel',
@@ -41,7 +42,23 @@ describe('createSubscriptionCheckout', () => {
     expect(mockSessionCreate).toHaveBeenCalledWith(expect.objectContaining({
       mode: 'subscription',
       line_items: [{ price: 'price_abc', quantity: 1 }],
-      metadata: { userId: 'user-123', type: 'subscription' },
+      metadata: { userId: 'user-123', type: 'subscription', churchId: 'church-1' },
+    }));
+  });
+
+  it('writes an empty churchId to metadata when churchId is null (personal subscription)', async () => {
+    mockSessionCreate.mockResolvedValue({ url: 'https://checkout.stripe.com/sub/test' });
+
+    await createSubscriptionCheckout({
+      userId: 'user-123',
+      churchId: null,
+      stripePriceId: 'price_abc',
+      successUrl: 'https://example.com/success',
+      cancelUrl: 'https://example.com/cancel',
+    });
+
+    expect(mockSessionCreate).toHaveBeenCalledWith(expect.objectContaining({
+      metadata: { userId: 'user-123', type: 'subscription', churchId: '' },
     }));
   });
 });
