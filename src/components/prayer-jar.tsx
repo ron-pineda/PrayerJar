@@ -119,7 +119,7 @@ function rimStyle(dims: SizeDim): React.CSSProperties {
       ' oklch(var(--clay-rim-lo)) 50%,' +
       ' oklch(var(--clay-rim-mid)) 85%,' +
       ' oklch(var(--clay-rim-hi)) 100%)',
-    boxShadow: '0 2px 4px oklch(var(--clay-shadow) / 0.40)',
+    boxShadow: '0 2px 4px oklch(var(--clay-shadow) / var(--clay-shadow-a))',
   };
 }
 
@@ -139,18 +139,19 @@ function rimMouthStyle(dims: SizeDim): React.CSSProperties {
 }
 
 function bodyStyle(dims: SizeDim): React.CSSProperties {
-  const warmOpacity = dims.intensifyWarm ? 0.35 : 0.30;
-  const coolOpacity = 0.30;
-  const warmMidOpacity = dims.suppressMidWarmMottle ? 0 : 0.30;
-  // Light-mode uses slightly richer mottle alpha; we stay with a single alpha
-  // and let OKLCH tokens differ per theme. The spec permits either.
+  // Alphas come from the per-theme --clay-*-a tokens (clay-vessel-spec §2);
+  // intensifyWarm bumps the warm wash slightly above the theme base.
+  const warmAlpha = dims.intensifyWarm
+    ? 'calc(var(--clay-mottle-warm-a) + 0.05)'
+    : 'var(--clay-mottle-warm-a)';
+  const coolAlpha = 'var(--clay-mottle-cool-a)';
   const mottling = [
-    `radial-gradient(ellipse at 22% 18%, oklch(var(--clay-mottle-warm) / ${warmOpacity}) 0%, transparent 35%)`,
-    `radial-gradient(ellipse at 78% 30%, oklch(var(--clay-mottle-cool) / ${coolOpacity}) 0%, transparent 40%)`,
-    warmMidOpacity > 0
-      ? `radial-gradient(ellipse at 35% 62%, oklch(var(--clay-mottle-warm) / ${warmMidOpacity}) 0%, transparent 30%)`
-      : null,
-    `radial-gradient(ellipse at 72% 78%, oklch(var(--clay-mottle-cool) / ${coolOpacity}) 0%, transparent 45%)`,
+    `radial-gradient(ellipse at 22% 18%, oklch(var(--clay-mottle-warm) / ${warmAlpha}) 0%, transparent 35%)`,
+    `radial-gradient(ellipse at 78% 30%, oklch(var(--clay-mottle-cool) / ${coolAlpha}) 0%, transparent 40%)`,
+    dims.suppressMidWarmMottle
+      ? null
+      : `radial-gradient(ellipse at 35% 62%, oklch(var(--clay-mottle-warm) / var(--clay-mottle-warm-a)) 0%, transparent 30%)`,
+    `radial-gradient(ellipse at 72% 78%, oklch(var(--clay-mottle-cool) / ${coolAlpha}) 0%, transparent 45%)`,
   ].filter(Boolean) as string[];
 
   const base =
@@ -168,9 +169,9 @@ function bodyStyle(dims: SizeDim): React.CSSProperties {
     // Stacked: mottle washes painted on top of the base gradient.
     backgroundImage: [...mottling, base].join(', '),
     boxShadow:
-      'inset -14px 0 24px oklch(var(--clay-shadow) / 0.40),' +
-      ' inset 14px 0 20px oklch(var(--clay-mottle-warm) / 0.22),' +
-      ' 0 8px 18px oklch(var(--clay-shadow) / 0.40)',
+      'inset -14px 0 24px oklch(var(--clay-shadow) / var(--clay-shadow-a)),' +
+      ' inset 14px 0 20px oklch(var(--clay-mottle-warm) / var(--clay-mottle-warm-a)),' +
+      ' 0 8px 18px oklch(var(--clay-shadow) / var(--clay-shadow-a))',
     overflow: 'hidden',
   };
 }
@@ -182,7 +183,7 @@ function throwingLinesStyle(): React.CSSProperties {
     inset: 0,
     pointerEvents: 'none',
     backgroundImage:
-      'repeating-linear-gradient(180deg, transparent 0px, transparent 10px, oklch(var(--clay-throwing) / 0.10) 10px, oklch(var(--clay-throwing) / 0.10) 11px)',
+      'repeating-linear-gradient(180deg, transparent 0px, transparent 10px, oklch(var(--clay-throwing) / var(--clay-throwing-a)) 10px, oklch(var(--clay-throwing) / var(--clay-throwing-a)) 11px)',
     opacity: 1,
     zIndex: 0,
   };
@@ -197,7 +198,7 @@ function innerHighlightStyle(dims: SizeDim): React.CSSProperties {
     height: dims.innerHighlightH,
     borderRadius: '50%',
     background:
-      'linear-gradient(180deg, oklch(var(--clay-mottle-warm) / 0.30) 0%, transparent 100%)',
+      'linear-gradient(180deg, oklch(var(--clay-mottle-warm) / var(--clay-mottle-warm-a)) 0%, transparent 100%)',
     transform: 'rotate(-8deg)',
     pointerEvents: 'none',
     zIndex: 1,

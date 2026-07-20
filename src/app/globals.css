@@ -92,6 +92,12 @@
   --clay-edge: 0.22 0.05 36;
   --clay-throwing: 0.32 0.06 38;
   --clay-shadow: 0.20 0.04 38;
+  /* Per-theme alphas (clay-vessel-spec §2): alpha can't ride inside the
+     triplet vars above, so washes consume oklch(var(--clay-*) / var(--clay-*-a)). */
+  --clay-mottle-warm-a: 0.30;
+  --clay-mottle-cool-a: 0.30;
+  --clay-throwing-a: 0.10;
+  --clay-shadow-a: 0.18;
 }
 
 /* Dark mode — deep charcoal, warm amber accent, candlelight */
@@ -135,6 +141,10 @@
   --clay-edge: 0.18 0.04 34;
   --clay-throwing: 0.28 0.05 36;
   --clay-shadow: 0 0 0;
+  --clay-mottle-warm-a: 0.22;
+  --clay-mottle-cool-a: 0.35;
+  --clay-throwing-a: 0.08;
+  --clay-shadow-a: 0.40;
 }
 
 @layer base {

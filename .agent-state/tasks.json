@@ -5546,16 +5546,14 @@
     "files": [
       "docs/sprint22/specs/sso-security-review.md"
     ],
-    "blockers": [
-      "pj-s22-05-architect-sso-subdomain-spike"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Gates the SSO implementation tasks (pj-s22-11, pj-s22-12). Per advisor + CLAUDE.md — Security must be consulted, not skipped. Enterprise buyers will ask for the SSO security posture during sales conversations.",
       "[PM, 2026-04-19] Deferred from Sprint 22 per Ron. Rationale: zero enterprise demand today; revisit when a real enterprise church asks. SSO was the costliest chain in scope and has no offsetting revenue.",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. SSO/SCIM/BYO-domain parked per Ron 2026-04-19; site ships with \"enterprise login coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-07-legal-sso-contract-surface",
@@ -5575,16 +5573,14 @@
     "files": [
       "docs/legal/"
     ],
-    "blockers": [
-      "pj-s22-05-architect-sso-subdomain-spike"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Per advisor — Legal is not optional for enterprise SSO. Sprint 17 already framed FTC §5 for marketing-claim integrity; enterprise SSO adds DPA/sub-processor surface on top. Runs in parallel with Security review (both gate implementation).",
       "[PM, 2026-04-19] Deferred from Sprint 22 per Ron. Rationale: zero enterprise demand today; revisit when a real enterprise church asks. SSO was the costliest chain in scope and has no offsetting revenue.",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. SSO/SCIM/BYO-domain parked per Ron 2026-04-19; site ships with \"enterprise login coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-08-pco-group-persistence",
@@ -5711,19 +5707,14 @@
       "src/lib/auth/",
       "src/app/api/auth/"
     ],
-    "blockers": [
-      "pj-s22-05-architect-sso-subdomain-spike",
-      "pj-s22-06-security-sso-review",
-      "pj-s22-07-legal-sso-contract-surface",
-      "pj-s22-01-drizzle-pipeline"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #3 (primary implementation). Deliberately not over-specified per PM instruction — design is upstream. Risk: if spike lands late this task may slip to Sprint 23. Flag to Ron as a sprint-slip candidate in kickoff.",
       "[PM, 2026-04-19] Deferred from Sprint 22 per Ron. Rationale: zero enterprise demand today; revisit when a real enterprise church asks. SSO was the costliest chain in scope and has no offsetting revenue.",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. SSO/SCIM/BYO-domain parked per Ron 2026-04-19; site ships with \"enterprise login coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-12-sso-tier-gating",
@@ -5744,16 +5735,14 @@
       "src/lib/auth/",
       "src/app/church-admin/"
     ],
-    "blockers": [
-      "pj-s22-11-sso-idp-integration"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #3 (gating). Blocked by integration landing first. Copy on the locked state routes through Copywriter (small lift).",
       "[PM, 2026-04-19] Deferred from Sprint 22 per Ron. Rationale: zero enterprise demand today; revisit when a real enterprise church asks. SSO was the costliest chain in scope and has no offsetting revenue.",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. SSO/SCIM/BYO-domain parked per Ron 2026-04-19; site ships with \"enterprise login coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-13-sso-qa",
@@ -5772,17 +5761,14 @@
     "files": [
       "docs/sprint22/qa/sso-test-plan.md"
     ],
-    "blockers": [
-      "pj-s22-11-sso-idp-integration",
-      "pj-s22-12-sso-tier-gating"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Gate before Reviewer. QA can draft the test plan in parallel with Backend implementing — only execution is blocked.",
       "[PM, 2026-04-19] Deferred from Sprint 22 per Ron. Rationale: zero enterprise demand today; revisit when a real enterprise church asks. SSO was the costliest chain in scope and has no offsetting revenue.",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. SSO/SCIM/BYO-domain parked per Ron 2026-04-19; site ships with \"enterprise login coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-14-designer-pdf-visual",
@@ -5803,16 +5789,14 @@
     "files": [
       "docs/sprint22/specs/pdf-report-visual.md"
     ],
-    "blockers": [
-      "pj-s22-10-analytics-pdf-content-design"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #5 (visual). Per advisor — Designer AFTER Analytics, not before.",
       "[PM, 2026-04-19] Deferred to Sprint 23 per Ron. Rationale: PDF reports are not blocking Large-church sellability — churches can see analytics on-screen today; only the download is missing. Pushing tightens Sprint 22 to 13 tasks and lets SSO-honest Large-church marketing ship sooner. No vendor cost incurred either way (react-pdf is free).",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. PDF analytics chain deferred per Ron 2026-04-19; site ships with \"custom analytics reports coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-15-backend-pdf-generator",
@@ -5833,17 +5817,14 @@
     "files": [
       "src/app/api/"
     ],
-    "blockers": [
-      "pj-s22-10-analytics-pdf-content-design",
-      "pj-s22-14-designer-pdf-visual"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] Sprint 22 scope item #5 (build). WARNING TO RON — this is the most likely candidate to slip to Sprint 23 if timeline pressure hits. Full SSO + subdomain + PDF gen in one sprint is ambitious. Cutting this to Sprint 23 keeps the Large-segment unblockers (SSO + subdomain) on track.",
       "[PM, 2026-04-19] Deferred to Sprint 23 per Ron. Rationale: PDF reports are not blocking Large-church sellability — churches can see analytics on-screen today; only the download is missing. Pushing tightens Sprint 22 to 13 tasks and lets SSO-honest Large-church marketing ship sooner. No vendor cost incurred either way (react-pdf is free).",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. PDF analytics chain deferred per Ron 2026-04-19; site ships with \"custom analytics reports coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-16-subdomain-unpark",
@@ -5987,16 +5968,14 @@
     "files": [
       "docs/sprint22/qa/pdf-test-plan.md"
     ],
-    "blockers": [
-      "pj-s22-15-backend-pdf-generator"
-    ],
+    "blockers": [],
     "notes": [
       "[PM, 2026-04-19] If pj-s22-15 slips to Sprint 23, this slips too (as a pair).",
       "[PM, 2026-04-19] Deferred to Sprint 23 per Ron. Rationale: PDF reports are not blocking Large-church sellability — churches can see analytics on-screen today; only the download is missing. Pushing tightens Sprint 22 to 13 tasks and lets SSO-honest Large-church marketing ship sooner. No vendor cost incurred either way (react-pdf is free).",
       "[Claude, 2026-07-19] PARKED, not dead — status set to abandoned only so the dashboard stops counting it as open. PDF analytics chain deferred per Ron 2026-04-19; site ships with \"custom analytics reports coming soon\" label. Revive by resetting to proposed at a future sprint kickoff."
     ],
     "created_at": "2026-04-19",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:31:39.897Z"
   },
   {
     "id": "pj-s22-21-copy-network-reposition",
@@ -6137,7 +6116,7 @@
   {
     "id": "pj-s23-clay-token-alpha-tune",
     "title": "Tune --clay-* token alphas to match spec §2 per-theme values",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Frontend Engineer",
     "priority": "low",
     "description": "Follow-up from Reviewer sign-off on pj-s22-24. Spec docs/design/clay-vessel-spec.md §2 defines per-theme alphas for four --clay-* tokens (mottle-warm dark 0.22 / light 0.30; mottle-cool dark 0.35 / light 0.30; throwing dark 0.08 / light 0.10; shadow dark 0.40 / light 0.18). Current implementation stores these tokens as raw OKLCH triplets (no alpha) and applies a single hardcoded alpha at each consumption site in prayer-jar.tsx (warm 0.30, cool 0.30, throwing 0.10, shadow 0.40). The most visible divergence is light-mode shadow rendering at 0.40 instead of spec's 0.18 (~2.2× heavier than Designer called for on parchment). Two options: (a) tune the uniformly-applied alphas against the Vercel preview until both themes read correctly; (b) restore per-theme alphas via theme-conditional consumption (inline computed style keyed off a .dark ancestor check, or separate CSS classes). Option (a) is simpler; option (b) is more faithful to the spec. Decide after eyeballing the current state on a Vercel preview with both light and dark modes.",
@@ -6153,10 +6132,11 @@
     ],
     "blockers": [],
     "notes": [
-      "[Reviewer, 2026-04-20] Observation surfaced during pj-s22-24 final review. Not a blocker for Sprint 22 ship — shadow at 0.40 in light mode is a visible deviation but the vessel is still on-brand, and visual regression was already unverifiable locally (Vercel preview was the gate). Ron can park this until he has the preview up and decides whether the deviation actually reads badly or is fine."
+      "[Reviewer, 2026-04-20] Observation surfaced during pj-s22-24 final review. Not a blocker for Sprint 22 ship — shadow at 0.40 in light mode is a visible deviation but the vessel is still on-brand, and visual regression was already unverifiable locally (Vercel preview was the gate). Ron can park this until he has the preview up and decides whether the deviation actually reads badly or is fine.",
+      "[Claude, 2026-07-19] Implemented per clay-vessel-spec §2: added per-theme --clay-*-a alpha tokens (mottle-warm .30/.22, mottle-cool .30/.35, throwing .10/.08, shadow .18/.40 light/dark) in globals.css; prayer-jar.tsx now consumes oklch(var(--clay-*) / var(--clay-*-a)) — no hard-coded alphas remain. intensifyWarm bump preserved via calc(+0.05). Vitest: 437 pass, 5 pre-existing failures in unrelated services (billing/events/flags — flagged for Sprint 24). Awaiting visual review on prod: homepage + /my-prayers, light + dark."
     ],
     "created_at": "2026-04-20",
-    "last_touched": "2026-04-20T03:03:47Z"
+    "last_touched": "2026-07-19"
   },
   {
     "id": "pj-s23-jar-mark-png-script-sync",

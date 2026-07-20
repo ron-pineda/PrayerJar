@@ -315,3 +315,6 @@
 [2026-07-19] Claude → Ron: pj-ops-resend-dns-outage FIXED — Resend DKIM/SPF records re-added to Vercel DNS, domain re-verified, magic-link sign-in restored on apex + subdomains (was 500 Configuration since ~Apr 20). Welcome drip unblocked.
 [2026-07-19] Claude → Ron: pj-s23-subdomain-auth-flow — server-side flow verified (subdomain sign-in renders church-scoped, magic link email sends). Awaiting Ron's browser click-test of testchurch magic link for cookie-domain acceptance criteria.
 [2026-07-19] Claude → PM: board hygiene — 9 stale proposed tasks (SSO cluster x5, PDF cluster x4) set to abandoned-as-parked per Ron's 2026-04-19 decisions, with revival notes. Sprint 22/23 board now reflects reality.
+
+[2026-07-20T01:31:39.897Z] Dashboard sync — 0 fix(es): 
+[2026-07-19] Claude (Frontend) → Ron (visual QA): pj-s23-clay-token-alpha-tune — per-theme alpha tokens implemented per spec §2, deployed to prod. Check vessel washes/shadow on homepage + /my-prayers in light AND dark (light-mode shadow should soften noticeably: 0.40 → 0.18).
