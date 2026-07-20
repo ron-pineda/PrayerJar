@@ -327,3 +327,4 @@
 [2026-07-19] QA → PM: pj-s24-03-drip-health-check PASS — zero pending/stale drip rows in prod, no backfill needed. Flag for PM: 0 user signups during the 3-month email outage.
 [2026-07-19] Reviewer → PM: pj-s24-01 APPROVED (suite 455/455 green, stale mocks updated, no prod regression) + pj-s24-02 APPROVED (live-verified clean verify URL). Both done.
 [2026-07-19] Performance → Frontend: pj-s24-06 perf audit refresh DONE — all Sprint-14 findings still live, prioritized P1-P3 at docs/sprint24/perf-audit.md. pj-s24-07 unblocked.
+[2026-07-19] Designer → Frontend: pj-s24-08 design audit DONE — 29 deltas / 9 pages at docs/sprint24/design-audit.md. pj-s24-09 implementation started.

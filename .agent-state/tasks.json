@@ -6386,12 +6386,13 @@
     "id": "pj-s24-08-signedin-design-audit",
     "sprint": "24",
     "title": "Designer: signed-in surface audit vs brand guide — per-page delta specs",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Designer",
     "priority": "high",
     "description": "Sprint 20 refreshed the signed-out surface; this is the matching members pass. Pages: /pray, /my-prayers, /profile, /journal, /notifications, /badges, /saved-churches, /settings, church dashboard. Audit against docs/brand/brand-guide.md (voice, amber palette, clay vessel usage, Lucide-not-emoji, banned phrases). Deliverable: docs/sprint24/design-audit.md with per-page deltas Frontend can implement without interpretation.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[Designer, 2026-07-19] DONE. 29 delta specs across 9 pages at docs/sprint24/design-audit.md, all file:line-cited, two blanket rulings (no verse strips on signed-in utility pages; semantic colors stay, decorative rainbow goes). Worst: /badges (14 emoji), /pray (11 emoji, shared category-icons fix), church dashboard (§7 #9 banned phrase x9). [PM, 2026-07-19] Reviewed and accepted; pj-s24-09 unblocked."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-19"
@@ -6400,7 +6401,7 @@
     "id": "pj-s24-09-signedin-polish",
     "sprint": "24",
     "title": "Frontend: implement signed-in design deltas",
-    "status": "proposed",
+    "status": "in-progress",
     "assigned_to": "Frontend",
     "priority": "high",
     "description": "Gated on pj-s24-08. Fan out per-page subtasks if the audit is large.",
