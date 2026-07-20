@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
 import { churches, churchMembers, chmsSyncJobs } from '@/db/schema';
@@ -95,9 +96,10 @@ export default async function ChurchIntegrationsPage({ params }: Props) {
     <div className="max-w-2xl mx-auto px-4 py-10">
       <Link
         href={`/church/${slug}/settings`}
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
       >
-        ← Back to Settings
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        Back to Settings
       </Link>
       <h1 className="text-2xl font-bold mb-2">{church.name} — Integrations</h1>
       <p className="text-sm text-muted-foreground mb-8">

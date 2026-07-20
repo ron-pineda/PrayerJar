@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { SidebarDrawer } from './SidebarDrawer';
 import { PLANS, TIER_RANK } from '@/lib/plans';
@@ -85,8 +86,9 @@ function SidebarContent({ slug, churchName, tier, userName }: Props) {
         {userName && (
           <p className="truncate text-sm font-medium text-foreground">{userName}</p>
         )}
-        <Link href="/" className="hover:text-foreground transition-colors">
-          ← Back to PrayerJar
+        <Link href="/" className="hover:text-foreground transition-colors inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to PrayerJar
         </Link>
       </div>
     </div>

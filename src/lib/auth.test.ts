@@ -32,5 +32,8 @@ describe('auth', () => {
     expect(signIn).toBeDefined();
     expect(signOut).toBeDefined();
     expect(handlers).toBeDefined();
-  });
+    // Generous timeout: this pulls in the whole auth graph (NextAuth, Drizzle
+    // adapter, Resend, email rendering) and exceeds the 5s default under
+    // full-suite parallel load.
+  }, 30_000);
 });

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { PastorTips } from '@/components/church/pastor-tips';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -36,8 +37,9 @@ export default async function ChurchSetupPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -81,9 +83,10 @@ export default async function ChurchSetupPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to {church.name}
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
         <h1 className="text-2xl font-bold">Church Setup Guide</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -111,7 +114,8 @@ export default async function ChurchSetupPage({ params }: Props) {
                   href={step.link.href}
                   className="inline-flex w-fit items-center rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
-                  {step.link.label} →
+                  {step.link.label}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               ) : null}
             </div>

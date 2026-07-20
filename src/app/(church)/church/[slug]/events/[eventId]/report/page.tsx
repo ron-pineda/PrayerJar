@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getEvent, getEventStats, getEventPrayers } from '@/services/event.service';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string; eventId: string }>;
@@ -94,9 +95,10 @@ export default async function EventReportPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/events`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Events
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Events
         </Link>
         <div className="flex items-start justify-between gap-4">
           <div>

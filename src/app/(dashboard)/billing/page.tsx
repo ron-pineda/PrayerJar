@@ -111,10 +111,10 @@ export default async function BillingPage() {
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Upgrade to unlock church features like private prayer walls and pastoral tools.
+                  Church features — private prayer walls and pastoral tools — are included on paid plans.
                 </p>
               </div>
-              <UpgradeButton tier="starter" billing="monthly" label="Upgrade to unlock church features" />
+              <UpgradeButton tier="starter" billing="monthly" label="View church plans" />
             </div>
           )}
         </CardContent>

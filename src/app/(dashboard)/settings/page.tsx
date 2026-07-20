@@ -172,7 +172,7 @@ export default async function SettingsPage() {
         <CardHeader>
           <CardTitle>Quiet Hours</CardTitle>
           <CardDescription>
-            Suppress notifications during a time window so you are not disturbed while sleeping.
+            Pause notifications overnight so nothing wakes you.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -248,7 +248,7 @@ export default async function SettingsPage() {
 
       <Card className="border-destructive/40">
         <CardHeader>
-          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardTitle className="text-destructive">Delete account</CardTitle>
           <CardDescription>
             Permanently delete your account and all associated data. This cannot be undone.
           </CardDescription>

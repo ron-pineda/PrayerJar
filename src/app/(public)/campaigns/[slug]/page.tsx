@@ -5,6 +5,7 @@ import { db } from '@/db';
 import { campaigns } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Campaign | The Prayer Jar' };
 
@@ -56,9 +57,10 @@ export default async function CampaignPage({
       <div className="mt-12 text-center">
         <Link
           href="/pray"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
         >
-          ← Back to the prayer feed
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to the prayer feed
         </Link>
       </div>
     </main>

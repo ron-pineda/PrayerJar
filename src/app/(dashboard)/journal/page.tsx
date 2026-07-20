@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { EmptyState } from '@/components/empty-state';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Check } from 'lucide-react';
 
 export default async function JournalPage() {
   const session = await auth();
@@ -50,7 +50,14 @@ export default async function JournalPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground italic mb-2">
-                    {prayer.isAnonymous ? '[Anonymous prayer]' : `"${prayer.content.slice(0, 120)}..."`}
+                    {prayer.isAnonymous ? (
+                      'An anonymous request'
+                    ) : (
+                      <>
+                        &ldquo;{prayer.content.slice(0, 120)}
+                        {prayer.content.length > 120 ? '…' : ''}&rdquo;
+                      </>
+                    )}
                   </p>
                   {interaction.message && (
                     <p className="text-sm">
@@ -58,7 +65,9 @@ export default async function JournalPage() {
                     </p>
                   )}
                   {prayer.status === 'answered' && (
-                    <span className="text-xs text-green-600 font-medium">✓ Answered</span>
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-400">
+                      <Check className="h-3 w-3" aria-hidden="true" /> Answered
+                    </span>
                   )}
                 </CardContent>
               </Card>

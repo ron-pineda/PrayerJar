@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import {
   getChurchBySlug,
@@ -35,8 +36,9 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
           This invite link is missing a church code. Ask your church admin for
           the correct link.
         </p>
-        <Link href="/" className="text-sm text-primary hover:underline">
-          ← Back to Prayer Jar
+        <Link href="/" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Prayer Jar
         </Link>
       </main>
     );
@@ -54,8 +56,9 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
           We couldn&apos;t find a church with that code. The link may be
           outdated or incorrect. Ask your church admin for a fresh link.
         </p>
-        <Link href="/" className="text-sm text-primary hover:underline">
-          ← Back to Prayer Jar
+        <Link href="/" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Prayer Jar
         </Link>
       </main>
     );

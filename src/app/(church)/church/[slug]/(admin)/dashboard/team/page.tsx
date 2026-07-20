@@ -6,6 +6,7 @@ import { getChurchAssignments } from '@/services/pastoral.service';
 import { hasPrayerTeamAssignments, PLANS, PRAYER_TEAM_ASSIGNMENTS_TIER } from '@/lib/plans';
 import { AssignPrayerForm } from './AssignPrayerForm';
 import { CopyInviteLink } from '@/components/church/copy-invite-link';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,8 +33,9 @@ export default async function PrayerTeamPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -63,9 +65,10 @@ export default async function PrayerTeamPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/dashboard`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Dashboard
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Dashboard
         </Link>
         <h1 className="text-2xl font-bold">Prayer Team</h1>
       </div>
@@ -143,8 +146,8 @@ export default async function PrayerTeamPage({ params }: Props) {
         <div className="rounded-xl border bg-card p-8 text-center">
           <h2 className="text-lg font-semibold mb-2">Prayer Team Assignments</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Prayer Team Assignments are available on the {PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} plan and
-            above. Upgrade to unlock it.
+            Prayer Team Assignments are included on the {PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} plan and
+            above.
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link href="/billing" className="text-sm text-primary hover:underline">

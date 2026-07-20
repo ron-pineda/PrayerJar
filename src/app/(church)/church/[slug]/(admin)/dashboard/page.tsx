@@ -1,5 +1,14 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import {
+  ArrowLeft,
+  BadgeCheck,
+  ChevronRight,
+  Flag,
+  Inbox,
+  RefreshCw,
+  Users,
+} from 'lucide-react';
 import { auth } from '@/lib/auth';
 import {
   getChurchBySlug,
@@ -37,8 +46,9 @@ export default async function PastoralDashboardPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -54,8 +64,8 @@ export default async function PastoralDashboardPage({ params }: Props) {
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <h1 className="text-xl font-semibold mb-3">Pastoral Dashboard</h1>
         <p className="text-muted-foreground mb-4">
-          The Pastoral Dashboard is available on the {PASTORAL_DASHBOARD_TIER_NAME} plan and
-          above. Upgrade to unlock it.
+          The Pastoral Dashboard is included on the {PASTORAL_DASHBOARD_TIER_NAME} plan and
+          above.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link href="/billing" className="text-sm text-primary hover:underline">
@@ -63,9 +73,10 @@ export default async function PastoralDashboardPage({ params }: Props) {
           </Link>
           <Link
             href={`/church/${slug}`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← Back to {church.name}
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to {church.name}
           </Link>
         </div>
       </div>
@@ -87,9 +98,10 @@ export default async function PastoralDashboardPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-flex items-center gap-1"
         >
-          ← Back to {church.name}
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
         <h1 className="text-2xl font-bold">{church.name} — Pastoral Dashboard</h1>
       </div>
@@ -121,35 +133,48 @@ export default async function PastoralDashboardPage({ params }: Props) {
           href={`/church/${slug}/dashboard/flagged`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
-          <span className="font-medium">Flagged Prayers ({stats.pendingFlags})</span>
-          <span className="text-muted-foreground text-sm">→</span>
+          <span className="font-medium inline-flex items-center gap-2">
+            <Flag className="h-5 w-5 text-amber-600" aria-hidden="true" />
+            Flagged Prayers ({stats.pendingFlags})
+          </span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </Link>
         <Link
           href={`/church/${slug}/dashboard/care`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
-          <span className="font-medium">Care Inbox</span>
-          <span className="text-muted-foreground text-sm">→</span>
+          <span className="font-medium inline-flex items-center gap-2">
+            <Inbox className="h-5 w-5 text-amber-600" aria-hidden="true" />
+            Care Inbox
+          </span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </Link>
         <Link
           href={`/church/${slug}/dashboard/team`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
-          <span className="font-medium">Prayer Team</span>
-          <span className="text-muted-foreground text-sm">→</span>
+          <span className="font-medium inline-flex items-center gap-2">
+            <Users className="h-5 w-5 text-amber-600" aria-hidden="true" />
+            Prayer Team
+          </span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </Link>
         <Link
           href={`/church/${slug}/dashboard/groups`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
-          <span className="font-medium">Synced Groups</span>
-          <span className="text-muted-foreground text-sm">→</span>
+          <span className="font-medium inline-flex items-center gap-2">
+            <RefreshCw className="h-5 w-5 text-amber-600" aria-hidden="true" />
+            Synced Groups
+          </span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </Link>
         <Link
           href={`/church/${slug}/settings/nonprofit`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
         >
-          <span className="font-medium">
+          <span className="font-medium inline-flex items-center gap-2">
+            <BadgeCheck className="h-5 w-5 text-amber-600" aria-hidden="true" />
             501(c)(3) Verification
             {latestVerification && (
               <span
@@ -166,7 +191,7 @@ export default async function PastoralDashboardPage({ params }: Props) {
               </span>
             )}
           </span>
-          <span className="text-muted-foreground text-sm">→</span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         </Link>
       </div>
     </div>

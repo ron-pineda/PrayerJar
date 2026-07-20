@@ -4,6 +4,7 @@ import { getSavedChurches } from "@/services/church.service";
 import { MapPin, ExternalLink, Bookmark } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/empty-state";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Saved Churches | The Prayer Jar" };
@@ -22,19 +23,17 @@ export default async function SavedChurchesPage() {
           <p className="text-muted-foreground">Churches you&apos;ve bookmarked for later.</p>
         </div>
         <Button variant="outline" render={<Link href="/find-a-church" />}>
-          Find More
+          Find more churches
         </Button>
       </div>
 
       {saved.length === 0 ? (
-        <div className="text-center py-20">
-          <Bookmark className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-          <p className="text-lg font-medium mb-2">No saved churches yet.</p>
-          <p className="text-muted-foreground mb-6">
-            Save churches from the Church Finder to keep track of ones you want to visit.
-          </p>
-          <Button render={<Link href="/find-a-church" />}>Find a Church</Button>
-        </div>
+        <EmptyState
+          icon={<Bookmark size={24} />}
+          title="No saved churches yet"
+          description="Save churches from the Church Finder to keep track of ones you want to visit."
+          action={{ label: "Find a church", href: "/find-a-church" }}
+        />
       ) : (
         <div className="space-y-3">
           {saved.map((church) => (

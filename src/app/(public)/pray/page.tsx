@@ -2,6 +2,7 @@ import { CategoryPicker } from '@/components/category-picker';
 import { PrayerJar } from '@/components/prayer-jar';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { and, eq, gt, isNull, count } from 'drizzle-orm';
@@ -32,21 +33,21 @@ export default async function PrayPage({
         <PrayerJar
           count={activeCount}
           size="md"
-          mode="slips"
           countLabel={`${activeCount.toLocaleString()} requests waiting`}
         />
         <h1 className="text-3xl font-bold tracking-tight mt-6 mb-2">
           Someone wrote this for you.
         </h1>
         <p className="text-muted-foreground max-w-md">
-          Choose a category and intercede for a real request from the community.
+          Pick a category. A real request from a real person is waiting.
         </p>
       </div>
       <CategoryPicker urgentOnly={urgentOnly} />
       <div className="mt-8 text-center">
         <p className="text-sm text-muted-foreground mb-2">Want to browse all requests?</p>
         <Button variant="ghost" size="sm" render={<Link href="/browse" />}>
-          Browse Prayer Requests →
+          Browse prayer requests
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
     </main>

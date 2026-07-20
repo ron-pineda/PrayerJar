@@ -306,7 +306,7 @@ export default function ChurchAdminGuidePage() {
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Starter ($19/mo)</Link>{' '}
               and{' '}
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Pro ($49/mo)</Link>{' '}
-              plans unlock pastoral tools, pastoral notes & assignments, analytics, and event walls.
+              paid plans include pastoral tools, pastoral notes & assignments, analytics, and event walls.
               See the <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Paid Features guide</Link> for a full comparison.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -422,7 +422,7 @@ export default function ChurchAdminGuidePage() {
             <p className="text-sm text-muted-foreground">
               Email{' '}
               <a href="mailto:hello@prayerjar.org" className="text-primary underline underline-offset-4 font-medium">hello@prayerjar.org</a>
-              {' '}and we'll respond within one business day.
+              {' '}and we&rsquo;ll respond within one business day.
             </p>
           </div>
         </div>

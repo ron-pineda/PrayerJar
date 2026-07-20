@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getChurchDetail, getPlatformChurchForPlace } from "@/services/church.service";
 import { RecommendForm } from "@/components/church/recommend-form";
@@ -167,7 +168,10 @@ export default async function ChurchDetailPage({
           <details className="group">
             <summary className="text-amber-400 text-sm cursor-pointer list-none">
               ⛪ Are you a leader at this church?{" "}
-              <span className="font-semibold">Claim this listing →</span>
+              <span className="font-semibold inline-flex items-center gap-1">
+                Claim this listing
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
             </summary>
             {session?.user ? (
               <div className="mt-3">

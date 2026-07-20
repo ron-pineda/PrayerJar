@@ -7,23 +7,8 @@ import { PrayerSearchBar } from "@/components/prayer-search-bar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowRight,
-  BookMarked,
-  Briefcase,
-  Circle,
-  Compass,
-  Feather,
-  Heart,
-  HeartPulse,
-  LayoutGrid,
-  Leaf,
-  Sparkles,
-  Star,
-  Users,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, BookMarked, Circle, LayoutGrid } from "lucide-react";
+import { CATEGORY_ICONS } from "@/lib/category-icons";
 import { getPublishedCollections, getCategoryCounts } from "@/services/collections.service";
 import { auth } from "@/lib/auth";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -31,19 +16,6 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 export const metadata: Metadata = { title: "Browse Prayers | The Prayer Jar" };
 
 export const dynamic = 'force-dynamic';
-
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  health: HeartPulse,
-  family: Users,
-  financial: Wallet,
-  grief: Feather,
-  gratitude: Sparkles,
-  guidance: Compass,
-  relationships: Heart,
-  work_career: Briefcase,
-  spiritual_growth: Leaf,
-  other: Star,
-};
 
 export default async function BrowsePage({
   searchParams,

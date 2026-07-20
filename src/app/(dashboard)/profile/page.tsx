@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { getBadgesForUser } from "@/services/badge.service";
 import { BadgeDisplay } from "@/components/badge-display";
 import Link from "next/link";
+import { User } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Profile | The Prayer Jar" };
@@ -34,7 +35,7 @@ export default async function ProfilePage() {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={user.image} alt={user.name ?? 'Profile'} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
           ) : (
-            <span aria-hidden="true">🙏</span>
+            <User className="h-7 w-7 text-primary" aria-hidden="true" />
           )}
         </div>
         <div>
@@ -59,23 +60,27 @@ export default async function ProfilePage() {
         <div className="text-center p-4 rounded-xl border bg-card">
           <p className="text-2xl font-bold text-primary">{user.currentStreak}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Day streak {user.currentStreak >= 7 ? "🔥" : ""}
+            Day streak
           </p>
         </div>
       </div>
 
       {/* Badges preview */}
-      {badges.length > 0 && (
-        <section className="mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold">Badges</h2>
-            <Link href="/badges" className="text-sm text-primary hover:underline underline-offset-4">
-              View all ({badges.length})
-            </Link>
-          </div>
+      <section className="mb-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold">Badges</h2>
+          <Link href="/badges" className="text-sm text-primary hover:underline underline-offset-4">
+            {badges.length > 0 ? `View all (${badges.length})` : "View all"}
+          </Link>
+        </div>
+        {badges.length > 0 ? (
           <BadgeDisplay earnedBadges={recentBadges} />
-        </section>
-      )}
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            None yet — they arrive quietly as you pray.
+          </p>
+        )}
+      </section>
 
     </main>
   );

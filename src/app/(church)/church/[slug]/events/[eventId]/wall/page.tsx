@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import {
   getEvent,
   getEventPrayers,
@@ -71,9 +72,10 @@ export default async function EventWallPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/events`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Events
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Events
         </Link>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">{event.name}</h1>
@@ -124,11 +126,13 @@ export default async function EventWallPage({ params }: Props) {
           ))}
         </div>
         <div className="flex gap-3 mt-4">
-          <Link href={`/church/${slug}/events/${eventId}/moderation`} className="text-sm text-primary underline">
-            Moderation Console →
+          <Link href={`/church/${slug}/events/${eventId}/moderation`} className="text-sm text-primary underline inline-flex items-center gap-1">
+            Moderation Console
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
-          <Link href={`/church/${slug}/events/${eventId}/display`} className="text-sm text-primary underline">
-            Display Mode →
+          <Link href={`/church/${slug}/events/${eventId}/display`} className="text-sm text-primary underline inline-flex items-center gap-1">
+            Display Mode
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

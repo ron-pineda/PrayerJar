@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 
@@ -86,7 +87,8 @@ export default async function PublicChurchPage({ params }: Props) {
                 href={`/church/${slug}/wall`}
                 className="inline-flex items-center rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                View Prayer Wall →
+                View Prayer Wall
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             ) : (
               <Link

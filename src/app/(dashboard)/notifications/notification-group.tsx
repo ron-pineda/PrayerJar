@@ -1,20 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Heart, Users, UserMinus, Link2, Users2, BookOpen } from 'lucide-react';
+import { Award, Bell, BookOpen, Heart, Link2, MessageCircle, Sparkles, UserMinus, Users, Users2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import type { ReactNode } from 'react';
 
 const TYPE_CONFIG: Record<string, { label: string; icon: ReactNode }> = {
-  someone_prayed: { label: 'Someone prayed for your request', icon: <Heart className="h-4 w-4 text-rose-500" /> },
-  message_received: { label: 'You received an encouragement message', icon: <Heart className="h-4 w-4 text-blue-500" /> },
-  prayer_answered: { label: 'A prayer you prayed for was answered', icon: <BookOpen className="h-4 w-4 text-amber-500" /> },
-  badge_earned: { label: 'You earned a new badge!', icon: <Bell className="h-4 w-4 text-yellow-500" /> },
-  partnership_request: { label: 'You have a new prayer partner request', icon: <Users className="h-4 w-4 text-purple-500" /> },
+  someone_prayed: { label: 'Someone prayed for your request', icon: <Heart className="h-4 w-4 text-amber-600" /> },
+  message_received: { label: 'You received an encouragement message', icon: <MessageCircle className="h-4 w-4 text-amber-600" /> },
+  prayer_answered: { label: 'A prayer you prayed for was answered', icon: <Sparkles className="h-4 w-4 text-amber-600" /> },
+  badge_earned: { label: 'You earned a new badge.', icon: <Award className="h-4 w-4 text-amber-600" /> },
+  partnership_request: { label: 'You have a new prayer partner request', icon: <Users className="h-4 w-4 text-primary" /> },
   partnership_ended: { label: 'A prayer partnership has ended', icon: <UserMinus className="h-4 w-4 text-muted-foreground" /> },
-  chain_joined: { label: 'Someone joined your prayer chain', icon: <Link2 className="h-4 w-4 text-green-500" /> },
-  group_joined: { label: 'Someone joined your prayer group', icon: <Users2 className="h-4 w-4 text-indigo-500" /> },
-  testimony_posted: { label: 'A new testimony was shared', icon: <BookOpen className="h-4 w-4 text-amber-500" /> },
+  chain_joined: { label: 'Someone joined your prayer chain', icon: <Link2 className="h-4 w-4 text-primary" /> },
+  group_joined: { label: 'Someone joined your prayer group', icon: <Users2 className="h-4 w-4 text-primary" /> },
+  testimony_posted: { label: 'A new testimony was shared', icon: <BookOpen className="h-4 w-4 text-amber-600" /> },
 };
 
 export type NotificationItem = {

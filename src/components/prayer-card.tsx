@@ -9,7 +9,8 @@ import { markAnsweredAction, renewPrayerAction, deletePrayerAction, updatePrayer
 import { submitReportAction } from '@/app/actions/report.actions';
 import type { Prayer } from '@/db/schema';
 import { formatDistanceToNow } from 'date-fns';
-import { Share2, ExternalLink } from 'lucide-react';
+import { Share2, ExternalLink, Star } from 'lucide-react';
+import { CATEGORY_ICONS } from '@/lib/category-icons';
 import Link from 'next/link';
 import { CelebrationAnimation } from './celebration-animation';
 import { ExpandableText } from './expandable-text';
@@ -18,12 +19,6 @@ import { PrayerCardMenu } from './prayer-card-menu';
 import { PrayerEditDialog } from './prayer-edit-dialog';
 import { PrayerTestimonyDialog } from './prayer-testimony-dialog';
 import { PrayerDeleteDialog } from './prayer-delete-dialog';
-
-const CATEGORY_ICONS: Record<string, string> = {
-  health: '🩺', family: '👨‍👩‍👧', financial: '💼', grief: '🕊️',
-  gratitude: '🙏', guidance: '🧭', relationships: '❤️',
-  work_career: '⚡', spiritual_growth: '✨', other: '📖',
-};
 
 const STATUS_COLORS: Record<Prayer['status'], string> = {
   active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
@@ -40,7 +35,7 @@ interface PrayerCardProps {
 }
 
 export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showDelete = false, isOwnPrayer = false }: PrayerCardProps) {
-  const icon = CATEGORY_ICONS[prayer.category] ?? '📖';
+  const Icon = CATEGORY_ICONS[prayer.category] ?? Star;
   const ago = formatDistanceToNow(new Date(prayer.createdAt), { addSuffix: true });
 
   const [pending, setPending] = useState(false);
@@ -131,7 +126,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
       )}
       <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xl">{icon}</span>
+          <Icon className="h-5 w-5 text-amber-600" aria-hidden="true" />
           <Badge variant="secondary" className="capitalize">
             {prayer.category.replace('_', ' ')}
           </Badge>
@@ -165,7 +160,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
         )}
 
         {prayer.suggestedVerse && (
-          <p className="text-xs text-muted-foreground italic">✝️ {prayer.suggestedVerse}</p>
+          <p className="text-xs text-muted-foreground italic">{prayer.suggestedVerse}</p>
         )}
 
         <p className="text-xs text-muted-foreground">
@@ -197,7 +192,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
           <div className="flex items-center justify-between mt-4">
             <span className="text-sm text-muted-foreground">
               {localStatus === 'answered'
-                ? 'Answered ✨'
+                ? 'Answered'
                 : localStatus === 'expired'
                 ? 'Expired'
                 : `Active · ${daysLeft} days left`}

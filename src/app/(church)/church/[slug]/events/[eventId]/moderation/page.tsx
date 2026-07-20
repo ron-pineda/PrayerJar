@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getEvent } from '@/services/event.service';
 import ModerationConsole from './ModerationConsole';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string; eventId: string }>;
@@ -39,9 +40,10 @@ export default async function ModerationPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/events/${eventId}/wall`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Event Wall
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Event Wall
         </Link>
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -50,9 +52,10 @@ export default async function ModerationPage({ params }: Props) {
           </div>
           <Link
             href={`/church/${slug}/events/${eventId}/display`}
-            className="text-sm text-primary underline"
+            className="text-sm text-primary underline inline-flex items-center gap-1"
           >
-            Display Mode →
+            Display Mode
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

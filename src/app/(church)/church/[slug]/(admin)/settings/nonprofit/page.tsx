@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
 import { churches, churchMembers, nonprofitVerifications } from '@/db/schema';
@@ -63,8 +64,9 @@ export default async function NonprofitVerificationPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Only church administrators and pastors can manage 501(c)(3) verification.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {row.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {row.name}
         </Link>
       </div>
     );
@@ -88,9 +90,10 @@ export default async function NonprofitVerificationPage({ params }: Props) {
     <div className="max-w-2xl mx-auto px-4 py-10">
       <Link
         href={`/church/${slug}/settings`}
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
       >
-        ← Back to Settings
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        Back to Settings
       </Link>
       <h1 className="text-2xl font-bold mb-1">501(c)(3) Verification</h1>
       <p className="text-sm text-muted-foreground mb-8">

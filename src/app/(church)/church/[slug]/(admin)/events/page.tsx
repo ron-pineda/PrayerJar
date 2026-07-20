@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
 import { getChurchEvents } from '@/services/event.service';
 import { PLANS } from '@/lib/plans';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -61,9 +62,10 @@ export default async function EventsPage({ params }: Props) {
         <div>
           <Link
             href={`/church/${slug}`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
           >
-            ← Back to {church.name}
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to {church.name}
           </Link>
           <h1 className="text-2xl font-bold">Events</h1>
         </div>
@@ -79,7 +81,7 @@ export default async function EventsPage({ params }: Props) {
             href="/billing"
             className="inline-flex items-center rounded-md border border-amber-400 bg-amber-50 dark:bg-amber-950/30 px-4 py-2 text-sm font-medium text-amber-800 dark:text-amber-300 hover:bg-amber-100 transition-colors"
           >
-            Upgrade to unlock events
+            Events are included on the Starter plan and above
           </a>
         )}
       </div>
@@ -121,9 +123,10 @@ export default async function EventsPage({ params }: Props) {
               </div>
               <Link
                 href={`/church/${slug}/events/${event.id}/wall`}
-                className="shrink-0 text-sm font-medium text-primary hover:underline"
+                className="shrink-0 text-sm font-medium text-primary hover:underline inline-flex items-center gap-1"
               >
-                Manage →
+                Manage
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </li>
           ))}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { CreateGroupForm } from '@/components/group/create-group-form';
 
@@ -13,8 +14,9 @@ export default async function NewGroupPage() {
   return (
     <main className="max-w-xl mx-auto px-4 py-12">
       <div className="mb-8">
-        <Link href="/groups" className="text-sm text-muted-foreground hover:underline mb-4 inline-block">
-          ← Back to Groups
+        <Link href="/groups" className="text-sm text-muted-foreground hover:underline mb-4 inline-block inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Groups
         </Link>
         <h1 className="text-3xl font-bold tracking-tight">Create a Group</h1>
         <p className="text-muted-foreground mt-1">

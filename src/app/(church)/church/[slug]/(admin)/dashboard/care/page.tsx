@@ -5,6 +5,7 @@ import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/chu
 import { getPastoralNotes } from '@/services/pastoral.service';
 import { hasPastoralCareInbox, PLANS, PASTORAL_CARE_INBOX_TIER } from '@/lib/plans';
 import { CreateNoteForm } from './CreateNoteForm';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -31,8 +32,9 @@ export default async function PastoralCareInboxPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -45,8 +47,8 @@ export default async function PastoralCareInboxPage({ params }: Props) {
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <h1 className="text-xl font-semibold mb-3">Pastoral Care Inbox</h1>
         <p className="text-muted-foreground mb-4">
-          The Pastoral Care Inbox is available on the {PLANS[PASTORAL_CARE_INBOX_TIER].name} plan and
-          above. Upgrade to unlock it.
+          The Pastoral Care Inbox is included on the {PLANS[PASTORAL_CARE_INBOX_TIER].name} plan and
+          above.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link href="/billing" className="text-sm text-primary hover:underline">
@@ -54,9 +56,10 @@ export default async function PastoralCareInboxPage({ params }: Props) {
           </Link>
           <Link
             href={`/church/${slug}`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
           >
-            ← Back to {church.name}
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to {church.name}
           </Link>
         </div>
       </div>
@@ -70,9 +73,10 @@ export default async function PastoralCareInboxPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/dashboard`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Dashboard
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Dashboard
         </Link>
         <h1 className="text-2xl font-bold">Pastoral Care Inbox</h1>
       </div>

@@ -6,6 +6,7 @@ import { hasPastoralDashboard, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans'
 import { db } from '@/db';
 import { chmsGroups, chmsGroupMembers } from '@/db/schema';
 import { eq, count } from 'drizzle-orm';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,8 +33,9 @@ export default async function ChmsGroupsPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -46,8 +48,7 @@ export default async function ChmsGroupsPage({ params }: Props) {
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <h1 className="text-xl font-semibold mb-3">Synced Groups</h1>
         <p className="text-muted-foreground mb-4">
-          Synced Groups are available on the {PASTORAL_DASHBOARD_TIER_NAME} plan and above.
-          Upgrade to unlock it.
+          Synced Groups are included on the {PASTORAL_DASHBOARD_TIER_NAME} plan and above.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Link href="/billing" className="text-sm text-primary hover:underline">
@@ -55,9 +56,10 @@ export default async function ChmsGroupsPage({ params }: Props) {
           </Link>
           <Link
             href={`/church/${slug}/dashboard`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
           >
-            ← Back to Dashboard
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to Dashboard
           </Link>
         </div>
       </div>
@@ -96,9 +98,10 @@ export default async function ChmsGroupsPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/dashboard`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to Dashboard
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Dashboard
         </Link>
         <h1 className="text-2xl font-bold">{church.name} — Synced Groups</h1>
         <p className="text-sm text-muted-foreground mt-1">

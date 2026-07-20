@@ -4,6 +4,7 @@ import { PrayerCard } from '@/components/prayer-card';
 import { redirect } from 'next/navigation';
 import { PrayerDialog } from '@/components/prayer-dialog';
 import { Heart } from 'lucide-react';
+import { EmptyState } from '@/components/empty-state';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
@@ -45,14 +46,12 @@ export default async function MyPrayersPage() {
       </div>
 
       {prayers.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <Heart size={24} />
-          </div>
-          <h3 className="mb-1 text-base font-semibold">No prayers yet</h3>
-          <p className="mb-5 max-w-xs text-sm text-muted-foreground">When you submit a prayer, it will appear here.</p>
-          <PrayerDialog />
-        </div>
+        <EmptyState
+          icon={<Heart size={24} />}
+          title="No prayers yet"
+          description="Add your first request — real people will pray for it by name."
+          action={<PrayerDialog />}
+        />
       ) : (
         <div className="space-y-10">
           {active.length > 0 && (
@@ -71,7 +70,7 @@ export default async function MyPrayersPage() {
           {answered.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold mb-4 text-amber-700 dark:text-amber-400">
-                Answered ✨ ({answered.length})
+                Answered ({answered.length})
               </h2>
               <div className="grid gap-4">
                 {answered.map((prayer) => (

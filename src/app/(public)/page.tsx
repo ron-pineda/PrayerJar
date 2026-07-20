@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Heart, Users, Sparkles, Church } from 'lucide-react';
+import { ArrowRight, Heart, Users, Sparkles, Church } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PrayerDialog } from '@/components/prayer-dialog';
 import { OnboardingOverlay } from '@/components/onboarding-overlay';
@@ -114,7 +114,8 @@ export default async function HomePage() {
                 {homepageData.communityPrayer?.content ?? 'There are prayers waiting for your intercession.'}
               </p>
               <a href="/pray" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
-                Pray for Them →
+                Pray for Them
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
             <div className="rounded-lg border bg-card p-6 space-y-3">
@@ -124,7 +125,8 @@ export default async function HomePage() {
                 {homepageData.expiringCount > 0 ? ` · ${homepageData.expiringCount} expiring soon` : ' · all current'}
               </p>
               <a href="/my-prayers" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
-                View My Prayers →
+                View My Prayers
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
           </div>

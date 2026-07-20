@@ -10,6 +10,7 @@ import {
   getMemberGrowth,
 } from '@/services/church-analytics.service';
 import AnalyticsCharts from './AnalyticsCharts';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -38,8 +39,9 @@ export default async function ChurchAnalyticsPage({ params }: Props) {
         <p className="text-muted-foreground mb-4">
           Access restricted to church administrators and pastors.
         </p>
-        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline">
-          ← Back to {church.name}
+        <Link href={`/church/${slug}`} className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to {church.name}
         </Link>
       </div>
     );
@@ -59,9 +61,10 @@ export default async function ChurchAnalyticsPage({ params }: Props) {
       <div className="mb-8">
         <Link
           href={`/church/${slug}/dashboard`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block inline-flex items-center gap-1"
         >
-          ← Back to dashboard
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to dashboard
         </Link>
         <h1 className="text-2xl font-bold">{church.name} — Analytics</h1>
         <p className="text-sm text-muted-foreground mt-1">

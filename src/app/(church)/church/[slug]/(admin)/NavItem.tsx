@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 interface NavItemProps {
   href: string;
@@ -61,10 +62,11 @@ export function NavItem({ href, label, locked, tierName, exact }: NavItemProps) 
             </p>
             <Link
               href="/billing"
-              className="text-primary hover:underline"
+              className="text-primary hover:underline inline-flex items-center gap-1"
               onClick={() => setShowCallout(false)}
             >
-              View plans →
+              View plans
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         )}
