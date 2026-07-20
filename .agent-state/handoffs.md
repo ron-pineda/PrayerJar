@@ -329,3 +329,4 @@
 [2026-07-19] Performance → Frontend: pj-s24-06 perf audit refresh DONE — all Sprint-14 findings still live, prioritized P1-P3 at docs/sprint24/perf-audit.md. pj-s24-07 unblocked.
 [2026-07-19] Designer → Frontend: pj-s24-08 design audit DONE — 29 deltas / 9 pages at docs/sprint24/design-audit.md. pj-s24-09 implementation started.
 [2026-07-19] DevOps → Ron: pj-s24-04 re-scoped (drains Pro-gated on Hobby) — /api/health endpoint shipped; Ron to point free Better Stack Uptime monitor at it.
+[2026-07-19] Reviewer → PM: pj-s24-04 DONE — /api/health live + Better Stack Uptime monitor active (Ron-confirmed).
