@@ -6270,5 +6270,19 @@
     ],
     "created_at": "2026-04-21",
     "last_touched": "2026-04-21"
+  },
+  {
+    "id": "pj-ops-resend-dns-outage",
+    "sprint": "23",
+    "title": "OPS: restore Resend email — DNS records lost in Vercel nameserver migration",
+    "status": "done",
+    "assigned_to": "Claude",
+    "priority": "critical",
+    "description": "All outbound email (magic-link sign-in, welcome drip) broken since ~2026-04-20: moving prayerjar.org to Vercel nameservers for wildcard subdomains dropped Resend DKIM/SPF records. Resend domain verification = failed; sends rejected 403; NextAuth surfaced it as 500 error=Configuration on apex AND subdomains.",
+    "notes": [
+      "[Claude, 2026-07-19] Root cause confirmed via direct Resend API repro (403 domain not verified). Fix: re-added 3 DNS records (resend._domainkey TXT, send MX, send TXT) via vercel dns add; triggered re-verify; domain status verified. Post-fix: direct send OK, apex magic link 200 verify page, testchurch subdomain magic link 200 verify page. Remaining: Ron clicks testchurch magic link to verify browser-side acceptance criteria of pj-s23-subdomain-auth-flow (redirect stays on subdomain, cookie Domain=testchurch.prayerjar.org). Also noted cosmetic bug: verify redirect URL is /sign-in?verify=1?provider=resend (double ?), may break the verify banner check."
+    ],
+    "created_at": "2026-07-19",
+    "last_touched": "2026-07-19"
   }
 ]

@@ -312,3 +312,5 @@
 [2026-04-21] Backend → Reviewer: pj-s23-church-admin-welcome-drip — 7-task implementation complete, final review approved. Migration 0032 pending prod apply.
 [2026-04-27] Ron → done: pj-s22-23 clay vessel visual sign-off — LGTM in light+dark.
 [2026-07-19] Claude → Ron: prod DB reconciliation — 0031 (chms_groups) was NEVER applied to prod (journal timestamp typo'd to 2025 caused drizzle to sort it before applied migrations and skip it). Applied via scripts/apply-0031-runner.mjs, verified. 0032 table already existed in prod despite journal showing it pending (runner-vs-journal drift, expected). Journal timestamp fixed.
+[2026-07-19] Claude → Ron: pj-ops-resend-dns-outage FIXED — Resend DKIM/SPF records re-added to Vercel DNS, domain re-verified, magic-link sign-in restored on apex + subdomains (was 500 Configuration since ~Apr 20). Welcome drip unblocked.
+[2026-07-19] Claude → Ron: pj-s23-subdomain-auth-flow — server-side flow verified (subdomain sign-in renders church-scoped, magic link email sends). Awaiting Ron's browser click-test of testchurch magic link for cookie-domain acceptance criteria.
