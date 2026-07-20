@@ -320,3 +320,6 @@
 [2026-07-19] Claude (Frontend) → Ron (visual QA): pj-s23-clay-token-alpha-tune — per-theme alpha tokens implemented per spec §2, deployed to prod. Check vessel washes/shadow on homepage + /my-prayers in light AND dark (light-mode shadow should soften noticeably: 0.40 → 0.18).
 [2026-07-19] Ron → done: Sprint 23 CLOSED — subdomain auth click-test PASSED (cookie scoped to subdomain, apex isolated), clay alpha tune visual sign-off light+dark. testchurch subdomain row cleared.
 [2026-07-19] PM → Team: Sprint 24 kicked off — production readiness + signed-in UI/UX polish. 11 tasks created (pj-s24-01..11). Roster: PM, Architect, Designer, Frontend, Backend, Performance, DevOps, QA, Reviewer. Brief: docs/sprint24/kickoff.md. Ron pre-approved sprint start.
+
+[2026-07-20T01:42:25.284Z] Dashboard sync — 0 fix(es): 
+[2026-07-19] Backend → QA: pj-s24-02-verify-url-fix — verify banner moved to clean /sign-in/verify route, proxy passes /sign-in/* through on subdomains. 11/11 proxy tests. Live check after deploy.

@@ -85,6 +85,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   pages: {
     signIn: '/sign-in',
-    verifyRequest: '/sign-in?verify=1',
+    // Must be a clean path: NextAuth appends ?provider=...&type=... with a bare
+    // `?`, which would corrupt a value that already has a query string.
+    verifyRequest: '/sign-in/verify',
   },
 });

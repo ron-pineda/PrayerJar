@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { InAppBrowserWarning } from '@/components/in-app-browser-warning';
 import { PrayerJar } from '@/components/prayer-jar';
-import { Mail } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata = { title: "Sign In | The Prayer Jar" };
@@ -31,23 +30,9 @@ export default async function SignInPage({
   const session = await auth();
   if (session && !params.verify) redirect(callbackUrl);
 
-  if (params.verify) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <Card className="w-full max-w-sm text-center">
-          <CardHeader>
-            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-950/40">
-              <Mail className="h-6 w-6 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            </div>
-            <CardTitle>Check your email</CardTitle>
-            <CardDescription>
-              We sent a sign-in link to your email. Click the link to sign in — it expires in 10 minutes.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
-    );
-  }
+  // Legacy links: the verify banner used to live at /sign-in?verify=1.
+  // It now has its own route so NextAuth's query-append can't corrupt it.
+  if (params.verify) redirect('/sign-in/verify');
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">

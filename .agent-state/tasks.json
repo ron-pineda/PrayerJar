@@ -6228,16 +6228,14 @@
       "src/proxy.ts",
       "src/lib/auth.ts"
     ],
-    "blockers": [
-      "pj-s23-subdomain-dns-smoke-test"
-    ],
+    "blockers": [],
     "notes": [
       "[Ron, 2026-04-20] Confirmed during smoke test: routing rewrite works, but sign-in on subdomain fails because (a) /sign-in is rewritten to a non-existent church-scoped route and (b) magic-link callback returns to apex, not subdomain. Sprint 23 follow-up to pj-s22-16.",
       "[Backend, 2026-04-21] Implemented: proxy.ts passes /sign-in through without slug prefix and strips /church/<slug> from callbackUrl. auth.ts sendVerificationRequest swaps magic-link hostname to subdomain when request comes from *.prayerjar.org. Commits: a10d724, 8621b4c. IMPORTANT QA NOTE: the highest-risk scenario is post-callback redirect — verify browser stays on <sub>.prayerjar.org/dashboard, not prayerjar.org, after clicking magic link from subdomain sign-in.",
       "[Reviewer, 2026-07-19] DONE. Server-side flow verified by Claude (sign-in renders church-scoped, magic link sends, TC-4 rewrite live PASS); Ron browser click-test PASSED: stayed on testchurch.prayerjar.org post-callback, cookie scoped to subdomain, /wall loads, apex session isolated."
     ],
     "created_at": "2026-04-20",
-    "last_touched": "2026-07-19"
+    "last_touched": "2026-07-20T01:42:25.284Z"
   },
   {
     "id": "pj-s23-church-admin-welcome-drip",
@@ -6281,7 +6279,7 @@
     "id": "pj-s24-01-test-suite-green",
     "sprint": "24",
     "title": "Backend: fix 5 pre-existing vitest failures — suite must be green",
-    "status": "proposed",
+    "status": "in-progress",
     "assigned_to": "Backend",
     "priority": "high",
     "description": "Failing: billing.service (checkout URL), church-platform.service (addChurchMember x2), event.service (createEvent insert), feature-flags (file-level fail), api/v1/checkout route. Pre-date this sprint; likely stale mocks from Sprint 21-23 service changes. Red suite hides regressions — gates all other merges.",
@@ -6295,12 +6293,13 @@
     "id": "pj-s24-02-verify-url-fix",
     "sprint": "24",
     "title": "Backend: fix malformed verify-request URL (/sign-in?verify=1?provider=...)",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Backend",
     "priority": "medium",
     "description": "NextAuth pages.verifyRequest is /sign-in?verify=1; NextAuth appends its own ?provider=resend&type=email producing a double-? URL. The verify=1 param parses as \"1?provider=resend\" so the check-your-email banner logic likely never matches. Fix the page config or the banner param parsing; verify banner renders after requesting a magic link.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[Backend, 2026-07-19] Fixed: verifyRequest now /sign-in/verify (clean path — NextAuth query-append can't corrupt it). New route src/app/(auth)/sign-in/verify/page.tsx; legacy /sign-in?verify=1 redirects there; proxy.ts passes /sign-in/* through on subdomains (prefix match, was exact). TDD: 2 new proxy tests (incl. previously untested /sign-in passthrough), 11/11 pass. Pending live verification post-deploy."
     ],
     "created_at": "2026-07-19",
     "last_touched": "2026-07-19"

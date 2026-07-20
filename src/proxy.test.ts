@@ -141,6 +141,31 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     expect((res as NextResponse).status).not.toBe(404);
   });
 
+  it('/sign-in on valid subdomain → passes through without /church/<slug> prefix, injects _pj_sub', async () => {
+    process.env.SUBDOMAIN_ROUTING = 'true';
+    mockDbSelect([{ id: 'church-uuid-3', slug: 'take-heart-1234' }]);
+
+    const req = makeReq('takeheart.prayerjar.org', '/sign-in');
+    const res = await handler(req);
+
+    const rewrite = (res as NextResponse).headers.get('x-middleware-rewrite') ?? '';
+    expect(rewrite).toContain('/sign-in');
+    expect(rewrite).not.toContain('/church/');
+    expect(rewrite).toContain('_pj_sub=takeheart');
+  });
+
+  it('/sign-in/verify on valid subdomain → passes through without /church/<slug> prefix', async () => {
+    process.env.SUBDOMAIN_ROUTING = 'true';
+    mockDbSelect([{ id: 'church-uuid-3', slug: 'take-heart-1234' }]);
+
+    const req = makeReq('takeheart.prayerjar.org', '/sign-in/verify');
+    const res = await handler(req);
+
+    const rewrite = (res as NextResponse).headers.get('x-middleware-rewrite') ?? '';
+    expect(rewrite).toContain('/sign-in/verify');
+    expect(rewrite).not.toContain('/church/');
+  });
+
   it('subdomain request with SUBDOMAIN_ROUTING unset (flag off) → falls through to normal routing', async () => {
     // Flag not set — should not hit DB and should not 302/404
     delete process.env.SUBDOMAIN_ROUTING;
