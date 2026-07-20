@@ -6371,15 +6371,16 @@
     "id": "pj-s24-07-perf-fixes",
     "sprint": "24",
     "title": "Frontend: implement confirmed perf fixes",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Frontend",
     "priority": "medium",
     "description": "Gated on pj-s24-06. Likely: next/image swaps, server-render find-a-church shell, dynamic-import dialogs/toaster.",
     "notes": [
-      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19."
+      "[PM, 2026-07-19] Created at Sprint 24 kickoff (docs/sprint24/kickoff.md). Sprint pre-approved by Ron 2026-07-19.",
+      "[Frontend, 2026-07-20] Implemented P2 + P3; P1 DECLINED with reasoning. P2: prayer-card dialogs + celebration → next/dynamic, mount only while open (4 components were bundled into every feed card). P3: next/image with fill+sizes on prayer-card x2, praise-card, guided-prayer, /p/[id]; added images.remotePatterns for Vercel Blob; 3 <img> deliberately kept (object-URL preview, Google avatar needs referrerPolicy, embed widget must not pull the Next loader). P1 (find-a-church server shell) NOT DONE — reading the full page shows no static content to hoist (pure search UI, no hero/copy), so the refactor would move an empty wrapper at real regression risk; the genuine gap was SEO metadata, now enriched in find-a-church/layout.tsx with description + OpenGraph. Reassessment documented inline at top of docs/sprint24/perf-audit.md. VERIFIED: vitest 459/459, 0 app-code type errors, eslint 137 err/88 warn vs 138/93 baseline. Commits 2e54a0e + this one."
     ],
     "created_at": "2026-07-19",
-    "last_touched": "2026-07-19",
+    "last_touched": "2026-07-20",
     "blockers": [
       "pj-s24-06-perf-audit-refresh"
     ]

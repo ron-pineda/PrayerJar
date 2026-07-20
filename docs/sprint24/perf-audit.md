@@ -5,6 +5,18 @@
 All three Sprint 14 findings are **confirmed still present**, plus additional image sites the
 original audit missed. Prioritized for pj-s24-07 (impact × effort):
 
+> **P1 REASSESSED — 2026-07-20, during implementation (pj-s24-07).** The finding below is
+> accurate about the code but wrong about the payoff, and it is **not being implemented as
+> written**. Reading the full 293 lines shows the page has *no static content to hoist*: it is
+> search bar → results, with every element driven by interactive state. There is no hero, no
+> marketing copy, no LCP-critical static block being held behind hydration — so server-rendering
+> "the shell" would move an empty wrapper and leave the real content exactly where it is, while
+> risking regressions across a large stateful component. The one genuine gap the finding points
+> at — SEO metadata on a public discovery surface — was already partly covered by
+> `find-a-church/layout.tsx` (title only) and has now been filled out there with description and
+> OpenGraph tags. **Action taken:** metadata enriched; the client/server refactor is deliberately
+> declined. Revisit only if static above-the-fold copy is ever added to this page.
+
 ## P1 — find-a-church is still 100% client-side
 `src/app/(public)/find-a-church/page.tsx` — 293 lines, `"use client"` at the top, uses
 `useSession()`. The whole page (hero, copy, search UI) ships as client JS; LCP waits on hydration.
