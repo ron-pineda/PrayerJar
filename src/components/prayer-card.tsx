@@ -12,13 +12,31 @@ import { formatDistanceToNow } from 'date-fns';
 import { Share2, ExternalLink, Star } from 'lucide-react';
 import { CATEGORY_ICONS } from '@/lib/category-icons';
 import Link from 'next/link';
-import { CelebrationAnimation } from './celebration-animation';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { ExpandableText } from './expandable-text';
 import { AdoptPrayerButton } from './adopt-prayer-button';
 import { PrayerCardMenu } from './prayer-card-menu';
-import { PrayerEditDialog } from './prayer-edit-dialog';
-import { PrayerTestimonyDialog } from './prayer-testimony-dialog';
-import { PrayerDeleteDialog } from './prayer-delete-dialog';
+
+// Every prayer in the feed renders a card, but the dialogs and the celebration
+// only ever appear for your own prayers after a click. Loading them lazily and
+// mounting them only while open keeps them out of the feed's initial bundle.
+const CelebrationAnimation = dynamic(
+  () => import('./celebration-animation').then((m) => m.CelebrationAnimation),
+  { ssr: false },
+);
+const PrayerEditDialog = dynamic(
+  () => import('./prayer-edit-dialog').then((m) => m.PrayerEditDialog),
+  { ssr: false },
+);
+const PrayerTestimonyDialog = dynamic(
+  () => import('./prayer-testimony-dialog').then((m) => m.PrayerTestimonyDialog),
+  { ssr: false },
+);
+const PrayerDeleteDialog = dynamic(
+  () => import('./prayer-delete-dialog').then((m) => m.PrayerDeleteDialog),
+  { ssr: false },
+);
 
 const STATUS_COLORS: Record<Prayer['status'], string> = {
   active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
@@ -147,12 +165,15 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
         <ExpandableText text={prayer.content} maxLines={4} />
 
         {prayer.imageUrl && (
-          <img
-            src={prayer.imageUrl}
-            alt="Prayer photo"
-            className="w-full h-48 object-cover rounded-lg"
-            loading="lazy"
-          />
+          <div className="relative w-full h-48">
+            <Image
+              src={prayer.imageUrl}
+              alt="Prayer photo"
+              fill
+              sizes="(max-width: 768px) 100vw, 42rem"
+              className="object-cover rounded-lg"
+            />
+          </div>
         )}
 
         {prayer.audioUrl && (
@@ -177,12 +198,15 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
             <p className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-1">Testimony</p>
             <p className="text-sm">{prayer.testimony}</p>
             {prayer.imageUrl && (
-              <img
-                src={prayer.imageUrl}
-                alt="Testimony photo"
-                className="w-full h-48 object-cover rounded-lg mt-2"
-                loading="lazy"
-              />
+              <div className="relative w-full h-48 mt-2">
+                <Image
+                  src={prayer.imageUrl}
+                  alt="Testimony photo"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 42rem"
+                  className="object-cover rounded-lg"
+                />
+              </div>
             )}
           </div>
         )}
@@ -245,6 +269,7 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
         {/* Dialogs — own prayer only */}
         {isOwnPrayer && (
           <>
+            {editDialogOpen && (
             <PrayerEditDialog
               prayer={{
                 content: prayer.content,
@@ -263,6 +288,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
                 if (!result.success) throw new Error(result.error);
               }}
             />
+            )}
+            {testimonyDialogOpen && (
             <PrayerTestimonyDialog
               prayerId={prayer.id}
               open={testimonyDialogOpen}
@@ -284,7 +311,8 @@ export function PrayerCard({ prayer, isAdopted = false, adoptionCount = 0, showD
                 setShowCelebration(true);
               }}
             />
-            {showDelete && (
+            )}
+            {showDelete && deleteDialogOpen && (
               <PrayerDeleteDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}

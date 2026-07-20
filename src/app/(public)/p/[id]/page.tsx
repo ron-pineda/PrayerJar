@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { getPrayerById } from '@/services/prayer.service';
 import { notFound } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
@@ -96,12 +97,15 @@ export default async function SharedPrayerPage({ params }: { params: Promise<{ i
           <p className="text-lg leading-relaxed font-medium">{prayer.content}</p>
 
           {prayer.imageUrl && (
-            <img
-              src={prayer.imageUrl}
-              alt="Prayer photo"
-              className="w-full h-56 object-cover rounded-lg"
-              loading="lazy"
-            />
+            <div className="relative w-full h-56">
+              <Image
+                src={prayer.imageUrl}
+                alt="Prayer photo"
+                fill
+                sizes="(max-width: 768px) 100vw, 42rem"
+                className="object-cover rounded-lg"
+              />
+            </div>
           )}
 
           {prayer.suggestedVerse && (

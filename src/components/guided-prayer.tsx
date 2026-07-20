@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -151,12 +152,15 @@ export function GuidedPrayer({
             </span>
           )}
           {prayer.imageUrl && (
-            <img
-              src={prayer.imageUrl}
-              alt="Prayer photo"
-              className="w-full h-48 object-cover rounded-lg mt-4"
-              loading="lazy"
-            />
+            <div className="relative w-full h-48 mt-4">
+              <Image
+                src={prayer.imageUrl}
+                alt="Prayer photo"
+                fill
+                sizes="(max-width: 768px) 100vw, 42rem"
+                className="object-cover rounded-lg"
+              />
+            </div>
           )}
 
           {/* Report button — subtle, bottom-right */}

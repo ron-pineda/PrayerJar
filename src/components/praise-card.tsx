@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,12 +41,15 @@ export function PraiseCard({ prayer }: { prayer: Prayer }) {
         )}
 
         {prayer.imageUrl && (
-          <img
-            src={prayer.imageUrl}
-            alt="Testimony photo"
-            className="w-full h-40 object-cover rounded-lg"
-            loading="lazy"
-          />
+          <div className="relative w-full h-40">
+            <Image
+              src={prayer.imageUrl}
+              alt="Testimony photo"
+              fill
+              sizes="(max-width: 768px) 100vw, 42rem"
+              className="object-cover rounded-lg"
+            />
+          </div>
         )}
 
         <div className="flex items-center justify-between pt-1">

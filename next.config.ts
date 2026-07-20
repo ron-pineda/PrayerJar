@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      // User uploads (prayer photos, testimonies, church logos) live in Vercel Blob.
+      { protocol: 'https', hostname: '**.public.blob.vercel-storage.com' },
+    ],
+  },
   experimental: {
     serverActions: {
       // Allow sign-in Server Actions from church subdomains (e.g. testchurch.prayerjar.org).
