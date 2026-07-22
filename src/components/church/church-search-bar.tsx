@@ -78,10 +78,11 @@ export function ChurchSearchBar({
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          aria-label="Search by city, zip code, or address"
           className="flex-1 bg-slate-900 border-slate-600 text-slate-100 text-sm"
         />
         <Select value={radius} onValueChange={(v) => v !== null && setRadius(v)}>
-          <SelectTrigger className="w-20 bg-slate-900 border-slate-600 text-slate-300 text-sm">
+          <SelectTrigger aria-label="Search radius" className="w-20 bg-slate-900 border-slate-600 text-slate-300 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -108,10 +109,11 @@ export function ChurchSearchBar({
             onChange={(e) => setAddress(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Enter city, zip code, or address..."
+            aria-label="Search by city, zip code, or address"
             className="flex-1 bg-slate-900 border-slate-600 text-slate-100"
           />
           <Select value={radius} onValueChange={(v) => v !== null && setRadius(v)}>
-            <SelectTrigger className="w-24 bg-slate-900 border-slate-600 text-slate-300">
+            <SelectTrigger aria-label="Search radius" className="w-24 bg-slate-900 border-slate-600 text-slate-300">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
