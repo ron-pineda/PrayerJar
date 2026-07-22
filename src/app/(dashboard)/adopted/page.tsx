@@ -30,7 +30,7 @@ export default async function AdoptedPrayersPage() {
           icon={<Heart size={24} />}
           title="No adopted prayers yet"
           description="You haven't adopted any prayers yet. Adopting a prayer means committing to pray for it daily."
-          action={{ label: 'Find Prayers to Adopt', href: '/pray' }}
+          action={{ label: 'Find prayers to adopt', href: '/pray' }}
         />
       ) : (
         <div className="space-y-4">

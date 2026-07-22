@@ -33,7 +33,7 @@ export default async function JournalPage() {
           icon={<BookOpen size={24} />}
           title="Your journal is empty"
           description="Prayers you've prayed for others will be saved here."
-          action={{ label: "Pray for Someone", href: "/pray" }}
+          action={{ label: "Pray for someone", href: "/pray" }}
         />
       ) : (
         <div className="space-y-4">
