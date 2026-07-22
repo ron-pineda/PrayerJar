@@ -6453,13 +6453,14 @@
     "id": "pj-s25-01-typefixture-cleanup",
     "sprint": "25",
     "title": "Backend: eliminate 193 test-fixture type errors",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Backend",
     "priority": "high",
     "description": "tsc --noEmit reports 193 errors, all in .test.ts/.test.tsx fixtures (114 TS2352 mock-cast mismatches, 26 TS2345, plus TS2304/TS2582 missing vitest global imports). Fix fixtures to match current schema/types; never weaken production types. Suite stays green (459+).",
     "notes": [
       "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
-      "[Backend, 2026-07-22] Done, independently verified by Claude: 193→0 src type errors, vitest 459/459 green, 21 files changed (all .test.ts/.tsx), 0 production files, 0 as-any. Root causes: ~67 NextAuth auth-overload artifact (auth is a 5-signature intersection → ReturnType collapses to NextMiddleware; re-typed the imported binding to () => Promise<Session|null> per file), ~63 schema-drift fixtures (missing Sprint 21-24 church/member fields), ~47 drizzle opaque-db casts, 13 proxy.test (2-arg NextMiddleware), rest missing vitest imports. No production type bugs found. as unknown as used only in already-partial-mock files."
+      "[Backend, 2026-07-22] Done, independently verified by Claude: 193→0 src type errors, vitest 459/459 green, 21 files changed (all .test.ts/.tsx), 0 production files, 0 as-any. Root causes: ~67 NextAuth auth-overload artifact (auth is a 5-signature intersection → ReturnType collapses to NextMiddleware; re-typed the imported binding to () => Promise<Session|null> per file), ~63 schema-drift fixtures (missing Sprint 21-24 church/member fields), ~47 drizzle opaque-db casts, 13 proxy.test (2-arg NextMiddleware), rest missing vitest imports. No production type bugs found. as unknown as used only in already-partial-mock files.",
+      "[Reviewer, 2026-07-22] APPROVED. 193→0, independently verified, casts are correct (auth re-typed to real no-arg signature), no prod impact."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"
@@ -6468,13 +6469,14 @@
     "id": "pj-s25-02-a11y-pass",
     "sprint": "25",
     "title": "Designer→Frontend: accessibility & rough-edge pass",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend",
     "priority": "high",
     "description": "Audit + fix a11y across existing surface. Known: /map has no h1. Check heading hierarchy, dialog focus/keyboard traps (base-ui), amber contrast, aria on icon-only buttons from the Sprint 24 Lucide sweep. Fix in-task; separate spec only if a change needs design judgment.",
     "notes": [
       "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
-      "[Frontend, 2026-07-22] Public-surface a11y pass done. Fixed: /map missing h1 (sr-only added); homepage h1→h3 skip (How It Works p→h2); /browse h1→h3 skip; church search inputs + radius selects unlabeled (4 elements, both variants) → aria-label. Verified via live render: all 22 public pages now exactly one h1, no heading skips, no unlabeled real inputs (base-ui Select hidden inputs are aria-managed, not flagged). Signed-in-only pages (require auth) deferred to QA spot-check."
+      "[Frontend, 2026-07-22] Public-surface a11y pass done. Fixed: /map missing h1 (sr-only added); homepage h1→h3 skip (How It Works p→h2); /browse h1→h3 skip; church search inputs + radius selects unlabeled (4 elements, both variants) → aria-label. Verified via live render: all 22 public pages now exactly one h1, no heading skips, no unlabeled real inputs (base-ui Select hidden inputs are aria-managed, not flagged). Signed-in-only pages (require auth) deferred to QA spot-check.",
+      "[Reviewer, 2026-07-22] APPROVED. Public heading/label fixes verified live; /map, homepage, browse, search inputs all corrected."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"
@@ -6483,13 +6485,14 @@
     "id": "pj-s25-03-empty-states",
     "sprint": "25",
     "title": "Designer→Frontend: empty-state & first-run warmth",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend",
     "priority": "high",
     "description": "At n=6 every wall is near-empty — this is what visitors see. Make empty states warm, specific, directive (not \"No prayers found\") across /pray, /browse, /praise-wall, /my-prayers, /prayed-for, /journal, /notifications, church dashboard. Reuse empty-state.tsx. Real content only — no fabricated prayers/testimonies.",
     "notes": [
       "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
-      "[Frontend, 2026-07-22] Audited all empty states. Signed-in dashboard pages already use the shared EmptyState component with specific, directive copy + CTAs (my-prayers, prayed-for, journal, adopted, saved-churches, groups, partner) — no rewrites needed, would be scope creep. Real defect found + fixed: /browse no-filter empty state rendered \"Nothing here yet in .\" (empty category) → now \"Be the first to share a prayer\" + CTA (committed with a11y batch b6adbe1). CTA casing drift fixed: \"Pray for Someone\"/\"Find Prayers to Adopt\" → sentence case per Sprint 24 convention."
+      "[Frontend, 2026-07-22] Audited all empty states. Signed-in dashboard pages already use the shared EmptyState component with specific, directive copy + CTAs (my-prayers, prayed-for, journal, adopted, saved-churches, groups, partner) — no rewrites needed, would be scope creep. Real defect found + fixed: /browse no-filter empty state rendered \"Nothing here yet in .\" (empty category) → now \"Be the first to share a prayer\" + CTA (committed with a11y batch b6adbe1). CTA casing drift fixed: \"Pray for Someone\"/\"Find Prayers to Adopt\" → sentence case per Sprint 24 convention.",
+      "[Reviewer, 2026-07-22] APPROVED. Real browse defect fixed + deployed; no manufactured rewrites on already-good empty states."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"
@@ -6498,13 +6501,14 @@
     "id": "pj-s25-04-docsguide-emoji",
     "sprint": "25",
     "title": "Frontend: docs/guide emoji field → Lucide",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Frontend",
     "priority": "medium",
     "description": "Sprint 24 leftover: src/app/(public)/docs/guide/page.tsx drives section identity from an emoji field in a data structure. Convert to shared Lucide icon pattern used site-wide.",
     "notes": [
       "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
-      "[Frontend, 2026-07-22] Done. Section interface emoji:string → Icon:LucideIcon; 9 sections mapped to semantic Lucide icons (Compass/PenLine/HeartHandshake/NotebookPen/Sparkles/Bell/Award/Handshake/Settings), hero 📖 → BookOpen, footer cards use their existing icon field. Rendered /docs/guide: 0 emoji, 63 Lucide icons, lint clean. Only remaining \"emoji\" in file is the word in body copy (\"A fire emoji appears at 7+ days\")."
+      "[Frontend, 2026-07-22] Done. Section interface emoji:string → Icon:LucideIcon; 9 sections mapped to semantic Lucide icons (Compass/PenLine/HeartHandshake/NotebookPen/Sparkles/Bell/Award/Handshake/Settings), hero 📖 → BookOpen, footer cards use their existing icon field. Rendered /docs/guide: 0 emoji, 63 Lucide icons, lint clean. Only remaining \"emoji\" in file is the word in body copy (\"A fire emoji appears at 7+ days\").",
+      "[Reviewer, 2026-07-22] APPROVED. /docs/guide emoji-free on prod, 63 Lucide icons."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"
@@ -6513,13 +6517,14 @@
     "id": "pj-s25-05-bundle-perf",
     "sprint": "25",
     "title": "Performance: bundle analysis + quick wins",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Performance",
     "priority": "medium",
     "description": "Local builds work now — run analyzer, find heaviest routes/shared chunks, land bounded quick wins (dynamic imports, dep trims). No risky refactors. Deliverable: docs/sprint25/bundle-report.md + the wins.",
     "notes": [
       "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
-      "[Performance, 2026-07-22] Done. Bundle already well-split: recharts (371KB) isolated to the analytics admin route, leaflet (150KB) runtime-imported inside the map component, Sprint 24 handled the feed. One clean win landed: AnalyticsCharts → next/dynamic ssr:false behind a skeleton (via AnalyticsChartsLazy.tsx), so the heaviest route paints its shell before recharts loads. No shared-bundle heavy libs to trim. Report: docs/sprint25/bundle-report.md. Verified: 0 app-code type errors, lint clean, build 108/108."
+      "[Performance, 2026-07-22] Done. Bundle already well-split: recharts (371KB) isolated to the analytics admin route, leaflet (150KB) runtime-imported inside the map component, Sprint 24 handled the feed. One clean win landed: AnalyticsCharts → next/dynamic ssr:false behind a skeleton (via AnalyticsChartsLazy.tsx), so the heaviest route paints its shell before recharts loads. No shared-bundle heavy libs to trim. Report: docs/sprint25/bundle-report.md. Verified: 0 app-code type errors, lint clean, build 108/108.",
+      "[Reviewer, 2026-07-22] APPROVED. Honest finding (already well-split) + one clean recharts deferral. Report solid."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"
@@ -6528,12 +6533,13 @@
     "id": "pj-s25-06-qa",
     "sprint": "25",
     "title": "QA: Sprint 25 pass",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "Full gate: vitest green, tsc app-code clean AND fixture errors resolved, clean prod build, live spot-check.",
     "notes": [
-      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron."
+      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
+      "[QA, 2026-07-22] PASS. docs/sprint25/qa-report.md. 459/459, 193→0 type errors, build 108/108, prod spot-check clean."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22",
@@ -6545,12 +6551,13 @@
     "id": "pj-s25-07-reviewer-close",
     "sprint": "25",
     "title": "Reviewer: approvals + sprint close",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "Per Definition of Done. Sign-off at docs/sprint25/reviewer-signoff.md.",
     "notes": [
-      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron."
+      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
+      "[Reviewer, 2026-07-22] SPRINT 25 CLOSED. All 7 tasks done. Type suite clean, public a11y fixed, browse defect fixed, docs/guide de-emojified, bundle documented + one win. Carry-forward: deeper logged-in a11y (axe), 2 pre-existing homepage eslint errors."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22",
