@@ -9,7 +9,7 @@ import {
   getAnsweredRate,
   getMemberGrowth,
 } from '@/services/church-analytics.service';
-import AnalyticsCharts from './AnalyticsCharts';
+import AnalyticsCharts from './AnalyticsChartsLazy';
 import { ArrowLeft } from 'lucide-react';
 
 interface Props {
