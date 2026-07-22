@@ -6542,10 +6542,8 @@
       "[QA, 2026-07-22] PASS. docs/sprint25/qa-report.md. 459/459, 193→0 type errors, build 108/108, prod spot-check clean."
     ],
     "created_at": "2026-07-22",
-    "last_touched": "2026-07-22",
-    "blockers": [
-      "pj-s25-01-typefixture-cleanup"
-    ]
+    "last_touched": "2026-07-22T19:56:32.375Z",
+    "blockers": []
   },
   {
     "id": "pj-s25-07-reviewer-close",
@@ -6560,9 +6558,7 @@
       "[Reviewer, 2026-07-22] SPRINT 25 CLOSED. All 7 tasks done. Type suite clean, public a11y fixed, browse defect fixed, docs/guide de-emojified, bundle documented + one win. Carry-forward: deeper logged-in a11y (axe), 2 pre-existing homepage eslint errors."
     ],
     "created_at": "2026-07-22",
-    "last_touched": "2026-07-22",
-    "blockers": [
-      "pj-s25-06-qa"
-    ]
+    "last_touched": "2026-07-22T19:56:32.375Z",
+    "blockers": []
   }
 ]

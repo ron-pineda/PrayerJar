@@ -342,3 +342,5 @@
 [2026-07-22] Backend → QA: pj-s25-01 done — 193→0 test-fixture type errors, suite green, no prod code touched. Verified independently.
 [2026-07-22] QA → Reviewer: pj-s25-06 PASS — docs/sprint25/qa-report.md; 193→0 type errors, 459/459, build 108/108, prod verified.
 [2026-07-22] Reviewer → PM: SPRINT 25 CLOSED — all 7 tasks done. Test suite now type-clean, public a11y fixed, browse empty-state defect fixed, docs/guide de-emojified, bundle documented + recharts deferred.
+
+[2026-07-22T19:56:32.375Z] Dashboard sync — 0 fix(es): 
