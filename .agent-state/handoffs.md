@@ -337,3 +337,4 @@
 [2026-07-20] Reviewer → PM: SPRINT 24 CLOSED — all 11 tasks done. Email outage fixed, prod DB reconciled, suite green, local build restored, signed-in surface polished, observability in place.
 
 [2026-07-20T19:23:45.869Z] Dashboard sync — 0 fix(es): 
+[2026-07-22] PM → Team: Sprint 25 kicked off — polish existing surfaces (Ron redirected from growth). 7 tasks pj-s25-01..07. Roster: PM, Designer, Frontend, Backend, Performance, QA, Reviewer. Brief: docs/sprint25/kickoff.md.
