@@ -171,9 +171,9 @@ export default async function HomePage() {
         <ScrollReveal>
           <section className="pb-12 px-4">
             <div className="max-w-2xl mx-auto">
-              <p className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-8">
+              <h2 className="text-center text-xs uppercase tracking-widest text-muted-foreground mb-8">
                 How It Works
-              </p>
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
                 {[
                   { Icon: Heart, title: 'Share Your Heart', body: 'Write a prayer request — as specific or as simple as you need. You choose who sees it.' },

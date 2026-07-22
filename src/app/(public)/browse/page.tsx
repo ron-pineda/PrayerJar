@@ -147,7 +147,7 @@ export default async function BrowsePage({
             <div className="text-center py-16">
               {q ? (
                 <>
-                  <h3 className="text-lg font-semibold mb-2">No prayers match that search yet.</h3>
+                  <h2 className="text-lg font-semibold mb-2">No prayers match that search yet.</h2>
                   <p className="text-muted-foreground mb-1">
                     We couldn&apos;t find anything for &ldquo;{q.slice(0, 100)}&rdquo;.
                   </p>
@@ -155,17 +155,27 @@ export default async function BrowsePage({
                     Try a shorter search, or browse a category below.
                   </p>
                 </>
-              ) : (
+              ) : category ? (
                 <>
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h2 className="text-lg font-semibold mb-2">
                     Nothing here yet in {category}.
-                  </h3>
+                  </h2>
                   <p className="text-muted-foreground mb-4">
                     No prayers have been posted in this category recently. Try another, or check back soon.
                   </p>
                 </>
+              ) : (
+                <>
+                  <h2 className="text-lg font-semibold mb-2">Be the first to share a prayer.</h2>
+                  <p className="text-muted-foreground mb-4">
+                    No prayers have been posted yet. Write the first one, and this wall fills as the community prays.
+                  </p>
+                  <Button render={<Link href="/pray" />}>Share a prayer</Button>
+                </>
               )}
-              <Button variant="outline" render={<Link href="/browse" />}>Clear filters</Button>
+              {(q || category) && (
+                <Button variant="outline" render={<Link href="/browse" />}>Clear filters</Button>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
