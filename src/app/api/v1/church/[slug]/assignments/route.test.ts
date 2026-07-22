@@ -13,7 +13,13 @@ vi.mock('@/services/pastoral.service', () => ({
   assignPrayer: vi.fn(),
 }));
 
-import { auth } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import { auth as authImpl } from '@/lib/auth';
+// NextAuth's `auth` is an intersection of five call signatures, so
+// `ReturnType<typeof auth>` resolves to its middleware overload. Re-type the
+// binding to the no-arg overload these tests use so `vi.mocked(auth)` and
+// `Awaited<ReturnType<typeof auth>>` resolve to `Session | null`.
+const auth = authImpl as () => Promise<Session | null>;
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { assignPrayer } from '@/services/pastoral.service';
 import { POST } from './route';
@@ -33,22 +39,32 @@ const mockChurch = {
   primaryColor: '#d4a843',
   createdBy: ADMIN_ID,
   subscriptionId: null,
+  subdomain: null,
+  acquisitionSource: null,
+  utmSource: null,
+  utmMedium: null,
+  utmCampaign: null,
+  firstPaidAt: null,
+  currentPlan: 'free' as const,
+  previousPlan: null,
+  chmsProvider: null,
+  chmsConfig: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
 
 const adminMember = {
-  member: { id: 'm1', churchId: 'church-1', userId: ADMIN_ID, role: 'admin' as const, joinedAt: new Date() },
+  member: { id: 'm1', churchId: 'church-1', userId: ADMIN_ID, role: 'admin' as const, joinedAt: new Date(), externalChmsId: null, chmsProvider: null, chmsStatus: null, chmsSyncedAt: null },
   user: { id: ADMIN_ID, name: 'Alice', email: 'alice@example.com' },
 };
 
 const pastorMember = {
-  member: { id: 'm3', churchId: 'church-1', userId: PASTOR_ID, role: 'pastor' as const, joinedAt: new Date() },
+  member: { id: 'm3', churchId: 'church-1', userId: PASTOR_ID, role: 'pastor' as const, joinedAt: new Date(), externalChmsId: null, chmsProvider: null, chmsStatus: null, chmsSyncedAt: null },
   user: { id: PASTOR_ID, name: 'Pastor Carol', email: 'carol@example.com' },
 };
 
 const memberOnly = {
-  member: { id: 'm2', churchId: 'church-1', userId: MEMBER_ID, role: 'member' as const, joinedAt: new Date() },
+  member: { id: 'm2', churchId: 'church-1', userId: MEMBER_ID, role: 'member' as const, joinedAt: new Date(), externalChmsId: null, chmsProvider: null, chmsStatus: null, chmsSyncedAt: null },
   user: { id: MEMBER_ID, name: 'Bob', email: 'bob@example.com' },
 };
 

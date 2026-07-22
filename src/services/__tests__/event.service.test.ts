@@ -23,7 +23,13 @@ import {
   getSpotlightedPrayer,
   getEventStats,
 } from '../event.service';
-import { db } from '@/db';
+import { db as dbImpl } from '@/db';
+
+// `@/db` is mocked as an empty object above; the real `db` export is typed as
+// an opaque NeonHttpDatabase which no longer structurally overlaps with a
+// plain record, so re-type the mocked binding to the writable shape these
+// tests assign method mocks onto.
+const db = dbImpl as unknown as Record<string, unknown>;
 
 // ---------------------------------------------------------------------------
 // Chainable query builder mock factory

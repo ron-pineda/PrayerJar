@@ -38,7 +38,7 @@ vi.mock('@/db', () => {
 vi.mock('resend', () => {
   const send = vi.fn().mockResolvedValue({ id: 'mock-email-id' });
   return {
-    Resend: function MockResend() {
+    Resend: function MockResend(this: { emails: { send: typeof send } }) {
       this.emails = { send };
     },
   };

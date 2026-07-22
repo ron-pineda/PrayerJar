@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Session } from 'next-auth';
 import { NextRequest } from 'next/server';
 
 // Mock @/db before importing the route
@@ -108,7 +109,11 @@ describe('POST /api/v1/feedback', () => {
   });
 
   it('accepts authenticated user feedback', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // NextAuth's `auth` is an intersection of five call signatures, so
+    // `ReturnType<typeof auth>` picks its middleware overload; re-type to the
+    // no-arg `Promise<Session | null>` overload this test uses.
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({ user: { id: 'user-123', name: 'Test', email: 'test@example.com' } } as Awaited<ReturnType<typeof auth>>);
 
     const { POST } = await import('./route');

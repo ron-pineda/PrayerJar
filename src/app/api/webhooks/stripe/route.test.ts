@@ -139,8 +139,8 @@ describe('POST /api/webhooks/stripe', () => {
     mocks.updateReturning.mockResolvedValue([{ id: 'sub-id-1' }]);
     mocks.updateWhere.mockReturnValue({ returning: mocks.updateReturning });
     mocks.updateSet.mockReturnValue({ where: mocks.updateWhere });
-    vi.mocked(db.insert).mockReturnValue({ values: mocks.insertValues } as ReturnType<typeof db.insert>);
-    vi.mocked(db.update).mockReturnValue({ set: mocks.updateSet } as ReturnType<typeof db.update>);
+    vi.mocked(db.insert).mockReturnValue({ values: mocks.insertValues } as unknown as ReturnType<typeof db.insert>);
+    vi.mocked(db.update).mockReturnValue({ set: mocks.updateSet } as unknown as ReturnType<typeof db.update>);
   });
 
   afterEach(() => {

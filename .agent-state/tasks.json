@@ -6453,12 +6453,13 @@
     "id": "pj-s25-01-typefixture-cleanup",
     "sprint": "25",
     "title": "Backend: eliminate 193 test-fixture type errors",
-    "status": "in-progress",
+    "status": "review",
     "assigned_to": "Backend",
     "priority": "high",
     "description": "tsc --noEmit reports 193 errors, all in .test.ts/.test.tsx fixtures (114 TS2352 mock-cast mismatches, 26 TS2345, plus TS2304/TS2582 missing vitest global imports). Fix fixtures to match current schema/types; never weaken production types. Suite stays green (459+).",
     "notes": [
-      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron."
+      "[PM, 2026-07-22] Created at Sprint 25 kickoff (docs/sprint25/kickoff.md). Direction: polish existing surfaces per Ron.",
+      "[Backend, 2026-07-22] Done, independently verified by Claude: 193→0 src type errors, vitest 459/459 green, 21 files changed (all .test.ts/.tsx), 0 production files, 0 as-any. Root causes: ~67 NextAuth auth-overload artifact (auth is a 5-signature intersection → ReturnType collapses to NextMiddleware; re-typed the imported binding to () => Promise<Session|null> per file), ~63 schema-drift fixtures (missing Sprint 21-24 church/member fields), ~47 drizzle opaque-db casts, 13 proxy.test (2-arg NextMiddleware), rest missing vitest imports. No production type bugs found. as unknown as used only in already-partial-mock files."
     ],
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22"

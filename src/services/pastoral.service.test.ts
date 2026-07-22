@@ -14,7 +14,13 @@ import {
   updateAssignmentStatus,
   getPastoralStats,
 } from './pastoral.service';
-import { db } from '@/db';
+import { db as dbImpl } from '@/db';
+
+// `@/db` is mocked as an empty object above; the real `db` export is typed as
+// an opaque NeonHttpDatabase which no longer structurally overlaps with a
+// plain record, so re-type the mocked binding to the writable shape these
+// tests assign method mocks onto.
+const db = dbImpl as unknown as Record<string, unknown>;
 
 // ---------------------------------------------------------------------------
 // Chainable query builder mock factory
@@ -319,7 +325,7 @@ describe('updateAssignmentStatus', () => {
       seen.add(obj);
       return Object.values(obj as Record<string, unknown>).flatMap((v) => collectValues(v, seen));
     };
-    const allValues = collectValues(chain.where.mock.calls[0]);
+    const allValues = collectValues((chain.where as ReturnType<typeof vi.fn>).mock.calls[0]);
     expect(allValues).toContain(testUserId);
   });
 

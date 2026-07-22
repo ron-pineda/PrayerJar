@@ -1,4 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Session } from 'next-auth';
+
+// NextAuth's `auth` is an intersection of five call signatures, so
+// `ReturnType<typeof auth>` resolves to its middleware overload. Each test
+// re-types the dynamically-imported binding to the no-arg `Promise<Session |
+// null>` overload it actually uses.
 
 // Mock auth and service before importing the route
 vi.mock('@/lib/auth', () => ({
@@ -20,6 +26,11 @@ vi.mock('@/services/church-platform.service', () => ({
     utmMedium: null,
     utmCampaign: null,
     acquisitionSource: 'direct',
+    firstPaidAt: null,
+    currentPlan: 'free' as const,
+    previousPlan: null,
+    chmsProvider: null,
+    chmsConfig: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   }),
@@ -31,7 +42,9 @@ describe('POST /api/v1/church', () => {
   });
 
   it('returns 201 with slug for valid input', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
@@ -56,7 +69,9 @@ describe('POST /api/v1/church', () => {
   });
 
   it('returns 401 when unauthenticated', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce(null);
 
     const { POST } = await import('./route');
@@ -75,7 +90,9 @@ describe('POST /api/v1/church', () => {
   });
 
   it('returns 400 when name is too short', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
@@ -104,7 +121,9 @@ describe('POST /api/v1/church', () => {
   // ---------------------------------------------------------------------------
 
   it('passes UTM fields from request body to createChurch', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
@@ -139,7 +158,9 @@ describe('POST /api/v1/church', () => {
   });
 
   it('passes UTM fields from URL query params when not in body', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);
@@ -170,7 +191,9 @@ describe('POST /api/v1/church', () => {
   });
 
   it('uses acquisition_source = "direct" when no UTM params are present', async () => {
-    const { auth } = await import('@/lib/auth');
+    const { auth: authImpl } = await import('@/lib/auth');
+    // Re-type to the no-arg overload (see note at top of file).
+    const auth = authImpl as () => Promise<Session | null>;
     vi.mocked(auth).mockResolvedValueOnce({
       user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
     } as Awaited<ReturnType<typeof auth>>);

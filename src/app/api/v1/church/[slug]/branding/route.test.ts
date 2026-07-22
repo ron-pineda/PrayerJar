@@ -19,11 +19,19 @@ vi.mock('@/db/schema', () => ({
   churches: { id: 'id', subdomain: 'subdomain', currentPlan: 'current_plan' },
 }));
 
-import { auth } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import { auth as authImpl } from '@/lib/auth';
 import {
   getChurchBySlug,
   getChurchMembers,
 } from '@/services/church-platform.service';
+
+// `auth` from NextAuth is an intersection of five call signatures, so
+// `ReturnType<typeof auth>` resolves to its middleware overload rather than
+// the no-arg `Promise<Session | null>` form these tests use. Re-type the
+// binding to the no-arg overload so `vi.mocked(auth)` and
+// `Awaited<ReturnType<typeof auth>>` behave as intended.
+const auth = authImpl as () => Promise<Session | null>;
 import { db } from '@/db';
 import { PUT } from './route';
 
@@ -36,9 +44,17 @@ const mockChurch = {
   logoUrl: null,
   subdomain: null,
   primaryColor: '#d4a843',
-  currentPlan: 'pro' as const,   // pro = hasCustomSubdomain() → true
   createdBy: 'user-1',
   subscriptionId: null,
+  acquisitionSource: null,
+  utmSource: null,
+  utmMedium: null,
+  utmCampaign: null,
+  firstPaidAt: null,
+  currentPlan: 'pro' as const,   // pro = hasCustomSubdomain() → true
+  previousPlan: null,
+  chmsProvider: null,
+  chmsConfig: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -50,18 +66,25 @@ const mockChurchFree = {
   currentPlan: 'free' as const,  // free = hasCustomSubdomain() → false
 };
 
+const chmsFields = {
+  externalChmsId: null,
+  chmsProvider: null,
+  chmsStatus: null,
+  chmsSyncedAt: null,
+};
+
 const adminMember = {
-  member: { id: 'm1', churchId: 'church-1', userId: 'user-1', role: 'admin' as const, joinedAt: new Date() },
+  member: { id: 'm1', churchId: 'church-1', userId: 'user-1', role: 'admin' as const, joinedAt: new Date(), ...chmsFields },
   user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
 };
 
 const memberOnly = {
-  member: { id: 'm2', churchId: 'church-1', userId: 'user-2', role: 'member' as const, joinedAt: new Date() },
+  member: { id: 'm2', churchId: 'church-1', userId: 'user-2', role: 'member' as const, joinedAt: new Date(), ...chmsFields },
   user: { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
 };
 
 const pastorMember = {
-  member: { id: 'm3', churchId: 'church-1', userId: 'user-3', role: 'pastor' as const, joinedAt: new Date() },
+  member: { id: 'm3', churchId: 'church-1', userId: 'user-3', role: 'pastor' as const, joinedAt: new Date(), ...chmsFields },
   user: { id: 'user-3', name: 'Pastor Carol', email: 'carol@example.com' },
 };
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/services/billing.service', () => ({
   createCheckoutSession: vi.fn(),
@@ -28,7 +28,13 @@ vi.mock('@/db', () => ({
 
 import { POST } from './route';
 import { createCheckoutSession, createSubscriptionCheckout, createEventLicenseCheckout } from '@/services/billing.service';
-import { auth } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import { auth as authImpl } from '@/lib/auth';
+// NextAuth's `auth` is an intersection of five call signatures, so
+// `ReturnType<typeof auth>` resolves to its middleware overload. Re-type the
+// binding to the no-arg overload these tests use so `vi.mocked(auth)` and
+// `Awaited<ReturnType<typeof auth>>` resolve to `Session | null`.
+const auth = authImpl as () => Promise<Session | null>;
 import { NextRequest } from 'next/server';
 
 function makeRequest(body: unknown, headers: Record<string, string> = {}) {

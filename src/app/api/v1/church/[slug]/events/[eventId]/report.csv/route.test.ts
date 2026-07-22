@@ -14,7 +14,13 @@ vi.mock('@/services/event.service', () => ({
   getEventPrayers: vi.fn(),
 }));
 
-import { auth } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import { auth as authImpl } from '@/lib/auth';
+// NextAuth's `auth` is an intersection of five call signatures, so
+// `ReturnType<typeof auth>` resolves to its middleware overload. Re-type the
+// binding to the no-arg overload these tests use so `vi.mocked(auth)` and
+// `Awaited<ReturnType<typeof auth>>` resolve to `Session | null`.
+const auth = authImpl as () => Promise<Session | null>;
 import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getEvent, getEventPrayers } from '@/services/event.service';
 import { GET } from './route';
@@ -30,6 +36,15 @@ const mockChurch = {
   primaryColor: '#d4a843',
   createdBy: 'user-1',
   subscriptionId: null,
+  acquisitionSource: null,
+  utmSource: null,
+  utmMedium: null,
+  utmCampaign: null,
+  firstPaidAt: null,
+  currentPlan: 'free' as const,
+  previousPlan: null,
+  chmsProvider: null,
+  chmsConfig: null,
   createdAt: new Date(),
   updatedAt: new Date(),
 };
@@ -50,12 +65,12 @@ const mockEvent = {
 };
 
 const adminMember = {
-  member: { id: 'm1', churchId: 'church-1', userId: 'user-1', role: 'admin' as const, joinedAt: new Date() },
+  member: { id: 'm1', churchId: 'church-1', userId: 'user-1', role: 'admin' as const, joinedAt: new Date(), externalChmsId: null, chmsProvider: null, chmsStatus: null, chmsSyncedAt: null },
   user: { id: 'user-1', name: 'Alice', email: 'alice@example.com' },
 };
 
 const memberOnly = {
-  member: { id: 'm2', churchId: 'church-1', userId: 'user-2', role: 'member' as const, joinedAt: new Date() },
+  member: { id: 'm2', churchId: 'church-1', userId: 'user-2', role: 'member' as const, joinedAt: new Date(), externalChmsId: null, chmsProvider: null, chmsStatus: null, chmsSyncedAt: null },
   user: { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
 };
 

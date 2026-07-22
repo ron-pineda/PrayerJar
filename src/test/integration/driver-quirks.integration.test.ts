@@ -49,7 +49,7 @@ describe('neon-http driver quirks (bucket #2)', () => {
       const content = await fs.readFile(file, 'utf8');
       // Template literal with = ANY( pattern — the historical bug that breaks neon-http
       expect(content, `${file} contains sql=ANY() pattern incompatible with neon-http`).not.toMatch(
-        /sql`[^`]*=\s*ANY\s*\(/s,
+        /sql`[^`]*=\s*ANY\s*\(/,
       );
     }
   });

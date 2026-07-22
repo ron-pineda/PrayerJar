@@ -36,6 +36,12 @@ vi.mock('drizzle-orm', () => ({
 import { db } from '@/db';
 import handler from './proxy';
 
+// The proxy default export is wrapped in NextAuth's `auth()`, so its type is a
+// two-arg NextMiddleware `(request, event)`. The mocked `auth` above makes it a
+// pass-through that ignores the second arg at runtime, but the call sites still
+// need to satisfy the type — supply a throwaway fetch event.
+const fetchEvent = {} as unknown as Parameters<typeof handler>[1];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function makeReq(host: string, path = '/', env: Record<string, string> = {}) {
@@ -48,8 +54,8 @@ function makeReq(host: string, path = '/', env: Record<string, string> = {}) {
   const req = {
     headers: new Headers({ host }),
     nextUrl: Object.assign(new URL(url), {
-      clone() {
-        return Object.assign(new URL(url), { pathname: this.pathname });
+      clone(): URL {
+        return new URL(url);
       },
     }),
     url,
@@ -82,7 +88,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
 
   it('apex request (prayerjar.org) passes through unchanged', async () => {
     const req = makeReq('prayerjar.org', '/');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
     // NextResponse.next() — no location header, no rewrite
     expect(res).toBeInstanceOf(NextResponse);
     expect((res as NextResponse).status).toBe(200);
@@ -91,14 +97,14 @@ describe('proxy.ts — subdomain tenant resolution', () => {
 
   it('reserved subdomain (www) → 404 regardless of SUBDOMAIN_ROUTING flag', async () => {
     const req = makeReq('www.prayerjar.org', '/');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
     expect((res as NextResponse).status).toBe(404);
     expect(db.select).not.toHaveBeenCalled();
   });
 
   it('reserved subdomain (api) → 404', async () => {
     const req = makeReq('api.prayerjar.org', '/wall');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
     expect((res as NextResponse).status).toBe(404);
   });
 
@@ -107,7 +113,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     mockDbSelect([]); // no church found
 
     const req = makeReq('nonexistent.prayerjar.org', '/wall');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     expect((res as NextResponse).status).toBe(302);
     const location = (res as NextResponse).headers.get('location') ?? '';
@@ -120,7 +126,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     mockDbSelect([{ id: 'church-uuid-1', slug: 'takeheart' }]);
 
     const req = makeReq('takeheart.prayerjar.org', '/wall');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     // NextResponse.rewrite returns a 200 (or the rewritten route's status).
     // We verify the rewrite happened by checking that no redirect (3xx) was issued
@@ -135,7 +141,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     mockDbSelect([{ id: 'church-uuid-2', slug: 'gracechurch' }]);
 
     const req = makeReq('gracechurch.prayerjar.org', '/');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     expect((res as NextResponse).status).not.toBe(302);
     expect((res as NextResponse).status).not.toBe(404);
@@ -146,7 +152,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     mockDbSelect([{ id: 'church-uuid-3', slug: 'take-heart-1234' }]);
 
     const req = makeReq('takeheart.prayerjar.org', '/sign-in');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     const rewrite = (res as NextResponse).headers.get('x-middleware-rewrite') ?? '';
     expect(rewrite).toContain('/sign-in');
@@ -159,7 +165,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     mockDbSelect([{ id: 'church-uuid-3', slug: 'take-heart-1234' }]);
 
     const req = makeReq('takeheart.prayerjar.org', '/sign-in/verify');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     const rewrite = (res as NextResponse).headers.get('x-middleware-rewrite') ?? '';
     expect(rewrite).toContain('/sign-in/verify');
@@ -171,7 +177,7 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     delete process.env.SUBDOMAIN_ROUTING;
     // db.select should NOT be called
     const req = makeReq('somesubdomain.prayerjar.org', '/wall');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     expect(db.select).not.toHaveBeenCalled();
     // Falls through to auth checks, no redirect since no protected prefix
@@ -183,14 +189,14 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     process.env.SUBDOMAIN_ROUTING = 'false';
 
     const req = makeReq('grace.prayerjar.org', '/');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
 
     expect(db.select).not.toHaveBeenCalled();
   });
 
   it('non-prayerjar.org host → passes through (no subdomain logic)', async () => {
     const req = makeReq('localhost:3000', '/');
-    const res = await handler(req);
+    const res = await handler(req, fetchEvent);
     expect(db.select).not.toHaveBeenCalled();
     expect((res as NextResponse).status).not.toBe(404);
   });

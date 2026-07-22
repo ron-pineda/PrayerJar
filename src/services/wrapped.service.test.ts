@@ -3,7 +3,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@/db', () => ({ db: {} }));
 
 import { getWrappedStats } from './wrapped.service';
-import { db } from '@/db';
+import { db as dbImpl } from '@/db';
+
+// `@/db` is mocked as an empty object above; the real `db` export is typed as
+// an opaque NeonHttpDatabase which no longer structurally overlaps with a
+// plain record, so re-type the mocked binding to the writable shape these
+// tests assign method mocks onto.
+const db = dbImpl as unknown as Record<string, unknown>;
 
 // Helper to build a chainable Drizzle-like query mock that resolves to `rows`
 function mockQuery(rows: unknown[]) {

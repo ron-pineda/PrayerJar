@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { render } from '@react-email/components';
 import ChurchWelcome3Email from './church-welcome-3';
 
