@@ -6,13 +6,24 @@ import {
   HelpCircle,
   ChevronRight,
   ArrowLeft,
+  Compass,
+  PenLine,
+  HeartHandshake,
+  NotebookPen,
+  Sparkles,
+  Bell,
+  Award,
+  Handshake,
+  Settings,
+  BookOpen,
+  type LucideIcon,
 } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'User Guide | PrayerJar Docs' };
 
 interface Section {
   id: string;
-  emoji: string;
+  Icon: LucideIcon;
   title: string;
   subtitle: string;
   accentBorder: string;
@@ -24,7 +35,7 @@ interface Section {
 const SECTIONS: Section[] = [
   {
     id: 'getting-started',
-    emoji: '🌊',
+    Icon: Compass,
     title: 'Getting Started',
     subtitle: 'You can start right now — no account needed.',
     accentBorder: 'border-sky-500/30',
@@ -47,7 +58,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'submitting-a-prayer',
-    emoji: '✍️',
+    Icon: PenLine,
     title: 'Submitting a Prayer Request',
     subtitle: 'Share your need with the community in under a minute.',
     accentBorder: 'border-blue-500/30',
@@ -86,7 +97,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'praying-for-others',
-    emoji: '🤲',
+    Icon: HeartHandshake,
     title: 'Praying for Others',
     subtitle: 'One tap logs your intercession — a notification goes to the requester.',
     accentBorder: 'border-rose-500/30',
@@ -117,7 +128,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'your-journal',
-    emoji: '📓',
+    Icon: NotebookPen,
     title: 'Your Prayer Journal',
     subtitle: 'Every prayer you offer is automatically logged here.',
     accentBorder: 'border-violet-500/30',
@@ -140,7 +151,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'answered-prayers',
-    emoji: '✨',
+    Icon: Sparkles,
     title: 'When a Prayer is Answered',
     subtitle: 'Mark it, share your testimony, release a light.',
     accentBorder: 'border-amber-500/30',
@@ -163,7 +174,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'notifications',
-    emoji: '🔔',
+    Icon: Bell,
     title: 'Notifications & Settings',
     subtitle: 'Stay informed without being overwhelmed.',
     accentBorder: 'border-emerald-500/30',
@@ -194,7 +205,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'badges-streaks',
-    emoji: '🏅',
+    Icon: Award,
     title: 'Badges & Streaks',
     subtitle: 'Milestones that celebrate your faithfulness.',
     accentBorder: 'border-orange-500/30',
@@ -217,7 +228,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'prayer-partner',
-    emoji: '🤝',
+    Icon: Handshake,
     title: 'Prayer Partner',
     subtitle: 'One-on-one matched intercession — mutual and consistent.',
     accentBorder: 'border-pink-500/30',
@@ -244,7 +255,7 @@ const SECTIONS: Section[] = [
   },
   {
     id: 'account',
-    emoji: '⚙️',
+    Icon: Settings,
     title: 'Account & Privacy',
     subtitle: 'Your data, your control.',
     accentBorder: 'border-slate-500/30',
@@ -281,7 +292,7 @@ export default function UserGuidePage() {
         </Link>
 
         <div className="mt-8 text-center space-y-4">
-          <div className="text-3xl leading-none">📖</div>
+          <BookOpen className="h-8 w-8 text-primary mx-auto" aria-hidden="true" />
           <h1 className="text-4xl font-bold tracking-tight">User Guide</h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             A step-by-step visual guide to using The Prayer Jar — from your first visit to advanced features.
@@ -301,7 +312,7 @@ export default function UserGuidePage() {
               href={`#${s.id}`}
               className="group rounded-xl border bg-card hover:bg-accent/50 transition-all p-4 flex flex-col items-center text-center gap-2"
             >
-              <div className="text-2xl leading-none">{s.emoji}</div>
+              <s.Icon className="h-6 w-6 text-primary" aria-hidden="true" />
               <div className="flex items-center gap-1.5">
                 <span className={`text-[10px] font-black ${s.accentNumText} opacity-60`}>{i + 1}</span>
                 <span className="text-xs font-semibold leading-tight">{s.title}</span>
@@ -323,7 +334,7 @@ export default function UserGuidePage() {
           >
             {/* Section header */}
             <div className="flex items-start gap-5 mb-6">
-              <div className="text-5xl leading-none flex-shrink-0">{section.emoji}</div>
+              <section.Icon className="h-10 w-10 text-primary flex-shrink-0" aria-hidden="true" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className={`text-xs font-black opacity-40 ${section.accentNumText}`}>
@@ -365,12 +376,12 @@ export default function UserGuidePage() {
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-5">Other Guides</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { href: '/docs/churches', emoji: '⛪', title: 'Church Admin Guide', desc: 'For pastors and administrators', icon: Church },
-            { href: '/docs/paid', emoji: '👑', title: 'Paid Features', desc: 'Church subscription plans', icon: CreditCard },
-            { href: '/help', emoji: '❓', title: 'FAQ', desc: 'Quick answers', icon: HelpCircle },
-          ].map(({ href, emoji, title, desc }) => (
+            { href: '/docs/churches', title: 'Church Admin Guide', desc: 'For pastors and administrators', icon: Church },
+            { href: '/docs/paid', title: 'Paid Features', desc: 'Church subscription plans', icon: CreditCard },
+            { href: '/help', title: 'FAQ', desc: 'Quick answers', icon: HelpCircle },
+          ].map(({ href, icon: Icon, title, desc }) => (
             <Link key={href} href={href} className="group rounded-xl border bg-card hover:bg-accent/50 transition-colors p-5 flex items-center gap-4">
-              <div className="text-2xl leading-none flex-shrink-0">{emoji}</div>
+              <Icon className="h-6 w-6 text-primary flex-shrink-0" aria-hidden="true" />
               <div>
                 <p className="font-semibold text-sm flex items-center gap-1">
                   {title}
