@@ -155,11 +155,29 @@ export async function deletePrayer(id: string, authorId: string): Promise<boolea
   return result.length > 0;
 }
 
+/**
+ * Renew a prayer for another 30 days.
+ *
+ * This used to set `expiresAt` only, which meant renewing an already-expired
+ * prayer left `status: 'expired'` — the prayer stayed hidden from every wall
+ * forever and the button appeared to do nothing. Renewal now restores the
+ * prayer to `active` as well.
+ *
+ * Answered prayers are excluded: they belong on the praise wall, and renewal
+ * must never quietly un-answer one. Renewing an answered prayer is a no-op
+ * and returns null.
+ */
 export async function renewPrayer(id: string, authorId: string) {
   const [updated] = await db
     .update(prayers)
-    .set({ expiresAt: addDays(new Date(), 30) })
-    .where(and(eq(prayers.id, id), eq(prayers.authorId, authorId)))
+    .set({ expiresAt: addDays(new Date(), 30), status: 'active' })
+    .where(
+      and(
+        eq(prayers.id, id),
+        eq(prayers.authorId, authorId),
+        ne(prayers.status, 'answered')
+      )
+    )
     .returning();
   return updated ?? null;
 }

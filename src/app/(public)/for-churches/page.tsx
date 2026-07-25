@@ -172,9 +172,12 @@ const FAQ_ITEMS = [
  * deleting the test church (pj-s26-12) cannot change what the page
  * asserts: at (0, 0, 0) and at (1, 0, 1) alike, neither renders.
  */
-const TRUST_MIN_CHURCHES = 5;
-const TRUST_MIN_PRAYERS = 25;
-const TRUST_MIN_MEMBERS = 50;
+// Floors below which "PrayerJar by the numbers" is not honestly earned, so
+// neither the strip nor the hero count renders. Ron set these 2026-07-25;
+// the earlier 5/25/50 hid the strip well past the point it was deserved.
+const TRUST_MIN_CHURCHES = 3;
+const TRUST_MIN_PRAYERS = 10;
+const TRUST_MIN_MEMBERS = 20;
 
 type TrustStats = { churches: number; prayers: number; members: number };
 

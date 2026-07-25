@@ -10,8 +10,10 @@ vi.mock('@/services/ai.service', () => ({
   moderateContent: vi.fn().mockResolvedValue({ safe: true, selfHarm: false }),
 }));
 
-import { createPrayer, getRandomPrayer, getPrayerById } from './prayer.service';
+import { createPrayer, getRandomPrayer, getPrayerById, renewPrayer } from './prayer.service';
 import { db } from '@/db';
+
+const dbMock = db as unknown as Record<string, unknown>;
 
 describe('createPrayer', () => {
   beforeEach(() => vi.clearAllMocks());
@@ -32,5 +34,39 @@ describe('createPrayer', () => {
     await expect(
       createPrayer({ content: 'crisis content', isAnonymous: false, isUrgent: false, authorId: null })
     ).rejects.toThrow('selfHarm');
+  });
+});
+
+describe('renewPrayer', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  /**
+   * Regression guard. renewPrayer previously set `expiresAt` only, so renewing
+   * an expired prayer left it `status: 'expired'` — hidden from every wall, with
+   * the button appearing to do nothing. Every prayer in production had expired,
+   * and this was the mechanism meant to bring them back.
+   */
+  it('restores status to active, not just the expiry date', async () => {
+    let captured: Record<string, unknown> = {};
+    dbMock.update = vi.fn(() => ({
+      set: (values: Record<string, unknown>) => {
+        captured = values;
+        return { where: () => ({ returning: async () => [{ id: 'p1' }] }) };
+      },
+    }));
+
+    const result = await renewPrayer('p1', 'author-1');
+
+    expect(captured.status).toBe('active');
+    expect(captured.expiresAt).toBeInstanceOf(Date);
+    expect(result).toEqual({ id: 'p1' });
+  });
+
+  it('returns null when nothing matched (e.g. an answered prayer)', async () => {
+    dbMock.update = vi.fn(() => ({
+      set: () => ({ where: () => ({ returning: async () => [] }) }),
+    }));
+
+    await expect(renewPrayer('answered-1', 'author-1')).resolves.toBeNull();
   });
 });
