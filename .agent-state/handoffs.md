@@ -358,3 +358,6 @@
 [2026-07-25] PM note: three agents shared one git index this sprint; commits c386164 and 1f4dc8f contain other agents' files. Nothing lost, history deliberately NOT rewritten. Next sprint: one git worktree per agent.
 
 [2026-07-25] Copywriter/Frontend → QA: pj-s26-09-church-claims-honesty-pass — stopped selling unreachable church features across 11 files. Trust strip + hero jar now share one gate (churches>=5 && prayers>=25 && members>=50), so the single unpaid Test Church is no longer social proof and pj-s26-12 is non-load-bearing. Brief correction: hero rendered "0 prayers held across 1 churches", not "11" — all prod prayers are expired. Planning Center claim verified BACKED, left standing. New finds: testimony queue is contradicted not empty (testimonies publish unreviewed); "Privacy levels" was fabricated on 2 docs pages. No features built. Gates: tsc 0, vitest 513/513, build 108/108.
+
+[2026-07-25] Copywriter/Frontend → QA: pj-s26-09 — unreachable church claims relabelled across /for-churches, plans.ts, tier-cards, /docs, /billing, /church/join; trust strip + hero now share one threshold gate. Gates PM-verified: tsc 0, 513/513, build 108/108.
+[2026-07-25] PM → Ron: 3 decisions open — trust thresholds (5/25/50) are invented policy; pj-s26-12 prod delete needs explicit go; migration 0033 must be applied BEFORE next deploy.
