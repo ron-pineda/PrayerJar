@@ -19,3 +19,18 @@ export const PRAYER_CATEGORIES = [
 ] as const;
 
 export type CategoryValue = typeof PRAYER_CATEGORIES[number]['value'];
+
+/**
+ * Every slug `/pray/[category]` must serve — the ten real categories plus the
+ * `any` sentinel that `getRandomPrayer` accepts and that backs the first card
+ * in the category picker.
+ *
+ * This exists because the two drifted: a slug guard validated against
+ * PRAYER_CATEGORIES alone and 404'd /pray/any in production, breaking the main
+ * "pray for anyone" entry point. The picker and the route guard must read the
+ * same list.
+ */
+export const PRAYER_ROUTE_SLUGS: readonly string[] = [
+  'any',
+  ...PRAYER_CATEGORIES.map((c) => c.value),
+];
