@@ -39,15 +39,15 @@ const SECTIONS = [
       },
       {
         heading: 'Assign roles',
-        body: "Roles: Admin (full access), Pastor (can view pastoral dashboard and flagged prayers, add notes, make assignments), Member (can post to the private wall and see other members' requests).",
+        body: 'Roles: Admin (full access), Pastor (can view pastoral dashboard and flagged prayers, add notes, make assignments), Member (joins the church and appears on your roster; posting to a private church wall is not available yet).',
       },
     ],
   },
   {
     id: 'private-wall',
     emoji: '🔒',
-    title: 'Private Prayer Wall',
-    subtitle: 'A safe space for your congregation — visible to members only.',
+    title: 'Private Prayer Wall (coming soon)',
+    subtitle: 'Built, but nothing can reach it yet.',
     border: 'border-emerald-500/30',
     numBg: 'bg-emerald-500',
     numText: 'text-emerald-500',
@@ -55,20 +55,20 @@ const SECTIONS = [
     plan: 'Starter',
     steps: [
       {
-        heading: 'What it is',
-        body: "Your church's private prayer wall is visible only to members. Members submit requests directly to it — separate from the public community feed.",
+        heading: 'Not available yet',
+        body: 'The wall page is built and visible only to members, but a prayer is not attached to a church when it is submitted — so nothing ever lands on it. It shows an empty state on every plan. We are fixing the submission path before we count this as shipped.',
       },
       {
-        heading: 'Accessing it',
+        heading: 'What it will be',
+        body: "Your church's private prayer wall, visible only to members, who submit requests directly to it — separate from the public community feed.",
+      },
+      {
+        heading: 'Where it lives',
         body: 'Members navigate to /church/[your-slug]/wall. It is also linked from their profile once they join your church.',
       },
       {
-        heading: 'Member submissions',
-        body: 'Members can post as themselves or anonymously. They choose Public (to the full church), Group Only (a sub-group), or Private (pastoral staff only).',
-      },
-      {
         heading: 'Custom branding (Pro plan)',
-        body: 'Upload your church logo and set accent colors in Settings → Branding. The private wall displays your branding instead of the default PrayerJar look.',
+        body: 'Upload your church logo and set accent colors in Settings → Branding. The private wall will display your branding instead of the default PrayerJar look once the wall itself is reachable.',
       },
     ],
   },
@@ -76,7 +76,7 @@ const SECTIONS = [
     id: 'pastoral-dashboard',
     emoji: '📋',
     title: 'Pastoral Dashboard',
-    subtitle: 'Real-time view of church activity, pastoral notes, and assignments.',
+    subtitle: 'Pastoral notes and assignments, kept where your care team can read them.',
     border: 'border-violet-500/30',
     numBg: 'bg-violet-500',
     numText: 'text-violet-500',
@@ -85,7 +85,7 @@ const SECTIONS = [
     steps: [
       {
         heading: 'Overview',
-        body: "The pastoral dashboard (Pro plan) gives admins and pastors a bird's-eye view of church prayer activity: active requests, recent prayer volume, and member engagement.",
+        body: 'The pastoral dashboard is where admins and pastors keep notes and assignments. Its prayer-activity counters — active requests and recent volume — read from a church link that is not written yet, so they show zero rather than your congregation.',
       },
       {
         heading: 'Pastoral notes',
@@ -100,8 +100,8 @@ const SECTIONS = [
   {
     id: 'groups',
     emoji: '👥',
-    title: 'Church Groups',
-    subtitle: 'Organize prayer across ministries, small groups, and teams.',
+    title: 'Church Groups (coming soon)',
+    subtitle: 'Members can start groups today. Attaching them to your church is not built yet.',
     border: 'border-amber-500/30',
     numBg: 'bg-amber-500',
     numText: 'text-amber-500',
@@ -109,28 +109,24 @@ const SECTIONS = [
     plan: null,
     steps: [
       {
-        heading: 'What groups are for',
-        body: "Groups let you organize prayer within sub-communities of your congregation — Women's Ministry, Youth Group, Small Group 4, etc.",
+        heading: 'Not available yet',
+        body: 'A group is not attached to a church when it is created, so your church Groups page is empty on every plan and the group caps in the plan table do not yet apply to anything.',
       },
       {
-        heading: 'Creating a group',
-        body: 'From your church dashboard, go to Groups → New Group. Give it a name and optional description.',
+        heading: 'What works today',
+        body: "Any member can start a prayer group and share its invite code, and requests posted to that group stay inside it. Those groups just are not owned by your church — you cannot see or administer them from the church dashboard.",
       },
       {
-        heading: 'Adding members to groups',
-        body: 'Members can join groups themselves, or admins can add them. Group membership is independent of overall church membership.',
-      },
-      {
-        heading: 'Group prayer wall',
-        body: "Requests posted to a group are visible only to that group's members — not the full church.",
+        heading: 'What it will be',
+        body: "Groups you organize around sub-communities of your congregation — Women's Ministry, Youth Group, Small Group 4 — created from the church dashboard and visible to your admins.",
       },
     ],
   },
   {
     id: 'events',
     emoji: '📡',
-    title: 'Live Event Prayer Wall',
-    subtitle: 'Real-time projected prayer walls for services, retreats, and conferences.',
+    title: 'Live Event Prayer Wall (coming soon)',
+    subtitle: 'Every part is built except the one that starts an event.',
     border: 'border-rose-500/30',
     numBg: 'bg-rose-500',
     numText: 'text-rose-500',
@@ -138,12 +134,12 @@ const SECTIONS = [
     plan: 'Starter',
     steps: [
       {
-        heading: 'What it is',
-        body: 'A real-time, projected prayer wall for worship services, conferences, retreats, or prayer meetings. Attendees submit prayers from their phones; a moderator approves them before they appear on screen.',
+        heading: 'Not available yet',
+        body: 'There is no screen for creating an event. Do not follow older instructions telling you to click Create Event on the events page — that link points at a page that does not exist. Until an event can be created, nothing in the rest of this section can be reached.',
       },
       {
-        heading: 'Creating an event',
-        body: 'Go to church dashboard → Events → New Event. Set the event name, date, and an optional capacity limit.',
+        heading: 'What it will be',
+        body: 'A real-time, projected prayer wall for worship services, conferences, retreats, or prayer meetings. Attendees submit prayers from their phones; a moderator approves them before they appear on screen.',
       },
       {
         heading: 'Sharing the submission link',
@@ -167,7 +163,7 @@ const SECTIONS = [
     id: 'analytics',
     emoji: '📊',
     title: 'Analytics',
-    subtitle: 'Track engagement, trends, and answered prayer rates.',
+    subtitle: 'Member growth reports real numbers. The prayer charts do not yet.',
     border: 'border-cyan-500/30',
     numBg: 'bg-cyan-500',
     numText: 'text-cyan-500',
@@ -179,8 +175,12 @@ const SECTIONS = [
         body: 'Church dashboard → Analytics. Available on Pro and Enterprise plans.',
       },
       {
-        heading: 'What you can see',
-        body: 'Prayer volume over time, most active members, response rates (how often prayers get responses vs. none), category breakdown, and answered prayer rate.',
+        heading: 'What reports real numbers today',
+        body: 'Member growth over time. That chart reads church membership, which is recorded correctly.',
+      },
+      {
+        heading: 'What shows zero (coming soon)',
+        body: 'Prayer volume over time, engagement, category breakdown and answered prayer rate all read from a church link that is not written when a prayer is submitted. Until that is fixed, these four charts show zero for every church on every plan.',
       },
       {
         heading: 'Downloadable reports (coming soon)',
@@ -306,7 +306,7 @@ export default function ChurchAdminGuidePage() {
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Starter ($19/mo)</Link>{' '}
               and{' '}
               <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Pro ($49/mo)</Link>{' '}
-              paid plans include pastoral tools, pastoral notes & assignments, analytics, and event walls.
+              paid plans include pastoral tools, pastoral notes &amp; assignments, and member growth analytics. Prayer analytics and event walls are not available yet.
               See the <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Paid Features guide</Link> for a full comparison.
             </p>
             <div className="flex flex-wrap gap-2">

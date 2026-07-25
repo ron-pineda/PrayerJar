@@ -189,7 +189,7 @@ export default async function DocsOverviewPage() {
             {
               Icon: Church,
               title: 'Churches',
-              body: 'Congregations that want a private prayer wall, pastoral oversight tools, and community engagement features.',
+              body: 'Congregations looking for pastoral oversight tools. The private prayer wall is still being finished — see the church guide for what works today.',
             },
             {
               Icon: Sprout,
@@ -216,7 +216,7 @@ export default async function DocsOverviewPage() {
           The Prayer Jar is a place for people to be prayed for, built on a simple idea: everyone deserves to have someone intercede for them. You write a request — as specific or as brief as you need — and the community prays. When your prayer is answered, you release a light to celebrate with others.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Prayer is free — always. There are no ads, no data brokers, and no paywall on asking for prayer or praying for others. Churches can subscribe for pastoral features like a private prayer wall, pastoral notes, and a care dashboard — but the core is free for everyone.
+          Prayer is free — always. There are no ads, no data brokers, and no paywall on asking for prayer or praying for others. Churches can subscribe for pastoral features like pastoral notes and a care dashboard — but the core is free for everyone.
         </p>
       </section>
 

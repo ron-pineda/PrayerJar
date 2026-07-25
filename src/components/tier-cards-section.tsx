@@ -2,9 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { PLANS, ANNUAL_DISCOUNT_PERCENT, type PlanTier } from '@/lib/plans';
+import {
+  PLANS,
+  ANNUAL_DISCOUNT_PERCENT,
+  isComingSoonFeature,
+  type PlanTier,
+} from '@/lib/plans';
 import { trackPricingView } from '@/lib/analytics';
 
 const TIERS: PlanTier[] = ['free', 'starter', 'pro', 'enterprise'];
@@ -112,12 +117,33 @@ function TierCard({
 
       {/* Features */}
       <ul className="space-y-1.5 flex-1">
-        {plan.features.map((feature) => (
-          <li key={feature} className="text-sm text-muted-foreground flex gap-2 items-start">
-            <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-            {feature}
-          </li>
-        ))}
+        {plan.features.map((feature) => {
+          // A checkmark beside "(coming soon)" still reads as included.
+          const comingSoon = isComingSoonFeature(feature);
+          return (
+            <li
+              key={feature}
+              className={`text-sm flex gap-2 items-start ${
+                comingSoon
+                  ? 'text-muted-foreground/70 italic'
+                  : 'text-muted-foreground'
+              }`}
+            >
+              {comingSoon ? (
+                <Clock
+                  className="h-4 w-4 text-muted-foreground/60 mt-0.5 shrink-0"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Check
+                  className="h-4 w-4 text-primary mt-0.5 shrink-0"
+                  aria-hidden="true"
+                />
+              )}
+              {feature}
+            </li>
+          );
+        })}
       </ul>
 
       {/* CTA */}

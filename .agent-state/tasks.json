@@ -6693,15 +6693,19 @@
     "id": "pj-s26-09-church-claims-honesty-pass",
     "sprint": "26",
     "title": "URGENT: stop selling unreachable church features",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Copywriter",
     "priority": "critical",
     "description": "Six features sold on /for-churches and /docs cannot be reached by any user. VERIFIED: prayers.church_id and groups.church_id are never written by any code path (prod: 0 of 11 prayers, 0 of 2 groups linked), which kills the private church wall (church-platform.service.ts:303 — the $19 tier headline and feature card 1), all five analytics charts (church-analytics.service.ts:25,52,74,90), church prayer circles, the dashboard active-prayer stat, and the Monday digest prayer counts. Separately, /church/[slug]/events/new DOES NOT EXIST while (admin)/events/page.tsx:74 links to it, so no pastor can create a live event — and events/setup step 1 tells them to click that 404. flagPrayer (pastoral.service.ts:114) has no production caller, so the flagged queue can never fill. ALSO: the live trust strip renders a TEST church as social proof — prod has exactly one church row, name \"Test Church\", slug test-church-7l78, subscription_id null, first_paid_at null, plan pro set by hand. Hero reads \"11 prayers held across 1 churches\" (broken plural). Relabel or remove every unreachable claim using the same convention as pj-s26-01; gate the trust strip so a single test record is not social proof. Do NOT build the features in this task.",
     "notes": [
-      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\"",
+      "[Copywriter, 2026-07-25T01:30:00Z] CORRECTION to description: hero rendered \"0 prayers held across 1 churches\", NOT \"11\". All 11 prod prayers are status=expired; getTrustStats counts only active/answered. Hero countLabel was also OUTSIDE the trust.churches gate, so raising that threshold alone would not have fixed it.",
+      "[Copywriter, 2026-07-25T01:35:00Z] CORRECTION: Planning Center claim is BACKED (syncMember/syncGroup implemented, both crons registered in vercel.json) — left standing. Event CSV exists but is unreachable, not absent. limits.groups/admins unenforced = generous cap, reported not relabelled.",
+      "[Copywriter, 2026-07-25T04:40:00Z] FOUND beyond brief: testimony queue is CONTRADICTED not empty (markAnsweredAction publishes straight to /praise-wall, never inserts testimonyApprovals) — a moderation claim on the $49 tier. Also fabricated \"Privacy levels\" (no visibility column) on 2 docs pages; /for-churches:222 blanket \"available now\"; hero H1 + metadata.description both asserted the private wall.",
+      "[Frontend, 2026-07-25T05:05:00Z] DONE. Files: (public)/for-churches/page.tsx, lib/plans.ts, components/tier-cards-section.tsx, (public)/docs/{paid,churches,features}/page.tsx, (public)/docs/page.tsx, (public)/help/page.tsx, (public)/church/join/page.tsx, (church)/church/[slug]/(admin)/events/{page.tsx,setup/page.tsx}, (church)/church/[slug]/wall/page.tsx. AC: tsc 0 PASS; vitest 513/513 PASS; build 108/108 PASS; trust strip + hero share one gate PASS; pj-s26-12 non-load-bearing PASS. Deviations: scope widened to 11 files. Detail: .agent-state/notes/pj-s26-09-church-claims-honesty-pass.md"
     ],
     "created_at": "2026-07-25",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T05:05:00.000Z",
     "blockers": []
   },
   {

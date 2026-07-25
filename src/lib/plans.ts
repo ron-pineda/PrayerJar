@@ -48,10 +48,11 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
     features: [
       'Up to 150 members',
       '5 groups',
-      'Private church prayer wall',
+      'Private church prayer wall (coming soon)',
       'Custom welcome message',
       'Email digest for pastors',
-      'Basic analytics',
+      'Member growth analytics',
+      'Prayer analytics (coming soon)',
       'Pastoral dashboard',
       'Pastoral care inbox',
     ],
@@ -71,10 +72,10 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
       'Pastoral dashboard',
       'Pastoral care inbox',
       'Prayer team assignments',
-      'Testimony approval queue',
-      'Live event prayer wall',
+      'Testimony approval queue (coming soon)',
+      'Live event prayer wall (coming soon)',
       'Custom branding',
-      'Advanced analytics',
+      'Advanced analytics (coming soon)',
       'Priority support',
     ],
     limits: { members: null, groups: null, events: 12, admins: 10 },
@@ -91,14 +92,27 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
       'Everything in Growing Church',
       'Unlimited events',
       'Unlimited admins',
-      'Custom subdomain',
-      'Enterprise login coming soon',
-      'Custom analytics reports coming soon',
+      'Custom subdomain (coming soon)',
+      'Enterprise login (coming soon)',
+      'Custom analytics reports (coming soon)',
       'Custom agreement available',
     ],
     limits: { members: null, groups: null, events: null, admins: 999 },
   },
 };
+
+/**
+ * True when a `PlanDefinition.features` entry is labelled as not yet
+ * shipped, using the codebase's honest-label convention (pj-s26-01):
+ * the literal suffix `(coming soon)`.
+ *
+ * Tier cards and the /docs/paid plan cards render feature lists straight
+ * from `PLANS`. Both must call this — a checkmark beside "(coming soon)"
+ * still reads as included, which is the thing pj-s26-09 exists to stop.
+ */
+export function isComingSoonFeature(feature: string): boolean {
+  return feature.toLowerCase().includes('(coming soon)');
+}
 
 export function getPlan(tier: PlanTier): PlanDefinition {
   return PLANS[tier];

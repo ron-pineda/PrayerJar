@@ -85,8 +85,16 @@ export default async function ChurchWallPage({ params }: Props) {
       {/* Prayer list */}
       {prayers.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground flex flex-col items-center gap-3">
-          <p>No prayers have been shared yet. Be the first!</p>
-          <a href="/pray" className="text-sm font-medium text-primary underline underline-offset-4">Add a prayer</a>
+          {/* pj-s26-09: prayers are not church-linked on submission, so this
+              wall cannot fill yet. The old CTA sent members to /pray, which
+              posts to the public wall and never lands here. */}
+          <p className="font-medium text-foreground">This wall is not receiving prayers yet.</p>
+          <p className="max-w-md text-sm">
+            A prayer is not attached to a church when it is submitted, so
+            nothing reaches this page. You can still pray with the wider
+            PrayerJar community in the meantime.
+          </p>
+          <a href="/pray" className="text-sm font-medium text-primary underline underline-offset-4">Go to the public wall</a>
         </div>
       ) : (
         <ul className="flex flex-col gap-4">

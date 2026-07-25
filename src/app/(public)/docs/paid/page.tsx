@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PLANS } from '@/lib/plans';
+import { PLANS, isComingSoonFeature } from '@/lib/plans';
 import {
   ClipboardList,
   Radio,
   Palette,
   BarChart3,
   Check,
+  Clock,
   X,
   Crown,
   Sparkles,
@@ -78,18 +79,19 @@ const FEATURE_COMPARISON = [
   { feature: 'Prayer Partner matching', free: true, starter: true, pro: true, enterprise: true },
   { feature: 'Know Jesus pathway', free: true, starter: true, pro: true, enterprise: true },
   { feature: 'Max church members', free: '25', starter: '150', pro: 'Unlimited', enterprise: 'Unlimited' },
-  { feature: 'Church groups', free: '1', starter: '5', pro: 'Unlimited', enterprise: 'Unlimited' },
+  { feature: 'Church groups (coming soon)', free: '1', starter: '5', pro: 'Unlimited', enterprise: 'Unlimited' },
   { feature: 'Church admins', free: '1', starter: '3', pro: '10', enterprise: 'Unlimited' },
-  { feature: 'Private church prayer wall', free: false, starter: true, pro: true, enterprise: true },
   { feature: 'Custom welcome message', free: false, starter: true, pro: true, enterprise: true },
   { feature: 'Email digest for pastors', free: false, starter: true, pro: true, enterprise: true },
-  { feature: 'Basic analytics', free: false, starter: true, pro: true, enterprise: true },
-  { feature: 'Live event prayer walls', free: false, starter: '2/yr', pro: '12/yr', enterprise: 'Unlimited' },
+  { feature: 'Member growth analytics', free: false, starter: true, pro: true, enterprise: true },
   { feature: 'Pastoral dashboard', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Pastoral notes & assignments', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Custom branding', free: false, starter: false, pro: true, enterprise: true },
-  { feature: 'Advanced analytics', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Priority support', free: false, starter: false, pro: true, enterprise: true },
+  { feature: 'Private church prayer wall (coming soon)', free: false, starter: 'Roadmap', pro: 'Roadmap', enterprise: 'Roadmap' },
+  { feature: 'Live event prayer walls (coming soon)', free: false, starter: 'Roadmap', pro: 'Roadmap', enterprise: 'Roadmap' },
+  { feature: 'Testimony approval queue (coming soon)', free: false, starter: false, pro: 'Roadmap', enterprise: 'Roadmap' },
+  { feature: 'Prayer volume & engagement analytics (coming soon)', free: false, starter: 'Roadmap', pro: 'Roadmap', enterprise: 'Roadmap' },
   { feature: 'Downloadable analytics reports (coming soon)', free: false, starter: false, pro: 'Roadmap', enterprise: 'Roadmap' },
   { feature: 'Custom subdomain (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
   { feature: 'SSO / SAML (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
@@ -108,17 +110,17 @@ const FEATURE_DEEP_DIVES = [
     color: 'text-violet-500',
     bg: 'bg-violet-500/10',
     border: 'border-violet-500/20',
-    body: 'The pastoral dashboard gives admins and pastors a real-time overview of church prayer activity. See active requests, recent volume trends, and member engagement. All in one screen \u2014 no digging through individual submissions.',
+    body: 'The pastoral dashboard is where admins and pastors keep private notes against a prayer or a member, and where the care team reads the same follow-up history. The prayer-activity counters on the same screen read from a church link that is not written yet, so they show zero \u2014 they are not a reflection of your congregation.',
   },
   {
     icon: Radio,
-    title: 'Live Event Prayer Wall',
+    title: 'Live Event Prayer Wall (coming soon)',
     plan: 'Starter',
     color: 'text-blue-500',
     bg: 'bg-blue-500/10',
     border: 'border-blue-500/20',
-    body: 'Run a real-time prayer wall at services, conferences, retreats, or prayer meetings. Attendees submit from their phones. A pastor moderates submissions on one screen while the wall displays on the projector. All submissions are logged and exportable as CSV after the event.',
-    planDetail: 'Starter (2/yr), Pro (12/yr), Enterprise (unlimited)',
+    body: 'The submission wall, the pastor-facing moderation console, the projected display and the post-event CSV report are all built. None of them can be reached yet, because there is no way to create an event — the create button in the church dashboard points at a page that does not exist. Nothing in this card is available today.',
+    planDetail: 'Not available yet. Planned caps: Starter (2/yr), Pro (12/yr), Enterprise (unlimited)',
   },
   {
     icon: Palette,
@@ -127,16 +129,16 @@ const FEATURE_DEEP_DIVES = [
     color: 'text-emerald-500',
     bg: 'bg-emerald-500/10',
     border: 'border-emerald-500/20',
-    body: "Upload your church logo and choose accent colors. The private wall, event wall, and welcome messages will display your branding instead of the default PrayerJar look. Members feel like they're in a space that belongs to your congregation.",
+    body: "Upload your church logo and choose accent colors. Your church page and welcome message display your branding instead of the default PrayerJar look. The private wall and event wall will carry it too, once those two are reachable.",
   },
   {
     icon: BarChart3,
-    title: 'Advanced Analytics',
+    title: 'Analytics',
     plan: 'Pro',
     color: 'text-cyan-500',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-500/20',
-    body: 'Track prayer volume over time, member engagement, answered prayer rates, and category breakdowns. You read it on screen in the church dashboard. Downloadable reports for elder board updates, annual reports, and grant applications are coming \u2014 they are not available yet.',
+    body: 'Member growth reports real numbers on screen in the church dashboard. Prayer volume, member engagement, answered prayer rates and category breakdowns all read from a church link that is not written yet, so each of those four charts shows zero \u2014 they are not available yet. Downloadable reports for elder board updates, annual reports, and grant applications are also still to come.',
   },
 ];
 
@@ -231,7 +233,7 @@ export default function PaidFeaturesPage() {
         <div>
           <p className="font-semibold text-sm mb-1">Prayer is always free.</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            There is no paywall on submitting a prayer request or praying for others. Church plans exist to support congregations that need pastoral tools, private prayer walls, and oversight features. Individual users never need to pay anything.
+            There is no paywall on submitting a prayer request or praying for others. Church plans exist to support congregations that need pastoral tools and oversight features. Individual users never need to pay anything. Rows marked &ldquo;coming soon&rdquo; below are not available today — please do not choose a plan for them yet.
           </p>
         </div>
       </div>
@@ -296,12 +298,27 @@ export default function PaidFeaturesPage() {
 
                 {/* Feature list */}
                 <ul className="space-y-2 pt-2 border-t">
-                  {plan.features.map((f) => (
-                    <li key={f} className="text-sm text-muted-foreground flex items-start gap-2.5">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
+                  {plan.features.map((f) => {
+                    // A checkmark beside "(coming soon)" still reads as included.
+                    const comingSoon = isComingSoonFeature(f);
+                    return (
+                      <li
+                        key={f}
+                        className={`text-sm flex items-start gap-2.5 ${
+                          comingSoon
+                            ? 'text-muted-foreground/70 italic'
+                            : 'text-muted-foreground'
+                        }`}
+                      >
+                        {comingSoon ? (
+                          <Clock className="h-4 w-4 text-muted-foreground/60 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                        ) : (
+                          <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" aria-hidden="true" />
+                        )}
+                        <span>{f}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );

@@ -124,15 +124,15 @@ const SECTIONS: Section[] = [
     faqs: [
       {
         q: "What church features are available?",
-        a: `Church plans include a private prayer wall visible only to members, live event prayer walls, and custom branding. The pastoral dashboard — with pastoral notes and prayer team assignments — is included on the ${PASTORAL_DASHBOARD_TIER_NAME} plan and above. See the For Churches page for the full feature-by-tier breakdown.`,
+        a: `Working today: your member roster, the pastoral dashboard with pastoral notes and prayer team assignments (${PASTORAL_DASHBOARD_TIER_NAME} plan and above), the care inbox, and custom branding. Not available yet: the private church prayer wall, church-owned groups, live event prayer walls, testimony review, and the prayer analytics charts. The For Churches page marks each one and explains why.`,
       },
       {
         q: 'How do I set up my church?',
-        a: 'After signing in, go to "Create a Church" from your profile. You\'ll walk through a setup wizard to name your church, invite members, and configure your prayer wall.',
+        a: 'After signing in, go to "Create a Church" from your profile. You\'ll walk through a setup wizard to name your church and invite members.',
       },
       {
         q: 'Is there a free tier for churches?',
-        a: "Yes. Small congregations can use the free tier with core features. Paid plans add higher member limits, pastoral tools, analytics, and event walls. See our For Churches page for details.",
+        a: "Yes. Small congregations can use the free tier with core features. Paid plans add higher member limits and pastoral tools. Analytics and event walls are not available yet — see our For Churches page for what is finished and what is not.",
       },
       {
         q: 'Who do I contact for a demo or enterprise pricing?',

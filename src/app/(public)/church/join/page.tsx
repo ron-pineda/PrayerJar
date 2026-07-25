@@ -75,7 +75,7 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
           <p className="text-5xl mb-4" aria-hidden="true">&#x26EA;</p>
           <h1 className="text-2xl font-bold mb-2">You&apos;re Invited</h1>
           <p className="text-muted-foreground">
-            You&apos;ve been invited to join a private prayer wall.
+            You&apos;ve been invited to join a church on PrayerJar.
           </p>
         </div>
 
@@ -140,7 +140,7 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
         <p className="text-5xl mb-4" aria-hidden="true">&#x26EA;</p>
         <h1 className="text-2xl font-bold mb-2">You&apos;re Invited</h1>
         <p className="text-muted-foreground">
-          Join this church&apos;s private prayer wall.
+          Join this church on PrayerJar.
         </p>
       </div>
 
@@ -164,7 +164,9 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
       <JoinButton slug={church.slug} churchName={church.name} />
 
       <p className="text-xs text-muted-foreground text-center mt-4">
-        Joining lets you view and post to this church&apos;s private prayer wall.
+        Joining adds you to this church&apos;s member roster. The private church
+        prayer wall is not available yet — prayers you post today go to the
+        public PrayerJar wall.
       </p>
     </main>
   );

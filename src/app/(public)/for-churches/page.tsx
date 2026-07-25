@@ -10,6 +10,7 @@ import {
   Monitor,
   BarChart2,
   Link2,
+  Clock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PrayerJar } from '@/components/prayer-jar';
@@ -32,74 +33,93 @@ import { or, eq, sql, count } from 'drizzle-orm';
 export const metadata: Metadata = {
   title: 'PrayerJar for Churches & Ministries',
   description:
-    'PrayerJar is the private prayer wall your congregation already wanted — safe, named, and built around care. Your pastoral team sees who is carrying what. Your members know they are prayed for.',
+    'A quiet place for your congregation to bring what it is carrying. Pastoral notes, a care inbox and your member roster work today; the private congregation wall, church groups, live events and prayer analytics are still being finished — this page says which is which.',
 };
 
+/**
+ * `notYet` marks a card whose claim a paying church cannot reach today. It
+ * renders as an explicit strip on the card. Copy convention matches
+ * pj-s26-01: name the gap in the description, do not bury it in a footnote.
+ */
 const FEATURES = [
   {
     icon: MessageSquare,
-    title: 'Two walls, one place — public and private.',
+    title: 'A public wall today. A private church wall next.',
     description:
-      'Any member can post to the public wall and receive prayer from the broader PrayerJar community. Small Church plans add a private wall that only your congregation sees — a safe room for the requests people carry but do not want to share publicly.',
-    tierLabel: `Free (public); ${PLANS.starter.name} and above (private)`,
+      'Any member can post to the public wall and receive prayer from the broader PrayerJar community. That part works today. The private wall — the one only your congregation sees — is built, but prayers are not yet attached to a church when they are submitted, so it stays empty no matter what you pay.',
+    tierLabel: 'Free (public wall)',
+    notYet: 'Private church wall is not available yet.',
   },
   {
     icon: LayoutDashboard,
-    title: 'See every open prayer before the week is over.',
+    title: 'Pastoral notes, kept where your care team can read them.',
     description:
-      'The pastoral dashboard shows you active prayers, who has been followed up with, and what is still open — all in one view. It is where pastoral notes live, too: private observations your care team records but the member never sees.',
+      'Your team records private observations against a prayer or a member — notes the member never sees — and everyone with pastoral access reads the same history. The open-prayer view on the same dashboard counts church prayers, and no prayer is attached to a church yet, so it reads zero.',
     tierLabel: `${PASTORAL_DASHBOARD_TIER_NAME} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
+    notYet: 'The open-prayer view is empty until prayers are church-linked.',
   },
   {
     icon: Inbox,
-    title: 'Someone left a request on Sunday. Know by Monday.',
+    title: 'One place for the follow-ups your team has recorded.',
     description:
-      'The pastoral care inbox surfaces prayer requests your care team has not yet reached — no ranking, no algorithmic sorting, just a list of people waiting. You decide who follows up and when.',
+      'The pastoral care inbox holds the notes your team writes as it follows up — who was spoken to, and what was said. Today every entry is added by hand. It does not yet gather unanswered requests on its own.',
     tierLabel: `${PLANS[PASTORAL_CARE_INBOX_TIER].name} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
+    notYet: 'An automatic queue of unreached requests is not available yet.',
   },
   {
     icon: UserCheck,
     title: 'Route follow-up to the right person, not just anyone.',
     description:
-      'Assign specific requests to individual members of your care team. Each assignee sees only what is theirs. Leaders see the full board. Nothing falls through because nobody owned it.',
+      'Assign a request to an individual member of your care team. Each assignee sees only what is theirs; leaders see the whole board. The assignment screen works, but there is nothing to put on it — no prayer is attached to a church yet.',
     tierLabel: `${PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+    notYet: 'Nothing can be assigned until prayers are church-linked.',
   },
   {
     icon: CheckSquare,
-    title: 'Answered prayers, published carefully.',
+    title: 'Answered prayers do not stop for review yet.',
     description:
-      'When a member marks a prayer answered and writes a testimony, it waits in your approval queue before going live. You read it, decide what belongs on the wall, and post it with one click.',
+      'When a member marks a prayer answered and writes a testimony, it publishes straight to the public praise wall today. It does not wait for you. The approval screen exists, but nothing arrives in it — so please do not pick a plan on the strength of this one.',
     tierLabel: `${PLANS[TESTIMONY_APPROVAL_QUEUE_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+    notYet: 'Testimony review is not available yet. Testimonies publish unreviewed.',
   },
   {
     icon: Users,
     title: 'Prayer circles for every part of your church.',
     description:
-      'Small groups keep requests inside the people who belong to them — a women\'s Bible study sees its own wall, not the whole church\'s. Small Church supports up to five groups. Growing Church removes the cap.',
+      'Any member can start a prayer group and invite people into it, and requests posted there stay inside that group. Tying those groups to your church — so a women\'s Bible study appears on your church page and stays inside your congregation — is not wired up yet, so your church groups list is empty on every plan.',
     tierLabel: `${PLANS.starter.name} (up to ${PLANS.starter.limits.groups} groups); ${PLANS.pro.name} (unlimited)`,
+    notYet: 'Church-owned groups are not available yet.',
   },
   {
     icon: Monitor,
     title: 'Real-time prayer during services and retreats.',
     description:
-      'Display prayer submissions on a screen as they come in — during a Sunday service, a conference, or a silent retreat. A moderation console lets you approve what shows before it appears publicly.',
+      'The submission wall, the moderation console and the projected display are all built and tested. There is no way to create an event yet — the button in your dashboard points at a page that does not exist — so none of it can be reached. This is first on the list to fix.',
     tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+    notYet: 'Not available yet. Events cannot be created.',
   },
   {
     icon: BarChart2,
-    title: 'Know what your congregation is carrying, week by week.',
+    title: 'Member growth is the one number we can show you today.',
     description:
-      'Weekly digests show which prayers are active, which have been answered, and where engagement is rising or falling. Growing Church adds advanced analytics and CSV exports for leadership meetings.',
-    tierLabel: `Basic analytics — ${PLANS.starter.name} and above; Advanced analytics + CSV exports — ${PLANS.pro.name} and above`,
+      'The member growth chart reports real figures. Prayer volume, engagement, category breakdown and answered rate all read from the church link that is not yet written, so each of them shows zero. There is no analytics export of any kind, and the Monday digest cannot count prayers for the same reason.',
+    tierLabel: `Member growth — ${PLANS.starter.name} and above; deeper analytics — ${PLANS.pro.name} and above, once they report real numbers`,
+    notYet: 'Prayer analytics and analytics exports are not available yet.',
   },
   {
     icon: Link2,
-    title: 'Integrates with Planning Center.',
+    title: 'Connects to Planning Center.',
     description:
-      'Your Planning Center member list becomes your PrayerJar prayer community automatically — no CSV imports, no double entry. New members sync overnight, so your pastoral picture stays current.',
+      'Your Planning Center member list becomes your PrayerJar member list — no CSV imports, no double entry. The sync runs on a nightly schedule, so your member picture stays current. No church has connected one in production yet.',
     tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
-];
+] satisfies ReadonlyArray<{
+  icon: typeof MessageSquare;
+  title: string;
+  description: string;
+  tierLabel: string;
+  notYet?: string;
+}>;
 
 const FAQ_ITEMS = [
   {
@@ -136,6 +156,37 @@ const FAQ_ITEMS = [
   },
 ];
 
+/**
+ * Floors below which "PrayerJar by the numbers" is not social proof.
+ *
+ * Production held exactly one church row — a test record with no
+ * subscription and no payment — and zero active prayers, so the strip
+ * rendered "Churches 1 / Prayers Held 0" and the hero jar read
+ * "0 prayers held across 1 churches". A single unpaid record is not
+ * evidence, and a zero is not either.
+ *
+ * Both the hero count label and the strip read this one predicate, so
+ * deleting the test church (pj-s26-12) cannot change what the page
+ * asserts: at (0, 0, 0) and at (1, 0, 1) alike, neither renders.
+ */
+const TRUST_MIN_CHURCHES = 5;
+const TRUST_MIN_PRAYERS = 25;
+const TRUST_MIN_MEMBERS = 50;
+
+type TrustStats = { churches: number; prayers: number; members: number };
+
+function isPublishableTrust(t: TrustStats): boolean {
+  return (
+    t.churches >= TRUST_MIN_CHURCHES &&
+    t.prayers >= TRUST_MIN_PRAYERS &&
+    t.members >= TRUST_MIN_MEMBERS
+  );
+}
+
+function pluralize(n: number, one: string, many: string): string {
+  return n === 1 ? one : many;
+}
+
 async function getTrustStats() {
   const [churchCountRow, prayerRows, memberRows] = await Promise.all([
     db
@@ -159,6 +210,7 @@ async function getTrustStats() {
 
 export default async function ForChurchesPage() {
   const trust = await getTrustStats();
+  const showTrust = isPublishableTrust(trust);
   return (
     <main className="min-h-screen">
       {/* Funnel instrumentation — fires for_churches_view on mount */}
@@ -175,18 +227,33 @@ export default async function ForChurchesPage() {
           <PrayerJar
             count={trust.prayers}
             size="lg"
-            countLabel={`${trust.prayers.toLocaleString()} prayers held across ${trust.churches} churches`}
+            countLabel={
+              showTrust
+                ? `${trust.prayers.toLocaleString()} ${pluralize(trust.prayers, 'prayer', 'prayers')} held across ${trust.churches.toLocaleString()} ${pluralize(trust.churches, 'church', 'churches')}`
+                : undefined
+            }
           />
         </div>
 
         <h1 className="text-4xl font-bold tracking-tight mb-4">
-          Every member who carries a prayer is seen before the week is out.
+          A quiet place for what your congregation is carrying.
         </h1>
-        <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-xl mx-auto">
-          PrayerJar is the private prayer wall your congregation already wanted
-          — safe, named, and built around care. Your pastoral team sees who is
-          carrying what. Your members know they are prayed for.
+        <p className="text-lg text-muted-foreground leading-relaxed mb-6 max-w-xl mx-auto">
+          Real prayers, held by people who know the person who wrote them —
+          named or anonymous, and never for likes.
         </p>
+        <div className="mb-8 max-w-xl mx-auto rounded-lg border border-amber-900/30 bg-amber-950/10 px-4 py-3 text-left">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            <span className="font-medium text-foreground">
+              Where the church side stands today.
+            </span>{' '}
+            Your member roster, pastoral notes, the care inbox and custom
+            branding work now. The private congregation wall, church-owned
+            groups, live events, testimony review and the prayer analytics do
+            not — they are built but nothing can reach them yet. Every card
+            below says which it is.
+          </p>
+        </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button size="lg" render={<Link href="/church/create" />}>
             Start your church free
@@ -218,8 +285,13 @@ export default async function ForChurchesPage() {
         <h2 className="text-2xl font-bold tracking-tight text-center mb-2">
           What your pastoral team gets
         </h2>
+        <p className="text-center text-sm text-muted-foreground mb-4 max-w-xl mx-auto leading-relaxed">
+          Some of what follows is not finished. Where a church cannot reach
+          something yet, the card says so and explains why. We would rather you
+          read it here than find it after you have paid.
+        </p>
         <p className="text-center text-sm text-muted-foreground mb-12">
-          Every feature below is available now — no waitlist, no setup fees.
+          No setup fees, and no charge for prayer itself on any plan.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((f, i) => {
@@ -234,6 +306,15 @@ export default async function ForChurchesPage() {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {f.description}
                   </p>
+                  {'notYet' in f && f.notYet && (
+                    <p className="flex items-start gap-1.5 text-xs font-medium text-muted-foreground border-t pt-3">
+                      <Clock
+                        className="h-3.5 w-3.5 mt-0.5 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <span>{f.notYet}</span>
+                    </p>
+                  )}
                   <p className="text-xs text-amber-600 dark:text-amber-400 font-medium pt-1">
                     {f.tierLabel}
                   </p>
@@ -278,7 +359,7 @@ export default async function ForChurchesPage() {
       </section>
 
       {/* ── Trust Strip ─────────────────────────────────────── */}
-      {trust.churches > 0 && (
+      {showTrust && (
         <section className="pb-20 px-4 max-w-3xl mx-auto">
           <ScrollReveal>
             <div className="rounded-xl border border-amber-900/20 bg-amber-950/10 dark:bg-amber-950/20 py-10 px-6 text-center">
@@ -323,10 +404,11 @@ export default async function ForChurchesPage() {
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               A Network plan is a bespoke agreement. You get unlimited
-              everything, a custom subdomain for your network, volume pricing,
-              and a contract that fits how your denomination actually operates.
-              Enterprise login and custom analytics reports are coming — we can
-              talk through what your network needs when we connect.
+              everything, volume pricing, and a contract that fits how your
+              denomination actually operates. A custom subdomain for your
+              network, enterprise login and custom analytics reports are coming
+              — none of the three is available yet. We can talk through what
+              your network needs when we connect.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               We do not put Network through self-serve checkout. We want to

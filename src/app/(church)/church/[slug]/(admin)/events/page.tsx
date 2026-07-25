@@ -70,12 +70,12 @@ export default async function EventsPage({ params }: Props) {
           <h1 className="text-2xl font-bold">Events</h1>
         </div>
         {canCreateEvents ? (
-          <Link
-            href={`/church/${slug}/events/new`}
-            className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            + Create Event
-          </Link>
+          // pj-s26-09: the create-event screen does not exist. This used to be
+          // a link to /church/[slug]/events/new, which 404s. Until pj-s26-10
+          // ships that route, say so rather than send a pastor to a dead page.
+          <span className="inline-flex items-center rounded-md border border-dashed px-4 py-2 text-sm font-medium text-muted-foreground">
+            Creating events is not available yet
+          </span>
         ) : (
           <a
             href="/billing"
@@ -89,6 +89,15 @@ export default async function EventsPage({ params }: Props) {
         <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
           <span className="font-medium">Live events require a Starter plan or higher.</span>{' '}
           <a href="/billing" className="underline hover:no-underline">Upgrade your plan</a> to create and run live prayer events.
+        </div>
+      )}
+
+      {canCreateEvents && (
+        <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+          <span className="font-medium">Live events are not ready yet.</span>{' '}
+          The prayer wall, moderation console, display screen and post-event
+          report are all built, but there is no screen for creating an event, so
+          none of them can be reached. Your plan is not being charged for this.
         </div>
       )}
 

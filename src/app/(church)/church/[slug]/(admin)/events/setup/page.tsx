@@ -53,30 +53,33 @@ export default async function EventSetupPage({ params }: Props) {
         </Link>
         <h1 className="text-2xl font-bold">Event Setup Guide</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Everything you need to run a live prayer event with {church.name}.
+          What running a live prayer event with {church.name} will look like.
         </p>
+      </div>
+
+      <div className="mb-8 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+        <span className="font-medium">Step 1 is not available yet.</span> There
+        is no screen for creating an event, so the rest of this guide cannot be
+        followed end to end. Steps 2 to 6 describe surfaces that are built and
+        tested, and they will work as written once an event can be created.
       </div>
 
       <ol className="flex flex-col gap-6 mb-10">
         <li className="flex gap-4">
           <div className="flex-none flex items-start pt-0.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-sm font-semibold text-primary">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-muted-foreground/40 bg-background text-sm font-semibold text-muted-foreground">
               1
             </span>
           </div>
           <div className="flex flex-col gap-1.5">
-            <h2 className="text-base font-semibold leading-tight">Create Your Event</h2>
+            <h2 className="text-base font-semibold leading-tight text-muted-foreground">
+              Create your event (coming soon)
+            </h2>
             <p className="text-sm text-muted-foreground">
-              Go to your events page and click &quot;Create Event&quot;. Give it a name and set your
-              dates.
+              This step is not built. Earlier versions of this guide told you to
+              click &quot;Create Event&quot; on the events page — that link
+              pointed at a page that does not exist, and it has been removed.
             </p>
-            <Link
-              href={`/church/${slug}/events`}
-              className="inline-flex w-fit items-center rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Go to Events
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
           </div>
         </li>
 
