@@ -148,6 +148,24 @@ deletes `.env.production.tmp` on exit pass or fail.
 on every new signup, and while its try/catch means a missing column cannot break signup, any
 signup between deploy and migration loses its attribution permanently.
 
+## Commit bookkeeping — a parallel-agent collision the PM should know about
+
+All of this work landed in commit **`c386164`**, whose message is
+*"fix(seo): repair OG cards, close open category slugs, correct the sitemap"* — the Growth agent's.
+
+Cause: three agents share one working tree and one git index. The Growth agent ran `git add` and
+`git commit` in the window between my `git add` and my `git commit`, so their commit swept in
+every staged file, mine included. My commit then found nothing left to commit.
+
+**Nothing is lost** — verified every pj-s26-03 file and every edit to shared files is present at
+`HEAD`. I deliberately did **not** rewrite history to split the commits: two other agents have work
+in flight on this branch, and a rebase would risk destroying it. The commit message is wrong; the
+tree is correct.
+
+**Process fix for future sprints:** parallel agents must not share a git index. Either give each
+agent a worktree, or serialise commits through the PM. `git add` + `git commit` is not atomic
+across agents.
+
 ## Recommendation
 
 Attribution is now a database question, not a vendor question — the right shape for this product.
