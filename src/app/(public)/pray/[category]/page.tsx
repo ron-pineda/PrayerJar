@@ -49,6 +49,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!found) return { title: 'Not Found | PrayerJar' };
 
   const label = found.label;
+  // The `?? ''` is unreachable: findCategory has already gated this path to the
+  // ten PRAYER_CATEGORIES values, and CATEGORY_DESCRIPTIONS has a key for each.
+  // Kept only so the two maps drifting apart degrades instead of crashing.
+  // Verified 2026-07-25: all ten routes emit a non-empty meta description.
   const description = CATEGORY_DESCRIPTIONS[category] ?? '';
   const title = `${label} Prayer Requests | PrayerJar`;
   const url = `https://prayerjar.org/pray/${category}`;
@@ -79,6 +83,10 @@ export default async function PrayByCategoryPage({ params, searchParams }: Props
   if (!found) notFound();
 
   const label = found.label;
+  // The `?? ''` is unreachable: findCategory has already gated this path to the
+  // ten PRAYER_CATEGORIES values, and CATEGORY_DESCRIPTIONS has a key for each.
+  // Kept only so the two maps drifting apart degrades instead of crashing.
+  // Verified 2026-07-25: all ten routes emit a non-empty meta description.
   const description = CATEGORY_DESCRIPTIONS[category] ?? '';
   const url = `https://prayerjar.org/pray/${category}`;
 

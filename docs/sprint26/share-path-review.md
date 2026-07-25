@@ -59,6 +59,12 @@ all four handlers.
 **This does not reproduce locally** (`next start` returns `200 image/png` before and after) and
 therefore **must be re-curled against production after deploy**. Flagged to QA for the pj-s26-07 gate.
 
+**Verify all four OG routes, not just the card route.** `/api/og/prayer/[id]` and
+`/api/og/wrapped/[userId]` resolve real IDs against the DB and can fail for reasons unrelated to the
+import — they were exercised here only with a fabricated all-zeros UUID, which 500s regardless. A
+tester who checks `/api/og/card/prayer` alone could declare this fixed while finding 2's route is
+still broken. Exact commands are in `seo-audit.md` finding 1.
+
 ---
 
 ## Finding 2 — `/wrapped/[year]`'s share button sends people to a PNG, and leaks the user's ID

@@ -73,10 +73,24 @@ which work in production. **This must be re-curled against prod after deploy.** 
 to the pj-s26-07 gate:
 
 ```
+# all four must be checked — see the warning below
 curl -s -o /dev/null -w '%{http_code} %{content_type}\n' \
   'https://prayerjar.org/api/og/card/prayer?text=test&category=Health&count=1'
-# expect: 200 image/png
+curl -s -o /dev/null -w '%{http_code} %{content_type}\n' \
+  'https://prayerjar.org/api/og/card/answered?text=test&category=Health'
+curl -s -o /dev/null -w '%{http_code} %{content_type}\n' \
+  'https://prayerjar.org/api/og/prayer/<REAL-PRAYER-UUID>'
+curl -s -o /dev/null -w '%{http_code} %{content_type}\n' \
+  'https://prayerjar.org/api/og/wrapped/<REAL-USER-UUID>?year=2026'
+# expect: 200 image/png on all four
 ```
+
+**Do not verify with `/api/og/card/prayer` alone.** `/api/og/prayer/[id]` and
+`/api/og/wrapped/[userId]` take real IDs and hit the DB, so they can fail for reasons the import fix
+does not address — a missing row, or an empty result at n=6. They were only exercised here with a
+**fabricated** all-zeros UUID, which would 500 regardless of the import. Use real IDs from the prod
+DB, or the wrapped share path (share-path-review.md finding 2) can stay broken while the card route
+reports green.
 
 If it still 500s after deploy, the next thing to check is the Vercel function log for that route —
 the diagnosis is confident but not proven.
@@ -321,6 +335,13 @@ $ npx next build
 ✓ Completed runAfterProductionCompile in 378ms
 ✓ Generating static pages using 31 workers (108/108) in 467ms
 ```
+
+**Which output was captured when — read before re-running.** `next build` above was captured
+**pre-commit**. The Analytics agent's code was already in the tree at that point, and everything
+committed since has been docs plus one test file, neither of which can change the page count — so
+108/108 still holds. But if QA re-runs `next build` at current HEAD and sees anything other than 108,
+**that is the Analytics agent's routes, not this task's.** This task added no route. `tsc` and
+`vitest` below were re-run *after* commit.
 
 Re-run after commit, with the other agents' work merged into the tree:
 
