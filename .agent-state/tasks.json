@@ -6769,5 +6769,20 @@
     "created_at": "2026-07-25",
     "last_touched": "2026-07-25T02:10:00.000Z",
     "blockers": []
+  },
+  {
+    "id": "pj-s26-13-restore-wall",
+    "sprint": "26",
+    "title": "Restore the expired prayers and suspend auto-expiry",
+    "status": "review",
+    "assigned_to": "Backend",
+    "priority": "critical",
+    "description": "The live product served an empty wall: all 11 prod prayers had reached status=expired, so /browse rendered \"Be the first to share a prayer\" to every visitor while real prayers sat hidden. Root cause: 30-day auto-expiry was designed for a populated wall and kept running through the 3-month email outage that stopped all signups. Ron directed the restore + suspension on 2026-07-25.",
+    "notes": [
+      "[Backend/PM, 2026-07-25] DONE and verified on production. (1) renewPrayer bug fixed first (shipped earlier today) — it set expiresAt only, leaving status=expired, so the one mechanism meant to recover this content silently did nothing and had zero test coverage. (2) Auto-expiry suspended with two independent locks: the expire-prayers entry removed from vercel.json, and the route no-ops unless PRAYER_EXPIRY_ENABLED === 'true'. The route documents the re-enable hazard — prayers still carry expiresAt 30 days from creation, so flipping it on would expire everything past due in a single pass; bump expiresAt before re-enabling. 4 tests added where there were none. (3) scripts/restore-expired-prayers.mjs restored all 11 prayers to active with expiresAt +365 days so a future re-enable cannot silently wipe the wall again. NOTHING FABRICATED — every restored row already existed and was written by a real person; authors keep renew/answer/delete control. Answered-count assertion held. VERIFIED LIVE: /browse no longer renders the empty state and real prayer content is visible; /pray returns 200 with content. Gates: tsc 0, 519/519, build 108/108. NOTE: the suspension code is committed but NOT yet pushed — the deployed vercel.json still schedules the cron. Restored prayers are safe regardless (expiresAt +365d), but new prayers would still expire on the old 30-day clock until this deploys."
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:00:00.000Z",
+    "blockers": []
   }
 ]

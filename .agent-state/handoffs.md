@@ -377,3 +377,5 @@
 [2026-07-25] Ron → Production: pushed 16 commits (6109ec6..6c06a77). CI ran migrations + deployed in ~120s.
 [2026-07-25] QA/PM → Reviewer: pj-s26-11 PASS on prod — all three OG endpoints now 200 image/png (were 500); category guard live; trust strip correctly hidden.
 [2026-07-25] PM → Ron: pj-s26-12 needs a human run — destructive prod DELETE blocked by the permission classifier. Use scripts/delete-test-church.mjs (dry-run default, --commit to execute).
+
+[2026-07-25] Backend → QA: pj-s26-13 — 11 expired prayers restored to active (real content, nothing fabricated) and auto-expiry suspended behind two locks. /browse empty state GONE on prod, real prayers rendering. Suspension code committed but not pushed.
