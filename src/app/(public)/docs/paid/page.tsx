@@ -260,10 +260,18 @@ export default function PaidFeaturesPage() {
                     : 'border bg-card'
                 }`}
               >
+                {/* pj-s26-09: a "Most Popular" badge sat here. No church has
+                    ever subscribed — every row has a null subscription_id and
+                    null first_paid_at — so there is no popularity data behind
+                    it. Same defect as the trust strip: fabricated social proof
+                    derived from nothing. Replaced with the fit statement,
+                    which is a judgement we can actually stand behind (and
+                    matches /for-churches, where brand guide §7 #12 bans the
+                    badge outright). */}
                 {isPopular && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full bg-primary text-primary-foreground">
                     <Zap className="h-3 w-3" />
-                    Most Popular
+                    Best for 150–500 members
                   </span>
                 )}
 

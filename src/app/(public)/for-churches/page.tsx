@@ -32,8 +32,11 @@ import { or, eq, sql, count } from 'drizzle-orm';
 
 export const metadata: Metadata = {
   title: 'PrayerJar for Churches & Ministries',
+  // Kept under ~160 chars so the honest half is not what Google truncates.
+  // Follows the pj-s26-04 convention: written against the n=6 reality, no
+  // volume claims (docs/sprint26/seo-audit.md §4).
   description:
-    'A quiet place for your congregation to bring what it is carrying. Pastoral notes, a care inbox and your member roster work today; the private congregation wall, church groups, live events and prayer analytics are still being finished — this page says which is which.',
+    'PrayerJar for churches: pastoral notes, a care inbox and member rosters work today. The private church prayer wall, groups and live events are not built yet.',
 };
 
 /**

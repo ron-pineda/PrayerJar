@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth';
 import { db } from '@/db';
 import { subscriptions, donations, eventLicenses, churchMembers } from '@/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { PLANS } from '@/lib/plans';
+import { PLANS, isComingSoonFeature } from '@/lib/plans';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { CancelSubscriptionButton, UpgradeButton } from './BillingActions';
@@ -158,13 +158,38 @@ export default async function BillingPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <ul className="space-y-1.5">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="text-sm text-muted-foreground flex gap-2">
-                        <span className="text-primary mt-0.5">✓</span>
-                        {feature}
-                      </li>
-                    ))}
+                    {plan.features.map((feature) => {
+                      // pj-s26-09: a checkmark beside "(coming soon)" reads as
+                      // included — and this list sits directly above the
+                      // upgrade button, so it must not overstate.
+                      const comingSoon = isComingSoonFeature(feature);
+                      return (
+                        <li
+                          key={feature}
+                          className={`text-sm flex gap-2 ${
+                            comingSoon
+                              ? 'text-muted-foreground/70 italic'
+                              : 'text-muted-foreground'
+                          }`}
+                        >
+                          <span
+                            className={comingSoon ? 'text-muted-foreground/60 mt-0.5' : 'text-primary mt-0.5'}
+                            aria-hidden="true"
+                          >
+                            {comingSoon ? '◌' : '✓'}
+                          </span>
+                          {feature}
+                        </li>
+                      );
+                    })}
                   </ul>
+                  {plan.features.some(isComingSoonFeature) && (
+                    <p className="text-xs text-muted-foreground border-t pt-3">
+                      Items marked &ldquo;coming soon&rdquo; are not available
+                      yet. You are not being charged for them, and they are not
+                      part of what this plan delivers today.
+                    </p>
+                  )}
                   {isCurrent ? null : isFree ? null : isEnterprise ? (
                     <Button
                       className="w-full"

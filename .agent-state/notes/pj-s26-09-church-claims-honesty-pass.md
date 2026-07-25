@@ -152,14 +152,43 @@ floors are above 1. That is intentional, not an oversight: it keeps the
 
 ---
 
+## Second pass — four gaps caught in review
+
+1. **`/billing` was a third renderer of `PLANS[*].features`.** Adding
+   `(coming soon)` to that shared array fixed two renderers and missed the
+   upgrade page, which drew a literal `✓` beside
+   `Testimony approval queue (coming soon)` **directly above the upgrade
+   button**. Now uses `isComingSoonFeature`, plus a line stating you are not
+   being charged for those items. `tsc`/`vitest` cannot catch this — the
+   strings are data.
+2. **`(admin)/events/page.tsx` still upsold events on the free tier.** Only the
+   `canCreateEvents` true-branch had been fixed; the false-branch still said
+   "Events are included on the Starter plan and above" and "Upgrade your plan to
+   create and run live prayer events" — selling a feature no tier can reach.
+   Both branches collapsed into one honest state; the now-dead `tier` /
+   `PLANS.limits.events` gate was removed with the upsell it fed (pj-s26-10
+   restores it with the route).
+3. **`metadata.description` was ~270 chars.** Search snippets truncate near
+   155-160, so the honest half was exactly the part that got cut. Rewritten to
+   157 chars with the disclosure inside the visible window. Checked for
+   collision with pj-s26-04 (in review): commit `c386164` does **not** touch
+   `/for-churches`, and `docs/sprint26/seo-audit.md` §4 sets the same
+   convention — written against the n=6 reality, no volume claims.
+4. **`docs/paid` "Most Popular" badge on the Pro tier.** Initially scoped out on
+   §7 grounds (the brand ban names `/for-churches`), but it is fabricated social
+   proof by this task's own standard: prod has zero subscriptions, so there is
+   no popularity data behind it — the same defect the trust strip was just gated
+   for, on the tier whose three flagship features are now labelled coming soon.
+   Replaced with the fit statement already used on `/for-churches`.
+
+---
+
 ## Reported, deliberately NOT fixed (pre-existing drift, out of scope)
 
 - `docs/paid` FEATURE_COMPARISON: free members `'25'` vs `plans.ts` 75; free
   groups `'1'` vs 3; plan cards say "save ~20%" vs `ANNUAL_DISCOUNT_PERCENT` 15.
 - `docs/paid:88` lists Pastoral dashboard as Pro-only, contradicting
   `PASTORAL_DASHBOARD_TIER = 'starter'`. Understates — opposite direction.
-- `docs/paid` "Most Popular" badge — §7 #12 scopes that ban to `/for-churches`;
-  this is `/docs/paid`. Flagged, left.
 - **The analytics page has no tier gate at all** — only a role check
   (`dashboard/analytics/page.tsx:31`). The sidebar hides the link below `pro`,
   but any admin or pastor on any plan can open the URL. That is a gating bug for

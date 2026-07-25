@@ -1,9 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
+import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getChurchEvents } from '@/services/event.service';
-import { PLANS } from '@/lib/plans';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface Props {
@@ -50,11 +49,11 @@ export default async function EventsPage({ params }: Props) {
     notFound();
   }
 
-  const [events, tier] = await Promise.all([
-    getChurchEvents(church.id),
-    getChurchTier(church.id),
-  ]);
-  const canCreateEvents = PLANS[tier].limits.events !== 0;
+  // pj-s26-09: the plan tier no longer gates anything on this page — no tier
+  // can create an event. The tier lookup and PLANS.limits.events check were
+  // removed with the upsell they fed. pj-s26-10 restores the gate along with
+  // the create-event route.
+  const events = await getChurchEvents(church.id);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
@@ -69,37 +68,24 @@ export default async function EventsPage({ params }: Props) {
           </Link>
           <h1 className="text-2xl font-bold">Events</h1>
         </div>
-        {canCreateEvents ? (
-          // pj-s26-09: the create-event screen does not exist. This used to be
-          // a link to /church/[slug]/events/new, which 404s. Until pj-s26-10
-          // ships that route, say so rather than send a pastor to a dead page.
-          <span className="inline-flex items-center rounded-md border border-dashed px-4 py-2 text-sm font-medium text-muted-foreground">
-            Creating events is not available yet
-          </span>
-        ) : (
-          <a
-            href="/billing"
-            className="inline-flex items-center rounded-md border border-amber-400 bg-amber-50 dark:bg-amber-950/30 px-4 py-2 text-sm font-medium text-amber-800 dark:text-amber-300 hover:bg-amber-100 transition-colors"
-          >
-            Events are included on the Starter plan and above
-          </a>
-        )}
+        {/* pj-s26-09: the create-event screen does not exist, on ANY tier.
+            This used to branch on plan: paid churches got a link to
+            /church/[slug]/events/new (a 404), and free churches got an upsell
+            telling them to pay for events. Neither was true, so neither
+            branch survives — there is nothing to sell or link to until
+            pj-s26-10 ships the route. */}
+        <span className="inline-flex items-center rounded-md border border-dashed px-4 py-2 text-sm font-medium text-muted-foreground">
+          Creating events is not available yet
+        </span>
       </div>
-      {!canCreateEvents && (
-        <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
-          <span className="font-medium">Live events require a Starter plan or higher.</span>{' '}
-          <a href="/billing" className="underline hover:no-underline">Upgrade your plan</a> to create and run live prayer events.
-        </div>
-      )}
 
-      {canCreateEvents && (
-        <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
-          <span className="font-medium">Live events are not ready yet.</span>{' '}
-          The prayer wall, moderation console, display screen and post-event
-          report are all built, but there is no screen for creating an event, so
-          none of them can be reached. Your plan is not being charged for this.
-        </div>
-      )}
+      <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+        <span className="font-medium">Live events are not ready on any plan.</span>{' '}
+        The prayer wall, moderation console, display screen and post-event
+        report are all built, but there is no screen for creating an event, so
+        none of them can be reached yet. Changing plans will not turn this on —
+        please do not upgrade for it.
+      </div>
 
       {events.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
