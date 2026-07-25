@@ -7,7 +7,11 @@ import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { and, eq, gt, isNull, count } from 'drizzle-orm';
 
-export const metadata = { title: 'Pray for Someone | The Prayer Jar' };
+export const metadata = {
+  title: 'Pray for Someone | The Prayer Jar',
+  description:
+    'Pray for a real person right now. PrayerJar shows you one prayer request at a time — you do not need an account to pray for someone.',
+};
 
 async function getActivePrayerCount() {
   const now = new Date();

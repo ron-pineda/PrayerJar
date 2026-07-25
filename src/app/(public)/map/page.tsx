@@ -1,6 +1,10 @@
 import { PrayerMap } from '@/components/map/prayer-map';
 
-export const metadata = { title: 'Prayer Map | The Prayer Jar' };
+export const metadata = {
+  title: 'Prayer Map | The Prayer Jar',
+  description:
+    'A live map of where prayers are being offered around the world. Locations are fuzzed to region level — no one is ever pinned to an address.',
+};
 
 export default function MapPage() {
   return (

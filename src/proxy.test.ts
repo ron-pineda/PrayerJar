@@ -44,15 +44,21 @@ const fetchEvent = {} as unknown as Parameters<typeof handler>[1];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function makeReq(host: string, path = '/', env: Record<string, string> = {}) {
+function makeReq(
+  host: string,
+  path = '/',
+  env: Record<string, string> = {},
+  extra: { headers?: Record<string, string>; cookies?: Record<string, string> } = {},
+) {
   // Set process.env overrides for this request
   Object.entries(env).forEach(([k, v]) => {
     process.env[k] = v;
   });
 
   const url = `https://${host}${path}`;
+  const cookieJar = extra.cookies ?? {};
   const req = {
-    headers: new Headers({ host }),
+    headers: new Headers({ host, ...extra.headers }),
     nextUrl: Object.assign(new URL(url), {
       clone(): URL {
         return new URL(url);
@@ -60,9 +66,19 @@ function makeReq(host: string, path = '/', env: Record<string, string> = {}) {
     }),
     url,
     auth: null,
+    // Minimal stand-in for NextRequest's RequestCookies — only `.has()` and
+    // `.get()` are used by the attribution stamp in proxy.ts.
+    cookies: {
+      has: (name: string) => name in cookieJar,
+      get: (name: string) =>
+        name in cookieJar ? { name, value: cookieJar[name] } : undefined,
+    },
   };
   return req as unknown as Parameters<typeof handler>[0];
 }
+
+/** A request that looks like a real browser asking for an HTML document. */
+const DOC_HEADERS = { accept: 'text/html,application/xhtml+xml,application/xml;q=0.9' };
 
 /** Build the drizzle select chain mock to return `rows`. */
 function mockDbSelect(rows: unknown[]) {
@@ -199,5 +215,102 @@ describe('proxy.ts — subdomain tenant resolution', () => {
     const res = await handler(req, fetchEvent);
     expect(db.select).not.toHaveBeenCalled();
     expect((res as NextResponse).status).not.toBe(404);
+  });
+});
+
+// ── First-touch attribution stamp (pj-s26-03) ────────────────────────────────
+
+describe('proxy.ts — first-touch signup attribution', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    delete process.env.SUBDOMAIN_ROUTING;
+    delete process.env.ADMIN_EMAILS;
+  });
+
+  /** Reads the pj_attr cookie back off the response. */
+  function readStamp(res: NextResponse) {
+    const cookie = res.cookies.get('pj_attr');
+    return cookie ? JSON.parse(decodeURIComponent(cookie.value)) : null;
+  }
+
+  it('stamps pj_attr on a fresh anonymous document request', async () => {
+    const req = makeReq('prayerjar.org', '/', {}, { headers: DOC_HEADERS });
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    expect(readStamp(res)).toMatchObject({
+      acquisitionSource: 'direct',
+      landingPath: '/',
+    });
+  });
+
+  it('captures UTM campaign parameters from the landing URL', async () => {
+    const req = makeReq(
+      'prayerjar.org',
+      '/for-churches?utm_source=bulletin&utm_medium=email&utm_campaign=advent',
+      {},
+      { headers: DOC_HEADERS },
+    );
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    expect(readStamp(res)).toMatchObject({
+      acquisitionSource: 'email',
+      utmSource: 'bulletin',
+      utmMedium: 'email',
+      utmCampaign: 'advent',
+      landingPath: '/for-churches',
+    });
+  });
+
+  it('classifies an external referrer', async () => {
+    const req = makeReq(
+      'prayerjar.org',
+      '/',
+      {},
+      { headers: { ...DOC_HEADERS, referer: 'https://www.google.com/search?q=prayer' } },
+    );
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    const stamp = readStamp(res);
+    expect(stamp.acquisitionSource).toBe('organic_search');
+    // Referrer query dropped — search terms must never be stored.
+    expect(stamp.referrer).toBe('https://www.google.com/search');
+  });
+
+  it('does not overwrite an existing cookie — first touch wins', async () => {
+    const req = makeReq(
+      'prayerjar.org',
+      '/?utm_source=later',
+      {},
+      { headers: DOC_HEADERS, cookies: { pj_attr: 'already-set' } },
+    );
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    expect(res.cookies.get('pj_attr')).toBeUndefined();
+  });
+
+  it('does not stamp non-document requests', async () => {
+    const req = makeReq('prayerjar.org', '/', {}, { headers: { accept: 'image/avif' } });
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    expect(res.cookies.get('pj_attr')).toBeUndefined();
+  });
+
+  it('redacts a prayer ID in the landing path', async () => {
+    const uuid = '8f3c1a2b-4d5e-6f70-8192-a3b4c5d6e7f8';
+    const req = makeReq('prayerjar.org', `/p/${uuid}`, {}, { headers: DOC_HEADERS });
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    const stamp = readStamp(res);
+    expect(stamp.landingPath).toBe('/p/[id]');
+    expect(JSON.stringify(stamp)).not.toContain(uuid);
+  });
+
+  it('survives a redirect response — the cookie rides along', async () => {
+    const req = makeReq('prayerjar.org', '/settings', {}, { headers: DOC_HEADERS });
+    const res = (await handler(req, fetchEvent)) as NextResponse;
+
+    // Unauthenticated request to a protected prefix → 307/302 to /sign-in
+    expect([302, 307]).toContain(res.status);
+    expect(readStamp(res)).toMatchObject({ landingPath: '/settings' });
   });
 });

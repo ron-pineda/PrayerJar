@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { PRAYER_CATEGORIES } from '@/lib/utils';
 import PrayByCategoryClient from './client';
 
@@ -9,7 +10,7 @@ type Props = {
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   health:
-    'Pray for people facing illness, recovery, and medical challenges. Join thousands lifting health prayers on PrayerJar.',
+    'Pray for people facing illness, recovery, and medical challenges. Join others lifting health prayers on PrayerJar.',
   family:
     'Stand with families navigating conflict, distance, and change. Bring your family prayers to a community that cares.',
   financial:
@@ -21,7 +22,7 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   guidance:
     'Pray for those seeking direction in major decisions and life transitions. Wisdom comes when people pray together.',
   relationships:
-    'Cover friendships, marriages, and broken bonds in prayer. Thousands are believing for restored relationships on PrayerJar.',
+    'Cover friendships, marriages, and broken bonds in prayer. People here are believing for restored relationships.',
   work_career:
     'Pray for those navigating career uncertainty, new opportunities, and workplace challenges. Work-life prayers welcome here.',
   spiritual_growth:
@@ -30,17 +31,25 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     'Every prayer need belongs here. Bring the requests that do not fit a category — they matter just as much.',
 };
 
-function getCategoryLabel(value: string): string {
-  const found = PRAYER_CATEGORIES.find((c) => c.value === value);
-  return found ? found.label : value.replace('_', ' ');
+/**
+ * Only the ten values in PRAYER_CATEGORIES are real routes. Anything else used
+ * to render a 200 page that reflected the raw slug straight into the <title>
+ * and meta description (e.g. /pray/cheap-viagra → "cheap-viagra Prayer
+ * Requests | PrayerJar"), which gave crawlers an unbounded soft-404 space and
+ * let anyone mint a PrayerJar-branded title of their choosing. Unknown slugs
+ * now 404.
+ */
+function findCategory(value: string) {
+  return PRAYER_CATEGORIES.find((c) => c.value === value);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const label = getCategoryLabel(category);
-  const description =
-    CATEGORY_DESCRIPTIONS[category] ??
-    `Pray for ${label.toLowerCase()} requests submitted by real people. Join the PrayerJar community today.`;
+  const found = findCategory(category);
+  if (!found) return { title: 'Not Found | PrayerJar' };
+
+  const label = found.label;
+  const description = CATEGORY_DESCRIPTIONS[category] ?? '';
   const title = `${label} Prayer Requests | PrayerJar`;
   const url = `https://prayerjar.org/pray/${category}`;
 
@@ -66,10 +75,11 @@ export default async function PrayByCategoryPage({ params, searchParams }: Props
   const { category } = await params;
   const { urgent } = await searchParams;
 
-  const label = getCategoryLabel(category);
-  const description =
-    CATEGORY_DESCRIPTIONS[category] ??
-    `Pray for ${label.toLowerCase()} requests submitted by real people. Join the PrayerJar community today.`;
+  const found = findCategory(category);
+  if (!found) notFound();
+
+  const label = found.label;
+  const description = CATEGORY_DESCRIPTIONS[category] ?? '';
   const url = `https://prayerjar.org/pray/${category}`;
 
   const jsonLd = {

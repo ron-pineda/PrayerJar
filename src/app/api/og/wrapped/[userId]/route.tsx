@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
 import { getWrappedStats } from '@/services/wrapped.service';
 
 export const runtime = 'nodejs';

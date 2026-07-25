@@ -4,7 +4,11 @@ import { sql } from 'drizzle-orm';
 import { SalvationClient } from '@/components/salvation-client';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Know Jesus | The Prayer Jar' };
+export const metadata = {
+  title: 'Know Jesus | The Prayer Jar',
+  description:
+    'Who Jesus is, what the gospel says, and how to begin following him — written plainly, with a prayer you can pray today and a way to find a church near you.',
+};
 
 export default async function KnowJesusPage() {
   const [{ count }] = await db

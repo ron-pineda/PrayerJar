@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Heart, Users, Sparkles, Church } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,20 @@ import { prayers, users } from '@/db/schema';
 import { eq, and, gt, ne, or, isNull, sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { getHomepageData } from '@/services/homepage.service';
+
+// The home page had no metadata export, so it inherited the root layout's
+// 11-character "Prayer Jar" title and the same generic description as every
+// other page. This is the one page most likely to be someone's first result.
+const TITLE = 'Prayer Jar — Share a Prayer Request or Pray for Someone';
+const DESCRIPTION =
+  'Bring a real burden — health, family, grief, hope — and ask others to pray. Or pray for someone who needs it. You do not need an account to pray.';
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION },
+  twitter: { title: TITLE, description: DESCRIPTION },
+};
 
 async function getStats(viewerUserId?: string | null) {
   // Mirror /pray's getRandomPrayer filters so "prayers waiting" reflects what

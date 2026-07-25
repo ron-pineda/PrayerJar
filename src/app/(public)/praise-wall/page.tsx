@@ -10,7 +10,14 @@ import { db } from '@/db';
 import { prayers } from '@/db/schema';
 import { eq, count } from 'drizzle-orm';
 
-export const metadata = { title: 'Lights Released | The Prayer Jar' };
+// Title matches the nav label ("Answered Prayers") and the words someone would
+// actually search. "Lights Released" is the in-product name for the wall and is
+// kept as the on-page H1 — it is not a phrase anyone types into Google.
+export const metadata = {
+  title: 'Answered Prayers | The Prayer Jar',
+  description:
+    'The wall where answered prayers are marked and remembered. Read what people say God has done, and add your own when a prayer is answered.',
+};
 
 async function getAnsweredCount() {
   const [row] = await db

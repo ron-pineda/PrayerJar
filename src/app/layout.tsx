@@ -12,7 +12,7 @@ import { UserMenu } from '@/components/user-menu';
 import { SignOutButton } from '@/components/sign-out-button';
 import { SessionProvider } from '@/components/session-provider';
 import { getChurchForUser } from '@/services/church-platform.service';
-import { Analytics } from '@vercel/analytics/next';
+import { WebAnalytics } from '@/components/web-analytics';
 import { FeedbackWidget } from '@/components/feedback-widget';
 import { PwaInstallPrompt } from '@/components/pwa-install-prompt';
 import { PrayerJarMark } from '@/components/prayer-jar-mark';
@@ -135,7 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </ThemeProvider>
         </SessionProvider>
         <FeedbackWidget />
-        <Analytics />
+        <WebAnalytics />
       </body>
     </html>
   );

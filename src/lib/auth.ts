@@ -8,6 +8,7 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import SignInEmail from '@/emails/sign-in';
 import { sendWelcome1Email } from '@/services/email.service';
+import { recordSignupAttribution } from '@/services/attribution.service';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -64,6 +65,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     async createUser({ user }) {
+      // First-touch signup attribution (pj-s26-03).
+      //
+      // NextAuth v5's createUser event receives ONLY `{ user }` — no request
+      // object, so referrer/UTM are not available here directly (verified in
+      // node_modules/@auth/core/index.d.ts:367). The event does run inside the
+      // /api/auth/[...nextauth] route handler's request scope, so `cookies()`
+      // from next/headers reads the pj_attr cookie the proxy stamped on the
+      // visitor's first page.
+      //
+      // Wrapped in its own try/catch for the same reason as the welcome email
+      // below: an analytics write must never be able to block a signup.
+      if (user.id) {
+        try {
+          await recordSignupAttribution(user.id);
+        } catch (err) {
+          console.error('[auth.createUser] attribution write failed:', err);
+        }
+      }
+
       // NEVER let a welcome-email failure break signup. Resend can reject for
       // unverified domains, rate limits, or recipient issues — when that
       // throws inside a NextAuth event, the user sees a Configuration error

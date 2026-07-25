@@ -25,6 +25,13 @@ import { db } from '@/db';
 import { churches } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { isReservedSubdomain } from '@/lib/subdomain-reserved';
+import {
+  ATTRIBUTION_COOKIE,
+  ATTRIBUTION_COOKIE_MAX_AGE,
+  deriveAttribution,
+  encodeAttribution,
+  shouldStampAttribution,
+} from '@/lib/attribution';
 
 const PROTECTED_PREFIXES = ['/my-prayers', '/journal', '/notifications', '/settings', '/badges'];
 const ADMIN_PREFIXES = ['/admin'];
@@ -32,7 +39,53 @@ const ADMIN_PREFIXES = ['/admin'];
 /** Matches  <sub>.prayerjar.org  (case-insensitive, 1-32 chars). */
 const SUBDOMAIN_RE = /^([a-z0-9-]{1,32})\.prayerjar\.org$/i;
 
-export default auth(async (req: NextRequest & { auth?: { user?: { email?: string | null } } | null }) => {
+type AuthedRequest = NextRequest & { auth?: { user?: { email?: string | null } } | null };
+
+/**
+ * Step 0 — first-touch signup attribution (pj-s26-03).
+ *
+ * Writes `pj_attr` on the first HTML document an anonymous visitor requests
+ * and never touches it again, so the value always describes how they *first*
+ * arrived. `src/lib/auth.ts` reads it in `events.createUser` and persists it
+ * onto the users row.
+ *
+ * Applied to whatever response the routing logic below produced, so the cookie
+ * survives rewrites and redirects alike.
+ */
+function stampAttribution(req: AuthedRequest, res: NextResponse): NextResponse {
+  const stamp = shouldStampAttribution({
+    hasExistingCookie: req.cookies.has(ATTRIBUTION_COOKIE),
+    isAuthenticated: Boolean(req.auth),
+    accept: req.headers.get('accept'),
+    isPrefetch:
+      req.headers.get('next-router-prefetch') === '1' ||
+      req.headers.get('purpose') === 'prefetch' ||
+      req.headers.get('sec-purpose')?.includes('prefetch') === true,
+    pathname: req.nextUrl.pathname,
+  });
+  if (!stamp) return res;
+
+  const attribution = deriveAttribution(
+    req.url,
+    req.headers.get('referer'),
+    req.nextUrl.hostname,
+  );
+
+  res.cookies.set(ATTRIBUTION_COOKIE, encodeAttribution(attribution), {
+    maxAge: ATTRIBUTION_COOKIE_MAX_AGE,
+    path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+  });
+  return res;
+}
+
+export default auth(async (req: AuthedRequest) => {
+  return stampAttribution(req, await route(req));
+});
+
+async function route(req: AuthedRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
   // ─── Step 1: Subdomain tenant resolution ────────────────────────────────
@@ -138,7 +191,7 @@ export default auth(async (req: NextRequest & { auth?: { user?: { email?: string
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],

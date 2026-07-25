@@ -52,6 +52,24 @@ export const users = pgTable('users', {
   onboardingCompleted: boolean('onboardingCompleted').default(false).notNull(),
   preferredCategories: text('preferredCategories').array().default([]).notNull(),
   activityLevel: activityLevelEnum('activityLevel').default('new').notNull(),
+  // --- First-touch signup attribution (pj-s26-03, migration 0033) ---
+  // Written once by events.createUser in src/lib/auth.ts from the pj_attr
+  // cookie set in src/proxy.ts. Column names mirror churches.* so user-side and
+  // church-side acquisition can be reported with the same vocabulary.
+  //
+  // This is the attribution system of record: Vercel Web Analytics on the
+  // Hobby plan collects neither custom events nor UTM parameters, so the
+  // channel question can only be answered here. See docs/analytics/events.md.
+  //
+  // signupReferrer is origin+path only (query string stripped) and
+  // signupLandingPath is redacted — a signup that began on a prayer permalink
+  // stores '/p/[id]', never a prayer ID.
+  acquisitionSource: text('acquisition_source'),
+  utmSource: text('utm_source'),
+  utmMedium: text('utm_medium'),
+  utmCampaign: text('utm_campaign'),
+  signupReferrer: text('signup_referrer'),
+  signupLandingPath: text('signup_landing_path'),
 });
 
 export const accounts = pgTable('accounts', {

@@ -1,4 +1,4 @@
-import { ImageResponse } from '@vercel/og';
+import { ImageResponse } from 'next/og';
 import { getPrayerById } from '@/services/prayer.service';
 
 export const runtime = 'nodejs';
