@@ -5,6 +5,26 @@
 
 ---
 
+## PM DECISION REQUIRED — a sprint gate that cannot pass, blocking 04/05/06
+
+Sprint 26's instrumentation gate reads: *"events verified in the destination from a real browser
+session."* **That gate can never pass on the current plan.** Vercel Web Analytics does not collect
+Custom Events on Hobby, so there is no destination in which to verify them. Since pj-s26-04, -05
+and -06 are all gated on pj-s26-03, they are currently blocked on an impossibility.
+
+This needs a PM decision, not a note. Three options:
+
+1. **Restate the gate** (recommended) to *"pageview redaction and attribution capture verified from
+   a real browser session"* — satisfied, evidence below. Unblocks 04/05/06 immediately.
+2. Accept the gate as unmet and unblock 04/05/06 explicitly.
+3. Upgrade to Pro — **not recommended**, see the recommendation section: UTM breakdown still would
+   not be included, and the 2-property cap would silently truncate the existing events. Ron also
+   declined a Pro upgrade in Sprint 24.
+
+Everything below is the evidence for option 1.
+
+---
+
 ## Headline correction — the Sprint 17 funnel has never collected a single data point
 
 Vercel Web Analytics **Custom Events are not included on the Hobby plan**
@@ -150,8 +170,12 @@ signup between deploy and migration loses its attribution permanently.
 
 ## Commit bookkeeping — a parallel-agent collision the PM should know about
 
-All of this work landed in commit **`c386164`**, whose message is
-*"fix(seo): repair OG cards, close open category slugs, correct the sitemap"* — the Growth agent's.
+Exact commit map for PM reconciliation:
+
+- **`c386164`** — all pj-s26-03 *code* landed here, under the Growth agent's message
+  *"fix(seo): repair OG cards, close open category slugs, correct the sitemap"*.
+- **`5065a14`** — this note.
+- `221cab6` (between them) is the Growth agent's own record of the same collision.
 
 Cause: three agents share one working tree and one git index. The Growth agent ran `git add` and
 `git commit` in the window between my `git add` and my `git commit`, so their commit swept in

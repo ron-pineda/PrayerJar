@@ -135,5 +135,14 @@ add more.
 
 | Date | Change | Backward-compatibility impact |
 |---|---|---|
-| 2026-07-24 | `beforeSend` redaction added to Web Analytics | Pageview paths for `/p/[id]`, `/testimony/[id]`, `/groups/[id]` change shape from raw-ID to `[id]`. Historical rows keep raw IDs; the Hobby reporting window is 1 month, so this self-heals by 2026-08-24. |
+| 2026-07-24 | `beforeSend` redaction added to Web Analytics | Pageview paths for `/p/[id]`, `/testimony/[id]`, `/groups/[id]` change shape from raw-ID to `[id]`. Pageviews collected before this deploy were recorded with raw IDs in the path; the Hobby reporting window is 1 month, so they age out of the reporting UI. |
 | 2026-07-24 | `users` attribution columns added (migration 0033) | Additive, all nullable. No existing query affected. |
+
+## 7. Migration convention note
+
+`0033_user_signup_attribution.sql` has a `_journal.json` entry and **no** `meta/0033_snapshot.json`.
+That is deliberate and matches the established pattern: `meta/` holds snapshots only through
+`0028_snapshot.json`, and every hand-written migration since (0029-0032) is journalled without one.
+`drizzle-kit generate` has not been the application path for this repo since 0029 — the
+`scripts/apply-NNNN-runner.mjs` runners are. Do not run `generate` against prod expecting a clean
+diff; prod Neon has drifted and it will emit unrelated statements.
