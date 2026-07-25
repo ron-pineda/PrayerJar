@@ -6599,60 +6599,64 @@
     "id": "pj-s26-03-funnel-instrumentation",
     "sprint": "26",
     "title": "Instrument the acquisition funnel before optimizing it",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Analytics",
     "priority": "high",
     "description": "At n=6 we cannot tell a working channel from a broken one without knowing where visitors drop. Define events + destination and verify end-to-end from a real browser session, not just in code. GATES pj-s26-04/05/06.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Analytics, 2026-07-25] Done. Vercel Web Analytics was ALREADY installed (since Sprint 17). Key finding: Vercel Hobby does NOT collect Custom Events, so the Sprint-17 funnel (12 track() wrappers, Reviewer-approved, marked done) has NEVER produced a single data point. UTM params are not collected on Hobby OR Pro (Plus add-on only), and Pro caps custom events at 2 properties while trackPlanUpgraded passes 7 — so buying Pro would NOT fix it. Closed a real PII leak: @vercel/analytics/next sends both route (/p/[id]) and raw path (/p/<uuid>), so prayer + testimony IDs were leaving the browser; beforeSend hook now redacts those plus ?q= search terms and ?text= prayer content. Attribution capture landed in Neon via migration 0033 (NOT applied — run scripts/apply-0033-runner.mjs; apply BEFORE deploy or signups in the gap lose attribution permanently). Suite 459 -> 513. Sprint gate \"events verified in destination\" is unpassable on Hobby; PM restated it as pageview-redaction + attribution verified from a real browser session, which was met."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-25T00:45:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-04-seo-audit",
     "sprint": "26",
     "title": "SEO & discoverability audit",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "A dynamic sitemap and 108 static pages exist. Determine what is actually indexable and ranking, and what is not. Report findings; land only bounded, low-risk fixes.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Growth, 2026-07-25] Done. Top find: /api/og/card/* returned 500 in PRODUCTION — every shared prayer link rendered with no social card, and at n=6 sharing a prayer link is the main organic acquisition path. Cause: all four OG route handlers imported ImageResponse from @vercel/og; Next 16 requires next/og for route handlers so the Satori/Resvg WASM gets traced into the bundle. Fixed but does NOT reproduce locally — unproven until re-curled against prod after deploy. PM independently confirmed the 500 on prod (note: /api/og/card/home is 404 because \"home\" is not a valid type; the real URLs are card/prayer and card/answered). Also fixed: /pray/[category] accepted ANY slug and returned 200 reflecting it into the title (prayerjar.org/pray/cheap-viagra served \"cheap-viagra Prayer Requests | PrayerJar\") — now notFound(). Two false \"thousands\" claims removed from Google-facing meta descriptions. Sitemap is NOT dynamic (hardcoded array) and had 3 hard-404 URLs; now 33/33 resolve. Deliverable: docs/sprint26/seo-audit.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-25T00:45:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-05-share-invite-mechanics",
     "sprint": "26",
     "title": "Share/invite path review",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "What can a real user do today to bring a second user, and where does that path break? Reuse existing share surfaces. Do not fabricate content to make the path look populated.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Growth, 2026-07-25] Done. Deliverable: docs/sprint26/share-path-review.md. Clearest broken acquisition step: /wrapped share tweets the raw PNG endpoint, so anyone clicking lands on a bare image with no path back to the site — and it publishes the user's DB ID. Exact diff left for Frontend, not landed. Deliberately did NOT touch the robots.txt block on /church/ — it is a shared prefix covering member walls, dashboards and admin, so allowing public profiles risks exposing gated siblings; zero upside at one church. Open question for Ron: the tweet hardcodes @PrayerJar and the agent could not verify that handle is his."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-25T00:45:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-06-church-acquisition-asset",
     "sprint": "26",
     "title": "Church acquisition path + outreach asset",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "1 church signed up. /for-churches and pricing are built and — after pj-s26-01 — honest. Define the concrete asset Ron hands a pastor.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Growth+Content, 2026-07-25] Done, but REFUSED the paid pitch as briefed — correctly. Sending it would have Ron demo a private wall, care inbox, event wall and analytics that are all empty. Shipped instead: a free-tier invite email + one-page leave-behind built only from verified-working paths, with a 19-row claims table mapping every claim to a file path. No social proof invented (none exists). This task is what surfaced the church-product findings now tracked as pj-s26-09/10. Deliverable: docs/sprint26/church-outreach-asset.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-25T00:45:00.000Z",
     "blockers": []
   },
   {
@@ -6683,6 +6687,66 @@
     ],
     "created_at": "2026-07-24",
     "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-09-church-claims-honesty-pass",
+    "sprint": "26",
+    "title": "URGENT: stop selling unreachable church features",
+    "status": "proposed",
+    "assigned_to": "Copywriter",
+    "priority": "critical",
+    "description": "Six features sold on /for-churches and /docs cannot be reached by any user. VERIFIED: prayers.church_id and groups.church_id are never written by any code path (prod: 0 of 11 prayers, 0 of 2 groups linked), which kills the private church wall (church-platform.service.ts:303 — the $19 tier headline and feature card 1), all five analytics charts (church-analytics.service.ts:25,52,74,90), church prayer circles, the dashboard active-prayer stat, and the Monday digest prayer counts. Separately, /church/[slug]/events/new DOES NOT EXIST while (admin)/events/page.tsx:74 links to it, so no pastor can create a live event — and events/setup step 1 tells them to click that 404. flagPrayer (pastoral.service.ts:114) has no production caller, so the flagged queue can never fill. ALSO: the live trust strip renders a TEST church as social proof — prod has exactly one church row, name \"Test Church\", slug test-church-7l78, subscription_id null, first_paid_at null, plan pro set by hand. Hero reads \"11 prayers held across 1 churches\" (broken plural). Relabel or remove every unreachable claim using the same convention as pj-s26-01; gate the trust strip so a single test record is not social proof. Do NOT build the features in this task.",
+    "notes": [
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T00:45:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-10-church-data-model-fix",
+    "sprint": "26",
+    "title": "Make the church data model actually work",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "high",
+    "description": "Follow-on to pj-s26-09. Write church_id on prayer and group creation (CreatePrayerInput has no churchId field; prayer.service.ts:49-60 and group.service.ts:53 never set it), build the missing /church/[slug]/events/new route, and wire flagPrayer to a real caller. Architect should audit the whole church surface for further dead paths BEFORE coding — six broken features surfaced from a single content task, so assume there are more.",
+    "notes": [
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T00:45:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-11-og-deploy-verify",
+    "sprint": "26",
+    "title": "Deploy and verify the OG card fix on production",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "The @vercel/og -> next/og fix is committed but the 500 does NOT reproduce locally, so it is unproven until deployed. After deploy, curl https://prayerjar.org/api/og/card/prayer?text=test&category=Health&count=3 and .../card/answered — both currently return 500 in prod (PM-confirmed 2026-07-25). Do not verify with /api/og/card/home; \"home\" is not a valid type and returns 404 regardless. Also re-check /opengraph-image still 200.",
+    "notes": [
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T00:45:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-12-remove-test-church",
+    "sprint": "26",
+    "title": "Remove the Test Church row from production",
+    "status": "proposed",
+    "assigned_to": "Ron",
+    "priority": "high",
+    "description": "BLOCKED ON RON — destructive, irreversible. Prod churches table holds exactly one row: \"Test Church\" / test-church-7l78, description \"This is a test church. It will eventually be deleted\", created 2026-04-14. Its page is publicly reachable (200) and it is what the /for-churches trust strip counts. Deleting cascades across ~13 tables via onDelete:cascade (schema.ts:273,607,640,652,668,692,730,750,872,893,967,986,1016) plus 2 set-null. All of it is test data, but PM will not run a destructive prod delete without explicit go. Gate the trust strip first (pj-s26-09) so removal is not load-bearing.",
+    "notes": [
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T00:45:00.000Z",
     "blockers": []
   }
 ]
