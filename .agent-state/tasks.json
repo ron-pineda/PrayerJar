@@ -6565,7 +6565,7 @@
     "id": "pj-s26-01-pdf-claims-fix",
     "sprint": "26",
     "title": "Fix unbacked PDF-report claims in /docs",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Copywriter",
     "priority": "high",
     "description": "GATE TASK. /docs/churches, /docs/features and /docs/paid still sell PDF report downloads as a shipped Pro/Enterprise feature. Verified no PDF implementation exists (no jspdf/pdfkit/puppeteer/react-pdf/pdf-lib in package.json or src; every export route is CSV). This is the Sprint 21-review ship-stopper that was fixed on /for-churches but never cleaned up in /docs. Match the honest-label convention already in use at for-churches/page.tsx:328 and docs/paid FEATURE_MATRIX rows 93-94.",
@@ -6573,90 +6573,97 @@
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
       "[Copywriter, 2026-07-24T14:00:00Z] STARTED. Verified: no PDF lib in package.json/src; analytics page has no export at all; /api/v1/export returns JSON not CSV; only real CSV is the event report route.",
       "[Frontend, 2026-07-24T15:40:00Z] DONE. Files: src/app/(public)/docs/{paid,churches,features}/page.tsx. AC: tsc 0 PASS; vitest 459/459 PASS; grep PDF in /docs clean PASS; build 108/108 PASS. Deviations: also retitled 2 section headings (leaving 'Reports' in a title re-implies the removed claim). Detail: .agent-state/notes/pj-s26-01-pdf-claims-fix.md",
-      "[Copywriter, 2026-07-24T15:40:00Z] CORRECTION to task description: '/api/v1/export' returns JSON, not CSV. The only CSV export in the product is the event report route."
+      "[Copywriter, 2026-07-24T15:40:00Z] CORRECTION to task description: '/api/v1/export' returns JSON, not CSV. The only CSV export in the product is the event report route.",
+      "[Reviewer, 2026-07-25] APPROVED. Verified independently: no jspdf/pdfkit/puppeteer/react-pdf/pdf-lib in package.json or src; grep for PDF across /docs is clean; honest-label convention followed and no PDF exporter built. Gates re-run by me on f86e963: tsc exit 0, vitest 64 files/513 tests passing, next build exit 0. Sign-off: docs/sprint26/reviewer-signoff.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T15:40:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-02-state-reconciliation",
     "sprint": "26",
     "title": "Reconcile sprints.json, ROADMAP.md and INBOX.md",
-    "status": "review",
+    "status": "done",
     "assigned_to": "PM",
     "priority": "high",
     "description": "sprints.json ended at 22 — 23/24/25 backfilled 2026-07-24. Remaining: ~20 entries still status:planned that shipped under other sprint numbers; ROADMAP.md says PrayerJar is idle with 3 queued tasks that tasks.json does not have; INBOX subdomain-DNS item has been open since 2026-04-20.",
     "notes": [
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
-      "[PM, 2026-07-24] Work done. sprints.json: backfilled 23/24/25 (never written at close) and reconciled 19 stale \"planned\" rows from the pre-launch 0.x-5.x roadmap that shipped under the numbered scheme — each now done with the shipped surface cited as evidence and closed_at:\"unknown\" so no invented date is implied. Ledger now 51 done / 1 planned (26). ROADMAP.md: all 3 \"queued\" items verified individually as already done — auto-deploy via GitHub Actions deploy.yml (deliberately source of truth over Vercel native Git, docs/ops/vercel-deploy.md), custom email domain live (noreply@prayerjar.org, /api/health email:true), multi-admin working. INBOX.md: Better Stack log drain closed as won't-do (Pro-gated, Ron declined); subdomain DNS re-flagged at 3 months open; Sprint 22 Ron-leftovers added. BUILD_PROGRESS.md: corrected two stale \"pending\" notes — ADMIN_EMAILS comma-separation IS implemented (admin-auth.ts:12-15 and :35-38 both split/trim/filter), and Resend verification was resolved in Sprint 24."
+      "[PM, 2026-07-24] Work done. sprints.json: backfilled 23/24/25 (never written at close) and reconciled 19 stale \"planned\" rows from the pre-launch 0.x-5.x roadmap that shipped under the numbered scheme — each now done with the shipped surface cited as evidence and closed_at:\"unknown\" so no invented date is implied. Ledger now 51 done / 1 planned (26). ROADMAP.md: all 3 \"queued\" items verified individually as already done — auto-deploy via GitHub Actions deploy.yml (deliberately source of truth over Vercel native Git, docs/ops/vercel-deploy.md), custom email domain live (noreply@prayerjar.org, /api/health email:true), multi-admin working. INBOX.md: Better Stack log drain closed as won't-do (Pro-gated, Ron declined); subdomain DNS re-flagged at 3 months open; Sprint 22 Ron-leftovers added. BUILD_PROGRESS.md: corrected two stale \"pending\" notes — ADMIN_EMAILS comma-separation IS implemented (admin-auth.ts:12-15 and :35-38 both split/trim/filter), and Resend verification was resolved in Sprint 24.",
+      "[Reviewer, 2026-07-25] APPROVED. Did not accept the task report on its own terms — spot-checked three of its claims independently, all held: (1) ADMIN_EMAILS split/trim/filter present at admin-auth.ts:11-15 AND :34-38 as cited; (2) sprints.json is 52 entries, 51 done / 1 planned, exactly 19 rows at closed_at:\"unknown\" — matches the note, and using \"unknown\" rather than an invented date is the right call; (3) auto-deploy confirmed at .github/workflows/deploy.yml (push: feature/prayer-jar). Sign-off: docs/sprint26/reviewer-signoff.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T23:50:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-03-funnel-instrumentation",
     "sprint": "26",
     "title": "Instrument the acquisition funnel before optimizing it",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Analytics",
     "priority": "high",
     "description": "At n=6 we cannot tell a working channel from a broken one without knowing where visitors drop. Define events + destination and verify end-to-end from a real browser session, not just in code. GATES pj-s26-04/05/06.",
     "notes": [
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
-      "[Analytics, 2026-07-25] Done. Vercel Web Analytics was ALREADY installed (since Sprint 17). Key finding: Vercel Hobby does NOT collect Custom Events, so the Sprint-17 funnel (12 track() wrappers, Reviewer-approved, marked done) has NEVER produced a single data point. UTM params are not collected on Hobby OR Pro (Plus add-on only), and Pro caps custom events at 2 properties while trackPlanUpgraded passes 7 — so buying Pro would NOT fix it. Closed a real PII leak: @vercel/analytics/next sends both route (/p/[id]) and raw path (/p/<uuid>), so prayer + testimony IDs were leaving the browser; beforeSend hook now redacts those plus ?q= search terms and ?text= prayer content. Attribution capture landed in Neon via migration 0033 (NOT applied — run scripts/apply-0033-runner.mjs; apply BEFORE deploy or signups in the gap lose attribution permanently). Suite 459 -> 513. Sprint gate \"events verified in destination\" is unpassable on Hobby; PM restated it as pageview-redaction + attribution verified from a real browser session, which was met."
+      "[Analytics, 2026-07-25] Done. Vercel Web Analytics was ALREADY installed (since Sprint 17). Key finding: Vercel Hobby does NOT collect Custom Events, so the Sprint-17 funnel (12 track() wrappers, Reviewer-approved, marked done) has NEVER produced a single data point. UTM params are not collected on Hobby OR Pro (Plus add-on only), and Pro caps custom events at 2 properties while trackPlanUpgraded passes 7 — so buying Pro would NOT fix it. Closed a real PII leak: @vercel/analytics/next sends both route (/p/[id]) and raw path (/p/<uuid>), so prayer + testimony IDs were leaving the browser; beforeSend hook now redacts those plus ?q= search terms and ?text= prayer content. Attribution capture landed in Neon via migration 0033 (NOT applied — run scripts/apply-0033-runner.mjs; apply BEFORE deploy or signups in the gap lose attribution permanently). Suite 459 -> 513. Sprint gate \"events verified in destination\" is unpassable on Hobby; PM restated it as pageview-redaction + attribution verified from a real browser session, which was met.",
+      "[Reviewer, 2026-07-25] APPROVED — code, migration and runner are all correct. One CORRECTION to this note, recorded rather than reworked. (a) The pipeline already applies 0033: deploy.yml runs `npm run db:migrate:deploy` BETWEEN `vercel build` and `vercel deploy` and fails closed (docs/ops/deploy-migrations.md); 0033 is journaled at idx 33, when:1784851200000, above every seeded row, so drizzle picks it up. Hand-running apply-0033-runner.mjs is harmless (all IF NOT EXISTS) but NOT required, and this note implies it is. (b) The stated consequence is far too mild. Verified with .toSQL() against the real schema: a bare db.select().from(users) emits the six new columns in the projection, and @auth/drizzle-adapter/lib/pg.js uses bare .select() on users in getUser(:89) / getUserByEmail(:96) / getUserByAccount(:146). Code reaching prod against an unmigrated users table means Postgres 42703 on every auth call — sign-in down, plus /profile, /settings, /badges and the badge/email/notification services. Not \"signups lose attribution\". CI makes this unreachable on a normal push; the residual is a manual `vercel --prod` only. Note the pattern: the attribution WRITE was defended with try/catch (auth.ts:76-81) but the READS the same schema change created were never considered — the defended path was the one that was already safe. Sign-off: docs/sprint26/reviewer-signoff.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-04-seo-audit",
     "sprint": "26",
     "title": "SEO & discoverability audit",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "A dynamic sitemap and 108 static pages exist. Determine what is actually indexable and ranking, and what is not. Report findings; land only bounded, low-risk fixes.",
     "notes": [
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
-      "[Growth, 2026-07-25] Done. Top find: /api/og/card/* returned 500 in PRODUCTION — every shared prayer link rendered with no social card, and at n=6 sharing a prayer link is the main organic acquisition path. Cause: all four OG route handlers imported ImageResponse from @vercel/og; Next 16 requires next/og for route handlers so the Satori/Resvg WASM gets traced into the bundle. Fixed but does NOT reproduce locally — unproven until re-curled against prod after deploy. PM independently confirmed the 500 on prod (note: /api/og/card/home is 404 because \"home\" is not a valid type; the real URLs are card/prayer and card/answered). Also fixed: /pray/[category] accepted ANY slug and returned 200 reflecting it into the title (prayerjar.org/pray/cheap-viagra served \"cheap-viagra Prayer Requests | PrayerJar\") — now notFound(). Two false \"thousands\" claims removed from Google-facing meta descriptions. Sitemap is NOT dynamic (hardcoded array) and had 3 hard-404 URLs; now 33/33 resolve. Deliverable: docs/sprint26/seo-audit.md."
+      "[Growth, 2026-07-25] Done. Top find: /api/og/card/* returned 500 in PRODUCTION — every shared prayer link rendered with no social card, and at n=6 sharing a prayer link is the main organic acquisition path. Cause: all four OG route handlers imported ImageResponse from @vercel/og; Next 16 requires next/og for route handlers so the Satori/Resvg WASM gets traced into the bundle. Fixed but does NOT reproduce locally — unproven until re-curled against prod after deploy. PM independently confirmed the 500 on prod (note: /api/og/card/home is 404 because \"home\" is not a valid type; the real URLs are card/prayer and card/answered). Also fixed: /pray/[category] accepted ANY slug and returned 200 reflecting it into the title (prayerjar.org/pray/cheap-viagra served \"cheap-viagra Prayer Requests | PrayerJar\") — now notFound(). Two false \"thousands\" claims removed from Google-facing meta descriptions. Sitemap is NOT dynamic (hardcoded array) and had 3 hard-404 URLs; now 33/33 resolve. Deliverable: docs/sprint26/seo-audit.md.",
+      "[Reviewer, 2026-07-25] APPROVED. The /pray/[category] notFound() guard and the sitemap correction are real, bounded fixes. On the unprovable OG fix: a green build proves the next/og import resolves and the four routes compile, NOT that the Satori/Resvg WASM is traced into the deployed bundle — which is the actual prod failure. Acceptable to ship because pj-s26-11 already owns the post-deploy curl with the correct URLs, and because those routes already return 500, so a wrong fix leaves them no worse. CONDITION: pj-s26-11 runs immediately after deploy, not at next sprint convenience. Confirmed next/og is real in this version (next@16.2.2; node_modules/next/og.js + og.d.ts present) rather than trusting recall, per AGENTS.md. FOLLOW-UP (non-blocking): src/app/opengraph-image.tsx:1 still imports @vercel/og while the four /api/og routes moved — statically prerendered so no runtime WASM tracing applies, and pj-s26-11 re-checks it, but the fix is partial in scope relative to its own stated diagnosis. Sign-off: docs/sprint26/reviewer-signoff.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-05-share-invite-mechanics",
     "sprint": "26",
     "title": "Share/invite path review",
-    "status": "review",
+    "status": "done",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "What can a real user do today to bring a second user, and where does that path break? Reuse existing share surfaces. Do not fabricate content to make the path look populated.",
     "notes": [
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
-      "[Growth, 2026-07-25] Done. Deliverable: docs/sprint26/share-path-review.md. Clearest broken acquisition step: /wrapped share tweets the raw PNG endpoint, so anyone clicking lands on a bare image with no path back to the site — and it publishes the user's DB ID. Exact diff left for Frontend, not landed. Deliberately did NOT touch the robots.txt block on /church/ — it is a shared prefix covering member walls, dashboards and admin, so allowing public profiles risks exposing gated siblings; zero upside at one church. Open question for Ron: the tweet hardcodes @PrayerJar and the agent could not verify that handle is his."
+      "[Growth, 2026-07-25] Done. Deliverable: docs/sprint26/share-path-review.md. Clearest broken acquisition step: /wrapped share tweets the raw PNG endpoint, so anyone clicking lands on a bare image with no path back to the site — and it publishes the user's DB ID. Exact diff left for Frontend, not landed. Deliberately did NOT touch the robots.txt block on /church/ — it is a shared prefix covering member walls, dashboards and admin, so allowing public profiles risks exposing gated siblings; zero upside at one church. Open question for Ron: the tweet hardcodes @PrayerJar and the agent could not verify that handle is his.",
+      "[Reviewer, 2026-07-25] APPROVED. Docs-only, no code landed, scope respected. The decision NOT to touch the robots.txt block on /church/ is correct and well-argued — it is a shared prefix over member walls, dashboards and admin, and unblocking it to expose public profiles risks the gated siblings for zero upside at one church. The @PrayerJar handle hardcoded in the /wrapped share tweet is a real open question for Ron and is correctly raised rather than guessed. Sign-off: docs/sprint26/reviewer-signoff.md."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-06-church-acquisition-asset",
     "sprint": "26",
     "title": "Church acquisition path + outreach asset",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Growth",
     "priority": "medium",
     "description": "1 church signed up. /for-churches and pricing are built and — after pj-s26-01 — honest. Define the concrete asset Ron hands a pastor.",
     "notes": [
       "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
-      "[Growth+Content, 2026-07-25] Done, but REFUSED the paid pitch as briefed — correctly. Sending it would have Ron demo a private wall, care inbox, event wall and analytics that are all empty. Shipped instead: a free-tier invite email + one-page leave-behind built only from verified-working paths, with a 19-row claims table mapping every claim to a file path. No social proof invented (none exists). This task is what surfaced the church-product findings now tracked as pj-s26-09/10. Deliverable: docs/sprint26/church-outreach-asset.md."
+      "[Growth+Content, 2026-07-25] Done, but REFUSED the paid pitch as briefed — correctly. Sending it would have Ron demo a private wall, care inbox, event wall and analytics that are all empty. Shipped instead: a free-tier invite email + one-page leave-behind built only from verified-working paths, with a 19-row claims table mapping every claim to a file path. No social proof invented (none exists). This task is what surfaced the church-product findings now tracked as pj-s26-09/10. Deliverable: docs/sprint26/church-outreach-asset.md.",
+      "[Reviewer, 2026-07-25] REWORK — one false claim in the leave-behind, on the sprint’s own subject. docs/sprint26/church-outreach-asset.md:88 (§2) tells a pastor: \"PrayerJar is a prayer wall, not a feed. Someone posts what they are carrying. Real people pray for it. Nothing is ranked, NOTHING IS PUBLIC TO SEARCH ENGINES, and nobody is counting likes.\" The subject is member-submitted prayer content and the claim is false. Evidence: src/app/robots.ts is allow:\"/\" disallowing only /api/, /admin/, /church/; src/app/(public)/p/[id]/page.tsx:34,37,43 server-renders prayer.content.slice(0,155) into description, openGraph.description AND twitter.description; there is no noindex anywhere — and THIS SPRINT’S OWN AUDIT says so at docs/sprint26/seo-audit.md:234 (\"No noindex leaks. Grepped the whole of src/\"). pj-s26-04 also added ten /pray/[category] routes to sitemap.ts at priority 0.8 in the same sprint. WHY THIS BLOCKS: it is a privacy claim about sensitive member content, made to a pastor who will repeat it to a congregation; it is in the artefact Ron physically hands over, which cannot be recalled the way a web page can be edited; and it escaped the document’s own 19-row claims table in §3 — the riskiest line is the one that was not verified. FIX: delete or correct the search-engine clause only. \"Nothing is ranked\" and \"nobody is counting likes\" are both true and both still differentiate, so the honest version is not weaker. Note §4 already discloses prayers are on the open wall — that is good and makes this fixable, but it does not neutralise a flat privacy assertion forty lines earlier, and \"on the open wall\" is not the same statement as \"indexed by Google\". Everything else in this deliverable is approved: refusing the paid pitch was the right call, and this task is what surfaced pj-s26-09/10. Risk if shipped as-is: HIGH. Detail: docs/sprint26/reviewer-signoff.md §5b.",
+      "[Reviewer, 2026-07-25] Pre-empting the counter-argument, because it is a good one: p/[id]/page.tsx also does `if (!prayer || prayer.status === \"expired\") notFound()`, and all 11 prod prayers are currently expired — so curling a prayer permalink TODAY returns 404 and could be read as disproving this finding. It does not. The claim in the leave-behind is a promise about what happens to that pastor’s congregation’s prayers going forward, not a description of a data snapshot. The mechanism is live in code with no noindex and allow:\"/\", and it starts emitting prayer text into indexable metadata the moment any member posts — which is exactly the outcome the leave-behind is asking for. An empty index is not a privacy guarantee."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
@@ -6678,22 +6685,24 @@
     "id": "pj-s26-08-reviewer-close",
     "sprint": "26",
     "title": "Reviewer: approvals + sprint close",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Reviewer",
     "priority": "high",
     "description": "Per Definition of Done.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Reviewer, 2026-07-25] Review complete. 5 approved (pj-s26-01/-02/-03/-04/-05), 2 rejected (pj-s26-06, pj-s26-09). Gates re-run independently on f86e963: tsc exit 0; vitest 64 files / 513 tests passing; next build exit 0 — all match report. NOT PUSHED: two tasks at needs-rework, and push auto-deploys to prod. Full sign-off with the five scrutiny answers, verbatim gate output and PM corrections: docs/sprint26/reviewer-signoff.md.",
+      "[Reviewer, 2026-07-25] Two disclosures about the review itself. (1) pj-s26-07 (QA gate pass) never ran and is still `proposed`, so this review is the only verification Sprint 26 received. I re-ran all three mechanical gates myself — build confirmed verbatim at 108/108 — but the live half of -07 (\"/docs copy fix verified on the deployed site, not from source\") is unperformable until the branch is pushed, and must be closed after deploy alongside pj-s26-11. (2) I did not run the two subagent passes Reviewer.md mandates (pr-review-toolkit:code-reviewer, silent-failure-hunter) — my operating instructions forbid spawning subagents unless asked and this brief did not ask; I resolved that in favour of the operating instruction and reviewed by hand. Recording it rather than leaving the checklist silently unticked. silent-failure-hunter’s best target here was the try/catch around recordSignupAttribution (auth.ts:76-81); checked by hand — the swallow is correct and deliberate, logs rather than discards, and is documented at the site."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-09-church-claims-honesty-pass",
     "sprint": "26",
     "title": "URGENT: stop selling unreachable church features",
-    "status": "review",
+    "status": "needs-rework",
     "assigned_to": "Copywriter",
     "priority": "critical",
     "description": "Six features sold on /for-churches and /docs cannot be reached by any user. VERIFIED: prayers.church_id and groups.church_id are never written by any code path (prod: 0 of 11 prayers, 0 of 2 groups linked), which kills the private church wall (church-platform.service.ts:303 — the $19 tier headline and feature card 1), all five analytics charts (church-analytics.service.ts:25,52,74,90), church prayer circles, the dashboard active-prayer stat, and the Monday digest prayer counts. Separately, /church/[slug]/events/new DOES NOT EXIST while (admin)/events/page.tsx:74 links to it, so no pastor can create a live event — and events/setup step 1 tells them to click that 404. flagPrayer (pastoral.service.ts:114) has no production caller, so the flagged queue can never fill. ALSO: the live trust strip renders a TEST church as social proof — prod has exactly one church row, name \"Test Church\", slug test-church-7l78, subscription_id null, first_paid_at null, plan pro set by hand. Hero reads \"11 prayers held across 1 churches\" (broken plural). Relabel or remove every unreachable claim using the same convention as pj-s26-01; gate the trust strip so a single test record is not social proof. Do NOT build the features in this task.",
@@ -6703,10 +6712,12 @@
       "[Copywriter, 2026-07-25T01:35:00Z] CORRECTION: Planning Center claim is BACKED (syncMember/syncGroup implemented, both crons registered in vercel.json) — left standing. Event CSV exists but is unreachable, not absent. limits.groups/admins unenforced = generous cap, reported not relabelled.",
       "[Copywriter, 2026-07-25T04:40:00Z] FOUND beyond brief: testimony queue is CONTRADICTED not empty (markAnsweredAction publishes straight to /praise-wall, never inserts testimonyApprovals) — a moderation claim on the $49 tier. Also fabricated \"Privacy levels\" (no visibility column) on 2 docs pages; /for-churches:222 blanket \"available now\"; hero H1 + metadata.description both asserted the private wall.",
       "[Frontend, 2026-07-25T05:05:00Z] DONE. Files: (public)/for-churches/page.tsx, lib/plans.ts, components/tier-cards-section.tsx, (public)/docs/{paid,churches,features}/page.tsx, (public)/docs/page.tsx, (public)/help/page.tsx, (public)/church/join/page.tsx, (church)/church/[slug]/(admin)/events/{page.tsx,setup/page.tsx}, (church)/church/[slug]/wall/page.tsx. AC: tsc 0 PASS; vitest 513/513 PASS; build 108/108 PASS; trust strip + hero share one gate PASS; pj-s26-12 non-load-bearing PASS. Deviations: scope widened to 11 files. Detail: .agent-state/notes/pj-s26-09-church-claims-honesty-pass.md",
-      "[PM, 2026-07-25] Gates re-verified independently by PM: tsc exit 0, vitest 64 files / 513 tests all passing, next build 108/108. Agent corrected three errors in the PM brief — the hero rendered \"0 prayers held across 1 churches\" (not 11) because all prod prayers are expired and the countLabel sat OUTSIDE the trust gate, so raising the threshold alone would have left a jar captioned \"0 prayers\"; Planning Center is genuinely implemented and was correctly left standing; the event-report CSV is real but unreachable, so it was relabelled rather than removed. Agent also found 6 claims the brief missed, incl. /for-churches:222 \"Every feature below is available now\" and an H1+meta description asserting PrayerJar IS the private prayer wall. Trust gate now churches>=5 && prayers>=25 && members>=50, read by both hero and strip — INVENTED POLICY, Ron may want different floors. pj-s26-12 verified non-load-bearing at both (1,0,1) and (0,0,0)."
+      "[PM, 2026-07-25] Gates re-verified independently by PM: tsc exit 0, vitest 64 files / 513 tests all passing, next build 108/108. Agent corrected three errors in the PM brief — the hero rendered \"0 prayers held across 1 churches\" (not 11) because all prod prayers are expired and the countLabel sat OUTSIDE the trust gate, so raising the threshold alone would have left a jar captioned \"0 prayers\"; Planning Center is genuinely implemented and was correctly left standing; the event-report CSV is real but unreachable, so it was relabelled rather than removed. Agent also found 6 claims the brief missed, incl. /for-churches:222 \"Every feature below is available now\" and an H1+meta description asserting PrayerJar IS the private prayer wall. Trust gate now churches>=5 && prayers>=25 && members>=50, read by both hero and strip — INVENTED POLICY, Ron may want different floors. pj-s26-12 verified non-load-bearing at both (1,0,1) and (0,0,0).",
+      "[Reviewer, 2026-07-25] REWORK — one overstated claim survives, on a checkout surface, in a file this task edited. src/app/(dashboard)/billing/page.tsx:114 still reads: \"Church features — private prayer walls and pastoral tools — are included on paid plans.\" Present tense, naming the flagship non-functional feature as INCLUDED, in the free-plan branch directly above <UpgradeButton tier=\"starter\">. This is not out of scope: commit cee2439 touched this exact file for this exact reason and added a disclaimer three lines below it (\"Items marked coming soon are not available yet. You are not being charged for them\"). The pass fixed the glyphs rendered from the PLANS data array and missed the hardcoded sentence above them — the same data-vs-hardcoded-string blind spot this task’s own note identifies as the reason /billing was missed the first time. It got caught once and recurred in the same file. FIX: that one sentence. Everything else in this task is approved and the work is strong — the trust gate is fail-closed and correctly unified across hero + strip, the three corrections to the PM brief were right, and the six claims found beyond the brief were real. Risk if shipped as-is: MEDIUM-HIGH (misrepresentation immediately above a payment CTA). Detail: docs/sprint26/reviewer-signoff.md §5a.",
+      "[Reviewer, 2026-07-25] SECOND survivor, same file-level pattern, include in the same rework. src/app/(public)/church/join/page.tsx:122-124 — the \"already a member\" branch says \"Head over to your church’s prayer wall to see what’s been shared\" and links to /church/[slug]/wall, whose empty state THIS TASK rewrote to read \"This wall is not receiving prayers yet\" (wall/page.tsx:91). The not-yet-a-member branch of the same file was fixed correctly (lines 167-169). Lower severity than /billing:114 — in-app rather than pre-purchase, and the member lands on an honest empty state — so not an independent blocker, but fix it in the same pass."
     ],
     "created_at": "2026-07-25",
-    "last_touched": "2026-07-25T05:05:00.000Z",
+    "last_touched": "2026-07-25T09:30:00.000Z",
     "blockers": []
   },
   {
