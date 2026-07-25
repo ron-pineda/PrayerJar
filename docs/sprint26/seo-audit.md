@@ -322,9 +322,18 @@ $ npx next build
 ✓ Generating static pages using 31 workers (108/108) in 467ms
 ```
 
-**`tsc` 0 errors ✓ · `next build` 108/108 ✓ · vitest 505 passing — see note.**
+Re-run after commit, with the other agents' work merged into the tree:
 
-### Note on the vitest count: 505, not the 459 in the brief. Not a regression.
+```
+$ npx tsc --noEmit          → 0 errors
+$ npx vitest run
+ Test Files  64 passed (64)
+      Tests  513 passed (513)
+```
+
+**`tsc` 0 errors ✓ · `next build` 108/108 ✓ · vitest all passing — see note on the count.**
+
+### Note on the vitest count: 505 → 513, not the 459 in the brief. Not a regression.
 
 The working tree is **shared with the Analytics agent (pj-s26-03)**, whose work is uncommitted and
 therefore included in any test run made from this directory. Attribution, measured directly:
@@ -340,9 +349,28 @@ $ git diff --stat src/proxy.test.ts
 39 + 7 = 46. 459 + 46 = 505. **The entire delta is theirs; this task added no tests and changed no
 test file.** 505/505 pass.
 
-**Process note for PM:** three agents sharing one working tree makes the "459 passing" gate
-unverifiable per-agent, and it is easy to commit a teammate's half-finished work by accident. Only
-this task's own files were staged (see commit). Worth a `git worktree` per agent next sprint.
+The count moved again (505 → 513) between the first gate run and the post-commit re-run, as the
+Analytics agent added `src/services/attribution.service.test.ts`. Any single "expected test count"
+gate is unenforceable this sprint; QA should gate on **all passing + tsc 0 + build 108/108** instead
+of a fixed number.
+
+### Process note for PM — a teammate's files landed in this task's commit
+
+Three agents are committing into **one shared working tree**, and it caused a real collision. This
+task staged exactly its own 13 files and then ran `git commit`. The resulting commit `c386164`
+contains **30** files: the Analytics agent (pj-s26-03) staged their work into the same index in the
+window between the `git add` and the `git commit`, so 17 of their files — `attribution.ts`,
+`analytics-redact.ts`, migration `0033`, `web-analytics.tsx`, their tests, and their edits to
+`layout.tsx` / `proxy.ts` / `auth.ts` / `schema.ts` — were swept in under this task's commit message.
+
+**Nothing is lost or damaged** — their work is committed and intact, and this task's own 13 files are
+correct in the same commit. It was **deliberately not corrected by rewriting history**: another agent
+(pj-s26-06) has since committed on top (`1f4dc8f`), so a reset would put their work at risk to fix a
+misattributed commit message. Not a trade worth making.
+
+**PM action:** treat `c386164` as jointly owned by pj-s26-04/05 and pj-s26-03 when reconciling
+tasks.json, and give each agent its own `git worktree` next sprint. `git add` + `git commit` is not
+atomic against a concurrent writer.
 
 ---
 
