@@ -85,7 +85,11 @@ prayerjar.org
 ### A quiet place for your church to pray
 
 PrayerJar is a prayer wall, not a feed. Someone posts what they are carrying. Real people pray for
-it. Nothing is ranked, nothing is public to search engines, and nobody is counting likes.
+it. Nothing is ranked and nobody is counting likes.
+
+Be straight with your congregation about this: prayers posted here go on the **public** wall, and
+a shared prayer link is a public page that search engines can index. Anyone can post anonymously,
+and most do. There is no church-only wall today — that is still in development.
 
 Your church gets its own page and one invite link. Prayer is free for every member, permanently.
 

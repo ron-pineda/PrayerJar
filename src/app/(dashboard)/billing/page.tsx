@@ -111,7 +111,8 @@ export default async function BillingPage() {
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Church features — private prayer walls and pastoral tools — are included on paid plans.
+                  Paid plans add church tools. Some — including the private prayer wall — are
+                  still in development, so check what&apos;s live before you upgrade.
                 </p>
               </div>
               <UpgradeButton tier="starter" billing="monthly" label="View church plans" />

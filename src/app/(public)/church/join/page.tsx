@@ -120,14 +120,14 @@ export default async function ChurchJoinPage({ searchParams }: Props) {
           You&apos;re already a member of {church.name}
         </h1>
         <p className="text-muted-foreground mb-6">
-          Head over to your church&apos;s prayer wall to see what&apos;s been
-          shared.
+          Your church&apos;s own wall isn&apos;t receiving prayers yet. In the meantime, the
+          main prayer wall is open to everyone.
         </p>
         <Link
-          href={`/church/${church.slug}/wall`}
+          href="/pray"
           className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         >
-          Go to Prayer Wall
+          Go to the prayer wall
         </Link>
       </main>
     );
