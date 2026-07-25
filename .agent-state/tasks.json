@@ -6742,30 +6742,32 @@
     "id": "pj-s26-11-og-deploy-verify",
     "sprint": "26",
     "title": "Deploy and verify the OG card fix on production",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "QA",
     "priority": "high",
     "description": "The @vercel/og -> next/og fix is committed but the 500 does NOT reproduce locally, so it is unproven until deployed. After deploy, curl https://prayerjar.org/api/og/card/prayer?text=test&category=Health&count=3 and .../card/answered — both currently return 500 in prod (PM-confirmed 2026-07-25). Do not verify with /api/og/card/home; \"home\" is not a valid type and returns 404 regardless. Also re-check /opengraph-image still 200.",
     "notes": [
-      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\"",
+      "[QA/PM, 2026-07-25] PASS — verified on PRODUCTION after Ron pushed 16 commits (6109ec6..6c06a77); CI deployed in ~120s. /api/og/card/prayer -> 200 image/png, /api/og/card/answered -> 200 image/png, /opengraph-image -> 200 image/png. All three were 500 before the deploy, so the @vercel/og -> next/og fix is now PROVEN in the environment where it failed — the concern that it could not be validated locally is closed. Also verified in the same pass: /pray/cheap-viagra now serves <title>Not Found | PrayerJar</title> with 404 content (the slug appears only in Next's internal RSC router payload, not in rendered output — a naive grep -c returns 1 and is misleading); and the /for-churches trust strip is correctly hidden (0 occurrences of \"PrayerJar by the numbers\") under the new 3/10/20 floors at prod values 1/0/1."
     ],
     "created_at": "2026-07-25",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T02:10:00.000Z",
     "blockers": []
   },
   {
     "id": "pj-s26-12-remove-test-church",
     "sprint": "26",
     "title": "Remove the Test Church row from production",
-    "status": "proposed",
+    "status": "in-progress",
     "assigned_to": "Ron",
     "priority": "high",
     "description": "BLOCKED ON RON — destructive, irreversible. Prod churches table holds exactly one row: \"Test Church\" / test-church-7l78, description \"This is a test church. It will eventually be deleted\", created 2026-04-14. Its page is publicly reachable (200) and it is what the /for-churches trust strip counts. Deleting cascades across ~13 tables via onDelete:cascade (schema.ts:273,607,640,652,668,692,730,750,872,893,967,986,1016) plus 2 set-null. All of it is test data, but PM will not run a destructive prod delete without explicit go. Gate the trust strip first (pj-s26-09) so removal is not load-bearing.",
     "notes": [
-      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\""
+      "[PM, 2026-07-25] Created after pj-s26-06 surfaced that the church product is substantially non-functional. Verified independently by PM against prod DB and code. Ron's direction 2026-07-25: \"stop selling it, then fix it.\"",
+      "[PM, 2026-07-25] Ron approved the deletion, but the direct prod DELETE was blocked by the Claude Code permission classifier — correctly, it is a destructive production write. NOT worked around. Shipped scripts/delete-test-church.mjs instead: dry-run by default, requires --commit, and refuses to run unless prod still holds exactly one church named \"Test Church\" with NULL subscription_id and NULL first_paid_at. It prints the cascade before deleting and asserts prayer + user counts are unchanged afterwards. Cascade verified 2026-07-25 across all 15 tables carrying church_id: exactly 2 dependent rows (1 church_members, 1 churchAdminDripStatus). Ron runs it. Trust strip is already gated so this deletion is not load-bearing."
     ],
     "created_at": "2026-07-25",
-    "last_touched": "2026-07-25T00:45:00.000Z",
+    "last_touched": "2026-07-25T02:10:00.000Z",
     "blockers": []
   }
 ]
