@@ -346,3 +346,7 @@
 [2026-07-22T19:56:32.375Z] Dashboard sync — 0 fix(es): 
 
 [2026-07-24] Copywriter/Frontend → QA: pj-s26-01-pdf-claims-fix — removed all unbacked PDF-report claims from /docs/paid, /docs/churches, /docs/features; analytics kept (real, on-screen), downloads relabelled coming-soon/Roadmap per existing convention. Gates: tsc 0, vitest 459/459, build 108/108, no PDF in /docs.
+
+[2026-07-24] PM → Reviewer: pj-s26-02-state-reconciliation — sprints.json backfilled (23/24/25) + 19 stale "planned" rows reconciled; ROADMAP/INBOX/BUILD_PROGRESS corrected. Dashboard no longer 3 sprints stale.
+[2026-07-24] PM → Team: Sprint 26 planned — growth & distribution. 8 tasks pj-s26-01..08 created as `proposed`. Roster: PM, Growth, Analytics, Content, Copywriter, Frontend, QA, Reviewer. Brief: docs/sprint26/kickoff.md. Guardrail: real content only, never fabricate prayers/testimonies. pj-s26-03 (funnel instrumentation) gates 04/05/06.
+[2026-07-24] PM → QA: pj-s26-01 gates re-verified independently by PM (not just agent self-report): tsc exit 0, vitest 61 files/459 tests all passing, next build compiled + 108/108 static pages, grep for PDF in src/app/(public)/docs/ returns nothing. Agent corrected two false facts in the PM brief: /api/v1/export emits application/json not CSV, and the church analytics page has NO export affordance of any kind — both confirmed. No CSV wording was substituted into analytics copy as a result.

@@ -107,5 +107,12 @@ The shadcn installation uses `@base-ui/react` (NOT Radix). Key difference:
 - [x] ~~Custom email domain~~ — prayerjar.org configured in Resend (click tracking disabled), DNS verified
 - [x] ~~Auto-deploy~~ — GitHub Actions workflow deploys on push to `feature/prayer-jar`
 - [ ] `.env.local` on local machine has real credentials (do not commit)
-- [ ] `ADMIN_EMAILS` only supports a single email (comma-separation not yet implemented)
-- [ ] Resend domain verification may still be pending — test sign-in email sender address
+- [x] ~~`ADMIN_EMAILS` only supports a single email~~ — stale note, corrected 2026-07-24.
+  Comma-separation **is** implemented: both `requireAdmin()` and `withAdmin()` in
+  `src/lib/admin-auth.ts` split on `,`, trim, and drop empties.
+- [x] ~~Resend domain verification may still be pending~~ — resolved in Sprint 24 (2026-07-19).
+  The April move to Vercel nameservers had dropped the DKIM/SPF records, killing **all** email for
+  ~3 months; records re-added via `vercel dns add` and re-verified. Sender is
+  `noreply@prayerjar.org`; `/api/health` reports `email:true`.
+- [ ] **Subdomain routing is built but not live** — code sits behind the `SUBDOMAIN_ROUTING` flag
+  awaiting 6 DNS steps only Ron can do. See `docs/ops/subdomain-launch-checklist.md`.

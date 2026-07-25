@@ -6583,15 +6583,16 @@
     "id": "pj-s26-02-state-reconciliation",
     "sprint": "26",
     "title": "Reconcile sprints.json, ROADMAP.md and INBOX.md",
-    "status": "proposed",
+    "status": "review",
     "assigned_to": "PM",
     "priority": "high",
     "description": "sprints.json ended at 22 — 23/24/25 backfilled 2026-07-24. Remaining: ~20 entries still status:planned that shipped under other sprint numbers; ROADMAP.md says PrayerJar is idle with 3 queued tasks that tasks.json does not have; INBOX subdomain-DNS item has been open since 2026-04-20.",
     "notes": [
-      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[PM, 2026-07-24] Work done. sprints.json: backfilled 23/24/25 (never written at close) and reconciled 19 stale \"planned\" rows from the pre-launch 0.x-5.x roadmap that shipped under the numbered scheme — each now done with the shipped surface cited as evidence and closed_at:\"unknown\" so no invented date is implied. Ledger now 51 done / 1 planned (26). ROADMAP.md: all 3 \"queued\" items verified individually as already done — auto-deploy via GitHub Actions deploy.yml (deliberately source of truth over Vercel native Git, docs/ops/vercel-deploy.md), custom email domain live (noreply@prayerjar.org, /api/health email:true), multi-admin working. INBOX.md: Better Stack log drain closed as won't-do (Pro-gated, Ron declined); subdomain DNS re-flagged at 3 months open; Sprint 22 Ron-leftovers added. BUILD_PROGRESS.md: corrected two stale \"pending\" notes — ADMIN_EMAILS comma-separation IS implemented (admin-auth.ts:12-15 and :35-38 both split/trim/filter), and Resend verification was resolved in Sprint 24."
     ],
     "created_at": "2026-07-24",
-    "last_touched": "2026-07-24T00:00:00.000Z",
+    "last_touched": "2026-07-24T23:50:00.000Z",
     "blockers": []
   },
   {
