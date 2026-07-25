@@ -88,8 +88,9 @@ const FEATURE_COMPARISON = [
   { feature: 'Pastoral dashboard', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Pastoral notes & assignments', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Custom branding', free: false, starter: false, pro: true, enterprise: true },
-  { feature: 'Advanced analytics & PDF reports', free: false, starter: false, pro: true, enterprise: true },
+  { feature: 'Advanced analytics', free: false, starter: false, pro: true, enterprise: true },
   { feature: 'Priority support', free: false, starter: false, pro: true, enterprise: true },
+  { feature: 'Downloadable analytics reports (coming soon)', free: false, starter: false, pro: 'Roadmap', enterprise: 'Roadmap' },
   { feature: 'Custom subdomain (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
   { feature: 'SSO / SAML (coming soon)', free: false, starter: false, pro: false, enterprise: 'Roadmap' },
   { feature: 'Custom agreement available', free: false, starter: false, pro: false, enterprise: true },
@@ -130,12 +131,12 @@ const FEATURE_DEEP_DIVES = [
   },
   {
     icon: BarChart3,
-    title: 'Analytics & PDF Reports',
+    title: 'Advanced Analytics',
     plan: 'Pro',
     color: 'text-cyan-500',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-500/20',
-    body: 'Track prayer volume over time, member engagement, answered prayer rates, and category breakdowns. Export a formatted PDF report for any time period \u2014 useful for elder board updates, annual reports, or grant applications.',
+    body: 'Track prayer volume over time, member engagement, answered prayer rates, and category breakdowns. You read it on screen in the church dashboard. Downloadable reports for elder board updates, annual reports, and grant applications are coming \u2014 they are not available yet.',
   },
 ];
 

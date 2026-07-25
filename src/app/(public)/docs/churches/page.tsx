@@ -166,7 +166,7 @@ const SECTIONS = [
   {
     id: 'analytics',
     emoji: '📊',
-    title: 'Analytics & Reports',
+    title: 'Analytics',
     subtitle: 'Track engagement, trends, and answered prayer rates.',
     border: 'border-cyan-500/30',
     numBg: 'bg-cyan-500',
@@ -183,8 +183,8 @@ const SECTIONS = [
         body: 'Prayer volume over time, most active members, response rates (how often prayers get responses vs. none), category breakdown, and answered prayer rate.',
       },
       {
-        heading: 'PDF reports',
-        body: 'Download a formatted PDF report for any time period. Useful for elder board updates or annual reports.',
+        heading: 'Downloadable reports (coming soon)',
+        body: 'Analytics are on screen only for now. Downloadable reports for elder board updates and annual reports are coming — they are not available yet.',
       },
     ],
   },

@@ -6560,5 +6560,128 @@
     "created_at": "2026-07-22",
     "last_touched": "2026-07-22T19:56:32.375Z",
     "blockers": []
+  },
+  {
+    "id": "pj-s26-01-pdf-claims-fix",
+    "sprint": "26",
+    "title": "Fix unbacked PDF-report claims in /docs",
+    "status": "review",
+    "assigned_to": "Copywriter",
+    "priority": "high",
+    "description": "GATE TASK. /docs/churches, /docs/features and /docs/paid still sell PDF report downloads as a shipped Pro/Enterprise feature. Verified no PDF implementation exists (no jspdf/pdfkit/puppeteer/react-pdf/pdf-lib in package.json or src; every export route is CSV). This is the Sprint 21-review ship-stopper that was fixed on /for-churches but never cleaned up in /docs. Match the honest-label convention already in use at for-churches/page.tsx:328 and docs/paid FEATURE_MATRIX rows 93-94.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies.",
+      "[Copywriter, 2026-07-24T14:00:00Z] STARTED. Verified: no PDF lib in package.json/src; analytics page has no export at all; /api/v1/export returns JSON not CSV; only real CSV is the event report route.",
+      "[Frontend, 2026-07-24T15:40:00Z] DONE. Files: src/app/(public)/docs/{paid,churches,features}/page.tsx. AC: tsc 0 PASS; vitest 459/459 PASS; grep PDF in /docs clean PASS; build 108/108 PASS. Deviations: also retitled 2 section headings (leaving 'Reports' in a title re-implies the removed claim). Detail: .agent-state/notes/pj-s26-01-pdf-claims-fix.md",
+      "[Copywriter, 2026-07-24T15:40:00Z] CORRECTION to task description: '/api/v1/export' returns JSON, not CSV. The only CSV export in the product is the event report route."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T15:40:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-02-state-reconciliation",
+    "sprint": "26",
+    "title": "Reconcile sprints.json, ROADMAP.md and INBOX.md",
+    "status": "proposed",
+    "assigned_to": "PM",
+    "priority": "high",
+    "description": "sprints.json ended at 22 — 23/24/25 backfilled 2026-07-24. Remaining: ~20 entries still status:planned that shipped under other sprint numbers; ROADMAP.md says PrayerJar is idle with 3 queued tasks that tasks.json does not have; INBOX subdomain-DNS item has been open since 2026-04-20.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-03-funnel-instrumentation",
+    "sprint": "26",
+    "title": "Instrument the acquisition funnel before optimizing it",
+    "status": "proposed",
+    "assigned_to": "Analytics",
+    "priority": "high",
+    "description": "At n=6 we cannot tell a working channel from a broken one without knowing where visitors drop. Define events + destination and verify end-to-end from a real browser session, not just in code. GATES pj-s26-04/05/06.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-04-seo-audit",
+    "sprint": "26",
+    "title": "SEO & discoverability audit",
+    "status": "proposed",
+    "assigned_to": "Growth",
+    "priority": "medium",
+    "description": "A dynamic sitemap and 108 static pages exist. Determine what is actually indexable and ranking, and what is not. Report findings; land only bounded, low-risk fixes.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-05-share-invite-mechanics",
+    "sprint": "26",
+    "title": "Share/invite path review",
+    "status": "proposed",
+    "assigned_to": "Growth",
+    "priority": "medium",
+    "description": "What can a real user do today to bring a second user, and where does that path break? Reuse existing share surfaces. Do not fabricate content to make the path look populated.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-06-church-acquisition-asset",
+    "sprint": "26",
+    "title": "Church acquisition path + outreach asset",
+    "status": "proposed",
+    "assigned_to": "Growth",
+    "priority": "medium",
+    "description": "1 church signed up. /for-churches and pricing are built and — after pj-s26-01 — honest. Define the concrete asset Ron hands a pastor.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-07-qa-pass",
+    "sprint": "26",
+    "title": "QA: Sprint 26 gate pass",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "vitest 459/459, tsc --noEmit stays at 0 (any regression from 0 is a sprint blocker — that was Sprint 25 headline win), next build 108/108, plus live prod verification of the /docs copy fix.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s26-08-reviewer-close",
+    "sprint": "26",
+    "title": "Reviewer: approvals + sprint close",
+    "status": "proposed",
+    "assigned_to": "Reviewer",
+    "priority": "high",
+    "description": "Per Definition of Done.",
+    "notes": [
+      "[PM, 2026-07-24] Created at Sprint 26 kickoff (docs/sprint26/kickoff.md). Direction: growth/distribution per approved plan. Guardrail: real content only — never fabricate prayers or testimonies."
+    ],
+    "created_at": "2026-07-24",
+    "last_touched": "2026-07-24T00:00:00.000Z",
+    "blockers": []
   }
 ]

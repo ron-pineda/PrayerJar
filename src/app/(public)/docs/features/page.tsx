@@ -179,7 +179,7 @@ const FEATURES: FeatureCategory[] = [
       { name: 'Pastoral notes', desc: 'Pastors can add private notes to prayer requests for follow-up tracking.' },
       { name: 'Assignments', desc: 'Assign a prayer request to a specific pastor or leader for follow-up.' },
       { name: 'Custom branding', desc: 'Upload a church logo and set accent colors for the private wall.' },
-      { name: 'Analytics & reports', desc: 'Prayer volume, member engagement, response rates — downloadable as PDF.' },
+      { name: 'Analytics', desc: 'Prayer volume, member engagement, response rates, and category breakdown — on screen in the church dashboard.' },
       { name: 'Live event prayer wall', desc: 'A projected, moderated real-time prayer wall for services, conferences, and retreats.' },
       { name: 'Event moderation', desc: 'Approve or reject prayers before they appear on the live event wall.' },
       { name: 'Event display mode', desc: 'Full-screen, branded display for the live event wall.' },
