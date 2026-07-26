@@ -31,25 +31,9 @@ export function trackForChurchesView(props: {
   track('for_churches_view', props);
 }
 
-export function trackPricingView(props: {
-  page_path: string;
-  tier_count: number;
-  referrer_event: string | null;
-}) {
-  track('pricing_view', props);
-}
-
-/**
- * Spec buckets: "1-25" | "26-100" | "101-500" | "500+"
- * Do NOT pass raw member counts — bucket before calling.
- */
-export function trackCalculatorInteracted(props: {
-  calculator_field: string;
-  new_value: string;
-  resulting_plan: string | null;
-}) {
-  track('calculator_interacted', props);
-}
+// Sprint 27 (pj-s27-02): trackPricingView and trackCalculatorInteracted are
+// deleted. Their only call sites were the tier cards and the pricing calculator,
+// both removed with the paid tiers. There is no pricing view left to instrument.
 
 export function trackSignupStart(props: {
   signup_method: string;

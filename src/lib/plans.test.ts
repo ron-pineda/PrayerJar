@@ -180,25 +180,29 @@ describe('hasTestimonyApprovalQueue()', () => {
 });
 
 // ---------------------------------------------------------------------
-// Tier caps — Sprint 17: Free cap raised from 25/1 to 50/3
+// Tier caps — Sprint 27 (pj-s27-03): paid tiers were withdrawn, so a free
+// church has nothing to upgrade to and every cap it could reach is gone.
+// These assertions are inverted on purpose: they now guard against a cap
+// being reintroduced by accident rather than pinning a specific number.
 // ---------------------------------------------------------------------
 describe('Free tier limits', () => {
-  it('has a member cap of 75', () => {
-    expect(PLANS.free.limits.members).toBe(75);
+  it('has no member cap', () => {
+    expect(PLANS.free.limits.members).toBeNull();
   });
 
-  it('has a group cap of 3', () => {
-    expect(PLANS.free.limits.groups).toBe(3);
+  it('has no group cap', () => {
+    expect(PLANS.free.limits.groups).toBeNull();
   });
 
-  it('features list reflects 75 members', () => {
-    const hasIt = PLANS.free.features.some((f) => f.includes('75 members'));
-    expect(hasIt).toBe(true);
+  // events: 0 is a feature lock, not a pricing decision — it is the only thing
+  // holding the unfinished live-events surface shut (event.service.ts).
+  it('keeps events locked at 0', () => {
+    expect(PLANS.free.limits.events).toBe(0);
   });
 
-  it('features list reflects 3 groups', () => {
-    const hasIt = PLANS.free.features.some((f) => f.includes('3 groups'));
-    expect(hasIt).toBe(true);
+  it('quotes no member or group number in its features list', () => {
+    const bullets = PLANS.free.features.join(' ');
+    expect(bullets).not.toMatch(/\d+\s+(members|groups)/i);
   });
 });
 

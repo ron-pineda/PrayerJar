@@ -30,12 +30,18 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
     stripePriceIdMonthly: null,
     stripePriceIdYearly: null,
     features: [
-      'Up to 75 members',
-      '3 groups',
+      'Unlimited members',
+      'Unlimited groups',
       'Public prayer wall',
       'Basic notifications',
     ],
-    limits: { members: 75, groups: 3, events: 0, admins: 1 },
+    // Sprint 27 (pj-s27-03): paid tiers were withdrawn from the product, so a
+    // free church has nothing to upgrade to. Every limit a real church can
+    // actually reach is now unlimited. `events: 0` is NOT a pricing decision —
+    // it is the lock that keeps the unfinished live-events feature shut
+    // (see event.service.ts). `admins` is typed `number`, never read anywhere,
+    // and set to the old Network ceiling so no future copy quotes a small number.
+    limits: { members: null, groups: null, events: 0, admins: 999 },
   },
   starter: {
     tier: 'starter',

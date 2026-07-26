@@ -97,8 +97,9 @@ export default async function NonprofitVerificationPage({ params }: Props) {
       </Link>
       <h1 className="text-2xl font-bold mb-1">501(c)(3) Verification</h1>
       <p className="text-sm text-muted-foreground mb-8">
-        Submit your IRS determination letter to verify your nonprofit status. Verified
-        churches are eligible for nonprofit discounts on eligible plans.
+        Submit your IRS determination letter to verify your nonprofit status. We
+        review it and the outcome shows on your dashboard. There is no discount
+        attached to it — PrayerJar costs your church nothing either way.
       </p>
 
       {/* Current status */}

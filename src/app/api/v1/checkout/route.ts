@@ -1,26 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createCheckoutSession, createSubscriptionCheckout, createEventLicenseCheckout } from '@/services/billing.service';
+import { createCheckoutSession } from '@/services/billing.service';
 import { auth } from '@/lib/auth';
-import { db } from '@/db';
-import { churchMembers } from '@/db/schema';
-import { eq, and } from 'drizzle-orm';
 
-const schema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('donation'),
-    amountCents: z.number().int().min(100).max(100000),
-  }),
-  z.object({
-    type: z.literal('subscription'),
-    stripePriceId: z.string().min(1),
-  }),
-  z.object({
-    type: z.literal('event_license'),
-    eventName: z.string().min(1).max(100),
-    attendeeCapacity: z.number().int().min(1).max(10000),
-  }),
-]);
+/**
+ * Sprint 27 (pj-s27-02): this used to be a discriminated union over three
+ * checkout types. `subscription` and `event_license` are gone; `donation` — which
+ * is what /give calls — is all that remains, so the union collapses to one shape.
+ *
+ * Narrowing the schema is the point, not tidiness. Removing the pricing UI does
+ * not make a POST endpoint unreachable: leaving the `subscription` branch in
+ * place would let anyone post a Stripe price ID and buy a tier that no longer
+ * exists anywhere in the product, with no way to manage or cancel it afterwards.
+ *
+ * `createSubscriptionCheckout` and `createEventLicenseCheckout` are deliberately
+ * left intact in billing.service.ts for the future paid-tier rebuild — only their
+ * HTTP entry points are removed.
+ */
+const schema = z.object({
+  type: z.literal('donation'),
+  amountCents: z.number().int().min(100).max(100000),
+});
 
 export async function POST(req: NextRequest) {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -44,45 +44,11 @@ export async function POST(req: NextRequest) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://prayerjar.org';
 
   try {
-    const data = result.data;
-
-    if (data.type === 'donation') {
-      const url = await createCheckoutSession({
-        userId,
-        amountCents: data.amountCents,
-        successUrl: `${origin}/give?success=1`,
-        cancelUrl: `${origin}/give`,
-      });
-      return NextResponse.json({ url }, { status: 200 });
-    }
-
-    if (data.type === 'subscription') {
-      if (!userId) {
-        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-      }
-      const membership = await db.query.churchMembers.findFirst({
-        where: and(eq(churchMembers.userId, userId), eq(churchMembers.role, 'admin')),
-      });
-      const url = await createSubscriptionCheckout({
-        userId,
-        churchId: membership?.churchId ?? null,
-        stripePriceId: data.stripePriceId,
-        successUrl: `${origin}/billing?success=1`,
-        cancelUrl: `${origin}/billing`,
-      });
-      return NextResponse.json({ url }, { status: 200 });
-    }
-
-    // event_license
-    if (!userId) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-    }
-    const url = await createEventLicenseCheckout({
+    const url = await createCheckoutSession({
       userId,
-      eventName: data.eventName,
-      attendeeCapacity: data.attendeeCapacity,
-      successUrl: `${origin}/events?success=1`,
-      cancelUrl: `${origin}/events`,
+      amountCents: result.data.amountCents,
+      successUrl: `${origin}/give?success=1`,
+      cancelUrl: `${origin}/give`,
     });
     return NextResponse.json({ url }, { status: 200 });
   } catch (err) {

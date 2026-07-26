@@ -126,15 +126,9 @@ describe('addChurchMember', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // addChurchMember now enforces plan member limits (getChurchTier + count):
-    //   select 1: tier lookup — .from(churches).leftJoin(subscriptions)... → [] → 'free'
-    //   select 2: member count — .from(churchMembers)... → [{ value: 0 }] (under free limit)
-    let selectCallCount = 0;
-    (db as Record<string, unknown>).select = vi.fn(() => {
-      selectCallCount++;
-      if (selectCallCount === 1) return makeChain([]);
-      return makeChain([{ value: 0 }]);
-    });
+    // Sprint 27 (pj-s27-03): addChurchMember no longer looks up a tier or counts
+    // members — the cap is gone. No select() calls happen on this path at all.
+    (db as Record<string, unknown>).select = vi.fn(() => makeChain([]));
   });
 
   it('calls onConflictDoNothing to make the insert idempotent', async () => {
@@ -159,19 +153,18 @@ describe('addChurchMember', () => {
     );
   });
 
-  it('throws when the plan member limit is reached', async () => {
-    // tier lookup → free (limit 75); count → 75 members already
-    let selectCallCount = 0;
-    (db as Record<string, unknown>).select = vi.fn(() => {
-      selectCallCount++;
-      if (selectCallCount === 1) return makeChain([]);
-      return makeChain([{ value: 75 }]);
-    });
-    const insertMock = vi.fn(() => makeChain(undefined));
+  // Sprint 27 (pj-s27-03) regression guard, inverted from the Sprint 17 version.
+  // The member cap used to throw at member 76 and the person who saw the error
+  // was the joining congregant, not the church admin. There is no cap now and
+  // this test exists to catch one being reintroduced.
+  it('admits a member with no cap, however many rows already exist', async () => {
+    (db as Record<string, unknown>).select = vi.fn(() => makeChain([{ value: 100_000 }]));
+    const chain = makeChain(undefined);
+    const insertMock = vi.fn(() => chain);
     (db as Record<string, unknown>).insert = insertMock;
 
-    await expect(addChurchMember('church-1', 'user-3')).rejects.toThrow('Member limit reached');
-    expect(insertMock).not.toHaveBeenCalled();
+    await expect(addChurchMember('church-1', 'user-3')).resolves.toBeUndefined();
+    expect(insertMock).toHaveBeenCalled();
   });
 });
 

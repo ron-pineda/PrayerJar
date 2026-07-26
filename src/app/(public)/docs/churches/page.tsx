@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
-  Crown,
   ChevronRight,
   ArrowLeft,
   Sparkles,
@@ -23,7 +22,6 @@ const SECTIONS = [
     numBg: 'bg-blue-500',
     numText: 'text-blue-500',
     headerBg: 'from-blue-500/10 to-blue-500/5',
-    plan: null,
     steps: [
       {
         heading: 'Create your church profile',
@@ -39,7 +37,7 @@ const SECTIONS = [
       },
       {
         heading: 'Assign roles',
-        body: 'Roles: Admin (full access), Pastor (can view pastoral dashboard and flagged prayers, add notes, make assignments), Member (joins the church and appears on your roster; posting to a private church wall is not available yet).',
+        body: 'Roles: Admin (full access), Pastor (can view the pastoral dashboard, add notes, make assignments), Member (joins the church and appears on your roster; posting to a private church wall is not available yet).',
       },
     ],
   },
@@ -52,11 +50,10 @@ const SECTIONS = [
     numBg: 'bg-emerald-500',
     numText: 'text-emerald-500',
     headerBg: 'from-emerald-500/10 to-emerald-500/5',
-    plan: 'Starter',
     steps: [
       {
         heading: 'Not available yet',
-        body: 'The wall page is built and visible only to members, but a prayer is not attached to a church when it is submitted — so nothing ever lands on it. It shows an empty state on every plan. We are fixing the submission path before we count this as shipped.',
+        body: 'The wall page is built and visible only to members, but a prayer is not attached to a church when it is submitted — so nothing ever lands on it. It shows an empty state for every church. We are fixing the submission path before we count this as shipped.',
       },
       {
         heading: 'What it will be',
@@ -67,7 +64,7 @@ const SECTIONS = [
         body: 'Members navigate to /church/[your-slug]/wall. It is also linked from their profile once they join your church.',
       },
       {
-        heading: 'Custom branding (Pro plan)',
+        heading: 'Custom branding',
         body: 'Upload your church logo and set accent colors in Settings → Branding. The private wall will display your branding instead of the default PrayerJar look once the wall itself is reachable.',
       },
     ],
@@ -81,11 +78,10 @@ const SECTIONS = [
     numBg: 'bg-violet-500',
     numText: 'text-violet-500',
     headerBg: 'from-violet-500/10 to-violet-500/5',
-    plan: 'Pro',
     steps: [
       {
         heading: 'Overview',
-        body: 'The pastoral dashboard is where admins and pastors keep notes and assignments. Its prayer-activity counters — active requests and recent volume — read from a church link that is not written yet, so they show zero rather than your congregation.',
+        body: 'The pastoral dashboard is where admins and pastors keep notes and assignments. It shows your member count and your open follow-ups, both real. Two further counters — active requests and pending flags — read from a church link that is not written yet, so they always showed zero; those tiles have been taken off the page until they can count something.',
       },
       {
         heading: 'Pastoral notes',
@@ -106,11 +102,10 @@ const SECTIONS = [
     numBg: 'bg-amber-500',
     numText: 'text-amber-500',
     headerBg: 'from-amber-500/10 to-amber-500/5',
-    plan: null,
     steps: [
       {
         heading: 'Not available yet',
-        body: 'A group is not attached to a church when it is created, so your church Groups page is empty on every plan and the group caps in the plan table do not yet apply to anything.',
+        body: 'A group is not attached to a church when it is created, so your church Groups page is empty. There is no cap on how many groups your church can have.',
       },
       {
         heading: 'What works today',
@@ -131,11 +126,10 @@ const SECTIONS = [
     numBg: 'bg-rose-500',
     numText: 'text-rose-500',
     headerBg: 'from-rose-500/10 to-rose-500/5',
-    plan: 'Starter',
     steps: [
       {
         heading: 'Not available yet',
-        body: 'There is no screen for creating an event. Do not follow older instructions telling you to click Create Event on the events page — that link points at a page that does not exist. Until an event can be created, nothing in the rest of this section can be reached.',
+        body: 'There is no screen for creating an event, and no Create Event button anywhere — the events page says so plainly. Until an event can be created, nothing in the rest of this section can be reached.',
       },
       {
         heading: 'What it will be',
@@ -162,29 +156,28 @@ const SECTIONS = [
   {
     id: 'analytics',
     emoji: '📊',
-    title: 'Analytics',
-    subtitle: 'Member growth reports real numbers. The prayer charts do not yet.',
+    title: 'Analytics (not available yet)',
+    subtitle: 'The page is switched off until the charts can tell the truth.',
     border: 'border-cyan-500/30',
     numBg: 'bg-cyan-500',
     numText: 'text-cyan-500',
     headerBg: 'from-cyan-500/10 to-cyan-500/5',
-    plan: 'Pro',
     steps: [
       {
-        heading: 'Accessing analytics',
-        body: 'Church dashboard → Analytics. Available on Pro and Enterprise plans.',
+        heading: 'The page is off right now',
+        body: 'Church dashboard → Analytics returns a not-found page, and the link has been taken out of the sidebar. This is deliberate.',
       },
       {
-        heading: 'What reports real numbers today',
-        body: 'Member growth over time. That chart reads church membership, which is recorded correctly.',
+        heading: 'Why',
+        body: 'Prayer volume over time, engagement, category breakdown and answered prayer rate all read from a church link that is not written when a prayer is submitted. All four drew a flat zero for every church. A chart reporting that your congregation prayed nothing is a false statement about your church, so the page is off rather than misleading.',
       },
       {
-        heading: 'What shows zero (coming soon)',
-        body: 'Prayer volume over time, engagement, category breakdown and answered prayer rate all read from a church link that is not written when a prayer is submitted. Until that is fixed, these four charts show zero for every church on every plan.',
+        heading: 'What was real',
+        body: 'Member growth over time. That chart reads church membership, which is recorded correctly, and it comes back with the rest.',
       },
       {
-        heading: 'Downloadable reports (coming soon)',
-        body: 'Analytics are on screen only for now. Downloadable reports for elder board updates and annual reports are coming — they are not available yet.',
+        heading: 'Downloadable reports',
+        body: 'There is no analytics export of any kind yet. Reports for elder board updates and annual reports are not available.',
       },
     ],
   },
@@ -197,7 +190,6 @@ const SECTIONS = [
     numBg: 'bg-orange-500',
     numText: 'text-orange-500',
     headerBg: 'from-orange-500/10 to-orange-500/5',
-    plan: null,
     steps: [
       {
         heading: 'Getting listed',
@@ -214,52 +206,34 @@ const SECTIONS = [
     ],
   },
   {
-    id: 'billing',
-    emoji: '💳',
-    title: 'Billing & Plans',
-    subtitle: 'Manage your subscription, upgrade, or cancel anytime.',
+    id: 'giving',
+    emoji: '💛',
+    title: 'Giving',
+    subtitle: 'Nothing to pay. Gifts are voluntary.',
     border: 'border-slate-500/30',
     numBg: 'bg-slate-500',
     numText: 'text-slate-500',
     headerBg: 'from-slate-500/10 to-slate-500/5',
-    plan: null,
     steps: [
       {
-        heading: 'Accessing billing',
-        body: 'Go to Profile → Billing (visible only to church admins and pastors), or navigate to /billing.',
+        heading: 'There is nothing to buy',
+        body: 'Your church is not billed for PrayerJar, and there is no plan to pick or renew. If you find a screen that asks you to pay for a church feature, that is a bug — tell us at hello@prayerjar.org.',
       },
       {
-        heading: 'Changing your plan',
-        body: 'From the Billing page, choose a new plan and follow the Stripe checkout flow. Changes take effect immediately.',
+        heading: 'Giving to PrayerJar',
+        body: 'If you want to support the work, /give takes a one-off gift. It is entirely optional and changes nothing about what your church can do.',
       },
       {
-        heading: 'Cancelling',
-        body: 'Cancel any time from the Billing page. You retain access until the end of the current billing period.',
-      },
-      {
-        heading: 'Event licenses',
-        body: 'Large one-off events can be purchased as licenses rather than a full plan upgrade. Contact hello@prayerjar.org for pricing.',
+        heading: 'Your giving history',
+        body: 'Past gifts are listed on the Giving page at /billing. It is currently visible to church admins and pastors only.',
       },
     ],
   },
 ];
 
-const PLAN_COLORS: Record<string, { badge: string }> = {
-  Free:       { badge: 'bg-slate-500/10 text-slate-600 dark:text-slate-400' },
-  Starter:    { badge: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
-  Pro:        { badge: 'bg-violet-500/10 text-violet-600 dark:text-violet-400' },
-  Enterprise: { badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
-};
-
-function PlanBadge({ plan }: { plan: string }) {
-  const style = PLAN_COLORS[plan] ?? PLAN_COLORS.Pro;
-  return (
-    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${style.badge}`}>
-      <Crown className="h-3 w-3" />
-      {plan}+ plan
-    </span>
-  );
-}
+// Sprint 27 (pj-s27-02): PLAN_COLORS, PlanBadge and the `plan:` field on every
+// section were deleted along with the paid tiers. Nothing in this guide is
+// gated, so nothing here needs a tier badge.
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -294,28 +268,24 @@ export default function ChurchAdminGuidePage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          PLAN CALLOUT
+          WHAT IT COSTS
+          Sprint 27 (pj-s27-02): this block used to answer "which plan do I
+          need?" with a four-badge tier row and three links to /docs/paid. It
+          also claimed the free plan supported 25 members while plans.ts said 75
+          — a third false number surviving the Sprint 26 honesty pass. It now
+          quotes no number at all, because there is no cap to quote.
       ═══════════════════════════════════════════════════════ */}
       <div className="rounded-2xl border bg-card p-6 mb-14">
         <div className="flex items-start gap-4">
           <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold mb-2">Which plan do I need?</p>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-              The free plan supports up to 25 members with basic features. The{' '}
-              <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Starter ($19/mo)</Link>{' '}
-              and{' '}
-              <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Pro ($49/mo)</Link>{' '}
-              paid plans include pastoral tools, pastoral notes &amp; assignments, and member growth analytics. Prayer analytics and event walls are not available yet.
-              See the <Link href="/docs/paid" className="text-primary underline underline-offset-4 font-medium">Paid Features guide</Link> for a full comparison.
+            <p className="font-bold mb-2">What does this cost?</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Nothing. There is one version of PrayerJar and your church already
+              has all of it — no plan to choose, no cap on members or groups, and
+              no card to enter. Some of what is described below is still being
+              built; where that is true, this guide says so.
             </p>
-            <div className="flex flex-wrap gap-2">
-              {['Free', 'Starter', 'Pro', 'Enterprise'].map((p) => (
-                <span key={p} className={`text-[11px] font-semibold px-3 py-1 rounded-full ${PLAN_COLORS[p].badge}`}>
-                  {p}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </div>
@@ -363,11 +333,6 @@ export default function ChurchAdminGuidePage() {
             >
               <span className="text-3xl leading-none">{s.emoji}</span>
               <span className="text-xs font-semibold leading-tight">{s.title}</span>
-              {s.plan && (
-                <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${PLAN_COLORS[s.plan].badge}`}>
-                  {s.plan}+
-                </span>
-              )}
             </a>
           ))}
         </div>
@@ -386,7 +351,6 @@ export default function ChurchAdminGuidePage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap mb-1">
                   <h2 className="text-xl font-bold">{section.title}</h2>
-                  {section.plan && <PlanBadge plan={section.plan} />}
                 </div>
                 <p className="text-sm text-muted-foreground">{section.subtitle}</p>
               </div>
@@ -429,8 +393,8 @@ export default function ChurchAdminGuidePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { href: '/for-churches', emoji: '⛪', title: 'For Churches', desc: 'Plans and pricing overview' },
-            { href: '/docs/paid', emoji: '👑', title: 'Paid Features', desc: 'Full plan comparison' },
+            { href: '/for-churches', emoji: '⛪', title: 'For Churches', desc: 'What PrayerJar does for a congregation' },
+            { href: '/docs/features', emoji: '✅', title: 'Full Feature List', desc: 'Everything in the product today' },
             { href: '/docs/guide', emoji: '📖', title: 'User Guide', desc: 'Guide for individual members' },
           ].map(({ href, emoji, title, desc }) => (
             <Link

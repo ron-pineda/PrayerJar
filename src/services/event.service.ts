@@ -29,8 +29,13 @@ export async function createEvent(input: {
   const tier = await getChurchTier(input.churchId);
   const limit = PLANS[tier].limits.events;
 
+  // Sprint 27 (pj-s27-03): this stays a hard stop, and it is a lock, not a price.
+  // `POST /api/v1/church/[slug]/events` is a live, admin-reachable endpoint, but
+  // live events have no create, edit or delete UI. This throw is the only thing
+  // keeping an unfinished feature shut. Only the message changed — it used to
+  // name a plan that no longer exists.
   if (limit === 0) {
-    throw new Error('Live events require a Starter plan or higher.');
+    throw new Error('Live events are not available yet.');
   }
   if (limit !== null) {
     const [{ value: currentCount }] = await db
@@ -38,7 +43,7 @@ export async function createEvent(input: {
       .from(events)
       .where(and(eq(events.churchId, input.churchId), ne(events.status, 'ended')));
     if (Number(currentCount) >= limit) {
-      throw new Error('Event limit reached for your plan. Upgrade to run more events.');
+      throw new Error('Event limit reached.');
     }
   }
 

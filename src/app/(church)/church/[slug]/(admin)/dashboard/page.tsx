@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   BadgeCheck,
   ChevronRight,
-  Flag,
   Inbox,
   RefreshCw,
   Users,
@@ -13,10 +12,8 @@ import { auth } from '@/lib/auth';
 import {
   getChurchBySlug,
   getChurchMembers,
-  getChurchTier,
 } from '@/services/church-platform.service';
 import { getPastoralStats } from '@/services/pastoral.service';
-import { hasPastoralDashboard, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
 import { db } from '@/db';
 import { nonprofitVerifications } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
@@ -54,35 +51,9 @@ export default async function PastoralDashboardPage({ params }: Props) {
     );
   }
 
-  // Plan-tier gate. Source of truth is src/lib/plans.ts
-  // (PASTORAL_DASHBOARD_TIER). Keep this predicate — do NOT hard-code
-  // a tier string here, or the marketing copy and the gate can drift
-  // again (Legal / FTC §5 risk).
-  const tier = await getChurchTier(church.id);
-  if (!hasPastoralDashboard(tier)) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-xl font-semibold mb-3">Pastoral Dashboard</h1>
-        <p className="text-muted-foreground mb-4">
-          The Pastoral Dashboard is included on the {PASTORAL_DASHBOARD_TIER_NAME} plan and
-          above.
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/billing" className="text-sm text-primary hover:underline">
-            View plans
-          </Link>
-          <Link
-            href={`/church/${slug}`}
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back to {church.name}
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
+  // Sprint 27 (pj-s27-02): the plan-tier gate is gone. Access is role-gated only.
+  // This page is the hub that links to the Care Inbox, Prayer Team and Synced
+  // Groups — all three work — so gating it would have orphaned working features.
   const [stats, [latestVerification]] = await Promise.all([
     getPastoralStats(church.id),
     db
@@ -106,16 +77,14 @@ export default async function PastoralDashboardPage({ params }: Props) {
         <h1 className="text-2xl font-bold">{church.name} — Pastoral Dashboard</h1>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="rounded-lg border bg-card p-5 flex flex-col gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Active Prayers</span>
-          <span className="text-3xl font-bold">{stats.activePrayers}</span>
-        </div>
-        <div className="rounded-lg border bg-card p-5 flex flex-col gap-1">
-          <span className="text-xs text-muted-foreground uppercase tracking-wide">Pending Flags</span>
-          <span className="text-3xl font-bold">{stats.pendingFlags}</span>
-        </div>
+      {/*
+        Stats grid — two tiles, not four. `activePrayers` and `pendingFlags` both
+        counted rows that nothing writes yet (prayers.church_id is never set, and
+        prayer flags have no caller outside tests), so they always read 0. Showing
+        a permanent zero is a claim that nothing is happening. Restore both with
+        pj-s26-10.
+      */}
+      <div className="grid grid-cols-2 gap-4 mb-10">
         <div className="rounded-lg border bg-card p-5 flex flex-col gap-1">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">Open Assignments</span>
           <span className="text-3xl font-bold">{stats.openAssignments}</span>
@@ -126,19 +95,10 @@ export default async function PastoralDashboardPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Quick nav */}
+      {/* Quick nav — Flagged Prayers is not listed; the page is hidden until its
+          write path exists (pj-s26-10). */}
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold mb-1">Quick Navigation</h2>
-        <Link
-          href={`/church/${slug}/dashboard/flagged`}
-          className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"
-        >
-          <span className="font-medium inline-flex items-center gap-2">
-            <Flag className="h-5 w-5 text-amber-600" aria-hidden="true" />
-            Flagged Prayers ({stats.pendingFlags})
-          </span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-        </Link>
         <Link
           href={`/church/${slug}/dashboard/care`}
           className="rounded-lg border bg-card p-4 hover:bg-muted/50 transition-colors flex items-center justify-between"

@@ -82,16 +82,19 @@ export async function PUT(
       );
     }
 
-    // Tier gate — Growing Church (pro) and above only.
-    // Tier-downgrade behaviour: existing subdomains are NOT cleared on downgrade
-    // (avoids breaking shared URLs through a billing lapse). The gate only
-    // prevents re-setting a subdomain once the field has been cleared.
+    // Sprint 27 (pj-s27-02): this gate stays enforcing, deliberately, and it is
+    // the only one that does. `*.prayerjar.org` is a scarce global namespace and
+    // a claimed subdomain cannot be reclaimed once someone has published it —
+    // giving it away in the sprint whose whole point is to defer pricing
+    // decisions is the one move you could not undo later. It costs free churches
+    // nothing today: subdomain routing is behind the SUBDOMAIN_ROUTING env flag
+    // (proxy.ts), which is unset, so a claimed subdomain resolves nowhere.
+    //
+    // Existing subdomains are never cleared; the gate only prevents setting one.
+    // Only the message changed — it used to name a plan that no longer exists.
     if (!hasCustomSubdomain(church.currentPlan)) {
       return Response.json(
-        {
-          error:
-            'Custom subdomain requires Growing Church plan or above. Upgrade your plan to claim a subdomain.',
-        },
+        { error: 'Custom subdomains are not available yet.' },
         { status: 403 },
       );
     }

@@ -15,17 +15,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { PrayerJar } from '@/components/prayer-jar';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { PricingCalculator } from '@/components/pricing-calculator';
-import { TierCardsSection } from '@/components/tier-cards-section';
 import { FaqAccordion } from '@/components/faq-accordion';
 import { ForChurchesViewTracker } from '@/components/for-churches-view-tracker';
-import {
-  PLANS,
-  PASTORAL_DASHBOARD_TIER_NAME,
-  PASTORAL_CARE_INBOX_TIER,
-  PRAYER_TEAM_ASSIGNMENTS_TIER,
-  TESTIMONY_APPROVAL_QUEUE_TIER,
-} from '@/lib/plans';
 import { db } from '@/db';
 import { prayers, churchMembers } from '@/db/schema';
 import { or, eq, sql, count } from 'drizzle-orm';
@@ -40,33 +31,34 @@ export const metadata: Metadata = {
 };
 
 /**
- * `notYet` marks a card whose claim a paying church cannot reach today. It
- * renders as an explicit strip on the card. Copy convention matches
- * pj-s26-01: name the gap in the description, do not bury it in a footnote.
+ * `notYet` marks a card whose claim a church cannot reach today. It renders as
+ * an explicit strip on the card. Copy convention matches pj-s26-01: name the gap
+ * in the description, do not bury it in a footnote.
+ *
+ * Sprint 27 (pj-s27-02): every card also carried a `tierLabel` naming the plan
+ * and price it belonged to. Paid tiers were withdrawn from the product, so all
+ * nine labels are gone and the field no longer exists.
  */
 const FEATURES = [
   {
     icon: MessageSquare,
     title: 'A public wall today. A private church wall next.',
     description:
-      'Any member can post to the public wall and receive prayer from the broader PrayerJar community. That part works today. The private wall — the one only your congregation sees — is built, but prayers are not yet attached to a church when they are submitted, so it stays empty no matter what you pay.',
-    tierLabel: 'Free (public wall)',
+      'Any member can post to the public wall and receive prayer from the broader PrayerJar community. That part works today. The private wall — the one only your congregation sees — is built, but prayers are not yet attached to a church when they are submitted, so it stays empty.',
     notYet: 'Private church wall is not available yet.',
   },
   {
     icon: LayoutDashboard,
     title: 'Pastoral notes, kept where your care team can read them.',
     description:
-      'Your team records private observations against a prayer or a member — notes the member never sees — and everyone with pastoral access reads the same history. The open-prayer view on the same dashboard counts church prayers, and no prayer is attached to a church yet, so it reads zero.',
-    tierLabel: `${PASTORAL_DASHBOARD_TIER_NAME} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
-    notYet: 'The open-prayer view is empty until prayers are church-linked.',
+      'Your team records private observations against a prayer or a member — notes the member never sees — and everyone with pastoral access reads the same history. The dashboard beside it shows your member count and your open follow-ups, both real. It used to show two more counts that always read zero; those tiles are gone until they can count something.',
+    notYet: 'Open prayers and flagged prayers are not counted yet.',
   },
   {
     icon: Inbox,
     title: 'One place for the follow-ups your team has recorded.',
     description:
       'The pastoral care inbox holds the notes your team writes as it follows up — who was spoken to, and what was said. Today every entry is added by hand. It does not yet gather unanswered requests on its own.',
-    tierLabel: `${PLANS[PASTORAL_CARE_INBOX_TIER].name} ($${PLANS.starter.monthlyPriceCents / 100}/mo) and above`,
     notYet: 'An automatic queue of unreached requests is not available yet.',
   },
   {
@@ -74,88 +66,72 @@ const FEATURES = [
     title: 'Route follow-up to the right person, not just anyone.',
     description:
       'Assign a request to an individual member of your care team. Each assignee sees only what is theirs; leaders see the whole board. The assignment screen works, but there is nothing to put on it — no prayer is attached to a church yet.',
-    tierLabel: `${PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
     notYet: 'Nothing can be assigned until prayers are church-linked.',
   },
   {
     icon: CheckSquare,
     title: 'Answered prayers do not stop for review yet.',
     description:
-      'When a member marks a prayer answered and writes a testimony, it publishes straight to the public praise wall today. It does not wait for you. The approval screen exists, but nothing arrives in it — so please do not pick a plan on the strength of this one.',
-    tierLabel: `${PLANS[TESTIMONY_APPROVAL_QUEUE_TIER].name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+      'When a member marks a prayer answered and writes a testimony, it publishes straight to the public praise wall today. It does not wait for you. The approval screen is hidden for now, because nothing ever arrives in it.',
     notYet: 'Testimony review is not available yet. Testimonies publish unreviewed.',
   },
   {
     icon: Users,
     title: 'Prayer circles for every part of your church.',
     description:
-      'Any member can start a prayer group and invite people into it, and requests posted there stay inside that group. Tying those groups to your church — so a women\'s Bible study appears on your church page and stays inside your congregation — is not wired up yet, so your church groups list is empty on every plan.',
-    tierLabel: `${PLANS.starter.name} (up to ${PLANS.starter.limits.groups} groups); ${PLANS.pro.name} (unlimited)`,
+      'Any member can start a prayer group and invite people into it, and requests posted there stay inside that group. Tying those groups to your church — so a women\'s Bible study appears on your church page and stays inside your congregation — is not wired up yet, so your church groups list is empty.',
     notYet: 'Church-owned groups are not available yet.',
   },
   {
     icon: Monitor,
     title: 'Real-time prayer during services and retreats.',
     description:
-      'The submission wall, the moderation console and the projected display are all built and tested. There is no way to create an event yet — the button in your dashboard points at a page that does not exist — so none of it can be reached. This is first on the list to fix.',
-    tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
+      'The submission wall, the moderation console and the projected display are all built and tested. There is no way to create an event yet — your dashboard has no create button, and the API refuses the request — so none of it can be reached. This is first on the list to fix.',
     notYet: 'Not available yet. Events cannot be created.',
   },
   {
     icon: BarChart2,
-    title: 'Member growth is the one number we can show you today.',
+    title: 'Analytics are switched off until they can tell the truth.',
     description:
-      'The member growth chart reports real figures. Prayer volume, engagement, category breakdown and answered rate all read from the church link that is not yet written, so each of them shows zero. There is no analytics export of any kind, and the Monday digest cannot count prayers for the same reason.',
-    tierLabel: `Member growth — ${PLANS.starter.name} and above; deeper analytics — ${PLANS.pro.name} and above, once they report real numbers`,
-    notYet: 'Prayer analytics and analytics exports are not available yet.',
+      'Four of the five charts — prayer volume, engagement, category breakdown and answered rate — read from a church link that is not yet written, so every one of them drew a flat zero. A chart claiming your congregation prayed nothing is worse than no chart, so the whole page is off until the underlying link exists. Only member growth ever reported a real figure. There is no analytics export of any kind, and the Monday digest cannot count prayers for the same reason.',
+    notYet: 'The analytics page is not available at the moment.',
   },
   {
     icon: Link2,
     title: 'Connects to Planning Center.',
     description:
       'Your Planning Center member list becomes your PrayerJar member list — no CSV imports, no double entry. The sync runs on a nightly schedule, so your member picture stays current. No church has connected one in production yet.',
-    tierLabel: `${PLANS.pro.name} ($${PLANS.pro.monthlyPriceCents / 100}/mo) and above`,
   },
 ] satisfies ReadonlyArray<{
   icon: typeof MessageSquare;
   title: string;
   description: string;
-  tierLabel: string;
   notYet?: string;
 }>;
 
+// Sprint 27 (pj-s27-02): five of the eight questions here were billing questions
+// — trials, member caps, annual billing, moving up a plan, cancelling. There is
+// nothing to bill for now, so they are gone rather than reworded.
 const FAQ_ITEMS = [
   {
-    q: 'Is prayer free for our congregation?',
-    a: 'Yes, always. Any member can submit and pray for requests at no cost. Plans cover pastoral tools and church admin features — not the act of praying.',
+    q: 'What does PrayerJar cost our church?',
+    a: 'Nothing. There is no paid plan to choose, no card to enter and no trial to run out. Everything described on this page is what you get.',
   },
   {
-    q: 'Is there a trial period?',
-    a: `No timed trial. The Free tier is your on-ramp: up to ${PLANS.free.limits.members} members and ${PLANS.free.limits.groups} groups, with no credit card and no expiration. Upgrade when you need more people, more groups, or pastoral tools.`,
+    q: 'How many people can we invite?',
+    a: 'As many as your congregation has. There is no cap on members and no cap on groups.',
   },
   {
-    q: 'What happens when we reach our member cap?',
-    a: 'You will see a notice in your admin panel when you are approaching the limit. New members cannot join until you upgrade or remove inactive accounts. No one currently in your church loses access — only new signups are paused.',
-  },
-  {
-    q: 'How does annual billing work?',
-    a: `Annual plans are billed once per year at 15% off the monthly rate. Small Church is $193.80/yr ($16.15/mo). Growing Church is $499.80/yr ($41.65/mo). You can switch between monthly and annual from your billing settings at any time; changes take effect at the next renewal.`,
-  },
-  {
-    q: 'What if our church grows into a larger plan?',
-    a: 'Upgrade anytime from your billing settings. You are charged a prorated amount for the rest of the current billing period and move to the new plan immediately. Your data, members, and groups all carry over.',
+    q: 'Do you charge for prayer itself?',
+    a: 'No, and we do not intend to. Any member can submit a request and pray for someone else at no cost.',
   },
   {
     q: 'Can we migrate from another tool?',
-    a: 'PrayerJar does not currently offer an automated import from other prayer or ChMS tools. Your members can join by invitation link. Prayer history from another system would need to be re-entered manually. If your situation is more complex, contact us before signing up and we can talk through it.',
+    a: 'PrayerJar does not currently offer an automated import from other prayer or ChMS tools. Your members can join by invitation link. Prayer history from another system would need to be re-entered manually. If your situation is more complex, contact us before you set up and we can talk through it.',
   },
   {
-    q: 'Can we cancel anytime?',
-    a: 'Yes. Cancel from your billing settings. You keep access until the end of the billing period you have already paid for. We do not charge cancellation fees and we do not lock you in.',
-  },
-  {
-    q: 'Do you offer a 501(c)(3) discount?',
-    a: 'Not at this time. Nonprofit pricing is on our roadmap but is not available yet. If this is a deciding factor for your church, reach out at hello@prayerjar.org and flag it — it helps us prioritize.',
+    q: 'We are a multi-site church or a denomination. Can you help?',
+    a: 'Possibly, but not with anything built for it yet — PrayerJar handles one church at a time today. Write to hello@prayerjar.org and tell us how your network is structured. It helps us know what to build.',
   },
 ];
 
@@ -262,7 +238,7 @@ export default async function ForChurchesPage() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button size="lg" render={<Link href="/church/create" />}>
-            Start your church free
+            Start your church
           </Button>
           <Button
             size="lg"
@@ -273,7 +249,7 @@ export default async function ForChurchesPage() {
           </Button>
         </div>
         <p className="text-xs text-muted-foreground mt-4">
-          Free tier available. No credit card required.
+          Free to use. No credit card required.
         </p>
       </section>
 
@@ -294,10 +270,10 @@ export default async function ForChurchesPage() {
         <p className="text-center text-sm text-muted-foreground mb-4 max-w-xl mx-auto leading-relaxed">
           Some of what follows is not finished. Where a church cannot reach
           something yet, the card says so and explains why. We would rather you
-          read it here than find it after you have paid.
+          read it here than find it after you have set everything up.
         </p>
         <p className="text-center text-sm text-muted-foreground mb-12">
-          No setup fees, and no charge for prayer itself on any plan.
+          All of it is free, and there is no setup fee.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((f, i) => {
@@ -321,9 +297,6 @@ export default async function ForChurchesPage() {
                       <span>{f.notYet}</span>
                     </p>
                   )}
-                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium pt-1">
-                    {f.tierLabel}
-                  </p>
                 </div>
               </ScrollReveal>
             );
@@ -331,32 +304,12 @@ export default async function ForChurchesPage() {
         </div>
       </section>
 
-      {/* ── Pricing Calculator ───────────────────────────────────────── */}
-      <section className="pb-20 px-4 max-w-2xl mx-auto">
-        <ScrollReveal>
-          <h2 className="text-2xl font-bold tracking-tight text-center mb-3">
-            Find the right plan
-          </h2>
-          <p className="text-center text-sm text-muted-foreground mb-8">
-            Move the slider to see which plan fits your church.
-          </p>
-          <PricingCalculator />
-        </ScrollReveal>
-      </section>
+      {/*
+        Sprint 27 (pj-s27-02): the pricing calculator and the tier cards used to
+        sit here. Both are deleted, not hidden.
+      */}
 
-      {/* ── Tier Cards ───────────────────────────────────────────────── */}
-      <section className="pb-20 px-4 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold tracking-tight text-center mb-3">
-          Plans
-        </h2>
-        <p className="text-center text-sm text-muted-foreground mb-10">
-          Prayer is always free. Pastoral tools start at $
-          {PLANS.starter.monthlyPriceCents / 100} a month.
-        </p>
-        <TierCardsSection />
-      </section>
-
-      {/* ── Pricing FAQ ──────────────────────────────────────────────── */}
+      {/* ── FAQ ──────────────────────────────────────────────────────── */}
       <section className="pb-20 px-4 max-w-2xl mx-auto">
         <h2 className="text-xl font-bold tracking-tight mb-8 text-center">
           Common questions
@@ -397,52 +350,25 @@ export default async function ForChurchesPage() {
         </section>
       )}
 
-      {/* ── Enterprise / Network Contact Section ─────────────────────── */}
-      <section className="pb-20 px-4 max-w-2xl mx-auto text-center">
-        <ScrollReveal>
-          <div className="rounded-xl border bg-card p-8 space-y-4">
-            <h2 className="text-xl font-bold tracking-tight">
-              Network plans — starting at $199 / mo
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              For multi-site churches, denominations, and networks that have
-              outgrown a single-church account.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              A Network plan is a bespoke agreement. You get unlimited
-              everything, volume pricing, and a contract that fits how your
-              denomination actually operates. A custom subdomain for your
-              network, enterprise login and custom analytics reports are coming
-              — none of the three is available yet. We can talk through what
-              your network needs when we connect.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              We do not put Network through self-serve checkout. We want to
-              understand your situation first.
-            </p>
-            <Button
-              size="lg"
-              render={<a href="/for-churches/demo" />}
-            >
-              Book a call
-            </Button>
-          </div>
-        </ScrollReveal>
-      </section>
+      {/*
+        Sprint 27 (pj-s27-02): the Network / enterprise contact block sat here.
+        It hardcoded "starting at $199 / mo" and pointed at /for-churches/demo,
+        which is deleted. Multi-site churches are answered in the FAQ instead.
+      */}
 
       {/* ── Bottom CTA ───────────────────────────────────────────────── */}
       <section className="pb-20 px-4 text-center">
         <div className="max-w-md mx-auto rounded-xl border bg-amber-950/10 border-amber-900/20 p-8 space-y-4">
           <p className="text-lg font-semibold">Ready to start?</p>
           <p className="text-sm text-muted-foreground">
-            Prayer is always free. Pastoral tools start at $
-            {PLANS.starter.monthlyPriceCents / 100} a month.
+            Setting up your church costs nothing, and there is nothing to buy
+            afterwards.
           </p>
           <Button size="lg" render={<Link href="/church/create" />}>
-            Start your church free
+            Start your church
           </Button>
           <p className="text-xs text-muted-foreground">
-            No credit card required. Cancel anytime.
+            No credit card required.
           </p>
         </div>
       </section>

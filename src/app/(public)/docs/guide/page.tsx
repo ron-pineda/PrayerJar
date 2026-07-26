@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   Church,
-  CreditCard,
+  CircleCheck,
   HelpCircle,
   ChevronRight,
   ArrowLeft,
@@ -377,7 +377,7 @@ export default function UserGuidePage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
             { href: '/docs/churches', title: 'Church Admin Guide', desc: 'For pastors and administrators', icon: Church },
-            { href: '/docs/paid', title: 'Paid Features', desc: 'Church subscription plans', icon: CreditCard },
+            { href: '/docs/features', title: 'Full Feature List', desc: 'Everything in the product', icon: CircleCheck },
             { href: '/help', title: 'FAQ', desc: 'Quick answers', icon: HelpCircle },
           ].map(({ href, icon: Icon, title, desc }) => (
             <Link key={href} href={href} className="group rounded-xl border bg-card hover:bg-accent/50 transition-colors p-5 flex items-center gap-4">

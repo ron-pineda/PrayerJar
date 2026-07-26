@@ -2,36 +2,37 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { NavItem } from './NavItem';
 import { SidebarDrawer } from './SidebarDrawer';
-import { PLANS, TIER_RANK } from '@/lib/plans';
-import type { PlanTier } from '@/lib/plans';
-
 interface Props {
   slug: string;
   churchName: string;
-  tier: PlanTier;
   userName: string | null;
 }
 
+// Sprint 27 (pj-s27-02): `minTier` and the `tier` prop are gone — nothing in this
+// nav is tier-locked any more, so every entry is simply a link.
+//
+// Flagged Prayers, Analytics and Testimony Queue were removed from the list
+// entirely. Those three pages return notFound() until their write paths exist
+// (pj-s26-10); listing a route that 404s is worse than not listing it.
+//
+// Synced Groups is deliberately still absent — it was never in this list, and it
+// is reachable from the dashboard. Adding it is a separate call.
+//
 // null entries render as dividers
 const NAV_ITEMS: Array<{
   label: string;
   hrefFn: (slug: string) => string;
-  minTier: PlanTier;
   exact?: boolean;
 } | null> = [
-  { label: 'Prayer Wall',      hrefFn: (s) => `/church/${s}/wall`,                  minTier: 'free'     },
-  { label: 'Prayer Team',      hrefFn: (s) => `/church/${s}/dashboard/team`,         minTier: 'free'     },
-  { label: 'Events',           hrefFn: (s) => `/church/${s}/events`,                 minTier: 'free'     },
+  { label: 'Prayer Wall',      hrefFn: (s) => `/church/${s}/wall`         },
+  { label: 'Prayer Team',      hrefFn: (s) => `/church/${s}/dashboard/team` },
+  { label: 'Events',           hrefFn: (s) => `/church/${s}/events`       },
   null,
-  { label: 'Dashboard',        hrefFn: (s) => `/church/${s}/dashboard`,              minTier: 'starter', exact: true },
-  { label: 'Care Inbox',       hrefFn: (s) => `/church/${s}/dashboard/care`,         minTier: 'starter'  },
-  { label: 'Flagged Prayers',  hrefFn: (s) => `/church/${s}/dashboard/flagged`,      minTier: 'starter'  },
+  { label: 'Dashboard',        hrefFn: (s) => `/church/${s}/dashboard`,     exact: true },
+  { label: 'Care Inbox',       hrefFn: (s) => `/church/${s}/dashboard/care` },
+  { label: 'Branding',         hrefFn: (s) => `/church/${s}/dashboard/branding` },
   null,
-  { label: 'Analytics',        hrefFn: (s) => `/church/${s}/dashboard/analytics`,   minTier: 'pro'      },
-  { label: 'Branding',         hrefFn: (s) => `/church/${s}/dashboard/branding`,    minTier: 'pro'      },
-  { label: 'Testimony Queue',  hrefFn: (s) => `/church/${s}/dashboard/testimony`,   minTier: 'pro'      },
-  null,
-  { label: 'Settings',         hrefFn: (s) => `/church/${s}/settings`,              minTier: 'free'     },
+  { label: 'Settings',         hrefFn: (s) => `/church/${s}/settings`     },
 ];
 
 function churchInitialColor(name: string): string {
@@ -47,7 +48,7 @@ function churchInitialColor(name: string): string {
   return isNaN(code) ? palette[0] : palette[code % palette.length];
 }
 
-function SidebarContent({ slug, churchName, tier, userName }: Props) {
+function SidebarContent({ slug, churchName, userName }: Props) {
   return (
     <div className="flex h-full w-60 flex-col bg-card border-r">
       {/* Header */}
@@ -72,8 +73,6 @@ function SidebarContent({ slug, churchName, tier, userName }: Props) {
                 key={item.hrefFn(slug)}
                 href={item.hrefFn(slug)}
                 label={item.label}
-                locked={TIER_RANK[tier] < TIER_RANK[item.minTier]}
-                tierName={PLANS[item.minTier].name}
                 exact={item.exact}
               />
             )
@@ -95,8 +94,8 @@ function SidebarContent({ slug, churchName, tier, userName }: Props) {
   );
 }
 
-export function ChurchSidebar({ slug, churchName, tier, userName }: Props) {
-  const content = <SidebarContent slug={slug} churchName={churchName} tier={tier} userName={userName} />;
+export function ChurchSidebar({ slug, churchName, userName }: Props) {
+  const content = <SidebarContent slug={slug} churchName={churchName} userName={userName} />;
 
   return (
     <>

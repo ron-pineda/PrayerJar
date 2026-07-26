@@ -298,7 +298,8 @@ describe('PUT /api/v1/church/[slug]/branding', () => {
 
     expect(res.status).toBe(403);
     const body = await res.json();
-    expect(body.error).toMatch(/Growing Church/i);
+    expect(body.error).toMatch(/not available yet/i);
+    expect(body.error).not.toMatch(/plan|upgrade|Growing Church/i);
   });
 
   it('returns 403 when church is on starter plan and tries to set subdomain', async () => {
@@ -317,7 +318,8 @@ describe('PUT /api/v1/church/[slug]/branding', () => {
 
     expect(res.status).toBe(403);
     const body = await res.json();
-    expect(body.error).toMatch(/Growing Church/i);
+    expect(body.error).toMatch(/not available yet/i);
+    expect(body.error).not.toMatch(/plan|upgrade|Growing Church/i);
   });
 
   it('returns 200 when pro church sets a valid subdomain', async () => {

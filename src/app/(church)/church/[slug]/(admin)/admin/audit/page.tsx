@@ -150,9 +150,12 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
               ({retentionDays === 90 ? '3 months' : retentionDays === 365 ? '1 year' : '3 years'})
             </p>
           </div>
-          <span className="shrink-0 inline-flex items-center rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground capitalize">
-            {tier} plan
-          </span>
+          {/*
+            Sprint 27 (pj-s27-02): a "{tier} plan" pill rendered here. It was the
+            last tier name on any authenticated screen. `auditRetentionDays(tier)`
+            is kept and still drives the retention figure above — every church
+            resolves to `free` today, so that reads 90 days.
+          */}
         </div>
       </div>
 

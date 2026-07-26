@@ -68,23 +68,24 @@ export default async function EventsPage({ params }: Props) {
           </Link>
           <h1 className="text-2xl font-bold">Events</h1>
         </div>
-        {/* pj-s26-09: the create-event screen does not exist, on ANY tier.
-            This used to branch on plan: paid churches got a link to
-            /church/[slug]/events/new (a 404), and free churches got an upsell
-            telling them to pay for events. Neither was true, so neither
-            branch survives — there is nothing to sell or link to until
-            pj-s26-10 ships the route. */}
+        {/* pj-s26-09: the create-event screen does not exist. This used to
+            branch on plan: paid churches got a link to /church/[slug]/events/new
+            (a 404), and free churches got an upsell telling them to pay for
+            events. Neither was true, so neither branch survives — there is
+            nothing to link to until pj-s26-10 ships the route.
+            pj-s27-02: the banner below no longer says "on any plan" or "do not
+            upgrade" — there are no plans left for that sentence to refer to. */}
         <span className="inline-flex items-center rounded-md border border-dashed px-4 py-2 text-sm font-medium text-muted-foreground">
           Creating events is not available yet
         </span>
       </div>
 
       <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
-        <span className="font-medium">Live events are not ready on any plan.</span>{' '}
+        <span className="font-medium">Live events are not available yet.</span>{' '}
         The prayer wall, moderation console, display screen and post-event
         report are all built, but there is no screen for creating an event, so
-        none of them can be reached yet. Changing plans will not turn this on —
-        please do not upgrade for it.
+        none of them can be reached. Nothing you can do in PrayerJar today will
+        turn this on — it needs the create-event screen to ship first.
       </div>
 
       {events.length === 0 ? (

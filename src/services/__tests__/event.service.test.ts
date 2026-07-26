@@ -89,15 +89,27 @@ describe('createEvent', () => {
     expect(db.insert).toHaveBeenCalledOnce();
   });
 
-  it('rejects event creation on the free tier', async () => {
+  // Sprint 27 (pj-s27-03): the throw stays — it is the only thing holding the
+  // unfinished live-events feature shut on a live, admin-reachable POST route.
+  // Only the message changed; it used to name a plan that no longer exists.
+  it('rejects event creation while live events are locked', async () => {
     mockGetChurchTier.mockResolvedValueOnce('free');
     const insertMock = vi.fn(() => makeChain([]));
     (db as Record<string, unknown>).insert = insertMock;
 
     await expect(
       createEvent({ churchId: 'church-1', name: 'Sunday Service', createdBy: 'user-1' }),
-    ).rejects.toThrow('Starter plan or higher');
+    ).rejects.toThrow('Live events are not available yet.');
     expect(insertMock).not.toHaveBeenCalled();
+  });
+
+  it('names no plan or upgrade path in the lock message', async () => {
+    mockGetChurchTier.mockResolvedValueOnce('free');
+    (db as Record<string, unknown>).insert = vi.fn(() => makeChain([]));
+
+    await expect(
+      createEvent({ churchId: 'church-1', name: 'Sunday Service', createdBy: 'user-1' }),
+    ).rejects.toThrow(/^(?!.*(plan|upgrade|Starter|Small Church|Growing Church)).*$/i);
   });
 });
 

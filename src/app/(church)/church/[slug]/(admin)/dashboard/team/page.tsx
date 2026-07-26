@@ -1,9 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
+import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { getChurchAssignments } from '@/services/pastoral.service';
-import { hasPrayerTeamAssignments, PLANS, PRAYER_TEAM_ASSIGNMENTS_TIER } from '@/lib/plans';
 import { AssignPrayerForm } from './AssignPrayerForm';
 import { CopyInviteLink } from '@/components/church/copy-invite-link';
 import { ArrowLeft } from 'lucide-react';
@@ -41,10 +40,9 @@ export default async function PrayerTeamPage({ params }: Props) {
     );
   }
 
-  const tier = await getChurchTier(church.id);
-  const hasAssignments = hasPrayerTeamAssignments(tier);
-
-  const assignments = hasAssignments ? await getChurchAssignments(church.id) : [];
+  // Sprint 27 (pj-s27-02): no plan-tier gate. Assignments have a full round trip
+  // (POST .../assignments → getChurchAssignments) and are open to every church.
+  const assignments = await getChurchAssignments(church.id);
   const memberOptions = members.map((m) => ({ id: m.user.id, name: m.user.name }));
 
   const roleColors: Record<string, string> = {
@@ -73,7 +71,7 @@ export default async function PrayerTeamPage({ params }: Props) {
         <h1 className="text-2xl font-bold">Prayer Team</h1>
       </div>
 
-      {/* Invite Members — available on all plans */}
+      {/* Invite Members */}
       <section className="mb-10 rounded-xl border bg-card p-6">
         <h2 className="text-lg font-semibold mb-1">Invite Members</h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -85,12 +83,10 @@ export default async function PrayerTeamPage({ params }: Props) {
         />
       </section>
 
-      {/* Prayer Team Assignments — plan-gated */}
-      {hasAssignments ? (
-        <>
-          <div className="mb-10">
-            <AssignPrayerForm churchSlug={slug} members={memberOptions} />
-          </div>
+      {/* Prayer Team Assignments — open to every church since Sprint 27. */}
+      <div className="mb-10">
+        <AssignPrayerForm churchSlug={slug} members={memberOptions} />
+      </div>
 
           <section className="mb-10">
             <h2 className="text-lg font-semibold mb-4">Church Members</h2>
@@ -141,21 +137,6 @@ export default async function PrayerTeamPage({ params }: Props) {
               </ul>
             )}
           </section>
-        </>
-      ) : (
-        <div className="rounded-xl border bg-card p-8 text-center">
-          <h2 className="text-lg font-semibold mb-2">Prayer Team Assignments</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Prayer Team Assignments are included on the {PLANS[PRAYER_TEAM_ASSIGNMENTS_TIER].name} plan and
-            above.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Link href="/billing" className="text-sm text-primary hover:underline">
-              View plans
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

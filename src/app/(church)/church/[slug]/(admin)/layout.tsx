@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { getChurchBySlug, getChurchTier } from '@/services/church-platform.service';
+import { getChurchBySlug } from '@/services/church-platform.service';
 import { ChurchSidebar } from './ChurchSidebar';
 
 interface Props {
@@ -12,8 +12,8 @@ export default async function AdminLayout({ children, params }: Props) {
   const { slug } = await params;
 
   // auth() is request-scoped cached by NextAuth v5.
-  // getChurchBySlug and getChurchTier are wrapped in React.cache — they
-  // deduplicate with calls made by individual pages in the same render.
+  // getChurchBySlug is wrapped in React.cache — it deduplicates with calls made
+  // by individual pages in the same render.
   const [session, church] = await Promise.all([
     auth(),
     getChurchBySlug(slug),
@@ -21,7 +21,8 @@ export default async function AdminLayout({ children, params }: Props) {
 
   if (!church) notFound();
 
-  const tier = await getChurchTier(church.id);
+  // Sprint 27 (pj-s27-02): the sidebar no longer needs a tier — nothing in the
+  // church admin nav is tier-locked, so this layout stopped resolving one.
   const userName = session?.user?.name ?? session?.user?.email ?? null;
 
   return (
@@ -29,7 +30,6 @@ export default async function AdminLayout({ children, params }: Props) {
       <ChurchSidebar
         slug={slug}
         churchName={church.name}
-        tier={tier}
         userName={userName}
       />
       <main className="flex-1 min-w-0">

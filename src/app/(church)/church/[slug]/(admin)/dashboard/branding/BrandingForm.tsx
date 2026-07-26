@@ -148,13 +148,13 @@ export default function BrandingForm({
           </>
         ) : (
           <div className="rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
-            Custom subdomain requires{' '}
-            <span className="font-medium">Growing Church plan</span> or above.{' '}
-            <a href="/for-churches" className="text-primary hover:underline">
-              Upgrade your plan
+            Custom subdomains like{' '}
+            <span className="font-mono">yourchurch.prayerjar.org</span> aren&apos;t
+            available yet.{' '}
+            <a href="/contact" className="text-primary hover:underline">
+              Get in touch
             </a>{' '}
-            to claim a subdomain like{' '}
-            <span className="font-mono">yourchurch.prayerjar.org</span>.
+            if you need one.
           </div>
         )}
       </div>

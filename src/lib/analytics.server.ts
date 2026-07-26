@@ -55,22 +55,10 @@ export async function trackPlanUpgraded(props: {
   );
 }
 
-/**
- * Fires after the enterprise demo lead is successfully persisted to
- * church_enterprise_leads. Call from /for-churches/demo/actions.ts.
- * TODO(pj-s17-enterprise-demo-ui): wire this from the demo server action
- * once that action is implemented.
- */
-export async function trackDemoRequested(props: {
-  church_size_bucket: string;
-  has_calendly_booked: boolean;
-  referrer_plan: string | null;
-  source_utm: string | null;
-}) {
-  await track('demo_requested', props).catch((err) =>
-    console.error('[analytics] demo_requested failed:', err),
-  );
-}
+// Sprint 27 (pj-s27-02): trackDemoRequested is deleted. Its only call site was
+// /for-churches/demo, the enterprise lead-capture page, which went with the paid
+// tiers. The `church_enterprise_leads` table itself is kept (see the removal
+// plan §D) — only the instrumentation for a form that no longer exists is gone.
 
 // --- ChMS Integration Events (Sprint 18 — pj-s18-12) ---
 

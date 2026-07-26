@@ -28,8 +28,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/docs`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${baseUrl}/docs/features`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/docs/guide`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    // pj-s27-02: /docs/paid was removed with the paid tiers. It 308s to
+    // /docs/churches (next.config.ts) rather than 404ing, but a permanently
+    // redirecting URL does not belong in a sitemap.
     { url: `${baseUrl}/docs/churches`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${baseUrl}/docs/paid`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
   ]
 
   // Per-category prayer pages. These are the only routes on the site whose

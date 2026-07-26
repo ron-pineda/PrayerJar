@@ -15,6 +15,27 @@ const nextConfig: NextConfig = {
       allowedOrigins: ['*.prayerjar.org'],
     },
   },
+  /**
+   * Sprint 27 (pj-s27-02). Both source routes were deleted with the paid tiers.
+   *
+   * `/docs/paid` was in the sitemap at priority 0.4 and linked from four places,
+   * so a 404 there would have produced Search Console errors on a URL Google
+   * already knows. `/docs/churches` is its successor.
+   *
+   * `/for-churches/demo` was never in the sitemap, but a 308 is nearly free and
+   * covers any link shared in outreach email.
+   *
+   * `permanent: true` emits 308, not 301. Redirects are evaluated before the
+   * filesystem, so these fire regardless of what is on disk. This belongs in
+   * config, not in src/proxy.ts — that file is Next 16's renamed middleware and
+   * already carries subdomain tenant resolution and admin gating.
+   */
+  async redirects() {
+    return [
+      { source: '/docs/paid', destination: '/docs/churches', permanent: true },
+      { source: '/for-churches/demo', destination: '/for-churches', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

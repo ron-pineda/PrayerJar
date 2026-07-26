@@ -12,7 +12,6 @@ import {
   Church,
   CircleCheck,
   CircleQuestionMark,
-  Crown,
   EyeOff,
   Globe,
   HandHeart,
@@ -266,7 +265,6 @@ export default async function DocsOverviewPage() {
           {[
             { href: '/docs/guide', Icon: Book, title: 'User Guide', desc: 'Step-by-step guide for individuals' },
             { href: '/docs/churches', Icon: Church, title: 'Church Admin Guide', desc: 'Setting up and managing a church community' },
-            { href: '/docs/paid', Icon: Crown, title: 'Paid Features', desc: 'What church plan subscribers get' },
             { href: '/docs/features', Icon: CircleCheck, title: 'Full Feature List', desc: 'Every feature available in V2' },
             { href: '/help', Icon: CircleQuestionMark, title: 'FAQ', desc: 'Common questions answered' },
             { href: '/contact', Icon: Mail, title: 'Contact', desc: 'Reach our team directly' },

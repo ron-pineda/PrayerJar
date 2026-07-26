@@ -1,8 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { getChurchBySlug, getChurchMembers, getChurchTier } from '@/services/church-platform.service';
-import { hasPastoralDashboard, PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
+import { getChurchBySlug, getChurchMembers } from '@/services/church-platform.service';
 import { db } from '@/db';
 import { chmsGroups, chmsGroupMembers } from '@/db/schema';
 import { eq, count } from 'drizzle-orm';
@@ -41,30 +40,9 @@ export default async function ChmsGroupsPage({ params }: Props) {
     );
   }
 
-  // Plan-tier gate — requires starter or above (same as pastoral dashboard).
-  const tier = await getChurchTier(church.id);
-  if (!hasPastoralDashboard(tier)) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-xl font-semibold mb-3">Synced Groups</h1>
-        <p className="text-muted-foreground mb-4">
-          Synced Groups are included on the {PASTORAL_DASHBOARD_TIER_NAME} plan and above.
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/billing" className="text-sm text-primary hover:underline">
-            View plans
-          </Link>
-          <Link
-            href={`/church/${slug}/dashboard`}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back to Dashboard
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // Sprint 27 (pj-s27-02): the plan-tier gate is gone. Synced Groups reads
+  // chms_groups, which the Planning Center adapter genuinely writes, so this page
+  // works for any church that connects a ChMS. Access is role-gated only.
 
   // Load synced groups with member counts.
   const groupRows = await db

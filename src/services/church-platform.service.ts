@@ -1,9 +1,8 @@
 import { cache } from 'react';
 import { db } from '@/db';
 import { churches, churchMembers, prayers, groups, users, subscriptions } from '@/db/schema';
-import { eq, and, desc, count } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import type { Church, ChurchMember } from '@/db/schema';
-import { PLANS } from '@/lib/plans';
 import type { PlanTier } from '@/lib/plans';
 import { logAuditEvent } from '@/lib/audit';
 import { sendChurchWelcome1Email } from '@/services/email.service';
@@ -169,19 +168,11 @@ export async function addChurchMember(
   role: 'admin' | 'pastor' | 'member' = 'member',
   actorUserId?: string,
 ): Promise<void> {
-  const tier = await getChurchTier(churchId);
-  const limit = PLANS[tier].limits.members;
-
-  if (limit !== null) {
-    const [{ value: currentCount }] = await db
-      .select({ value: count() })
-      .from(churchMembers)
-      .where(eq(churchMembers.churchId, churchId));
-    if (Number(currentCount) >= limit) {
-      throw new Error('Member limit reached for your plan. Upgrade to add more members.');
-    }
-  }
-
+  // Sprint 27 (pj-s27-03): the member cap is gone. It used to throw at member 76
+  // and the person who saw the error was the joining congregant — a stranger to
+  // the billing relationship — not the church admin. With no paid tier to move
+  // to, that was a dead end with nothing on the other side of it. Any future cap
+  // gets re-derived from real pricing research, not inherited from this number.
   await db
     .insert(churchMembers)
     .values({ churchId, userId, role })

@@ -97,94 +97,30 @@ describe('POST /api/v1/checkout', () => {
     expect(res.status).toBe(400);
   });
 
-  // ── subscription ──────────────────────────────────────────────────────────
+  // ── withdrawn checkout types ──────────────────────────────────────────────
+  // Sprint 27 (pj-s27-02): the `subscription` and `event_license` branches were
+  // removed from the schema and the handler. These two tests replace the eight
+  // that covered them, and exist so nobody can quietly buy a tier that no longer
+  // exists in the product by posting straight at this endpoint.
 
-  it('returns 401 for subscription when not authenticated', async () => {
-    vi.mocked(auth).mockResolvedValue(null);
+  it('rejects a subscription checkout — the branch no longer exists', async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-456' } } as unknown as Session);
 
     const res = await POST(makeRequest({ type: 'subscription', stripePriceId: 'price_abc' }));
-    const json = await res.json();
 
-    expect(res.status).toBe(401);
-    expect(json.error).toBeDefined();
+    expect(res.status).toBe(400);
     expect(createSubscriptionCheckout).not.toHaveBeenCalled();
   });
 
-  it('returns 200 with url for valid subscription when authenticated', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-123' } } as any);
-    vi.mocked(createSubscriptionCheckout).mockResolvedValue('https://checkout.stripe.com/sub/test');
+  it('rejects an event_license checkout — the branch no longer exists', async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-456' } } as unknown as Session);
 
-    const res = await POST(makeRequest({ type: 'subscription', stripePriceId: 'price_abc' }));
-    const json = await res.json();
+    const res = await POST(
+      makeRequest({ type: 'event_license', eventName: 'Easter', attendeeCapacity: 100 }),
+    );
 
-    expect(res.status).toBe(200);
-    expect(json.url).toBe('https://checkout.stripe.com/sub/test');
-    expect(createSubscriptionCheckout).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 'user-123',
-      stripePriceId: 'price_abc',
-      churchId: null,
-    }));
-  });
-
-  it('passes the admin church id to the subscription checkout when a membership exists', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-123' } } as any);
-    mockFindFirstChurchMember.mockResolvedValueOnce({ churchId: 'church-9', userId: 'user-123', role: 'admin' });
-    vi.mocked(createSubscriptionCheckout).mockResolvedValue('https://checkout.stripe.com/sub/test');
-
-    const res = await POST(makeRequest({ type: 'subscription', stripePriceId: 'price_abc' }));
-
-    expect(res.status).toBe(200);
-    expect(createSubscriptionCheckout).toHaveBeenCalledWith(expect.objectContaining({
-      churchId: 'church-9',
-    }));
-  });
-
-  it('returns 400 for subscription with missing stripePriceId', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-123' } } as any);
-
-    const res = await POST(makeRequest({ type: 'subscription', stripePriceId: '' }));
     expect(res.status).toBe(400);
-  });
-
-  // ── event_license ─────────────────────────────────────────────────────────
-
-  it('returns 401 for event_license when not authenticated', async () => {
-    vi.mocked(auth).mockResolvedValue(null);
-
-    const res = await POST(makeRequest({ type: 'event_license', eventName: 'Easter', attendeeCapacity: 100 }));
-    const json = await res.json();
-
-    expect(res.status).toBe(401);
     expect(createEventLicenseCheckout).not.toHaveBeenCalled();
   });
-
-  it('returns 200 with url for valid event_license when authenticated', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-456' } } as any);
-    vi.mocked(createEventLicenseCheckout).mockResolvedValue('https://checkout.stripe.com/event/test');
-
-    const res = await POST(makeRequest({ type: 'event_license', eventName: 'Easter Sunday', attendeeCapacity: 200 }));
-    const json = await res.json();
-
-    expect(res.status).toBe(200);
-    expect(json.url).toBe('https://checkout.stripe.com/event/test');
-    expect(createEventLicenseCheckout).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 'user-456',
-      eventName: 'Easter Sunday',
-      attendeeCapacity: 200,
-    }));
-  });
-
-  it('returns 400 for event_license with missing eventName', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-456' } } as any);
-
-    const res = await POST(makeRequest({ type: 'event_license', eventName: '', attendeeCapacity: 100 }));
-    expect(res.status).toBe(400);
-  });
-
-  it('returns 400 for event_license with attendeeCapacity out of range', async () => {
-    vi.mocked(auth).mockResolvedValue({ user: { id: 'user-456' } } as any);
-
-    const res = await POST(makeRequest({ type: 'event_license', eventName: 'Easter', attendeeCapacity: 99999 }));
-    expect(res.status).toBe(400);
-  });
 });
+

@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { PASTORAL_DASHBOARD_TIER_NAME } from '@/lib/plans';
 
 // metadata can't be exported from a 'use client' component — see generateMetadata pattern
 // For now this is a client component for accordion interactivity
@@ -40,7 +39,7 @@ const SECTIONS: Section[] = [
       },
       {
         q: 'Is it really free?',
-        a: 'Yes — completely. There are no ads, no paywalls on prayer, and no data brokers. Churches can subscribe for pastoral features, but asking for prayer and praying for others is always free.',
+        a: 'Yes — completely. There are no ads, no paywalls, and no data brokers. The pastoral tools churches use are free too. If you want to support the work, /give takes a voluntary gift; nothing depends on it.',
       },
       {
         q: 'How do I submit a prayer request?',
@@ -124,19 +123,19 @@ const SECTIONS: Section[] = [
     faqs: [
       {
         q: "What church features are available?",
-        a: `Working today: your member roster, the pastoral dashboard with pastoral notes and prayer team assignments (${PASTORAL_DASHBOARD_TIER_NAME} plan and above), the care inbox, and custom branding. Not available yet: the private church prayer wall, church-owned groups, live event prayer walls, testimony review, and the prayer analytics charts. The For Churches page marks each one and explains why.`,
+        a: 'Working today, for every church: your member roster, the pastoral dashboard with pastoral notes and prayer team assignments, the care inbox, and custom branding. Not available yet: the private church prayer wall, church-owned groups, live event prayer walls, testimony review, and the analytics charts. The For Churches page marks each one and explains why.',
       },
       {
         q: 'How do I set up my church?',
         a: 'After signing in, go to "Create a Church" from your profile. You\'ll walk through a setup wizard to name your church and invite members.',
       },
       {
-        q: 'Is there a free tier for churches?',
-        a: "Yes. Small congregations can use the free tier with core features. Paid plans add higher member limits and pastoral tools. Analytics and event walls are not available yet — see our For Churches page for what is finished and what is not.",
+        q: 'What does it cost a church?',
+        a: 'Nothing. There is one version of PrayerJar and every church gets all of it — no member cap, no group cap, and nothing to buy. Analytics and event walls are not available yet; see our For Churches page for what is finished and what is not.',
       },
       {
-        q: 'Who do I contact for a demo or enterprise pricing?',
-        a: 'Reach out to hello@prayerjar.org and we\'ll schedule a walkthrough. Enterprise plans are available for larger organizations with custom needs.',
+        q: 'We are a multi-site church or a network. Who do we talk to?',
+        a: 'Write to hello@prayerjar.org. PrayerJar handles one church at a time today and there is nothing built for networks yet, but it helps us to hear how yours is structured.',
       },
     ],
   },
