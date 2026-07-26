@@ -389,3 +389,5 @@
 [2026-07-25] Architect → PM: pj-s27-01 DONE — removal plan at docs/sprint27/removal-plan.md, six PM-brief errors corrected.
 [2026-07-25] PM → QA: pj-s27-02/03 gates re-verified independently: tsc 0, 501/501 passing, build 106/106 (down from 108 — two routes deleted, expected). Independent price/tier sweep across (public)/(dashboard)/(church)/components returns only a code comment documenting a removal. Redirects confirmed 308 in next.config.ts. Test drop 524->501 fully accounted: 8 pricing-calculator + 10 demo-route tests deleted with their code, plus narrowed checkout branches — no coverage silently lost.
 [2026-07-25] PM → Team: pj-s27-06..09 opened for findings deliberately kept out of the removal scope.
+
+[2026-07-26] PM → Reviewer: Sprint 27 removal verified live on prod. Redirects 308, zero pricing on public surface, no regressions. pj-s27-02/03 ready for review.
