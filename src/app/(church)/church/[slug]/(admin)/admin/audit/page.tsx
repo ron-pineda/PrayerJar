@@ -16,7 +16,11 @@ const ACTION_OPTIONS = [
   { value: 'member.remove', label: 'member.remove' },
   { value: 'role.change', label: 'role.change' },
   { value: 'prayer.delete', label: 'prayer.delete' },
-  { value: 'plan.change', label: 'plan.change' },
+  // Sprint 27 (pj-s27-02): the 'plan.change' filter option is removed. Only the
+  // Stripe webhook writes that action, and with no subscription obtainable no
+  // church can produce one — prod holds zero subscription rows, so there is
+  // nothing historical to filter for either. The action string itself stays in
+  // lib/audit.ts and the webhook, which are kept for the paid-tier rebuild.
 ];
 
 interface Props {

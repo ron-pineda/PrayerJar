@@ -88,55 +88,55 @@ export default async function PrayerTeamPage({ params }: Props) {
         <AssignPrayerForm churchSlug={slug} members={memberOptions} />
       </div>
 
-          <section className="mb-10">
-            <h2 className="text-lg font-semibold mb-4">Church Members</h2>
-            <ul className="flex flex-col gap-3">
-              {members.map((m) => (
-                <li key={m.user.id} className="rounded-lg border bg-card p-4 flex items-center justify-between gap-3">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-medium">{m.user.name ?? 'Unknown'}</span>
-                    <span className="text-xs text-muted-foreground">{m.user.email ?? ''}</span>
-                  </div>
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${roleColors[m.member.role] ?? roleColors.member}`}>
-                    {m.member.role}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold mb-4">Prayer Assignments</h2>
-            {assignments.length === 0 ? (
-              <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-                No prayers assigned yet.
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold mb-4">Church Members</h2>
+        <ul className="flex flex-col gap-3">
+          {members.map((m) => (
+            <li key={m.user.id} className="rounded-lg border bg-card p-4 flex items-center justify-between gap-3">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">{m.user.name ?? 'Unknown'}</span>
+                <span className="text-xs text-muted-foreground">{m.user.email ?? ''}</span>
               </div>
-            ) : (
-              <ul className="flex flex-col gap-4">
-                {assignments.map((a) => (
-                  <li key={a.id} className="rounded-lg border bg-card p-5 flex flex-col gap-2">
-                    <p className="text-sm leading-relaxed">
-                      {a.prayer.content.length > 120
-                        ? a.prayer.content.slice(0, 120) + '…'
-                        : a.prayer.content}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                      <span>Assigned to: <span className="text-foreground font-medium">{a.assignedTo.name ?? 'Unknown'}</span></span>
-                      <span aria-hidden="true">·</span>
-                      <span>By: {a.assignedBy.name ?? 'Unknown'}</span>
-                      <span aria-hidden="true">·</span>
-                      <span>{new Date(a.createdAt).toLocaleDateString()}</span>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-medium capitalize ${statusColors[a.status] ?? statusColors.assigned}`}
-                      >
-                        {a.status}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+              <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${roleColors[m.member.role] ?? roleColors.member}`}>
+                {m.member.role}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold mb-4">Prayer Assignments</h2>
+        {assignments.length === 0 ? (
+          <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
+            No prayers assigned yet.
+          </div>
+        ) : (
+          <ul className="flex flex-col gap-4">
+            {assignments.map((a) => (
+              <li key={a.id} className="rounded-lg border bg-card p-5 flex flex-col gap-2">
+                <p className="text-sm leading-relaxed">
+                  {a.prayer.content.length > 120
+                    ? a.prayer.content.slice(0, 120) + '…'
+                    : a.prayer.content}
+                </p>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                  <span>Assigned to: <span className="text-foreground font-medium">{a.assignedTo.name ?? 'Unknown'}</span></span>
+                  <span aria-hidden="true">·</span>
+                  <span>By: {a.assignedBy.name ?? 'Unknown'}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{new Date(a.createdAt).toLocaleDateString()}</span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-medium capitalize ${statusColors[a.status] ?? statusColors.assigned}`}
+                  >
+                    {a.status}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
