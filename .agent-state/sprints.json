@@ -465,5 +465,14 @@
     "size": "M",
     "status": "planned",
     "notes": "Planned 2026-07-24 by PM after an approved status review. Polish (Sprint 25) is done and every remaining engineering item is a carry-forward nice-to-have; the bottleneck is that roughly 6 people know PrayerJar exists. Roster: PM, Growth, Analytics, Content, Copywriter, Frontend, QA, Reviewer. Gate task pj-s26-01 fixes unbacked PDF-report claims still live in /docs (Sprint 21-review ship-stopper that was only ever cleaned up on /for-churches). pj-s26-03 funnel instrumentation gates the acquisition tasks — measure before optimize. HARD GUARDRAIL: real content only, never fabricate prayers or testimonies. Caveat stated to Ron up front: this sprint builds assets that make his outreach convert; it does not substitute for the outreach itself. Kickoff: docs/sprint26/kickoff.md."
+  },
+  {
+    "id": "27",
+    "phase": 27,
+    "name": "Free Product — pull the paid tiers",
+    "features": 5,
+    "size": "M",
+    "status": "planned",
+    "notes": "Planned 2026-07-25. Ron: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\" Context: Sprint 26 established that the church product is substantially non-functional — prayers.church_id and groups.church_id are never written, so the private wall and all analytics are permanently empty; /church/[slug]/events/new does not exist; flagPrayer has no caller. Zero churches have ever paid. Rather than keep maintaining \"coming soon\" labels across six surfaces (Sprint 26 relabelled twice and the Reviewer still found two survivors afterward), the paid tiers come out entirely. Billing code STAYS in the repo, unreferenced, for a deliberate rebuild later using Fable. KEY DESIGN POINT: with no upgrade path, existing free limits become dead ends — pj-s27-03 must lift them. Do NOT unlock Pro features that do not work."
   }
 ]

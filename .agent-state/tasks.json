@@ -6784,5 +6784,80 @@
     "created_at": "2026-07-25",
     "last_touched": "2026-07-25T17:00:00.000Z",
     "blockers": []
+  },
+  {
+    "id": "pj-s27-01-paid-surface-audit",
+    "sprint": "27",
+    "title": "Audit every paid-tier surface before removal",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "high",
+    "description": "Map every user-reachable surface that sells, prices, gates, or upgrades to a paid church tier — marketing, pricing tables, checkout entry points, plan gates in app code, and any copy referencing tiers. ~25 files reference PLANS/stripe/checkout. Output a removal plan that separates (a) marketing/checkout to remove, (b) plan gates that would dead-end a free user, (c) Pro-gated features that genuinely work vs those that do not. Read-only; no code changes.",
+    "notes": [
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-02-pull-paid-tiers",
+    "sprint": "27",
+    "title": "Remove the paid church tiers from the product",
+    "status": "proposed",
+    "assigned_to": "Frontend",
+    "priority": "high",
+    "description": "Implement the audit plan. Strip pricing/checkout/upgrade surfaces; keep billing code in the repo unreferenced for the future rebuild. No user should see a price, a tier comparison, or an upgrade CTA.",
+    "notes": [
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-03-free-limits",
+    "sprint": "27",
+    "title": "Make the free tier not dead-end",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "high",
+    "description": "With no paid tier, free limits (75 members / 3 groups / 0 events / 1 admin) become dead ends with nowhere to upgrade to. Raise or lift them so nothing blocks a real church, and replace any \"upgrade to continue\" messaging. Do not unlock features that do not work (church analytics and the private wall are empty until pj-s26-10 writes church_id).",
+    "notes": [
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-04-qa",
+    "sprint": "27",
+    "title": "QA: free-product pass",
+    "status": "proposed",
+    "assigned_to": "QA",
+    "priority": "high",
+    "description": "Verify no price, tier, or upgrade CTA is reachable anywhere; verify no free-tier action dead-ends; gates green; live prod verification after deploy.",
+    "notes": [
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-05-reviewer",
+    "sprint": "27",
+    "title": "Reviewer: approvals + sprint close",
+    "status": "proposed",
+    "assigned_to": "Reviewer",
+    "priority": "high",
+    "description": "Per Definition of Done.",
+    "notes": [
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
   }
 ]

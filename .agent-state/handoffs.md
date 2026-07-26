@@ -379,3 +379,5 @@
 [2026-07-25] PM → Ron: pj-s26-12 needs a human run — destructive prod DELETE blocked by the permission classifier. Use scripts/delete-test-church.mjs (dry-run default, --commit to execute).
 
 [2026-07-25] Backend → QA: pj-s26-13 — 11 expired prayers restored to active (real content, nothing fabricated) and auto-expiry suspended behind two locks. /browse empty state GONE on prod, real prayers rendering. Suspension code committed but not pushed.
+
+[2026-07-25] PM → Team: Sprint 27 planned — pull the paid church tiers, ship a free working product. 5 tasks pj-s27-01..05. Ron will rebuild the paid version deliberately later using Fable. Billing code stays in-repo, unreferenced.
