@@ -122,7 +122,7 @@ gone) · **REDIRECT** (route gone, 308 to a live page) · **EDIT** (small copy f
 
 | Surface | Verdict | Why |
 |---|---|---|
-| `/for-churches` (`src/app/(public)/for-churches/page.tsx`, 451 lines) | **REWRITE** | Highest-value church acquisition page. In the sitemap at priority 0.7 and linked from the **global site footer** (`src/app/layout.tsx:123`). Deleting it costs the free product its only church-facing landing page. Strip `<PricingCalculator />` (:343), `<TierCardsSection />` (:356), the `FAQ_ITEMS` entries that quote tiers (:93, :134), and the pricing `<h2>`s. Keep hero, `FEATURES`, trust strip, and the create-church CTA. |
+| `/for-churches` (`src/app/(public)/for-churches/page.tsx`, 451 lines) | **REWRITE** | Highest-value church acquisition page. In the sitemap at priority 0.7 and linked from the **global site footer** (`src/app/layout.tsx:123`). Deleting it costs the free product its only church-facing landing page. Strip `<PricingCalculator />` (:343), `<TierCardsSection />` (:356), the `FAQ_ITEMS` entries that quote tiers (:93, :134, :142 — the annual-billing answer), and the entire **Enterprise / Network contact section** (:400–425, which hardcodes "starting at $199 / mo"). Keep hero, `FEATURES`, trust strip, and the create-church CTA. |
 | `/for-churches/demo` | **DELETE** | Enterprise lead-capture for a tier that no longer exists. Page metadata literally sells *"Starting at $199/mo"* (`page.tsx:8`). Not in the sitemap. Its only inbound links are the two CTAs being removed (`tier-cards-section.tsx:70`, `pricing-calculator.tsx:82`). Nothing else reaches it. The `church_enterprise_leads` **table stays** (see §D). |
 | `/docs/paid` (477 lines) | **REDIRECT → `/docs/churches`** | In the sitemap at priority 0.4 and linked from four places (`/docs`, `/docs/guide`, `/docs/churches` ×3). The whole page is the tier comparison — there is nothing to keep. A 404 on a sitemap URL produces GSC errors; `/docs/churches` is the correct successor. |
 | `/docs/churches` (456 lines) | **REWRITE** | The genuine church documentation page and the redirect target for `/docs/paid`. Remove `PLAN_COLORS` / `PlanBadge` / all `plan:` fields on the section list, the "Which plan do I need?" block (:303–312, which also holds the false "25 members"), the Billing section (:220–241), and the `/docs/paid` cards at :433. |
@@ -139,7 +139,8 @@ gone) · **REDIRECT** (route gone, 308 to a live page) · **EDIT** (small copy f
 | `NavItem` upgrade callout (`(admin)/NavItem.tsx:44–79`) | **DELETE branch** | The entire `if (locked)` branch, plus the `locked` and `tierName` props. Once §C lands, nothing is locked. |
 | `ChurchSidebar` (`(admin)/ChurchSidebar.tsx`) | **REWRITE** | Drop `minTier` from `NAV_ITEMS`, drop the `PLANS`/`TIER_RANK` import and the `tier` prop, and drop the six lock computations at `:75`. Hidden items in §C come out of the array entirely. |
 | Six in-page upgrade CTAs | **DELETE** | `dashboard/page.tsx:71`, `dashboard/care/page.tsx:54`, `dashboard/groups/page.tsx:54`, `dashboard/team/page.tsx:153`, `dashboard/testimony/page.tsx:61` — each a `<Link href="/billing">View plans</Link>` inside a tier-gate block. All five blocks are deleted wholesale by §C. |
-| `BrandingForm.tsx:153` | **EDIT** | Links to `/for-churches` to explain the subdomain tier requirement. See §C.6. |
+| `BrandingForm.tsx:152–153` | **EDIT** | Names the *"Growing Church plan"* and links to `/for-churches` to explain the subdomain requirement. See §C.5. |
+| `/admin/chms-sync:168` | **LEAVE** | *"Pro + Enterprise PCO churches only."* Behind the `ADMIN_EMAILS` gate in `proxy.ts:180` — internal tooling, not user-reachable. Not a marketing surface. Note it in the §C.6 ADR instead. |
 
 ### A.3 Components
 
@@ -191,11 +192,38 @@ config, and adding them to `proxy.ts` would put them behind the auth wrapper.
 `robots.ts` needs no change — it disallows `/api/`, `/admin/`, `/church/` and
 nothing being touched here.
 
+### A.6 Completeness of this enumeration
+
+§A is not a sample. It was built from two independent sweeps, both run over
+`src/` with tests excluded:
+
+1. **Tier-aware code** — every importer of `@/lib/plans` (27 hits). Authoritative
+   for anything that derives its copy from `PLANS`.
+2. **Hardcoded copy** — `$19|$49|$199|/mo|per month|Upgrade|upgrade`, then a
+   second pass for the plan display names themselves
+   (`Small Church|Growing Church|Starter|Network|Enterprise|paid plan|subscription`),
+   which the first pass would have missed.
+
+The second pass surfaced three things not in the first: the `/for-churches`
+Network contact section, the `/for-churches:142` annual-billing FAQ, and the
+`BrandingForm:152` tier name. All three are now listed above. Everything else it
+returned was either already listed, or in `schema.ts` / `billing.service.ts` /
+`api/webhooks/stripe` — code §D keeps deliberately.
+
+**One negative result worth recording:** `docs/legal/sprint17-hotfix-signoff-2026-04-17.md:38`
+named the church onboarding page as an FTC §5 offender for selling the Pastoral
+Dashboard to a "brand-new paying church." That file has since moved to
+`src/app/(church)/church/[slug]/(admin)/setup/page.tsx`, and its only remaining
+match is `:74` — *"Launch Your Pastoral Dashboard"*, with no tier framing. **Already
+clean; no action.** Recorded so a future audit does not re-open it.
+
 ---
 
 ## B. Plan gates that would dead-end a free user
 
-Per §0.3, there are exactly **two** live enforcement points. Both must change.
+Per §0.3, there are exactly **two** live enforcement points. Both must change,
+but not in the same way: one is removed, one keeps its guard and loses its plan
+language. The distinction is the whole of §B — read both before touching either.
 
 ### B.1 The member cap — the worst surface in the codebase after removal
 
@@ -208,9 +236,9 @@ link gets a thrown `Error('Member limit reached for your plan. Upgrade to add mo
 Not the admin — the *member*. A stranger to the billing relationship is shown an
 upsell for a product that, after this sprint, cannot be bought at all.
 
-**Recommendation: remove the cap entirely.** Delete lines 172–181 (the
-`getChurchTier` call, the `limit` lookup, the count query and the throw) and set
-`PLANS.free.limits.members = null`. Do not raise the number — a raised cap is the
+**Recommendation: remove the cap entirely.** Delete the `getChurchTier` call, the
+`limit` lookup, and the whole `if (limit !== null)` block through its closing
+brace — then set `PLANS.free.limits.members = null`. Do not raise the number — a raised cap is the
 same wall further back, and it will be re-derived from real pricing research when
 the paid tier is rebuilt with fable. `null` already means unlimited throughout
 `plans.ts` and the guard is written as `if (limit !== null)`, so removing the
@@ -231,32 +259,41 @@ is no create-event UI, so no button hits it — but the gate is not dead code, a
 a free church calling that API today gets
 `Error('Live events require a Starter plan or higher.')`.
 
-**Recommendation: neutralise the gate, keep the feature hidden.** Set
-`PLANS.free.limits.events = null` and delete the `limit === 0` throw at :32–34.
-Keep the `limit !== null` counting branch — with `null` it no-ops, and it is the
-right shape for a future cap.
+**Recommendation: keep the throw. Change only the message.** Leave
+`PLANS.free.limits.events = 0` and the `limit === 0` branch exactly as they are,
+and rewrite the string at `:33` from *"Live events require a Starter plan or
+higher."* to *"Live events are not available yet."*
 
-Rationale: the error message names a plan that will not exist, so it cannot
-survive as written. Rewriting it to "events are not available yet" would be
-honest but would put a second, competing "not ready" message next to the one
-`pj-s26-09` already shipped on the events page. Making the gate a no-op is
-cleaner: the feature stays unreachable because **no UI creates events**, which is
-the true reason, and `pj-s26-10` then has nothing to unpick.
+Rationale: the message names a plan that will not exist, so it cannot survive as
+written — but neutralising the gate would be actively harmful. That throw is the
+**only** thing standing between a live, admin-reachable POST endpoint and a
+created event. Remove it and an admin who finds the API can create an event whose
+wall, moderation, display and report screens all become reachable — with no
+create UI, no edit, and no delete. That is a new half-working surface in the
+sprint whose entire goal is a free product that works. No free user can be
+dead-ended by this gate, because no UI reaches it.
 
-### B.3 Groups and admins — no action
+The competing-copy concern is not real: the `pj-s26-09` banner is page copy for a
+human, the throw is a JSON API error response. Different surfaces.
 
-Not enforced anywhere (§0.3). Setting them to `null` in `plans.ts` costs nothing
-and stops the numbers being copied into future marketing, so do it for tidiness,
-but there is no code path to fix.
+### B.3 Groups and admins — no enforcement to fix
+
+Neither is read by any code path (§0.3). Set `groups: null` so the number stops
+being copied into future marketing. **Leave `admins` as a number** —
+`PlanDefinition.limits.admins` is typed `number`, not `number | null`
+(`plans.ts:17`), so `null` is a type error. Raise it to `999` to match what the
+old Network tier declared.
 
 ### B.4 Resulting free tier
 
 ```ts
-free: { members: null, groups: null, events: null, admins: 999 }
+free: { members: null, groups: null, events: 0, admins: 999 }
 ```
 
-Every church becomes what the old Growing Church tier described, minus the
-features that never worked. There is no wall left for a free user to hit.
+`events: 0` is deliberate and is the only remaining limit — it is what keeps the
+unreachable events feature unreachable (§B.2), not a pricing decision. Everything
+a free church can actually use is now uncapped. There is no wall left for a free
+user to hit.
 
 ---
 
@@ -300,14 +337,15 @@ and unlocking any of it would just expose an empty screen to every church.
 | **Church Analytics** ⛔ | `dashboard/analytics` | 4 of 5 charts dead (§0.2). **Has no tier gate** (`analytics/page.tsx:32–34`, role only) — so free churches can already reach it and see four zeroed charts. **Recommendation: hide the route from the sidebar and return `notFound()` until `pj-s26-10`.** Do not add a tier gate; do not unlock. |
 | **Flagged Prayers** ⛔ | `dashboard/flagged` | `getFlaggedPrayers` reads `prayerFlags`, written **only** by `flagPrayer` (`pastoral.service.ts:114`), whose only callers are its own tests. Queue can never fill. Also **ungated** (§0.5). Hide the route. |
 | **Testimony Approval Queue** ⛔ | `dashboard/testimony` | Reads `testimonyApprovals`; the write path `POST /api/v1/church/[slug]/testimony:61` exists but **no client anywhere calls it** (grep across `src/` returns zero callers). Structurally identical to `flagPrayer`. Hide the route; the gate at `:52` goes with it. |
-| **Live events** ⛔ | `church/[slug]/events/*` | Wall, moderation, display and report screens are all built; nothing can create an event. Already honestly labelled by `pj-s26-09`. Leave as-is; §A.1 fixes the plan-referencing copy. |
+| **Live events** ⛔ | `church/[slug]/events/*` | Wall, moderation, display and report screens are all built; nothing can create an event. Already honestly labelled by `pj-s26-09`. Keep the service-level throw that holds it shut (§B.2) and rewrite only its plan-referencing message; §A.1 fixes the page banner copy. |
 | **Pastoral Dashboard** ⚠️ | `dashboard` | **Mixed — the one entry that does not resolve cleanly.** `getPastoralStats` (`pastoral.service.ts:321`) returns four numbers: `activePrayers` (⛔ `prayers.churchId`), `pendingFlags` (⛔ never written), `openAssignments` (✅), `memberCount` (✅). **Recommendation: unlock the page, remove the two dead stat tiles.** It is the hub linking to Care Inbox and Synced Groups, both of which work — hiding it would orphan them. Restore the two tiles in `pj-s26-10`. |
 
 ### C.3 Summary of route dispositions
 
 - **Unlock (delete gate):** `dashboard`, `dashboard/care`, `dashboard/team`, `dashboard/groups`
 - **Hide (`notFound()` + remove from sidebar):** `dashboard/analytics`, `dashboard/flagged`, `dashboard/testimony`
-- **No gate to change:** `church/[slug]/wall`, `church/[slug]/groups`, `dashboard/branding`, `church/[slug]/events`
+- **No page gate to change:** `church/[slug]/wall`, `church/[slug]/groups`, `dashboard/branding`
+- **Gate retained, message rewritten:** `createEvent` (§B.2), `hasCustomSubdomain` (§C.5)
 
 ### C.4 The `plans.ts` predicates
 
@@ -416,7 +454,7 @@ created in `tasks.json` by this task.
 | # | Task | Agent | Depends on |
 |---|---|---|---|
 | 1 | **Verify prod billing state** (§0.6) — run both queries, record output. Hard gate on everything else. | Database | — |
-| 2 | Neutralise both plan limits; update the two failing service tests (§B) | Backend | 1 |
+| 2 | Remove the member cap; rewrite the events throw message but **keep the throw**; update the two failing service tests (§B) | Backend | 1 |
 | 3 | Unlock 4 routes / hide 3 routes; strip `ChurchSidebar` + `NavItem` lock logic (§C) | Frontend | 1 |
 | 4 | Rewrite `/billing` → giving history; narrow `/api/v1/checkout` to `donation` (§A.2, §A.4) | Backend | 1 |
 | 5 | Rewrite `/for-churches`; delete `/for-churches/demo`, `tier-cards-section`, `pricing-calculator` (§A.1, §A.3) | Frontend | 1 |
@@ -426,10 +464,10 @@ created in `tasks.json` by this task.
 | 9 | Full-site sweep for surviving price/tier strings before sign-off | QA | 2–8 |
 
 Task 9 is not optional. Sprint 26 shipped two honesty passes and a Reviewer still
-found two false claims afterward, one in a file the pass had just edited. The
-sweep should grep for `$19`, `$49`, `$199`, `/mo`, `Upgrade`, `upgrade`,
-`Starter`, `Growing Church`, `Small Church`, `Network`, `plan`, `tier`,
-`coming soon` across `src/` and read every hit — not just count them.
+found two false claims afterward, one in a file the pass had just edited. QA
+should re-run **both** sweeps from §A.6 plus `plan`, `tier` and `coming soon`,
+and **read every hit** — not just count them. §A.6 is the pre-removal baseline;
+task 9 proves the post-removal set is empty apart from the §D keeps.
 
 ---
 
