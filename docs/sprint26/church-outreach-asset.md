@@ -108,8 +108,8 @@ Your church gets its own page and one invite link. Prayer is free for every memb
 **What is here today**
 
 **Anyone can ask, including the people who would never raise a hand.** A member posts a request under
-their own name or anonymously. Every submission runs a safety check before it posts. Requests rest
-after 30 days rather than accumulating forever.
+their own name or anonymously. Every submission runs a safety check before it posts. Requests stay on
+the wall until the person who wrote them marks them answered or removes them.
 
 **People actually pray, and the person knows it.** Members pray for a specific request and the count
 is on it. When something is answered, the person who asked can write what happened.
@@ -123,7 +123,11 @@ Planning Center, PrayerJar can connect to it and pull your people and groups in 
 list matches your church records without anyone re-typing it.
 
 **Private notes for the people who shepherd.** Your pastors and admins can keep notes on a person
-that only your leadership sees. Members never see them. *Included from the $19 plan.*
+that only your leadership sees. Members never see them.
+
+**Assign follow-up to a named person.** A request can be handed to a specific member of your care
+team, and each person sees only what is theirs. It works today, with one rough edge: there is no
+chooser yet, so whoever assigns has to paste the request's ID in by hand.
 
 ---
 
@@ -152,9 +156,10 @@ that only your leadership sees. Members never see them. *Included from the $19 p
 
 **What it costs**
 
-Nothing to start, and prayer is free for every member on every plan, permanently. A free church
-account holds 75 people. Paid plans cover pastoral features, most of which are still being built — so
-the honest recommendation today is to stay on the free plan and tell me what you need.
+Nothing. There are no paid plans — they were withdrawn in July 2026 because too much of what they
+sold was not finished, and charging for it would have been dishonest. There is no cap on members and
+no cap on groups. If a paid tier ever returns it will be built deliberately and priced against
+features that actually work. For now, use it free and tell me what you need.
 
 **Start your church free** — prayerjar.org/church/create
 **Or reply to Ron first** — hello@prayerjar.org
@@ -170,16 +175,17 @@ production database on 2026-07-25.
 |---|---|---|---|
 | 1 | "A member posts a request under their own name or anonymously" | `src/app/api/v1/prayers/route.ts:6-10` accepts `isAnonymous`; `src/services/prayer.service.ts:48-56` persists it | all |
 | 2 | "Every submission runs a safety check before it posts" | `src/services/prayer.service.ts:27-44` — `moderateContent` runs before insert, throws `ModerationError`; rejections logged via `logModerationRejection` | all |
-| 3 | "Requests rest after 30 days" | `src/services/prayer.service.ts:59` — `expiresAt: addDays(new Date(), 30)`; `src/app/api/cron/expire-prayers` runs daily (`vercel.json`) | all |
+| 3 | "Requests stay until the person who wrote them marks them answered or removes them" | Auto-expiry was **suspended** 2026-07-25 (pj-s26-13): the `expire-prayers` entry is out of `vercel.json` and the route no-ops unless `PRAYER_EXPIRY_ENABLED === 'true'`. `renewPrayer` and `deletePrayer` (`prayer.service.ts:150,158`) remain author-controlled. **The previous "requests rest after 30 days" claim was true when written and is now false** | all |
 | 4 | "Members pray for a specific request and the count is on it" | `src/app/api/v1/prayers/[id]/pray/route.ts`; `prayer_interactions` table | all |
 | 5 | "the person who asked can write what happened" | `src/app/api/v1/prayers/[id]/testimony/route.ts`; public testimony pages at `src/app/(public)/testimony/[id]` | all |
 | 6 | "not a feed… nothing is ranked" | `src/services/prayer.service.ts:66-95` `getRandomPrayer` orders by `RANDOM()`; no ranking or engagement signal in any public read | all |
 | 7 | "Your church page carries your name, description, logo, colours, and a welcome message" | `src/app/(public)/church/[slug]/page.tsx`; `src/app/(church)/church/[slug]/(admin)/dashboard/branding/page.tsx`; `src/app/api/v1/church/[slug]/branding` and `/welcome`. Prod: the existing church row has `primary_color` and `welcome_message` populated | Free and above |
 | 8 | "One invite link… and people join from it" | `src/app/(public)/church/join/page.tsx` — `?code=<slug>` resolves the church, `JoinButton` joins | Free and above |
 | 9 | "Members who join are on your church's list" | `src/services/church-platform.service.ts` `getChurchMembers`; `church_members` table | Free and above |
-| 10 | "A free church account holds 75 people" | `src/lib/plans.ts:38` (`members: 75`); enforced at `src/services/church-platform.service.ts:173` | Free |
-| 11 | "PrayerJar can connect to [Planning Center] and pull your people and groups in overnight" | `src/app/api/auth/chms/connect/planning-center` (OAuth); `src/app/api/cron/chms-full-sync-scheduler` 03:00 and `chms-sync-runner` 04:00 daily (`vercel.json`); `chms-sync-runner/route.ts:66-74` calls and persists `syncMember` and `syncGroup`. **Never exercised — see §4 item 6** | ungated in code; `/for-churches:100` advertises it at $49 |
-| 12 | "notes on a person that only your leadership sees" | `src/app/(church)/church/[slug]/(admin)/dashboard/care/page.tsx` — admin/pastor gate at `:34`, tier gate at `:52`; `src/services/pastoral.service.ts:176-198` `createPastoralNote`, `isPrivate` defaults true | Small Church ($19) and above — `plans.ts:157` |
+| 10 | "There is no cap on members and no cap on groups" | `src/lib/plans.ts` free limits are now `members: null, groups: null`; the cap was **deleted** from `addChurchMember` (`church-platform.service.ts`) in Sprint 27, not raised. **The previous "holds 75 people" claim is now false** | all |
+| 11 | "PrayerJar can connect to [Planning Center] and pull your people and groups in overnight" | `src/app/api/auth/chms/connect/planning-center` (OAuth); `src/app/api/cron/chms-full-sync-scheduler` 03:00 and `chms-sync-runner` 04:00 daily (`vercel.json`); `chms-sync-runner/route.ts:66-74` calls and persists `syncMember` and `syncGroup`. **Never exercised — see §4 item 6.** Note the *weekly PCO summary* is a separate job and is still gated to pro/enterprise (`chms-summary-scheduler:66`), so it is unreachable now that tiers are withdrawn — tracked as pj-s27-08. Nightly member sync is ungated and unaffected | all — the $49 gate was removed with the tiers |
+| 12 | "notes on a person that only your leadership sees" | `src/app/(church)/church/[slug]/(admin)/dashboard/care/page.tsx` — admin/pastor gate at `:34`, tier gate at `:52`; `src/services/pastoral.service.ts:176-198` `createPastoralNote`, `isPrivate` defaults true. The tier gate was removed in Sprint 27 | all |
+| 12a | "A request can be handed to a specific member of your care team… no chooser yet" | `pastoral.service.ts:282-299` `assignPrayer` writes `prayerAssignments.churchId` **from the caller's church**, never reading `prayers.church_id` — so assignments work despite the empty church link. The POST route checks only that the assignee is a member. No prayer-picker UI exists | all |
 | 13 | "prayer is free for every member on every plan" | `src/lib/plans.ts:24-101` — no plan gates prayer submission or intercession; `/for-churches` FAQ `page.tsx:106-108` | all |
 | 14 | "Prayers your members post are on the open PrayerJar wall" | `src/services/prayer.service.ts:48-61` sets no church or group association; the embed widget posts there too (`(public)/embed/[churchSlug]/widget/EmbedForm.tsx:32`) | all |
 | 15 | "If you need a wall only your congregation can see, it is not ready" | §4 item 1 — `prayers.church_id` is never written; prod count 0 | — |

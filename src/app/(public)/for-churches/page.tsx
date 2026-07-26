@@ -65,8 +65,8 @@ const FEATURES = [
     icon: UserCheck,
     title: 'Route follow-up to the right person, not just anyone.',
     description:
-      'Assign a request to an individual member of your care team. Each assignee sees only what is theirs; leaders see the whole board. The assignment screen works, but there is nothing to put on it — no prayer is attached to a church yet.',
-    notYet: 'Nothing can be assigned until prayers are church-linked.',
+      'Assign a request to an individual member of your care team. Each assignee sees only what is theirs; leaders see the whole board. Assignments work end to end — they are recorded against your church directly, so the empty church link elsewhere on this page does not affect them. The rough edge is picking the prayer: there is no chooser yet, so someone has to paste the request’s ID in by hand.',
+    notYet: 'You have to paste a prayer ID by hand — there is no picker yet.',
   },
   {
     icon: CheckSquare,
