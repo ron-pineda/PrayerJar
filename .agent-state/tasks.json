@@ -6789,15 +6789,16 @@
     "id": "pj-s27-01-paid-surface-audit",
     "sprint": "27",
     "title": "Audit every paid-tier surface before removal",
-    "status": "proposed",
+    "status": "done",
     "assigned_to": "Architect",
     "priority": "high",
     "description": "Map every user-reachable surface that sells, prices, gates, or upgrades to a paid church tier — marketing, pricing tables, checkout entry points, plan gates in app code, and any copy referencing tiers. ~25 files reference PLANS/stripe/checkout. Output a removal plan that separates (a) marketing/checkout to remove, (b) plan gates that would dead-end a free user, (c) Pro-gated features that genuinely work vs those that do not. Read-only; no code changes.",
     "notes": [
-      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\""
+      "[PM, 2026-07-25] Created at Sprint 27 kickoff. Ron's direction: \"Pull it for now. I just want a free working product and carefully plan and implement the paid version in the future using fable.\"",
+      "[Architect/PM, 2026-07-25] DONE. docs/sprint27/removal-plan.md. Corrected SIX errors in the PM brief, all verified: (1) the events/new dead link was already removed by pj-s26-09; (2) FOUR analytics charts are dead, not five — getMemberGrowth reads churchMembers.churchId which IS written on every join; (3) only TWO of the four free limits are enforced — limits.groups appears only in marketing copy and limits.admins has ZERO readers anywhere; (4) /api/v1/checkout cannot be deleted, its donation branch serves /give; (5) dashboard/flagged is ungated too, same defect as analytics; (6) /docs/churches:305 claimed the free plan supports 25 members while plans.ts said 75 — a THIRD false claim surviving the Sprint 26 honesty pass. It also refused to assert \"nobody has ever paid\" because its prod query was blocked, and made it a hard gate rather than launder inherited fact — good discipline. PM closed that gate directly: subscriptions table has 0 rows, one test church, subscription_id and first_paid_at both null."
     ],
     "created_at": "2026-07-25",
-    "last_touched": "2026-07-25T17:30:00.000Z",
+    "last_touched": "2026-07-25T22:30:00.000Z",
     "blockers": []
   },
   {
@@ -6860,6 +6861,66 @@
     ],
     "created_at": "2026-07-25",
     "last_touched": "2026-07-25T17:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-06-billing-donor-access",
+    "sprint": "27",
+    "title": "Donors cannot see their own giving history",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "high",
+    "description": "/billing (now the Giving page) still redirects non-admins to /profile. That check existed to stop ordinary users seeing church plan tiers — tiers that no longer exist. A regular user who donated through /give now has no way to view their own gifts. The obsolete rationale is commented in-file at billing/page.tsx:38-43.",
+    "notes": [
+      "[PM, 2026-07-25] Found in passing during the Sprint 27 audit/implementation and deliberately NOT folded into that scope."
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T22:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-07-church-digest-404",
+    "sprint": "27",
+    "title": "Weekly church digest email links 404",
+    "status": "proposed",
+    "assigned_to": "Backend",
+    "priority": "high",
+    "description": "church-digest/route.ts:157 builds the church link from the church UUID instead of the slug, so every weekly digest email sends pastors to a 404.",
+    "notes": [
+      "[PM, 2026-07-25] Found in passing during the Sprint 27 audit/implementation and deliberately NOT folded into that scope."
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T22:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-08-tier-source-drift",
+    "sprint": "27",
+    "title": "getChurchTier and churches.current_plan have drifted",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "medium",
+    "description": "getChurchTier() reads the subscriptions table while audit-cleanup and hasCustomSubdomain read churches.current_plan. Live, observable drift on the test church. Now largely dormant with tiers withdrawn, but it must be resolved before any paid rebuild — carry into the Fable planning.",
+    "notes": [
+      "[PM, 2026-07-25] Found in passing during the Sprint 27 audit/implementation and deliberately NOT folded into that scope."
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T22:30:00.000Z",
+    "blockers": []
+  },
+  {
+    "id": "pj-s27-09-adrs",
+    "sprint": "27",
+    "title": "Three ADRs owed from the tier removal",
+    "status": "proposed",
+    "assigned_to": "Architect",
+    "priority": "low",
+    "description": "Per removal-plan §E task 8: dormant tier predicates, the getChurchTier vs churches.current_plan split, and why the subdomain gate was retained. Recorded in handoffs.md so they are not lost.",
+    "notes": [
+      "[PM, 2026-07-25] Found in passing during the Sprint 27 audit/implementation and deliberately NOT folded into that scope."
+    ],
+    "created_at": "2026-07-25",
+    "last_touched": "2026-07-25T22:30:00.000Z",
     "blockers": []
   }
 ]
