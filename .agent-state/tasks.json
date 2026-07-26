@@ -6945,5 +6945,18 @@
       "[Reviewer, 2026-07-26] Opened at Sprint 27 review. Deliberately NOT a rejection of pj-s26-13 — that task did what it was asked and the two locks are the right shape for preventing an accidental run. This is the compounding hazard it correctly documented but could not close in scope. See docs/sprint27/reviewer-signoff.md §5."
     ],
     "last_touched": "2026-07-26"
+  },
+  {
+    "id": "pj-s27-11-verify-prod-billing-state",
+    "sprint": "27",
+    "title": "Run the prod billing verification the removal shipped without",
+    "status": "proposed",
+    "assigned_to": "Database",
+    "priority": "medium",
+    "description": "Removal-plan §0.6 declared a hard gate on the entire tier removal: \"Before any deletion PR merges, someone with DB access must run\" SELECT id, tier, status, stripe_subscription_id, created_at FROM subscriptions; and SELECT id, name, slug, current_plan, subscription_id, first_paid_at FROM churches; — \"if either returns a real paying record, stop.\" The Architect flagged the zero-churches-have-ever-paid claim as inherited from Sprint 26 and NOT re-verified, and attempted the query himself but was blocked by the tool permission layer. Nothing in handoffs.md or docs/sprint27/ records the queries ever being run. The removal shipped to production anyway. Both queries are read-only SELECTs — no destructive write is involved. Run them, paste the output into this task, and either close the gate or escalate. On the available evidence the assumption almost certainly holds (the one known church row has NULL subscription_id and NULL first_paid_at, and no DB column or table was dropped, so nothing is hard to unwind) — but a declared stop-the-line precondition that nobody ran should be closed, not left open.",
+    "notes": [
+      "[Reviewer, 2026-07-26] Opened at Sprint 27 review. The only indirect evidence is scripts/delete-test-church.mjs (pj-s26-12, still in-progress), which REFUSES to run unless prod holds exactly one church named \"Test Church\" with NULL subscription_id and NULL first_paid_at — but that is an assertion the script would make, not a result anyone has recorded, and it says nothing at all about the subscriptions table. Not a rejection of pj-s27-02/03: the gate was the Architect’s to close and the PM’s to schedule, and neither did. See docs/sprint27/reviewer-signoff.md, \"What the PM got wrong\" item 5."
+    ],
+    "last_touched": "2026-07-26"
   }
 ]

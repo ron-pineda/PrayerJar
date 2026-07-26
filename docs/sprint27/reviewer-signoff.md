@@ -278,6 +278,30 @@ have opened it as a follow-up (`pj-s27-10`) rather than leaving it in prose.
    — `churches.currentPlan` — with a live weekly cron on it. §1 above.
 4. **The 524 → 501 accounting omits the added test.** 8 + 10 + 6 (checkout) − 1
    (event.service gained a guard) = 23. The brief's list would produce 22.
+5. **The removal plan's own hard gate was never run, and the deploy went ahead anyway.**
+   §0.6 says the "zero churches have ever paid" claim was *inherited from Sprint 26 and
+   not re-verified*, and states plainly: *"Before any deletion PR merges, someone with DB
+   access must run"* two `SELECT`s against prod — one over `subscriptions`, one over
+   `churches` — and *"if either returns a real paying record, **stop**."* I grepped
+   `handoffs.md` and all of `docs/sprint27/`: **no run, no output, no record.** The
+   brief to me did not mention the gate either, and everything shipped. The partial
+   consolation is indirect: `scripts/delete-test-church.mjs` (`pj-s26-12`, still
+   `in-progress`) refuses to run unless prod holds exactly one church named `Test Church`
+   with `NULL subscription_id` and `NULL first_paid_at` — but that is an assertion the
+   script *would* make, not a result anyone has recorded, and it says nothing about the
+   `subscriptions` table. On the available evidence the assumption almost certainly
+   holds, and no deleted DB column or table makes this hard to unwind. But an
+   explicitly-declared stop-the-line precondition that nobody ran, on a change that is
+   now in production, should be closed rather than left open — and it should not have
+   fallen to the Reviewer to notice it was skipped.
+
+**One thing the brief did not claim but which the record makes worth stating:** `pj-s27-04`
+(the QA sweep) is untouched — `status: proposed`, one PM note, never started. Removal-plan
+§E called it *"not optional."* PM did run an independent sweep on 2026-07-25 and recorded
+it in `handoffs.md`, which covers the same ground in substance — but that sweep was scoped
+to `(public)`, `(dashboard)`, `(church)` and `components`, i.e. `src/` only. So the formal
+QA task was never run, and the informal substitute inherited the exact boundary that let
+the fourth survivor through. That is the strongest available evidence for finding 1.
 
 ---
 
@@ -295,5 +319,6 @@ outreach.
 ## Follow-ups opened
 
 - `pj-s27-10` — prayer expiry re-enable is guarded by a comment only (§5).
+- `pj-s27-11` — run the §0.6 prod billing verification that the removal shipped without.
 - Added to `pj-s27-08` — `chms-summary-scheduler` gates on `currentPlan` (§1).
 - Recorded in `pj-s27-07` — the digest's `/flagged` link now lands on `notFound()` (§2).
